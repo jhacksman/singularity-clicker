@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172b25">
+<title>{% if page.title %}{{ page.title | escape }} · {% endif %}{{ site.title | escape }}</title>
+<meta name="description" content="{{ page.description | default: site.description | escape }}">
+<link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="{{ '/' | relative_url }}">SINGULARITY <span>CLICKER</span></a>
+<nav aria-label="Main navigation">
+<a href="{{ '/design/' | relative_url }}">The design</a>
+<a href="https://github.com/jhacksman/singularity-clicker">Source</a>
+{% if site.game_available %}<a class="play-link" href="{{ '/play/' | relative_url }}">Play</a>{% endif %}
+</nav>
+</header>
+<main id="content">{{ content }}</main>
+<footer><span>Singularity Clicker</span><span>Browser first. macOS and iOS planned.</span><a href="https://github.com/jhacksman/singularity-clicker">Follow development</a></footer>
+</body>
+</html>

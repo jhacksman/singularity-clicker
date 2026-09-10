@@ -1,0 +1,14 @@
+title: Singularity Clicker
+description: "A human journey from the cave to the singularity."
+url: "https://jhacksman.github.io"
+baseurl: "/singularity-clicker"
+repository: jhacksman/singularity-clicker
+markdown: kramdown
+game_available: false
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+exclude:
+  - README.md

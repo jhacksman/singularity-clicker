@@ -1,0 +1,25 @@
+---
+title: From the cave onward
+---
+<section class="intro">
+<p class="eyebrow">AN INCREMENTAL HUMAN JOURNEY</p>
+<h1>First, an ember.<br>Then, everything else.</h1>
+<p class="lead">Gather, learn, build, and carry what you know into the next age. The game changes with the world you create.</p>
+<div class="intro-actions">
+{% if site.game_available %}
+<a class="button" href="{{ '/play/' | relative_url }}">Begin in the cave</a>
+<a href="{{ '/play/hearth.html' | relative_url }}">Explore The Hearth</a>
+{% else %}
+<a class="button" href="{{ '/design/' | relative_url }}">Read the game design</a>
+<span class="status">Browser edition in development</span>
+{% endif %}
+</div>
+</section>
+<section class="stages" aria-labelledby="stages-title">
+<div class="section-heading"><p class="eyebrow">THE FIRST STEPS</p><h2 id="stages-title">Different ages. Different ways to play.</h2></div>
+<article class="stage"><span class="number">00</span><div><p class="label">THE CAVE</p><h3>A small beginning.</h3><p>A primitive clicker. Gather food and water, shape useful tools, communicate, and discover what the group can accomplish together.</p><span class="status">{% if site.game_available %}Playable browser prototype{% else %}Prototype built · GitHub release pending{% endif %}</span></div></article>
+<article class="stage"><span class="number">01</span><div><p class="label">THE HEARTH</p><h3>A place worth returning to.</h3><p>Guide a migrating tribe across a hex map. Assign villagers, stack supplies, build a camp, and revisit landscapes changed by your work. Develop the knowledge and community needed for the first plow.</p><span class="status">{% if site.game_available %}First playable browser build{% else %}First build complete · GitHub release pending{% endif %}</span></div></article>
+<article class="stage"><span class="number">02</span><div><p class="label">AGRICULTURE</p><h3>Room to grow.</h3><p>Farming becomes the center of community life. Fields, storage, workers, and dependable surplus open the next chapter.</p><span class="status">Planned</span></div></article>
+</section>
+<section class="principles"><div><p class="eyebrow">WORK AT YOUR OWN PACE</p><h2>Give an order.<br>Watch a home take shape.</h2></div><div><p>The Hearth is cozy through useful work: a woodpile filling, a fence taking shape, and people returning to the fire. There are no enemies, villager deaths, or frantic survival timers.</p><p>Automation grows out of skills and good organization. Clever choices can make a faster journey; taking your time remains part of the pleasure.</p></div></section>
+<section class="future"><p class="eyebrow">A LONGER HORIZON</p><h2>From tools to machines to the singularity.</h2><p>Later ages bring new forms of play, from farming to industrial production and computing. Fourteen stages are envisioned, ending at Stage 13: the singularity. Later stages and native editions remain in design.</p><a href="{{ '/design/' | relative_url }}">Explore the design →</a></section>
