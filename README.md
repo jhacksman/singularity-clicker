@@ -1,32 +1,56 @@
 # Singularity Clicker
 
-An incremental journey from prehistory to the singularity, with a different style of play as technology and society develop.
+An incremental journey through human development, with a different style of play in each age. Browser first; macOS and iOS are intended release platforms.
 
-Browser first. macOS and iOS editions are planned. The art is drawn directly; no image-generator assets.
+## Play and build
 
-## Project website
+No third-party runtime dependencies or external assets. Requires Node.js 22 or later to build and test.
 
-The Jekyll website lives in `website/`. The GitHub Pages workflow builds it on pushes to `main`.
+```sh
+npm run build
+npm test
+npm start
+```
 
-Expected address after Pages is enabled and deployment succeeds:
-https://jhacksman.github.io/singularity-clicker/
+Open `http://127.0.0.1:8080` for The Cave, or `/hearth.html` for The Hearth. The generated HTML files can also be opened directly. Each page contains its scripts, styles, and artwork; no server is needed for the simulation.
 
-One-time setup: Settings → Pages → Build and deployment → Source → GitHub Actions. Then run the **Publish project website** workflow from Actions if it has not already deployed.
+- **Stage 0 — The Cave:** resource gathering, tools, communication, automation, traditions, and the first fire encounter.
+- **Stage 1 — The Hearth:** playable first implementation of an isometric settlement and migration game. Assign villagers, build outlines, manage supplies, explore 61 persistent hexes, learn practices, establish gathering routes, manage animals, and complete the first plowing.
+- **Stage 2 onward:** planned, not implemented. The ending honestly indicates this.
 
-## Game source transfer
+Stage 1's two-hour target is a design goal, not a measured playtest result. Its economy, tutorial, touch ergonomics, and minigames need further playtesting. Native apps have not yet been packaged or tested.
 
-Stage 0 (The Cave) and a first playable Stage 1 (The Hearth) were built in the project workspace. Those files have **not yet been transferred into this repository** because that workspace is currently unavailable. This repository presently contains the Jekyll site and publishing workflow.
+## Controls
 
-When the prepared source is added, preserve `website/` and `.github/workflows/pages.yml`. The workflow detects `build.mjs`, runs simulation tests when present, builds the browser pages, and publishes them under `/play/`. Play links appear only when both game pages exist.
+The Hearth supports group selection and right-click assignment, dragging villagers onto work, and touch-friendly villager selection followed by tapping a target. Job buttons provide a larger alternative to small landscape targets. Space pauses, M toggles the map, scroll/pinch zooms, and Alt-drag pans the camp. Build outlines, then assign builders. Drag fences to place sections. The hearth is fueled automatically.
 
-Keep private hosting metadata, credentials, and old Git history out of this public repository. No software license has been selected yet.
+No enemies, combat, starvation, or villager deaths. Food and water shortages suspend demanding work; continued shortages prompt safe migration. Basic recovery gathering remains possible. Workers finish full gather/haul/deposit routines without repeated clicking. Pausing, hidden tabs, and closing the app stop the simulation.
 
-## Site structure
+## Source organization
 
-- `website/index.html`: overview and stage status
-- `website/design.md`: core design direction
-- `website/_layouts/default.html`: shared page layout
-- `website/assets/site.css`: responsive styling
-- `.github/workflows/pages.yml`: Jekyll build and GitHub Pages deployment
+- `src/engine.js`, `src/view.js`, `src/styles.css`, `src/shell.html`: existing Stage 0 implementation.
+- `src/hearth/engine.js`: deterministic, platform-independent Stage 1 rules and save schema.
+- `src/hearth/view.js`: Canvas 2D rendering, pointer controls, UI, and platform adapter.
+- `src/hearth/styles.css`, `src/hearth/shell.html`: responsive browser interface.
+- `assets/`: directly authored editable SVG drawings for Stage 0. Stage 1 draws directly with Canvas 2D.
+- `docs/stage-1-design.md`: design baseline and decisions.
+- `docs/platforms.md`: browser/macOS/iOS architecture and remaining native work.
+- `tests/`: simulation and save-integrity tests.
 
-GitHub Pages hosts static files. Gameplay runs in the browser; no application server is required.
+All game art is authored directly. Do not introduce image-generator assets.
+
+## Saves and native reuse
+
+Stage 0 keeps `singularity-clicker.cave.v1`; Stage 1 uses `singularity-clicker.hearth.v1`. Opening Stage 1 does not alter Stage 0's save. Stage 1's optional completion prestige archives the finished world before resetting, with up to five inherited traditions. Import requires confirmation. Export/import supports manual transfer between devices; there is no account or cloud synchronization.
+
+`Hearth` accepts serializable state and advances only through explicit `tick(seconds)` calls. Native hosts can provide `window.SingularityPlatform` with asynchronous `load(key)`, `save(key, text)`, and `download(name, text)` methods. The browser adapter uses device-local storage and JSON downloads. A native file/share bridge, application lifecycle wiring, and actual Apple builds remain future work.
+
+## Project website and repository
+
+Public repository: https://github.com/jhacksman/singularity-clicker
+
+Project website: https://jhacksman.github.io/singularity-clicker/
+
+The Jekyll site lives in `website/`. The workflow in `.github/workflows/pages.yml` tests and builds the game, builds Jekyll, and publishes both together on pushes to `main`. The Cave is served at `/play/`; The Hearth is served at `/play/hearth.html`.
+
+Public-source exports exclude private hosting metadata and Git history. No open-source license has been selected by the owner. Making source public does not itself grant a software license.

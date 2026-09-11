@@ -54,7 +54,7 @@ The existing prototypes use directly authored SVG and Canvas artwork. No image-g
 
 ## Development status
 
-The Cave and a first playable Hearth prototype have been built. The game source transfer to this repository is pending. Native binaries, human/device playtesting, and later stages are not complete.
+The Cave and a first playable Hearth prototype have been built. Both browser stages are included in this repository and built by the Pages workflow. Native binaries, human/device playtesting, and later stages are not complete.
 
 [View the repository](https://github.com/jhacksman/singularity-clicker)
 

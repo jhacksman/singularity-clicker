@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+ <title>Cave objects — eight original ink drawings</title>
+ <desc>Stones, plant food, animal food, fibers, bedding, a fire, a burning branch, and a stone tool. Four columns and two rows.</desc>
+ <g stroke="#2b3025" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Usable stones. -->
+  <g id="stones">
+   <path d="m29 321 36-14 179-3 31 23-25 13-171 10-53-13Z" fill="#303d29" opacity=".25" stroke="none"/>
+   <path d="m87 188 18-55 41-19 33 37-5 56-56 16Z" fill="#a3a48b"/>
+   <path d="m105 133 6 47 36 10 32-39-36 9Z" fill="#bcbba0" stroke-width="2.5"/>
+   <path d="m111 180 7 43 56-16-27-17Z" fill="#777e64" stroke-width="2.5"/>
+   <path d="m49 241 14-59 45-17 37 52-9 46-58 11Z" fill="#979c82"/>
+   <path d="m63 182 18 36 37-4-10-49m-27 53-3 56m40-60 18 49" fill="none" stroke-width="2.5"/>
+   <path d="m170 204 35-43 38 9 22 62-29 43-58-8-17-35Z" fill="#aaa98d"/>
+   <path d="m205 161 9 40 51 31-32-1-55 36 8-48Z" fill="#7d8367" stroke-width="2.5"/>
+   <path d="m31 283 35-38 47 2 35 42-19 45-60 9-38-29Z" fill="#b0af93"/>
+   <path d="m66 245 14 37 44 11 24-4m-68-7-11 61m55-50 5 41" fill="none" stroke-width="2.5"/>
+   <path d="m125 269 39-34 52 13 14 47-36 42-59-4-23-33Z" fill="#939a7b"/>
+   <path d="m164 235 12 40 40-27m-40 27-41 58m41-58 54 20-36 42Z" fill="#acb093" stroke-width="2.5"/>
+   <path d="m217 296 22-27 25 9 11 31-20 24-34-9Z" fill="#bec0a3"/>
+   <path d="m239 269 0 30 36 10m-36-10-18 25" fill="none" stroke-width="2.5"/>
+   <path d="m123 144 9-4m-10 57 6 12m-42-15 9-3m-42 92 8 8m107-32 8-9m59-22 11-12" fill="none" stroke="#e0dcc0" stroke-width="2"/>
+  </g>
+  <!-- Plants: recognizably separate roots, nuts, and berries. -->
+  <g id="plants" transform="translate(300 0)">
+   <path d="m26 325 75-20 132-3 40 23-38 22-135 5-63-9Z" fill="#303d29" opacity=".25" stroke="none"/>
+   <g fill="#718457">
+    <path d="M105 240Q52 214 49 143q44 13 61 58l-3 29"/>
+    <path d="M104 213q-12-82 36-112 18 64-23 112"/>
+    <path d="M116 232q18-64 75-56-20 53-69 64"/>
+   </g>
+   <path d="m77 178 37 67m22-112-22 112m50-49-47 46" stroke="#39482e" stroke-width="3" fill="none"/>
+   <path d="m94 233 19-8 22 12 7 32-17 38-12 25-4 14-8-9 2-34-13-39Z" fill="#d0b581"/>
+   <path d="m94 248 20 4m-23 11 17 6m18-6 14-1m-39 22 18 5m-9 17 11 0m-9 28-3 15" fill="none" stroke="#7d6e47" stroke-width="2.5"/>
+   <path d="m109 283-19 13m21 16 18 5" stroke="#998352" stroke-width="2.5" fill="none"/>
+   <g fill="#85936a">
+    <path d="m169 249 5-37-10-26-29-17q-5 42 34 61"/>
+    <path d="m175 239 7-33q21-35 55-27-7 49-56 56"/>
+   </g>
+   <path d="m151 191 24 56m39-49-36 43" fill="none" stroke-width="2.5"/>
+   <path d="m169 246 22-3 20 22-6 33-26 40-17-2 2-20-13-25 0-26Z" fill="#bca779"/>
+   <path d="m168 260 22 5m-27 11 15 7m13 5 15 2m-38 12 12 5m-5 14 10 2" stroke="#7d6e47" stroke-width="2.5"/>
+   <path d="m46 288 16-18 22 4 12 27-12 21-27 0-14-15Z" fill="#a48859"/>
+   <path d="m62 270 11 20-7 30m7-30 13-11" stroke="#695f3d" stroke-width="2.5" fill="none"/>
+   <path d="m127 315 11-20 24 0 13 22-15 23-22 1Z" fill="#a18859"/>
+   <path d="m141 301 6 18-7 14m7-14 14-14" stroke="#695f3d" stroke-width="2.5"/>
+   <g fill="#9b5d47">
+    <path d="M215 288q-10-16 2-28 13-12 26-1 12 11 2 25-9 10-18 7Z"/>
+    <path d="M206 319q-16-6-10-23 5-17 23-12 15 7 9 25-7 13-22 10Z"/>
+    <path d="M240 324q-13-6-10-23 5-16 22-10 15 6 11 21-5 13-23 12Z"/>
+   </g>
+   <path d="m224 262 9 3m-28 27 8 2m29 5 8 2" stroke="#d29370" stroke-width="3"/>
+   <path d="m230 257-3-11m-15 38 4-10m31 18-3-12" stroke="#414a2d" stroke-width="3"/>
+  </g>
+  <!-- A joint with scraps of edible meat and two bones. -->
+  <g id="animal-food" transform="translate(600 0)">
+   <path d="m27 323 42-18 148 0 58 24-41 20-152-1Z" fill="#303d29" opacity=".25" stroke="none"/>
+   <path d="m73 266 103-72-3-14 8-14 13 0 12 18 17-1 10 11-3 18-19 4-101 70-2 18-14 12-16-4-8-17-14-3-3-12 9-13Z" fill="#d4c9a2"/>
+   <path d="m91 274 96-69m-6-25 8 12m15-2 12 10" fill="none" stroke="#8f896a" stroke-width="3"/>
+   <path d="m95 237 43-19 43 10 29 29-6 34-27 21-47-3-40-35Z" fill="#8f5845"/>
+   <path d="m104 239 20 8 22-4 32 22 9 29-17 6-35-10-27-28Z" fill="#b47157" stroke-width="2.5"/>
+   <path d="m128 235 12 22 24 8m-61-7 24 13 14 20m21-50 25 26m-41 12 18 11" fill="none" stroke="#d19875" stroke-width="3"/>
+   <path d="m72 300 128-24 6-17 15-7 13 8 3 16 19 4 5 16-8 12-21-2-125 22-8 15-16 3-12-10-2-15-14-6-1-14 10-9Z" fill="#cec49c"/>
+   <path d="m91 313 125-24m-3-21 9 9m-142 25 6 10m149-19 13 2" fill="none" stroke="#8f896a" stroke-width="3"/>
+   <path d="m153 295 14-4 10 10-9 16-25 4-8-11Z" fill="#9b624b"/>
+   <path d="m149 307 13-5" stroke="#ce9770" stroke-width="2.5"/>
+  </g>
+  <!-- Loose grasses, not a manufactured bale. -->
+  <g id="fibers" transform="translate(900 0)" fill="none">
+   <path d="m31 318 60-20 121 2 55 24-44 16-149 4Z" fill="#303d29" opacity=".25" stroke="none"/>
+   <path d="m48 322 83-60 110 24-20 47-137 8Z" fill="#a0925e" stroke-width="3"/>
+   <path d="M55 329q63-120 144-178M76 334q14-110 42-174M91 337q41-123 127-155M109 336q-18-129-34-153M128 340q-8-109 25-188M149 338q-9-96 17-170M170 335q21-105 75-137M185 334q5-112 10-150M208 331q-26-62-115-109M226 326q-25-52-117-85M58 321q90-33 183-35M74 333q98-48 180-36M102 335q75-19 145-16" stroke="#c2b481" stroke-width="5"/>
+   <path d="m119 243-17-37m30 3-2-27m16 53 13-46m7 26 29-32m13 38 26-9m-82 83-26-39m65 56-33-43m-54 56 9-47m-18 29-34 5m131-1-18-11" stroke="#6d7347" stroke-width="3"/>
+   <path d="m88 190-13-7 4 17m44-18-5-22-9 18m43-7 1-19-10 12m20 21 3-17 6 8m13-9 14-16-3 17m6 19 13-5-4 12m22 14 14-10-5 16" stroke="#d4c594" stroke-width="3"/>
+   <path d="m74 315 28-26m-7 38 37-28m-3 34 48-21m-21 22 42-10m-33-62 16-28m-62 11-2-23" stroke="#e0d1a2" stroke-width="3"/>
+  </g>
+  <!-- Bedding: layers of unbound dry stalks. -->
+  <g id="bedding" transform="translate(0 400)">
+   <path d="m19 313 46-50 163-24 55 34-37 65-169 28-51-30Z" fill="#696b42"/>
+   <path d="m27 295 44-49 157-16 48 30-46 57-160 26-51-25Z" fill="#afa371"/>
+   <g fill="none" stroke-width="3">
+    <path d="m34 295 193-58m-182 72 194-61m-189 72 207-69M66 331l192-73m-172 78 177-66m-147 64 140-50m-105 43 97-34" stroke="#d6c591"/>
+    <path d="m65 258 102 77m-81-86 103 79m-80-82 103 77m-83-77 100 58m-77-66 87 59m-67-58 77 41m-36-42 44 20" stroke="#c4b781"/>
+    <path d="m27 311 38 22m-6-58 77 44m-45-57 48 29m-11-49 46 33m13 9 38 25m-90 21 95-31m-145 29 96-34" stroke="#7b7d50"/>
+    <path d="m27 298-10 8m47-39-14-2m154-26 5-9m25 27 18-8m-14 71 18-6m-98 30-5 13m-46-21-4 13m-37-11-16 1m189-56 16 0" stroke="#d6c591"/>
+   </g>
+  </g>
+  <!-- Maintained fire, used only during and after the fire encounter. -->
+  <g id="fire" transform="translate(300 400)">
+   <path d="m37 335 60-21 119 3 49 22-49 13-134 1Z" fill="#303d29" opacity=".25" stroke="none"/>
+   <path d="m69 291 163 35 9 11-10 14-172-36-5-12Z" fill="#6c5837"/>
+   <path d="m73 337 148-53 18 7 3 13-151 54-16-4Z" fill="#877044"/>
+   <path d="m93 337 123-43m-141 11 120 25m-114 16 8 9m142-61 2 9" stroke="#b19a63" stroke-width="2.5"/>
+   <path d="M97 318c-42-20-36-56-14-88-1 31 12 29 19 33-13-54 39-86 28-142 47 41 57 74 38 111 21-6 28-30 27-48 50 50 15 81 17 111 9-8 13-17 12-30 31 46-5 71-39 75l-57-4Z" fill="#bc613a"/>
+   <path d="M116 321c-33-17-28-41-12-60 1 23 10 24 18 29-3-33 30-55 24-93 30 35 23 57 19 76 18-7 20-18 21-32 21 30 12 60-12 81Z" fill="#e19b4c" stroke-width="3"/>
+   <path d="M139 321c-24-19 2-37 6-57 23 24 27 37 7 60Z" fill="#f0cc7d" stroke="none"/>
+   <path d="m110 165-5-13m71-11 5-19m35 96 7-12" stroke="#e2a653" stroke-width="4"/>
+   <path d="m134 99-6-19m35 21 11-18" stroke="#ada282" stroke-width="2"/>
+  </g>
+  <!-- A naturally burning branch. -->
+  <g id="branch" transform="translate(600 400)">
+   <path d="m72 337 120-139 17 3 8 21-124 129-18-1Z" fill="#715c38"/>
+   <path d="m130 277-2-44 9-22 9 1-5 34 6 15m21-30 38 4 32-12 5 9-29 15-28 5" fill="#715c38"/>
+   <path d="m91 330 105-117m-72 84 11-7m27-36 10-5" stroke="#b59b65" stroke-width="2.5"/>
+   <path d="m177 236 15-38 16 2 11 21-23 30Z" fill="#373427"/>
+   <path d="M184 228c-28-11-43-37-22-67 0 17 5 25 17 29-11-45 26-54 22-93 27 29 27 55 17 80 16-6 21-16 20-31 29 38 7 84-28 91Z" fill="#b96a3b"/>
+   <path d="M193 227c-24-11-20-28-11-41 4 13 8 16 14 18-4-23 12-35 14-55 15 26 22 67-5 80Z" fill="#e6ac58" stroke-width="3"/>
+   <path d="m202 223-5-13 12-17 4 17-6 14" fill="#f3d08a" stroke="none"/>
+   <path d="m167 127-4-11m61-11 6-12m17 43 5-9" stroke="#d9984e" stroke-width="3"/>
+  </g>
+  <!-- A chipped handheld stone, with its working edge visible. -->
+  <g id="tool" transform="translate(900 400)">
+   <path d="m85 320-19-55 8-53 28-55 48-43 20 18 36 21 21 53-5 65-33 54-58 17Z" fill="#a3a68a"/>
+   <path d="m150 114-3 62-34 33-5 50 26 83-49-22-19-55 8-53 28-55Z" fill="#c8c6a4"/>
+   <path d="m147 176 46-10 13-13 21 53-30 13-13 45 5 61-55 17-26-83 39-21Z" fill="#80876a"/>
+   <path d="m150 114-3 62-34 33-5 50 26 83m13-166 50 43-13 45-50 78m-26-83 39-21 37 26m-110-52 27 12m1-67 18 21m-54 87 26 4m-7 51 24-18m97-96 13 2m-6 63-26 4" fill="none" stroke-width="2.5"/>
+   <path d="m97 201 25-36m-36 63-4 22m79-7 11 8m-36 51 8-17" stroke="#e5dfb9" stroke-width="2.5"/>
+  </g>
+ </g>
+</svg>

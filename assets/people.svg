@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300" viewBox="0 0 500 300" fill="none">
+ <title>Three members of the camp, huddled together</title>
+ <g stroke="#252b22" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Each figure is drawn separately: no repeated stock figure. -->
+  <g id="person-left">
+   <path d="m63 248 66-7 64 15-29 17-103 3-35-14Z" fill="#34412d" stroke="none" opacity=".55"/>
+   <path d="m61 248 8-50 24-50 35-12 36 22 25 58-19 36-55 5Z" fill="#9e9670"/>
+   <path d="m94 153-22 50-11 46 40-6 5-70 22-19Z" fill="#777957" stroke="none"/>
+   <path d="m84 169-9 26 9 9-9 13 17 9-2 12m72-70 7 23-9 8 11 12-8 12" stroke="#5e6548" stroke-width="3"/>
+   <path d="m113 229 26-18 26 9 8 33-16 5-23-15-32-2Z" fill="#b89e76"/>
+   <path d="m65 245 28-12 35 15-3 15-41 4-27-6-4-8Z" fill="#ad936f"/>
+   <path d="m65 255 9 6m4-11 9 11m5-8 7 8m58-23 9 6" stroke-width="2"/>
+   <path d="m110 155-13-24 4-39 26-22 25 7 16 27-8 37-23 19Z" fill="#baa179"/>
+   <path d="m109 154-11-24 4-38 21-20 30 6 15 26-5 10-13-25-20 2-8 13-14-4-4 20 6 23 12 11Z" fill="#4b4632"/>
+   <path d="m107 135 9 3 9 18 17-5 11-11 5 3-10 20-19 7-19-17Z" fill="#514a34"/>
+   <path d="m127 115 8-2m12 2 6 2m-16 4-2 12 8 1m-17 10 12 1" stroke-width="2.5"/>
+   <path d="m105 118-7-4-2 11 8 8" fill="#baa179" stroke-width="3"/>
+   <path d="m125 89 13-5m-26 18 8-10m-10 49 6 10m13 8 10-2" stroke="#726248" stroke-width="2"/>
+   <!-- Bent knees and folded forearms give the huddle its silhouette. -->
+   <path d="m99 231 2-39 14-18 23 7 19 35-19 24-22 6Z" fill="#b69d74"/>
+   <path d="m137 237 14-37 15-3 18 18-6 26-26 14Z" fill="#ad926b"/>
+   <path d="m103 159-12 16 9 24 36 9 25-7 1-10-16-4-17 6-19-12 6-16Z" fill="#bea77d"/>
+   <path d="m154 168 13 2 10 30-12 15-24 1-6-8 20-11-1-10" fill="#b49b71"/>
+   <path d="m143 203 10 5m-14-1 11 6m-38-18 7 3" stroke-width="2"/>
+   <path d="m110 174 3 9m7-1 4 9m30 38-6 12" stroke="#8b805b" stroke-width="2"/>
+  </g>
+  <g id="person-right">
+   <path d="m300 255 46-18 92 8 34 16-11 18-127-1Z" fill="#34412d" stroke="none" opacity=".55"/>
+   <path d="m323 248 9-52 17-43 39-19 39 21 21 47 6 50-37 16-65-9Z" fill="#817e5a"/>
+   <path d="m419 160 20 46 14 46-36 16-4-69-21-39Z" fill="#5c6949" stroke="none"/>
+   <path d="m337 176 10 7-9 16 9 12-11 13m86-49-8 18 11 8-9 12 15 12" stroke="#4c5a3e" stroke-width="3"/>
+   <path d="m348 146-4-42 18-24 23-10 26 18 8 38-14 25-27 16Z" fill="#a58b63"/>
+   <path d="m346 142-10-23 3-30 28-23 26 2 26 20 7 22-9 24-8-34-12-15-10 11-17-7-13 14-1 33Z" fill="#343c2b"/>
+   <path d="m342 99 13-15m21-8 15 2m9 6 9 9m-65 21 1 12" stroke="#616449" stroke-width="2"/>
+   <path d="m356 131 11 11 26-3 16-14-3 27-25 19-18-5-12-17Z" fill="#3c412d"/>
+   <path d="m358 115 9-2m16 0 10 2m-17 5-3 12 9 1m-14 14 15-1" stroke-width="2.5"/>
+   <path d="m410 113 9-2 1 13-9 8" fill="#a58b63" stroke-width="3"/>
+   <path d="m357 247-15-28 5-30 20-6 25 17 9 43-18 17Z" fill="#a98f67"/>
+   <path d="m395 248 0-36 18-20 16 14 12 37-14 15Z" fill="#947d57"/>
+   <path d="m353 173-15 10 1 27 18 15 40-6 15-15-7-9-20 13-32-6 5-16Z" fill="#b19a70"/>
+   <path d="m418 163 12 14 0 26-17 17-28 1-4-9 32-14-5-20Z" fill="#a78e62"/>
+   <path d="m399 209 6 6m-1-11 6 6m-49-4 11 3" stroke-width="2"/>
+   <path d="m345 247 30-4 12 15-9 11-43 1-12-9Z" fill="#a78e65"/>
+   <path d="m408 248 23-2 18 8 12 12-8 8-43-7-13-8Z" fill="#a0875d"/>
+   <path d="m334 257 7 7m3-12 7 10m-1-54 0 9m87 41 9 7m-3-10 8 6" stroke-width="2"/>
+  </g>
+  <g id="person-middle">
+   <path d="m173 265 29-13 87-7 37 20-17 16-109 0Z" fill="#34412d" stroke="none" opacity=".5"/>
+   <path d="m189 253 5-58 23-42 29-10 32 12 26 51-2 48-40 16-51-2Z" fill="#b0a176"/>
+   <path d="m258 156 22 20 25 31-3 49-28 10-2-56Z" fill="#8a885f" stroke="none"/>
+   <path d="m215 157-12-17-5-31 8-31 25-16 28 9 20 25 1 40-14 22-26 11Z" fill="#bda57d"/>
+   <path d="m200 124-11-13 2-29 18-20 22-8 28 10 20 27 5 29-9 26-9 12-1-40-11-27-14-6-13 17-17 5 0 36-9 11Z" fill="#5b5037"/>
+   <path d="m210 76 9-7m3 18 10-9m29 18 10 19m-73 1 4-18m70 35 0 9" stroke="#8a7650" stroke-width="2"/>
+   <path d="m215 119 9 0m17-1 9 1m-16 6-3 11 6 3m-14 9 12 2" stroke-width="2.5"/>
+   <path d="m218 171-17 24 2 39 26 16 27-22-7-35-19-18Z" fill="#c1a981"/>
+   <path d="m245 216 17-30 18-1 15 19-1 39-23 17-25-9Z" fill="#b29b70"/>
+   <path d="m207 164-14 18 0 25 22 17 37 3 11-8-9-9-32-6-13-14 11-16Z" fill="#c6b189"/>
+   <path class="gesture-arm" d="m272 165 12 15 3 24-16 18-26 6-8-7 18-13 14-14-9-19Z" fill="#b9a177"/>
+   <path d="m242 215 6 8m1-12 6 7m-49-22 8 8" stroke-width="2"/>
+   <path d="m201 247 18-8 20 13-7 17-37 3-13-6 2-9Z" fill="#b6a079"/>
+   <path d="m260 251 26-10 18 17 14 7-3 9-26 0-30-9Z" fill="#b69e72"/>
+   <path d="m192 259 6 8m3-13 7 11m80-6 10 10m-3-13 12 10" stroke-width="2"/>
+   <path d="m225 188-1 11m5-7 2 9m42 37-8 5m-66-20 8 8" stroke="#98885e" stroke-width="2"/>
+  </g>
+ </g>
+</svg>

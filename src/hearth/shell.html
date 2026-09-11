@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#172c28"><meta name="description" content="Carry the ember. Build a home. A quiet, playable journey from migration to the first furrow."><title>Singularity Clicker · The Hearth</title><style>/*__CSS__*/</style></head>
+<body>
+<header><a class="brand" href="index.html" aria-label="Return to the cave"><span class="brand-mark">◈</span><span>SINGULARITY<small>CLICKER</small></span></a><div class="chapter">01 <span>/</span> THE HEARTH</div><nav><button id="pause" aria-label="Pause game">Ⅱ <span>Pause</span></button><button id="step" title="Advance one second while paused">+1s</button><button id="settings" aria-label="Saved journey and settings">Journey</button></nav></header>
+<main>
+<section class="play">
+ <div id="resources" class="resources" aria-label="Local supplies"></div>
+ <div class="scene-wrap" id="scene-wrap">
+  <canvas id="world" aria-label="Isometric camp. Select people below, then tap a resource to assign work." tabindex="0"></canvas>
+  <div class="scene-heading"><p id="location-label">QUIET WOODLAND</p><h1 id="scene-title">A place for the ember.</h1><span id="scene-detail">The hearth is warm.</span></div>
+  <div class="scene-switch"><button id="map-toggle">Explore the land</button><button id="center" title="Reset camera">Center</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
+  <div class="scene-bottom"><span id="hint">Select a villager, then tap a tree to assign work.</span><span id="clock">Morning 1</span></div>
+  <div id="pause-label" class="pause-label" hidden>Time to think.</div>
+ </div>
+ <div class="crew"><div class="crew-heading"><span>YOUR PEOPLE <b id="people-count">4</b></span><div><button id="select-all">Select all</button><button id="rest">Rest by the fire</button></div></div><div id="people" class="people"></div></div>
+ <div class="journal"><span class="ember-dot"></span><p id="journal" role="status" aria-live="polite">A new hearth. The work of making a home begins.</p></div>
+</section>
+<aside>
+ <div class="home-title"><span class="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="panel-title">The small things add up.</h2><p id="panel-description">Give the work a little direction. Then watch it find its rhythm.</p></div>
+ <div class="readiness"><div><span>Settlement readiness</span><strong id="readiness">0%</strong></div><progress id="readiness-bar" max="100" value="0"></progress><small>Reliable supplies, shelter, and room to grow.</small></div>
+ <div class="tabs" role="tablist" aria-label="Camp controls"><button role="tab" id="tab-work" aria-selected="true" data-tab="work">Work</button><button role="tab" id="tab-build" aria-selected="false" data-tab="build">Build</button><button role="tab" id="tab-learn" aria-selected="false" data-tab="learn">Learn</button></div>
+ <div id="panel" role="tabpanel" aria-labelledby="tab-work"></div>
+ <div class="next-note"><span id="knowledge">0 understanding</span><p id="next-practice">Useful edges begin with a little practice.</p></div>
+</aside>
+</main>
+<dialog id="modal"><div class="modal-top"><span id="modal-kicker">THE HEARTH</span><button id="close-modal" aria-label="Close dialog">×</button></div><h2 id="modal-title"></h2><div id="modal-body"></div></dialog>
+<input type="file" id="import-file" accept=".json,application/json" hidden>
+<script>/*__ENGINE__*/</script><script>/*__VIEW__*/</script>
+</body></html>

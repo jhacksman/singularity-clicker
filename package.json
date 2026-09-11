@@ -1,0 +1,13 @@
+{
+  "name": "singularity-clicker",
+  "version": "0.2.0",
+  "private": true,
+  "description": "An incremental human journey from the cave to the singularity. Browser first; macOS and iOS planned.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/*.test.cjs",
+    "start": "node scripts/serve.cjs",
+    "export:source": "python3 scripts/export_source.py"
+  },
+  "engines": {"node": ">=22"}
+}

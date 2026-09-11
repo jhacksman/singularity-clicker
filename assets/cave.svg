@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+ <title>The cave — ink and flat earth colors</title>
+ <desc>A broad rock shelter, a cold valley through the opening at left, a small seep, and an empty earthen floor.</desc>
+ <defs>
+  <pattern id="rock-hatch" width="29" height="31" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+   <path d="M3 2v11m14 8v6" stroke="#272920" stroke-width="1.3" opacity=".3" fill="none"/>
+  </pattern>
+  <pattern id="earth-grain" width="73" height="59" patternUnits="userSpaceOnUse">
+   <path d="m6 17 7-2m25 24 10 1m13-33 5-2" stroke="#292b22" stroke-width="1.5" opacity=".3" fill="none"/>
+   <path d="m21 48 2 1m35-22 2-1" stroke="#b6ad8e" stroke-width="2" opacity=".4"/>
+  </pattern>
+  <clipPath id="mouth"><path d="m92 249 63-60 100-18 99 34 76 75 47 125-14 78-315 62-87-98Z"/></clipPath>
+  <mask id="inside-rock"><path d="M0 0h1200v800H0Z" fill="white"/><path d="m92 249 63-60 100-18 99 34 76 75 47 125-14 78-315 62-87-98Z" fill="black"/></mask>
+ </defs>
+ <path fill="#514f42" d="M0 0h1200v800H0z"/>
+ <!-- The daylight is a few cut shapes, without photographic shading. -->
+ <g clip-path="url(#mouth)">
+  <path fill="#bdc8bf" d="M40 140h460v440H40z"/>
+  <path d="m40 374 113-106 67 55 53-40 105 96 59-69 79 90v169H40Z" fill="#879b95"/>
+  <path d="m109 314 44-46 38 32-24-5-15 18-16-8Z M243 307l30-24 43 39-29-7-14 10-11-22Z M406 346l31-36 29 31-16-9-11 13-10-11Z" fill="#dde0cf"/>
+  <path d="m30 424 144-51 51 22 83-40 101 72 119-13v140H30Z" fill="#a8b4a7"/>
+  <path d="m30 448 123-26 90 14 79-41 199 81-12 67H24Z" fill="#c9cfbb"/>
+  <path d="m281 407 34 15-80 38 35 17-122 62h-79l150-69-11-16Z" fill="#95aaa1"/>
+  <g fill="#50685f" stroke="#50685f" stroke-linecap="round" stroke-linejoin="round">
+   <path d="m118 390 8-33 10 33-8-5v21h-4v-20Zm42-7 12-44 12 45-10-6v26h-5v-26Zm212 11 11-46 14 47-12-7v27h-4v-27Zm47 36 8-31 10 32-8-5v17h-4v-16Z"/>
+  </g>
+  <g stroke="#718980" stroke-width="2" fill="none"><path d="m173 475 50-15m-82 35 25-10m181-35 27 5m-80-64 34-1"/></g>
+ </g>
+ <!-- Heavy, deliberately irregular contours of the shelter. -->
+ <g stroke="#262921" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M0 0h1200v193l-78 21-63-42-115 25-94-28-75 28-120-39-128 17-80 91-56-34-37-27-99-34-100 18-63 60-51 109L0 362Z" fill="#363b31"/>
+  <path d="M0 0h281l-39 55-95 24-21 75-51 74-34 130L0 362Z" fill="#44493b"/>
+  <path d="m281 0 158 19 37 38 90-16 84 40 6 77-129 17-80 91-56-34-35-27-64-34-37-62-75-13-37-41Z" fill="#555a48"/>
+  <path d="m438 20 39 37 89-16 84 40 18-81H501Z" fill="#41473a"/>
+  <path d="m664 0-14 81 6 77 119 39 76-28 94 29 21-63 98-35 14-100Z" fill="#434a3b"/>
+  <path d="m966 135 96-35 61 35 77-17v229l-84 50-91-30-96-78 16-91Z" fill="#545a47"/>
+  <path d="m1078 0-14 100 59 35 77-17V0Z" fill="#31392e"/>
+  <path d="m75 228 51-74 21-75 95-24 13 54 37 62-136 17-65 61-29 153-41 58-21-34V362l41-4Z" fill="#6b7059"/>
+  <path d="m91 249 65-61-21 80-25 129-36 80-53-17 40-58Z" fill="#8a8e6d"/>
+  <path d="m356 205 89 61 61 127 43 59-72 68-16-37 16-78-47-125Z" fill="#747962"/>
+  <path d="m447 266 81-92 128-16 121 41 3 112-71 80-33 94-127-33-43-59Z" fill="#60644f"/>
+  <path d="m779 196 73-27 94 28-16 92 96 77-28 110-82 34-148-46-92 21 34-94 70-80Z" fill="#555b46"/>
+  <path d="m1026 366 90 31 84-50v207l-112 37-110-49-62-32 82-34Z" fill="#404a38"/>
+ </g>
+ <!-- Planes, fracture seams, and a few selected ink strokes. -->
+ <path d="m306 74 79 17 61 97-65-55-48-4Z M530 208l63-25-57 90-26 48-25-52Z M793 231l111-9-76 36-14 61-32 13Z M971 211l62-76 34 6-55 84 43 84Z" fill="#929477" opacity=".27"/>
+ <path d="m463 307 37 115 49 30 57-13-72-42-22-60Z M1075 400l43 12 60-37-52 66-52-8-21 70-24 17Z" fill="#252e24" opacity=".4"/>
+ <path d="m58 127 42-25m-51 47 40-28m250-71 40 15m-33 5 26 10m168 120 17 30m-4-37 17 31m245-94 56 19m-37-29 40 12m144 82-13 35m24-29-14 38m-215 54 6 52m-18-44 5 36m-298-71 22 38m-15-49 15 21" fill="none" stroke="#1f291e" stroke-width="2.5" opacity=".6"/>
+ <path d="m190 122 36-10 24 20m295-13 39 17 13 32m132-64 38 18 14 33m264-82 35-12 33 22m-282 85-35 36 12 35m219 40-17 20 23 29m-448-7 25 49-10 36m67-147-13 52 22 27" stroke="#283025" stroke-width="3" fill="none"/>
+ <path d="M0 0h1200v519l-171 54-109-20-213 12-198-53-96 12L0 595Z" fill="url(#rock-hatch)" mask="url(#inside-rock)"/>
+ <!-- Floor: one broad, quiet playing surface. -->
+ <path d="m0 522 105-13 114 18 127-32 99-20 93-29 102 32 128-13 148 45 114 29 170-33v294H0Z" fill="#77765d" stroke="#32392b" stroke-width="4"/>
+ <path d="m104 509 115 18 127-32 99-20 48-18-40 53-120 41-95 26-88-21-150 1v-35Z" fill="#adb091"/>
+ <path d="m770 466 147 44 113 30 170-34v121l-167-17-114-39-158-17-111-44-111-1 1-30 100 32Z" fill="#555f46"/>
+ <path d="m0 654 142 17 120-25 183 18 92-15 176 45 189-31 170 16 128-22v143H0Z" fill="#656b50"/>
+ <path d="m0 759 176-25 200 11 86-22 219 33 202-26 121 35 196-20v55H0Z" fill="#515b43"/>
+ <path d="M0 523h1200v277H0Z" fill="url(#earth-grain)"/>
+ <g fill="none" stroke-linecap="round">
+  <path d="m219 527 67-6m33 32 65-14m63-27 30-10m67 30 63 9m191 18 77 12m-706 57 91-6m237 54 63 10m57-67 89 5m-92 96 68 9m232-78 91 15m-148 67 39-1m-240 19 80 6" stroke="#414c36" stroke-width="3"/>
+  <path d="m213 571 90-16m83-1 45-12m-178 76 42-2m190-45 80 2m137 13 42 10m-391 83 30-4m465-30 62 10" stroke="#a4a58a" stroke-width="3"/>
+ </g>
+ <!-- Water comes from a fissure; no vessel or manufactured basin. -->
+ <path d="m41 332 30-61 20-9-3 80-22 92 12 39 87 25-27 20-86-14-46-24Z" fill="#394d43" stroke="#25332a" stroke-width="3"/>
+ <path d="m77 291-14 66-8 51 8 46-14 21 38 17 56 6-21 9-59-8-35-22 14-23-4-45 13-66Z" fill="#8eaaa0"/>
+ <path d="m76 302-11 65-10 37 6 37m-16 47 36 11m6-1 27 2" fill="none" stroke="#c9d9c2" stroke-width="3" stroke-linecap="round"/>
+ <!-- Loose, unworked earth and a clay seam where stones can be sought. -->
+ <path d="m115 596 41-13 62 8 18 23-56 13-69-9-17-9Z" fill="#5f6349"/>
+ <path d="m126 597 32-4 34 6-16 7-42-2Z" fill="#917b56"/>
+ <path d="m120 610 20 1m54-5 17-4m-40 17 22-4" stroke="#353e2c" stroke-width="2" fill="none"/>
+ <!-- A restrained foreground frame. -->
+ <path d="M0 0h1200v20l-213-6-231 12-170-14-142 16-194-8L0 36Z" fill="#20291f"/>
+ <path d="M0 0h22l-6 173 11 172-9 147 15 160-8 148H0Z M1200 0h-24l10 232-16 197 17 177-14 194h27Z" fill="#273123"/>
+</svg>

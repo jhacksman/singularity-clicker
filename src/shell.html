@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#151714"><meta name="color-scheme" content="dark">
+<title>Singularity Clicker · The Cave</title>
+<meta name="description" content="Gather. Learn. Remember. A playable prehistoric beginning to Singularity Clicker.">
+<style>/*__STYLES__*/</style>
+</head>
+<body>
+<header class="masthead">
+ <a class="wordmark" href="#game" aria-label="Singularity Clicker game"><span class="brand-symbol" aria-hidden="true">◈</span><span>SINGULARITY<small>C L I C K E R</small></span></a>
+ <div class="chapter"><span class="eyebrow">THE HUMAN STORY</span><span>00 <i>/</i> The cave</span></div>
+ <div class="header-actions"><button id="pause" class="quiet-button" aria-label="Pause game"><span aria-hidden="true">Ⅱ</span><span class="pause-word">Pause</span></button><a class="quiet-button" href="hearth.html" aria-label="Stage 1: The Hearth" style="text-decoration:none">01 →</a><button id="help" class="circle-button" aria-label="How to play">?</button><button id="settings" class="circle-button" aria-label="Settings and saved camp">⚙</button></div>
+</header>
+<main id="game" class="game-shell">
+ <section class="world" aria-label="The cave and your camp">
+  <div class="resource-bar" aria-label="Camp supplies">
+   <div class="resource food-resource"><div class="resource-label">Food <span id="food-detail">plant 18 · animal 0</span></div><div class="resource-value"><strong id="food-value">18.0</strong><span>/ 60</span></div><div class="meter" role="meter" aria-label="Food" aria-valuemin="0" aria-valuemax="60" aria-valuenow="18" id="food-meter"><span></span></div></div>
+   <div class="resource water-resource"><div class="resource-label">Water <span>fresh supply</span></div><div class="resource-value"><strong id="water-value">18.0</strong><span>/ 60</span></div><div class="meter" role="meter" aria-label="Water" aria-valuemin="0" aria-valuemax="60" aria-valuenow="18" id="water-meter"><span></span></div></div>
+   <div class="resource comfort-resource"><div class="resource-label">Comfort <span id="comfort-detail">bare ground</span></div><div class="resource-value"><strong id="comfort-value">0</strong><span>/ 100</span></div><div class="meter" role="meter" aria-label="Comfort" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="comfort-meter"><span></span></div></div>
+  </div>
+  <div class="scene" id="scene">
+   <div class="cave-art" role="img" aria-label="An ink-drawn cave, with a cold valley through the entrance and a small seep on the left."></div>
+   <div class="scene-shade"></div><div id="warmth" class="warmth"></div><div class="weather-flash" id="weather-flash"></div>
+   <div class="scene-title"><span class="eyebrow" id="scene-era">DEEP PREHISTORY</span><h1 id="scene-heading">A small beginning.</h1><p id="scene-subtitle">Enough to survive. A little room to wonder.</p></div>
+   <div class="mobile-innovation"><span>Innovation</span><strong id="mobile-innovation-value">0.0</strong></div>
+   <span class="scene-note" id="scene-note">The cold keeps everyone close.</span>
+   <div id="bedding-art" class="sprite bedding-art" aria-hidden="true"></div>
+   <div id="camp-people" class="camp-people" role="img" aria-label="Three people sit close together in the cave."><!--__PEOPLE__--></div>
+   <div class="human-response" id="human-response" aria-hidden="true"></div>
+   <button class="hotspot water-spot" data-act="water"><span class="hotspot-pin" aria-hidden="true">+</span><span class="hotspot-label">Get water <kbd>W</kbd></span></button>
+   <button class="hotspot stone-spot" data-act="stone"><span id="stone-art" class="sprite stone-art" aria-hidden="true"></span><span class="hotspot-label">Find stone <kbd>S</kbd></span><span class="hotspot-meta" id="stone-mark">No usable stones</span><span class="charcoal-marks" id="stone-skill" aria-label="Stone finding skill level 1">Ⅰ</span></button>
+   <button class="hotspot plant-spot" data-act="forage"><span id="plant-art" class="sprite plant-art" aria-hidden="true"></span><span class="hotspot-label">Forage <kbd>F</kbd></span><span class="hotspot-meta" id="plant-mark">18 plant food</span></button>
+   <button class="hotspot animal-spot" data-act="scavenge"><span id="animal-art" class="sprite animal-art" aria-hidden="true"></span><span class="hotspot-label">Scavenge <kbd>C</kbd></span><span class="hotspot-meta" id="animal-mark">No animal food</span></button>
+   <button class="hotspot fiber-spot" data-act="fiber"><span id="fiber-art" class="sprite fiber-art" aria-hidden="true"></span><span class="hotspot-label">Gather fibers <kbd>B</kbd></span><span class="hotspot-meta" id="fiber-mark">0 / 12 fibers</span></button>
+   <div id="event-art" class="sprite event-art" aria-hidden="true"></div>
+   <div class="fire-encounter" id="fire-encounter" hidden><span class="eyebrow" id="event-kicker"></span><h2 id="event-title"></h2><p id="event-description"></p><button class="primary-button" id="event-action"></button><small id="event-hint">Take your time. The opportunity will wait.</small></div>
+   <div class="pause-cover" id="pause-cover" hidden><span class="eyebrow">THE CAVE CAN WAIT</span><h2>A moment to think.</h2><p>Your supplies and routines are paused.</p><button class="primary-button" id="resume">Return to the cave</button></div>
+   <div class="scene-feedback" id="scene-feedback" aria-hidden="true"></div>
+  </div>
+  <div class="communication">
+   <div class="communication-intro"><span class="eyebrow">WITH THE OTHERS</span><span id="expression-hint">Try a sound. Try a sign.</span></div>
+   <button class="expression-button" data-act="grunt"><span class="expression-symbol" aria-hidden="true">◌</span><span><strong>Grunt <kbd>1</kbd></strong><small id="grunt-cost">−2 food · −1 water</small></span><b id="grunt-gain">+2 <span>innovation</span></b></button>
+   <button class="expression-button" data-act="gesture"><span class="expression-symbol gesture-symbol" aria-hidden="true">⋮</span><span><strong>Gesture <kbd>2</kbd></strong><small id="gesture-cost">−1 food · −2 water</small></span><b id="gesture-gain">+2 <span>innovation</span></b></button>
+  </div>
+  <div class="camp-rhythm"><div><span class="eyebrow">CAMP RHYTHM</span><span id="routine-status">For now, the work is yours.</span></div><div class="rhythm-right"><div class="rhythm-track" id="rhythm-track"><span></span></div><span id="routine-time">—</span><button id="routine-pause" class="quiet-button" hidden aria-label="Pause shared routines">Ⅱ</button></div></div>
+  <div class="camp-journal" id="journal" aria-live="polite" aria-atomic="true"><span class="journal-mark" aria-hidden="true">✧</span><p id="journal-text">The world is cold. The cave is home.</p></div>
+ </section>
+ <aside class="sidebar" aria-label="Learning, actions, and discoveries">
+  <div class="innovation-block"><div class="eyebrow">INNOVATION<span aria-hidden="true">✧</span></div><div id="innovation-value" class="innovation-number">0<span>.0</span></div><p>Learning opens new possibilities.</p></div>
+  <div class="action-focus" id="action-focus"><div class="eyebrow">YOUR NEXT MOVE</div><h2 id="focus-title">Forage</h2><p id="focus-note"></p><div class="action-yield" id="focus-yield"></div><div class="action-cost" id="focus-cost"></div><button id="focus-action" class="primary-button" data-act="forage">Forage <span>Hold to repeat</span></button><p class="action-reason" id="focus-reason"></p></div>
+  <div id="recovery" class="recovery" hidden><strong>Start small.</strong><p>A little food and water will get you going again.</p><button data-act="morsel" id="morsel" class="recovery-button">Find a morsel · +2 food</button><button data-act="sip" id="sip" class="recovery-button">Take a sip · +2 water</button></div>
+  <div class="discoveries-heading"><h2>Discoveries</h2><span id="discovery-count">0 learned</span></div>
+  <div class="discoveries" id="discoveries"><p class="empty-discoveries">Work with what is here.<br>Better ways will follow.</p></div>
+  <div class="tradition-block" id="tradition-block" hidden><div class="tradition-heading"><span class="eyebrow">TRADITION</span><strong id="tradition-value">0 / 3</strong></div><p id="tradition-description">Pass on what you have learned.</p><button id="prestige" class="outline-button">A new generation</button><small id="prestige-next"></small></div>
+ </aside>
+</main>
+<footer class="game-footer"><span><span class="save-mark" aria-hidden="true">◇</span><span id="save-status">Saved on this device</span></span><span class="footer-tip">Click the cave · hold an action to repeat</span><span><span id="run-label">FIRST JOURNEY</span><b id="clock">00:00</b></span></footer>
+<dialog id="modal" aria-labelledby="modal-title"><div class="modal-inner"><button id="modal-close" class="circle-button modal-close" aria-label="Close dialog">×</button><div class="eyebrow" id="modal-kicker"></div><h2 id="modal-title"></h2><div id="modal-content"></div></div></dialog>
+<div class="sr-only" id="action-announcement" role="status" aria-live="polite"></div>
+<noscript>This cave needs JavaScript to run. Enable JavaScript and reload to play.</noscript>
+<script>/*__ENGINE__*/</script><script>/*__VIEW__*/</script>
+</body></html>
