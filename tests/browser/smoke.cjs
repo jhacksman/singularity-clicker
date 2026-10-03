@@ -1,7 +1,7 @@
 // Run only on the Spark CI browser runtime. No browser package is installed by this script.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
-fs.mkdirSync('evidence',{recursive:true});
+fs.mkdirSync('artifacts',{recursive:true});
 const {spawn}=require('node:child_process');
 const {once}=require('node:events');
 const {Camp}=require('../../src/engine.js');
@@ -25,7 +25,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   const completed=new Camp(null,17);completed.r.innovation=1198;completed.act('grunt');for(let i=0;i<3;i++)completed.fireStep();
   await page.addInitScript(([key,value])=>{if(!sessionStorage.getItem('completion-fixture')){localStorage.setItem(key,value);sessionStorage.setItem('completion-fixture','1');}},[CAVE,completed.serialize()]);
   await page.reload();await page.locator('#event-action').click();
-  await page.screenshot({path:'evidence/cave-completion.png',fullPage:true});
+  await page.screenshot({path:'artifacts/cave-completion.png',fullPage:true});
   await page.locator('#modal a[href="hearth.html"]').click();
   await page.locator('#people [data-person="0"]').waitFor();
   await page.locator('#pause').click();await page.locator('[data-job="wood"]').click();
@@ -35,7 +35,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await page.reload();await page.locator('#pause').click();
   const after=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),HEARTH));
   assert.deepEqual(after,before);
-  await page.screenshot({path:'evidence/hearth-orders.png',fullPage:true});
+  await page.screenshot({path:'artifacts/hearth-orders.png',fullPage:true});
   await page.locator('#map-toggle').click();await page.locator('#map-toggle').click();
   await page.locator('#settings').click();await page.locator('#modal a[href="index.html"]').click();
   assert.equal(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),CAVE)).run.complete,true);
@@ -63,12 +63,24 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await cp.goto('http://127.0.0.1:8080/hearth.html');await cp.locator('#people [data-person="0"]').waitFor();
   await cp.locator('#settings').click();await cp.locator('#export').click();await cp.waitForFunction(()=>!!window.exported);
   assert.equal(await cp.evaluate(()=>window.exported),unknown);
-  await corrupt.close();assert.deepEqual(errors,[]);
-  console.log('PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation; no page errors');
+  await corrupt.close();
+  const depleted=new Hearth();depleted.assign([0],'stone');for(let i=0;i<1200;i++)depleted.tick(1);
+  assert.equal(depleted.s.migration,true);
+  const migration=await browser.newContext(),mp=await migration.newPage();mp.on('pageerror',e=>errors.push(e.message));
+  await mp.addInitScript(([key,value])=>localStorage.setItem(key,value),[HEARTH,depleted.serialize()]);
+  await mp.goto('http://127.0.0.1:8080/hearth.html');
+  await mp.locator('[data-safe-destination]').first().waitFor();
+  await mp.screenshot({path:'artifacts/hearth-safe-migration.png',fullPage:true});
+  const destination=await mp.locator('[data-safe-destination]').first().getAttribute('data-safe-destination');
+  await mp.locator('[data-safe-destination]').first().click();await mp.locator('#travel-confirm').click();
+  const migrated=JSON.parse(await mp.evaluate(k=>localStorage.getItem(k),HEARTH));
+  assert.equal(migrated.location,destination);assert.equal(migrated.people.length,depleted.s.people.length);assert.equal(migrated.migration,false);
+  await migration.close();assert.deepEqual(errors,[]);
+  console.log('PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors');
  }catch(error){
   if(browser)for(const [i,context] of browser.contexts().entries())for(const [j,page] of context.pages().entries()){
-   await page.screenshot({path:`evidence/failure-${i}-${j}.png`,fullPage:true}).catch(()=>{});
-   fs.writeFileSync(`evidence/failure-${i}-${j}.txt`,await page.locator('body').innerText().catch(()=>''));
+   await page.screenshot({path:`artifacts/failure-${i}-${j}.png`,fullPage:true}).catch(()=>{});
+   fs.writeFileSync(`artifacts/failure-${i}-${j}.txt`,await page.locator('body').innerText().catch(()=>''));
   }throw error;
  }finally{if(browser)await browser.close();server.kill();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

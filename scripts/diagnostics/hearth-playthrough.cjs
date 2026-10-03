@@ -7,9 +7,20 @@ function place(kind){
  if(g.tile.buildings.some(b=>b.kind===kind))return;
  for(const [x,y] of [[9,13],[9,14],[9,15],[9,16],[9,17],[13,9],[14,9],[15,9]])if(!g.place(kind,x,y))return;
 }
-for(let second=0;second<7200;second++){
+function planEnclosure(){
+ if(!g.has('husbandry')||g.tile.buildings.some(b=>b.kind==='pen'))return;
+ for(let x=1;x<=14;x++)for(let y=1;y<=14;y++){
+  const cells=[];for(let dx=0;dx<4;dx++)for(let dy=0;dy<4;dy++)if(dx===0||dy===0||dx===3||dy===3)cells.push({x:x+dx,y:y+dy,kind:dx===1&&dy===0?'gate':'fence'});
+  cells.push({x:x+1,y:y+1,kind:'pen'});
+  if(cells.some(p=>Math.hypot(p.x-9,p.y-9)<2||g.tile.buildings.some(b=>b.x===p.x&&b.y===p.y)||g.tile.nodes.some(n=>n.x===p.x&&n.y===p.y&&(n.kind==='water'||n.amount>0))))continue;
+  for(const p of cells){const error=g.place(p.kind,p.x,p.y);if(error)throw Error(error);}
+  milestones.push({time:g.s.time,planned:'enclosure'});return;
+ }
+}
+for(let second=0;second<7200&&!g.s.complete;second++){
  for(const id of Object.keys(TECH))if(g.learn(id))milestones.push({time:g.s.time,learned:id});
  for(const kind of ['shelter','store','rack','field','plow'])if(BUILD[kind].needs.every(k=>g.has(k)))place(kind);
+ planEnclosure();
  const next=Object.entries(TECH).find(([id,d])=>!g.has(id)&&d.needs.every(k=>g.has(k)));
  const unfinished=g.tile.buildings.find(b=>!b.done);
  const demand={wood:30,food:30,water:30,stone:3,fiber:6,seed:3};
@@ -20,6 +31,8 @@ for(let second=0;second<7200;second++){
  for(let i=0;i<ps.length;i++){
   let job;
   if(i<3)job=supplies[i];
+  else if(i===3&&g.has('plow')&&g.tile.trained&&g.tile.buildings.some(b=>b.kind==='plow'&&b.done))job='plow';
+  else if(i===3&&g.tile.buildings.some(b=>b.kind==='pen'&&b.done&&g.enclosure(g.tile,b))&&g.tile.trained<1)job='herd';
   else if(unfinished&&Object.entries(BUILD[unfinished.kind].cost).every(([k,v])=>g.tile.stock[k]>=v))job='build';
   else job=['fiber','stone','wood','food','water'].sort((a,b)=>(demand[b]-g.tile.stock[b])-(demand[a]-g.tile.stock[a]))[0];
   g.assign([ps[i].id],job);
@@ -32,4 +45,4 @@ for(let x=1;x<=14;x++)for(let y=1;y<=14;y++){
  const perimeter=[];for(let dx=0;dx<4;dx++)for(let dy=0;dy<4;dy++)if(dx===0||dy===0||dx===3||dy===3)perimeter.push({x:x+dx,y:y+dy});
  if(perimeter.every(p=>Math.hypot(p.x-9,p.y-9)>=2&&!g.tile.buildings.some(b=>b.x===p.x&&b.y===p.y)&&!g.tile.nodes.some(n=>n.x===p.x&&n.y===p.y&&(n.kind==='water'||n.amount>0))))enclosures++;
 }
-console.log(JSON.stringify({milestones,emptyFourByFourEnclosureFootprints:enclosures,complete:g.s.complete}));
+console.log(JSON.stringify({time:g.s.time,milestones,emptyFourByFourEnclosureFootprints:enclosures,complete:g.s.complete}));

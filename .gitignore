@@ -8,3 +8,5 @@ exports/
 
 _site/
 .jekyll-cache/
+
+artifacts/
