@@ -14,7 +14,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
  try{
   await Promise.race([once(server.stdout,'data'),once(server,'exit').then(()=>{throw Error('Server exited before listening');})]);
   browser=await playwright[process.env.BROWSER||'chromium'].launch({headless:true,chromiumSandbox:true});
-  const context=await browser.newContext(),page=await context.newPage(),errors=[];
+  const context=await browser.newContext({viewport:{width:1280,height:900},recordVideo:{dir:'artifacts/videos',size:{width:1280,height:900}}}),page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8080');
   await page.locator('#focus-action').click();
@@ -88,7 +88,12 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await mp.locator('[data-safe-destination]').first().click();await mp.locator('#travel-confirm').click();
   const migrated=JSON.parse(await mp.evaluate(k=>localStorage.getItem(k),HEARTH));
   assert.equal(migrated.location,destination);assert.equal(migrated.people.length,depleted.s.people.length);assert.equal(migrated.migration,false);
-  await migration.close();assert.deepEqual(errors,[]);
+  await migration.close();
+  const touch=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),tp=await touch.newPage();tp.on('pageerror',e=>errors.push(e.message));
+  await tp.goto('http://127.0.0.1:8080/hearth.html');await tp.locator('#people [data-person="0"]').waitFor();await tp.locator('#pause').tap();
+  await tp.locator('[data-job="wood"]').tap();
+  assert.equal(JSON.parse(await tp.evaluate(k=>localStorage.getItem(k),HEARTH)).people[0].job,'wood');
+  await tp.screenshot({path:'artifacts/hearth-touch-layout.png',fullPage:true});await touch.close();assert.deepEqual(errors,[]);
   console.log('PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors');
  }catch(error){
   if(browser)for(const [i,context] of browser.contexts().entries())for(const [j,page] of context.pages().entries()){
