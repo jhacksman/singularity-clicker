@@ -8,7 +8,7 @@ const TECH={
  knapping:{name:'Useful edges',knowledge:8,cost:{stone:3},needs:[],text:'Shape flint. Gathering and cutting become more efficient.'},
  bindings:{name:'Twist & bind',knowledge:16,cost:{fiber:5},needs:['knapping'],text:'Bind handles, baskets, fences, and wooden frames.'},
  baskets:{name:'Carrying baskets',knowledge:30,cost:{fiber:8,wood:4},needs:['bindings'],text:'Carry larger loads; unlock additional stores.'},
- drying:{name:'Preserve the surplus',knowledge:42,cost:{wood:8,fiber:4},needs:['bindings'],text:'Build drying racks. Food keeps longer and expeditions cost less.'},
+ drying:{name:'Preserve the surplus',knowledge:42,cost:{wood:8,fiber:4},needs:['bindings'],text:'Completed drying racks stretch camp food by reducing waste by 25% and reduce food packed for travel by 25%.'},
  woodland:{name:'Read the woodland',knowledge:65,cost:{},needs:['knapping'],text:'Set mature-only cutting and protect the next generation.'},
  routes:{name:'There and back',knowledge:80,cost:{food:10,fiber:6},needs:['baskets','drying'],text:'Provision recurring gathering parties to neighboring land.'},
  pottery:{name:'Earth into vessels',knowledge:100,cost:{wood:12,stone:6},needs:['drying'],text:'Fire vessels for better water reserves and food storage.'},
@@ -91,7 +91,10 @@ class Hearth{
   // A new order keeps any gathered load on its normal trip home.
   Object.assign(p,{job:kind,target:target||null,phase:p.load?'home':'seek',work:0,blocked:''});
  }return true;}
- blocked(t,x,y){return t.buildings.some(b=>b.done&&['fence','wall'].includes(b.kind)&&b.x===x&&b.y===y);}
+ barrier(b){return b.done&&['fence','wall','gate'].includes(b.kind)&&(b.kind!=='fence'||b.durability>0);}
+ preserved(t=this.tile){return this.has('drying')&&t.buildings.some(b=>b.kind==='rack'&&b.done);}
+ provisions(t,people,repeat=false){return {food:people*(repeat?3:4)*(this.preserved(t)?.75:1),water:people*(repeat?2:3)};}
+ blocked(t,x,y){return t.buildings.some(b=>this.barrier(b)&&b.kind!=='gate'&&b.x===x&&b.y===y);}
  path(t,from,to){const start={x:Math.round(from.x),y:Math.round(from.y)},end={x:Math.round(to.x),y:Math.round(to.y)};const id=p=>p.x+','+p.y,queue=[start],prev=new Map([[id(start),null]]);let found=null;
  while(queue.length){const a=queue.shift();if(a.x===end.x&&a.y===end.y){found=a;break;}for(const[dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const b={x:a.x+dx,y:a.y+dy};if(b.x<1||b.y<1||b.x>17||b.y>17||prev.has(id(b))||this.blocked(t,b.x,b.y))continue;prev.set(id(b),a);queue.push(b);}}
  if(!found)return null;const out=[];while(prev.get(id(found))){out.unshift(found);found=prev.get(id(found));}return out;
@@ -100,13 +103,13 @@ class Hearth{
  if(x<1||y<1||x>17||y>17||Math.hypot(x-9,y-9)<2)return 'Leave room around the hearth.';
  if(t.type==='mountain'&&['field','shelter','pen'].includes(kind))return 'This rocky pass supports expeditions, not a lasting camp.';
  if(t.buildings.some(b=>b.x===x&&b.y===y)||t.nodes.some(n=>n.x===x&&n.y===y&&(n.kind==='water'||n.amount>0)))return 'Clear this ground before building.';
- if(['fence','wall'].includes(kind)){const trial={id:'test',kind,x,y,done:true};t.buildings.push(trial);const targets=[...this.people(t),...t.nodes.filter(n=>n.amount>0&&n.kind==='water')];const inaccessible=targets.some(p=>!this.path(t,p,HOME));t.buildings.pop();if(inaccessible)return 'This would close access. Leave a gate opening.';}
+ if(['fence','wall'].includes(kind)){const trial={id:'test',kind,x,y,done:true,durability:100};t.buildings.push(trial);const targets=[...this.people(t),...t.nodes.filter(n=>n.amount>0&&n.kind==='water')];const inaccessible=targets.some(p=>!this.path(t,p,HOME));t.buildings.pop();if(inaccessible)return 'This would close access. Leave a gate opening.';}
  const b={id:'b'+this.s.nextId++,kind,x,y,work:0,paid:false,done:false,growth:0,durability:100};t.buildings.push(b);return null;
  }
  remove(id){const b=this.tile.buildings.find(x=>x.id===id);if(!b)return false;if(b.paid)for(const[k,v]of Object.entries(BUILD[b.kind].cost))this.add(this.tile,k,Math.floor(v*(b.done?.65:1)));this.tile.buildings=this.tile.buildings.filter(x=>x.id!==id);return true;}
  movePlan(id,x,y){const b=this.tile.buildings.find(x=>x.id===id);if(!b||b.done)return 'Dismantle completed structures to rebuild elsewhere.';const err=this.place(b.kind,x,y);if(err)return err;const fresh=this.tile.buildings.pop();Object.assign(b,{x:fresh.x,y:fresh.y});return null;}
  ready(t=this.tile){if(t.type==='mountain')return 0;const built=k=>t.buildings.some(b=>b.kind===k&&b.done);const renewable=t.nodes.filter(n=>n.kind==='wood'&&n.age>.25&&n.amount>0).length;return Math.min(100,Math.round(10+(t.stock.food>10?10:0)+(t.stock.water>10?10:0)+(t.stock.wood>10?10:0)+(built('shelter')?15:0)+(built('store')?10:0)+(built('rack')?10:0)+(built('field')?15:0)+Math.min(10,renewable)));}
- enclosure(t,b){const q=[{x:b.x,y:b.y}],seen=new Set;while(q.length){const p=q.shift(),k=p.x+','+p.y;if(seen.has(k))continue;seen.add(k);if(p.x<=0||p.y<=0||p.x>=18||p.y>=18)return false;for(const[dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const n={x:p.x+dx,y:p.y+dy};if(!t.buildings.some(w=>w.done&&['fence','wall','gate'].includes(w.kind)&&w.x===n.x&&w.y===n.y))q.push(n);}}return seen.size>=4;}
+ enclosure(t,b){const q=[{x:b.x,y:b.y}],seen=new Set;while(q.length){const p=q.shift(),k=p.x+','+p.y;if(seen.has(k))continue;seen.add(k);if(p.x<=0||p.y<=0||p.x>=18||p.y>=18)return false;for(const[dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const n={x:p.x+dx,y:p.y+dy};if(!t.buildings.some(w=>this.barrier(w)&&w.x===n.x&&w.y===n.y))q.push(n);}}return seen.size>=4;}
  target(p,t){
  const d=(a)=>Math.hypot(a.x-p.x,a.y-p.y);
  if(p.job==='build')return t.buildings.filter(b=>!b.done||(b.kind==='fence'&&b.durability<60)).sort((a,b)=>(a.id===p.target?-1:b.id===p.target?1:d(a)-d(b)))[0];
@@ -123,16 +126,16 @@ class Hearth{
  const n=this.target(p,t);if(!n){p.blocked=p.job==='farm'?'Waiting for the crop':p.job==='herd'?'Needs an enclosed herd shelter':p.job==='plow'?'Needs a draft team, plow, and field':'Work area complete';this.walk(p,t,HOME,dt);return;}
  if(RESOURCE.includes(p.job)&&t.stock[p.job]>=this.cap(t)-.01){p.blocked='Storage is full';this.walk(p,t,HOME,dt);return;}
  p.blocked='';let destination=n;
- if(this.blocked(t,n.x,n.y))destination=[{x:n.x+1,y:n.y},{x:n.x-1,y:n.y},{x:n.x,y:n.y+1},{x:n.x,y:n.y-1}].find(a=>this.path(t,p,a))||n;
+ if(this.blocked(t,n.x,n.y)||(p.job==='build'&&n.kind==='fence'&&n.done))destination=[{x:n.x+1,y:n.y},{x:n.x-1,y:n.y},{x:n.x,y:n.y+1},{x:n.x,y:n.y-1}].find(a=>this.path(t,p,a))||n;
  if(!this.walk(p,t,destination,dt))return;p.phase='work';
  if(p.job==='build'&&!n.paid&&Object.entries(BUILD[n.kind].cost).some(([k,v])=>t.stock[k]<v)){p.blocked='Waiting for '+this.quote(BUILD[n.kind].cost,t);return;}
  if(p.job==='farm'&&t.stock.seed<1){p.blocked='Keep one seed for the next planting';return;}
  if(p.job==='herd'&&t.herd>=2&&(!this.has('traction')||t.trained>=t.herd)){p.blocked='The herd is settled';return;}
- const speed=(1+(this.has('knapping')?.25:0)+Math.min(.35,p.xp/1600))*(1+this.s.traditions*.08);
+ const speed=(1+(this.has('knapping')?.25:0)+Math.min(.15,this.s.skills.knap*.01)+Math.min(.35,p.xp/1600))*(1+this.s.traditions*.08);
  p.work+=dt*speed;p.xp+=dt;this.s.knowledge+=dt*.075*(1+this.s.traditions*.08);
  if(p.job==='build'){
   if(!n.paid){if(!this.pay(t,BUILD[n.kind].cost)){p.blocked='Waiting for '+this.quote(BUILD[n.kind].cost,t);return;}n.paid=true;}
-  if(n.done){n.durability=Math.min(100,n.durability+dt*4);return;}n.work+=dt*speed;if(n.work>=BUILD[n.kind].work){n.done=true;if(['fence','wall'].includes(n.kind)&&[...this.people(t),...t.nodes.filter(v=>v.kind==='water')].some(v=>!this.path(t,v,HOME))){n.done=false;p.blocked='Leave a gate opening before finishing this fence';return;}this.s.stats.buildings++;if(n.kind==='field')n.growth=1;if(n.kind==='road')t.road=true;this.message(BUILD[n.kind].name+' completed at '+t.name+'.');p.phase='home';}return;
+  if(n.done){const before=n.durability;n.durability=Math.min(100,n.durability+dt*4);if(before===0&&[...this.people(t),...t.nodes.filter(v=>v.kind==='water')].some(v=>!this.path(t,v,HOME))){n.durability=before;p.blocked='Leave a gate opening before repairing this fence';}return;}n.work+=dt*speed;if(n.work>=BUILD[n.kind].work){n.done=true;if(['fence','wall'].includes(n.kind)&&[...this.people(t),...t.nodes.filter(v=>v.kind==='water')].some(v=>!this.path(t,v,HOME))){n.done=false;p.blocked='Leave a gate opening before finishing this fence';return;}this.s.stats.buildings++;if(n.kind==='field')n.growth=1;if(n.kind==='road')t.road=true;this.message(BUILD[n.kind].name+' completed at '+t.name+'.');p.phase='home';}return;
  }
  if(p.job==='herd'){if(p.work<20)return;p.work=0;if(t.herd<2){if(this.pay(t,{food:6,water:3})){t.herd++;this.message('An animal settles into the enclosure.');}else p.blocked='Needs 6 food and 3 water to settle an animal';}else if(this.has('traction')&&t.trained<t.herd){if(this.pay(t,{food:4,water:2})){t.trained++;this.message('The draft team is ready.');}else p.blocked='Needs 4 food and 2 water to train the team';}else p.blocked='The herd is settled';return;}
  if(p.job==='plow'){if(p.work<55)return;if(t.stock.wood<8||t.stock.food<10||t.stock.water<8){p.blocked='Prepare 8 wood, 10 food, and 8 water for the camp';return;}n.plowed=true;p.work=0;this.s.plowed++;this.s.complete=true;this.message('The first furrow. Tonight, the hearth stays.');return;}
@@ -149,7 +152,7 @@ class Hearth{
   }else if(['food','fiber'].includes(n.kind))n.amount=Math.min(n.max,n.amount+dt*(n.kind==='food'?.013:.007));}
   for(const b of t.buildings){if(b.done&&b.kind==='field'&&b.growth>0)b.growth=Math.min(100,b.growth+dt*(t.type==='meadow'?.20:.12));if(b.done&&b.kind==='fence')b.durability=Math.max(0,b.durability-dt*.006);}
   if(!residents.length)continue;
-  const burn=.014*residents.length*(1+(t.type==='mountain'?.5:0));t.stock.wood=Math.max(0,t.stock.wood-burn*dt);t.stock.food=Math.max(0,t.stock.food-residents.length*.009*dt);t.stock.water=Math.max(0,t.stock.water-residents.length*.009*dt);
+  const burn=.014*residents.length*(1+(t.type==='mountain'?.5:0));t.stock.wood=Math.max(0,t.stock.wood-burn*dt);t.stock.food=Math.max(0,t.stock.food-residents.length*.009*(this.preserved(t)?.75:1)*dt);t.stock.water=Math.max(0,t.stock.water-residents.length*.009*dt);
   t.empty=t.stock.wood<=0?t.empty+dt:0;t.shortage=t.stock.food<=0||t.stock.water<=0?t.shortage+dt:0;
   for(const p of residents)this.workPerson(p,t,dt);
   if(t.empty>100||t.shortage>160){if(t.id===s.location){if(!s.migration)this.message('The elders have spoken. It is time to move. We will carry the ember.');s.migration=true;}else{for(const p of residents){p.tile=s.location;p.x=9;p.y=10;p.job='idle';p.phase='seek';}this.message('The people at '+t.name+' have safely returned to your hearth.');}}
@@ -163,7 +166,7 @@ class Hearth{
  if(kind==='knap')this.add(this.tile,'stone',1+quality*2);if(kind==='gather'){this.add(this.tile,'fiber',2+quality*3);this.add(this.tile,'seed',1);}return true;}
  neighbors(t=this.tile){return DIRS.map(([q,r])=>this.s.tiles[key(t.q+q,t.r+r)]).filter(Boolean);}
  travelQuote(id,leave=0){const t=this.s.tiles[id],from=this.tile;if(!t||distance(from,t)!==1)return{ok:false,reason:'Choose a neighboring hex.'};const travelers=this.people().length-leave;if(travelers<1)return{ok:false,reason:'Keep at least one traveler.'};if(leave&&(!this.has('settlement')||this.ready()<50))return{ok:false,reason:'A resident hearth needs settlement knowledge and 50% readiness.'};
- const hard=t.type==='mountain'&&!t.visited;const factor=(this.has('sledges')?.7:1)*(this.has('traction')?.7:1)*((from.road||t.road)? .65 : 1);const cost=hard?{food:Math.ceil(12*travelers*factor),water:Math.ceil(8*travelers*factor),wood:Math.ceil(6*travelers*factor)}:{};
+ const hard=t.type==='mountain'&&!t.visited;const factor=(this.has('sledges')?.7:1)*(this.has('traction')?.7:1)*((from.road||t.road)? .65 : 1);const cost=hard?{food:Math.ceil(12*travelers*factor*(this.preserved(from)?.75:1)),water:Math.ceil(8*travelers*factor),wood:Math.ceil(6*travelers*factor)}:{};
  const carrying=travelers*(this.has('sledges')?36:this.has('baskets')?25:18);const total=Object.values(cost).reduce((a,b)=>a+b,0);return{ok:Object.entries(cost).every(([k,v])=>from.stock[k]>=v)&&total<=carrying,cost,carrying,travelers,hard,reason:total>carrying?'Improve carrying equipment before this crossing.':Object.entries(cost).some(([k,v])=>from.stock[k]<v)?'Gather the expedition provisions.':'Ready to move.'};
  }
  migrate(id,leave=0){leave=Math.max(0,Math.floor(leave)||0);const quote=this.travelQuote(id,leave);if(!quote.ok)return quote.reason;const from=this.tile,t=this.s.tiles[id];this.pay(from,quote.cost);let capacity=quote.carrying;const carry={};for(const k of ['wood','food','water','seed','fiber','stone']){const n=Math.min(from.stock[k]*(leave?.5:1),capacity/(k==='wood'||k==='food'?3:1));carry[k]=n;from.stock[k]-=n;capacity-=n;}
@@ -173,10 +176,10 @@ class Hearth{
  if(t.stock.wood<4)t.stock.wood=4;this.s.location=id;this.s.migration=false;t.empty=0;t.shortage=0;reveal(this.s);this.message(t.type==='meadow'?'The pass opens onto grass and running water. Choose a place to begin.':'The ember has reached '+t.name+'.');return null;
  }
  road(){if(!this.has('sledges')||this.tile.road||this.tile.buildings.some(b=>b.kind==='road'))return false;for(let y=12;y<18;y++)if(!this.place('road',9,y)){this.message('Road outline placed. Assign builders to clear and improve the route.');return true;}return false;}
- dispatch(ids,to,kind){if(!this.has('routes')||!['wood','food','stone','fiber','water'].includes(kind)||!this.neighbors().some(t=>t.id===to&&t.visited))return 'Visit this adjacent tile and learn gathering routes first.';if(kind==='stone'&&this.s.tiles[to].type==='mountain'&&!this.has('quarry'))return 'Learn to work the stone face before provisioning a quarry party.';const ps=this.people().filter(p=>ids.includes(p.id));if(!ps.length||ps.length>=this.people().length)return 'Keep at least one person at this hearth.';if(!this.pay(this.tile,{food:ps.length*4,water:ps.length*3}))return 'Pack 4 food and 3 water per worker.';const route={id:'r'+this.s.nextId++,from:this.s.location,to,kind,people:ps.map(p=>p.id),progress:0,active:true,waiting:''};for(const p of ps){if(p.load)this.add(this.tile,p.loadKind,p.load);p.load=0;p.route=route.id;}this.s.routes.push(route);return null;}
+ dispatch(ids,to,kind){if(!this.has('routes')||!['wood','food','stone','fiber','water'].includes(kind)||!this.neighbors().some(t=>t.id===to&&t.visited))return 'Visit this adjacent tile and learn gathering routes first.';if(kind==='stone'&&this.s.tiles[to].type==='mountain'&&!this.has('quarry'))return 'Learn to work the stone face before provisioning a quarry party.';const ps=this.people().filter(p=>ids.includes(p.id));if(!ps.length||ps.length>=this.people().length)return 'Keep at least one person at this hearth.';const cost=this.provisions(this.tile,ps.length);if(!this.pay(this.tile,cost))return 'Pack '+this.quote(cost)+'.';const route={id:'r'+this.s.nextId++,from:this.s.location,to,kind,people:ps.map(p=>p.id),progress:0,active:true,waiting:''};for(const p of ps){if(p.load)this.add(this.tile,p.loadKind,p.load);p.load=0;p.route=route.id;}this.s.routes.push(route);return null;}
  recall(id){const r=this.s.routes.find(x=>x.id===id);if(!r)return;for(const p of this.s.people.filter(p=>p.route===id)){p.route=null;p.tile=this.s.location;p.job='idle';p.phase='seek';p.x=9;p.y=10;}this.s.routes=this.s.routes.filter(x=>x.id!==id);}
  tickRoutes(dt){for(const r of this.s.routes){const from=this.s.tiles[r.from],to=this.s.tiles[r.to];r.progress+=dt;const duration=(from.road||to.road?50:80)*(this.has('traction')?.7:1);if(r.progress<duration)continue;r.progress=0;const nodes=to.nodes.filter(n=>n.kind===r.kind&&(!n.quarry||this.has('quarry'))&&n.amount>0&&!n.protected&&(!(r.kind==='wood'&&this.s.policies.mature)||n.age>=.85));let load=r.people.length*(this.has('sledges')?18:10);let taken=0;for(const n of nodes){const amount=Math.min(n.amount,load,Math.max(0,this.cap(from)-from.stock[r.kind]-taken));n.amount-=amount;load-=amount;taken+=amount;}this.add(from,r.kind,taken);this.s.knowledge+=taken*.035;
- if(!taken||!this.pay(from,{food:r.people.length*3,water:r.people.length*2})){r.active=false;r.waiting=!taken?'Destination resting or stores full':'Provisions exhausted';}}
+ if(!taken||!this.pay(from,this.provisions(from,r.people.length,true))){r.active=false;r.waiting=!taken?'Destination resting or stores full':'Provisions exhausted';}}
  for(const r of [...this.s.routes])if(!r.active){this.message('A gathering party returns safely. '+r.waiting+'.');this.recall(r.id);}
  }
  prestige(){if(!this.s.complete)return null;const archived=this.serialize(),t=Math.min(5,this.s.traditions+1);this.state=fresh(t);this.message('A familiar ember. The tribe carries '+t+' inherited tradition'+(t===1?'':'s')+'.');return archived;}
