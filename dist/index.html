@@ -192,6 +192,7 @@ class Camp{
   if(![0,1,2].includes(r.bedding)||![0,1,2].includes(r.slots)||![0,1,2,3,4].includes(r.event)||!n(r.phase,20000)||!n(r.runMs)||!n(r.actions)||!n(r.searches))return false;
   if(!r.counts||!Object.keys(emptyCounts()).every(k=>n(r.counts[k]))||![null,'grunt','gesture'].includes(r.lastExpression))return false;
   if(!['route','signals','complete','routinesPaused'].every(k=>typeof r[k]==='boolean')||typeof s.everCompleted!=='boolean')return false;
+  if(r.complete!==(r.event===4)||r.complete&&!s.everCompleted)return false;
   return true;
  }
  get r(){return this.state.run;}

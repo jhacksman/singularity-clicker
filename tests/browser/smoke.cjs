@@ -11,7 +11,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
  let browser;
  try{
   await Promise.race([once(server.stdout,'data'),once(server,'exit').then(()=>{throw Error('Server exited before listening');})]);
-  browser=await playwright[process.env.BROWSER||'chromium'].launch({headless:true});
+  browser=await playwright[process.env.BROWSER||'chromium'].launch({headless:true,chromiumSandbox:true});
   const context=await browser.newContext(),page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8080');

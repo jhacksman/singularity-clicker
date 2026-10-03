@@ -1,0 +1,40 @@
+Readiness milestone — 2026-10-03
+
+Base inspected: 05b8402 (main). The repository already contains playable Cave and
+Hearth stages, directly authored SVG/Canvas art, design requirements, and tests.
+No new stage mechanics or art are introduced by this milestone.
+
+Corrections
+- Repeating an identical Hearth assignment no longer resets work or deposits a
+  carried load instantly. A different job (including rest) finishes carrying the
+  existing load home before beginning the new job.
+- Payments accepted within the existing floating-point tolerance clamp their
+  final balance to zero, so ordinary arithmetic cannot produce a negative stock
+  that the save validator subsequently rejects.
+- Cave saves with contradictory completion/event flags are rejected before they
+  can strand the fire sequence. Valid v1 saves remain unchanged. There is no
+  documented pre-v1 migration; unsupported versions are rejected, not guessed.
+- Hearth export after a failed write exports current progress, not an older
+  stored snapshot. A save rejected at load is retained verbatim for recovery.
+- Builds decode file URLs correctly in checkout paths containing spaces or '#'.
+
+Verification
+Source commit: 48948eb51a77dccd8c76ca0d046d8080ce85df00
+Spark job: singularity-20261003-unit-001, host gb10-02, exit 0.
+Command: node --test tests/*.test.cjs && node build.mjs
+Result: 26 passed, 0 failed, 0 skipped; both self-contained pages built.
+Image: sha256:78175922b1739c305f3832562c569a07cbc0005b39db6b97a4a3ac328b9fae94
+The tracked dist files were retrieved from this Spark job, not built on M6.
+
+Browser smoke is in tests/browser/smoke.cjs and runs separately from npm test.
+It requires an externally provisioned, matching Playwright/browser runtime:
+  node build.mjs && node tests/browser/smoke.cjs
+PLAYWRIGHT_MODULE may name its absolute package path; BROWSER defaults to
+chromium. It starts and cleans up a loopback-only local server. No package is
+downloaded by the test itself. Run all CI on the shared Spark queue.
+
+Limits
+No native Apple build, touch-device QA, production deployment, main merge,
+measured two-hour playthrough, or new game/design implementation is claimed.
+The existing simulation suite covers recovery, migration, routes and plowing;
+the browser flow checks navigation and persistence, not a full paced Hearth run.
