@@ -19,12 +19,32 @@ Corrections
 - Builds decode file URLs correctly in checkout paths containing spaces or '#'.
 
 Verification
-Source commit: 48948eb51a77dccd8c76ca0d046d8080ce85df00
-Spark job: singularity-20261003-unit-001, host gb10-02, exit 0.
-Command: node --test tests/*.test.cjs && node build.mjs
-Result: 26 passed, 0 failed, 0 skipped; both self-contained pages built.
-Image: sha256:78175922b1739c305f3832562c569a07cbc0005b39db6b97a4a3ac328b9fae94
+Tested source commit: 127c463b28eaef3e8d1309e95abe21375ee7301e
+Spark job: singularity-20261003-playable-005, host gb10-02, exit 0.
+Command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs
+Result: 28 passed, 0 failed, 0 skipped; both self-contained pages built;
+sandboxed Chromium browser smoke passed with no page errors.
+Image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e
+Node 24.20.0, Playwright 1.63.0, Chromium 153.0.8010.12 (ARM64).
 The tracked dist files were retrieved from this Spark job, not built on M6.
+
+A command-only Hearth policy reaches the first plow at 3744 simulated seconds,
+with save restoration every 300 seconds. It learns the practices, builds a gated
+enclosure, settles/trains animals, and plows without modifying state directly.
+This verifies one complete route, not human enjoyment or the two-hour target.
+
+Browser actions cover fresh Cave gathering/refresh, completion and Hearth entry,
+repeated orders/refresh, assigning wood/food/water, placing and finishing a
+shelter, learning useful edges, map/navigation, failed-write export, unsupported
+save preservation and natural-depletion migration. An emulated 390px touch
+layout verifies tapping a job. Desktop video and full-page screenshots are
+retained in the Spark job's artifacts/ directory; screenshots were inspected.
+
+Additional Hearth improvements
+- Current camp goals explain supply roles, construction, learning and the plow.
+- Actual blocked-job reasons are visible without requiring a hover tooltip.
+- Supply depletion opens safe neighboring migration choices with no deaths.
+- Herders identify missing supplies instead of incorrectly claiming completion.
 
 Browser smoke is in tests/browser/smoke.cjs and runs separately from npm test.
 It requires an externally provisioned, matching Playwright/browser runtime:

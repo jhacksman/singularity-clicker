@@ -1,0 +1,65 @@
+Campaign readiness and next milestones — 2026-10-03
+
+Numbering
+The shipped code labels The Cave 0 and The Hearth 1. The user's references to a
+working first stage and broken second stage may be ordinal. Use stage names in
+repair discussions; do not rename or shift saved stage identities on that basis.
+
+Recovered direction, relayed by parent from September 7 discussion
+A fourteen-stage journey was accepted. Industrialization must be Stage 5, with
+three pre-singularity stages concerned with avoiding extinction. The names below
+were assistant proposals within that structure, not independently approved full
+mechanical specifications. Recovered gameplay directions include farm management
+for Agriculture; workshops and accounting for Bronze; infrastructure/mechanisms
+for Iron; Factorio-like production/logistics from Industrialization; a compute
+clicker echoing the Cave for early computers; automation, networks and AI in the
+following ages; then resilience, accountable coordination and distributed life
+support before cosmic-scale compute/prosperity. Later ages become increasingly
+3D/immersive. Each age should have upgrades, automation and prestige; earlier
+layers continue contributing and later technology automates them. The final
+return to a simulated Cave was proposed, not a settled reset contract.
+  0 Survival / The Cave                 implemented
+  1 Fire and Craft / The Hearth         implemented; current repair focus
+  2 Agriculture and Settlement         not implemented
+  3 Bronze and Cities                  not implemented
+  4 Iron, Mechanisms and Science        not implemented
+  5 Industrialization                  not implemented
+  6 Electronics and First Computers    not implemented
+  7 Microprocessors and Automation     not implemented
+  8 Networked Civilization             not implemented
+  9 Machine Intelligence               not implemented
+ 10 Planetary Resilience               not implemented
+ 11 Cooperative Intelligence           not implemented
+ 12 Distributed Civilization           not implemented
+ 13 Singularity / Cosmic Expansion     not implemented
+
+The later Cave/Hearth documents refine stages 0/1. Agriculture begins as small
+cultivation in The Hearth; the next age makes agriculture central and larger in
+scale. Do not claim the plow precedes all cultivation. Browser-first and directly
+authored art remain requirements. macOS/iOS reuse is an architectural goal, not
+an implemented native release.
+
+Evidence-based repair priorities
+1. Preserve the Cave and valid existing saves. Fix concrete arithmetic/lifecycle
+   failures without changing its resource or prestige rules.
+2. Make the Hearth's actual loop legible: maintain supplies, build, learn, travel,
+   enclose animals, train a draft team, and plow. Show real blocked-work reasons
+   and recover safely from shortages. Do not tune the economy based on an
+   unverified assumption that learning or enclosure placement is impossible.
+3. Regress full progression through public commands with periodic save reloads.
+   Cover real browser setup, work, construction, learning, travel and persistence.
+   A scripted completion time is not evidence of human pacing or enjoyment.
+4. Before implementing Agriculture, recover its detailed discussed contract:
+   meaningful decisions, feedback, automation, endpoint and transition payload.
+   Preserve the completed Hearth world before any stage handoff. The existing
+   separate v1 saves must remain importable; reject unsupported versions instead
+   of silently converting them to a fresh game.
+5. Deliver one playable age at a time, each with resource conservation, unlock,
+   repeated-action, restart/import, safe-recovery and browser progression checks.
+   Do not replace the unimplemented campaign with fourteen placeholder panels.
+
+Unsettled by current repository evidence
+Later-stage mechanics and milestones, cross-stage inheritance, optional replay
+and prestige boundaries, migration between campaign save versions, and the actual
+pacing/enjoyment of each age need recovered requirements and playtesting. The
+stage outline alone is insufficient to claim those decisions have been made.
