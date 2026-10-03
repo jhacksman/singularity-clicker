@@ -1,0 +1,43 @@
+Hearth RTS reset — first playable core
+
+Problem observed in the old rules
+Every food/fiber patch regenerates every tick; wood regrows, the spring holds
+one million units, farms produce recurring food and there is no sustained
+production sink beyond staged unlocks. Workers often stop at storage capacity.
+A completion test does not establish a meaningful economy or satisfying controls.
+The complaint that resources are not meaningfully limited is supported by these
+rules, even though individual stocks have numeric caps.
+
+First replacement slice
+One readable continuous top-down camp map. Drag to select, Shift to add,
+right-click to move/gather/construct, left-click inspect; explicit command buttons
+and touch alternatives. Immediate destination rings and command acknowledgments.
+Workers walk routes, extract finite deposits, carry visible loads and return to
+the nearest completed drop-off. Deposits never regenerate. Construction reserves
+its listed cost once, takes worker time, and can be cancelled for an exact refund.
+Workers stop with a specific reason at depletion or an unreachable destination.
+
+A hearth begins with four workers and small stores. Wood and stone fund an
+outpost; food funds another worker. Nearby deposits are deliberately small.
+Scout east and place the outpost near a second concentration of deposits to
+shorten hauling. Build a workshop from actual deliveries to finish this slice.
+The objective is one satisfying expansion, not a renamed full-age endpoint.
+
+No combat while the parent's question is pending. No copied SC2 assets or AI
+images. New map, units and feedback use directly authored Canvas/vector shapes.
+No hunger death, offline depletion, forced restart or timed punishment. Planned
+sites can be cancelled; a bare worker can always scout/gather remaining supplies.
+
+Preservation
+New entrypoint hearth-rts.html and independent hearth-rts.v1 save key. Old Hearth
+entrypoint, v1 save, archives and Agriculture handoff are untouched. This new
+prototype does not silently reinterpret old saves or claim full Hearth parity.
+The existing game remains accessible by an explicit Previous Hearth link.
+
+Acceptance on Spark
+Deterministic conservation across stock/deposits/cargo/construction; repeat
+orders, refunds, pathfinding, save/restore. Fresh browser play must use clicks,
+drag selection and right-clicks for gathering, hauling, building, depletion and
+expansion. Save snapshots may be read for assertions, never injected to skip
+progression. Capture video and screenshots; inspect readability/feedback rather
+than treating assertion count as evidence of interaction quality.
