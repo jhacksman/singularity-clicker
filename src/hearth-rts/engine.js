@@ -2,29 +2,31 @@
 (function(root){
 'use strict';
 const W=36,H=24,KEY='singularity-clicker.hearth-rts.v1';
-const COST={outpost:{wood:60,stone:20},workshop:{wood:40,stone:30},worker:{food:25}};
+const COST={outpost:{wood:60,stone:20},workshop:{wood:40,stone:30},worker:{food:25},knapping:{wood:4,stone:8}};
 const WORK={outpost:24,workshop:32};
 const NAMES=['Aru','Nara','Tavi','Uma','Sela','Kori','Luma','Oru'];
 const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 function unit(i,x,y){return{id:'u'+i,name:NAMES[i],x,y,order:{kind:'idle'},phase:'idle',cargo:0,resource:null,work:0,path:[],reason:'Ready for orders',next:null};}
 function fresh(){
  const deposits=[['wood',5,6,48],['wood',10,5,48],['stone',12,10,60],['food',5,18,75],['wood',26,6,180],['wood',30,9,120],['stone',29,15,150],['food',24,19,150]].map(([kind,x,y,amount],i)=>({id:'d'+i,kind,x,y,amount,initial:amount}));
- const s={version:1,time:0,stock:{wood:20,stone:10,food:0},deposits,buildings:[{id:'b0',kind:'hearth',x:7,y:11,done:true,work:0,cost:{}}],units:[unit(0,6,14),unit(1,7,14),unit(2,8,14),unit(3,9,14)],seen:[],nextId:1,spent:{wood:0,stone:0,food:0},delivered:{wood:0,stone:0,food:0},depleted:0,complete:false};return s;
+ const s={version:2,tools:false,knapping:null,time:0,stock:{wood:20,stone:10,food:0},deposits,buildings:[{id:'b0',kind:'hearth',x:7,y:11,done:true,work:0,cost:{}}],units:[unit(0,6,14),unit(1,7,14),unit(2,8,14),unit(3,9,14)],seen:[],nextId:1,spent:{wood:0,stone:0,food:0},delivered:{wood:0,stone:0,food:0},depleted:0,complete:false};return s;
 }
 function valid(s){
  const n=v=>Number.isFinite(v)&&v>=0&&v<1e7,point=p=>p&&n(p.x)&&n(p.y)&&p.x<W&&p.y<H;
- if(!s||s.version!==1||!n(s.time)||!n(s.nextId)||!n(s.depleted)||typeof s.complete!=='boolean')return false;
+ if(!s||![1,2].includes(s.version)||!n(s.time)||!n(s.nextId)||!n(s.depleted)||typeof s.complete!=='boolean')return false;
  if(!['stock','spent','delivered'].every(k=>s[k]&&['wood','stone','food'].every(r=>n(s[k][r]))))return false;
  if(!Array.isArray(s.deposits)||s.deposits.length!==8||!Array.isArray(s.units)||s.units.length<1||s.units.length>8||!Array.isArray(s.buildings)||s.buildings.length>30||!s.buildings.some(b=>b.kind==='hearth'&&b.done))return false;
  if(!Array.isArray(s.seen)||s.seen.length>W*H||s.seen.some(i=>!Number.isInteger(i)||i<0||i>=W*H))return false;
  const ids=new Set();for(const o of [...s.deposits,...s.units,...s.buildings]){if(!point(o)||typeof o.id!=='string'||ids.has(o.id))return false;ids.add(o.id);}
  if(s.deposits.some(d=>!['wood','stone','food'].includes(d.kind)||!n(d.amount)||!n(d.initial)||d.amount>d.initial))return false;
  if(s.buildings.some(b=>!['hearth','outpost','workshop'].includes(b.kind)||typeof b.done!=='boolean'||!n(b.work)||!b.cost||Object.entries(b.cost).some(([k,v])=>!['wood','stone','food'].includes(k)||!n(v))))return false;
- const order=o=>o&&['idle','move','gather','build'].includes(o.kind)&&(o.kind==='idle'||o.kind==='move'&&point(o)||['gather','build'].includes(o.kind)&&typeof o.target==='string');
- return s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct'].includes(u.phase)&&(!u.resource||['wood','stone','food'].includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200);
+ if(s.version===2&&(typeof s.tools!=='boolean'||(s.knapping!==null&&(!s.knapping||!n(s.knapping.work)||s.knapping.work>12||typeof s.knapping.workshop!=='string'||!s.buildings.some(b=>b.id===s.knapping.workshop&&b.kind==='workshop'&&b.done)||typeof s.knapping.done!=='boolean'||s.knapping.done!==s.tools||s.knapping.done&&s.knapping.work!==12))))return false;
+ if(s.version===2&&s.tools&&!s.knapping)return false;
+ const order=o=>o&&['idle','move','gather','build',...(s.version===2?['craft']:[])].includes(o.kind)&&(o.kind==='idle'||o.kind==='move'&&point(o)||['gather','build','craft'].includes(o.kind)&&typeof o.target==='string');
+ return s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct',...(s.version===2?['craft']:[])].includes(u.phase)&&(!u.resource||['wood','stone','food'].includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200);
 }
 class Camp{
- constructor(state){if(state&&!valid(state))throw Error('Not a compatible RTS Hearth save.');this.s=state?structuredClone(state):fresh();this.reveal();}
+ constructor(state){if(state&&!valid(state))throw Error('Not a compatible RTS Hearth save.');this.s=state?structuredClone(state):fresh();if(this.s.version===1){this.s.version=2;this.s.tools=false;this.s.knapping=null;}this.reveal();}
  water(x,y){return (x===18||x===19)&&!(y>=11&&y<=14);}
  size(b){return b.kind==='hearth'?3:2;}
  blocked(x,y){return x<0||y<0||x>=W||y>=H||this.water(x,y)||this.s.deposits.some(d=>d.amount>0&&d.x===x&&d.y===y)||this.s.buildings.some(b=>x>=b.x&&x<b.x+this.size(b)&&y>=b.y&&y<b.y+this.size(b));}
@@ -41,8 +43,9 @@ class Camp{
  start(u){u.work=0;u.path=[];const o=u.order;if(o.kind==='idle'){u.phase='idle';u.reason='Ready for orders';return;}
  if(o.kind==='move'){if(this.route(u,[o])){u.phase='walk';u.reason='Moving';}return;}
  const target=(o.kind==='gather'?this.s.deposits:this.s.buildings).find(v=>v.id===o.target);
+ if(o.kind==='craft'&&(!this.s.knapping||this.s.knapping.workshop!==o.target||this.s.knapping.done)){u.phase='idle';u.reason=this.s.tools?'Toolset complete':'No active knapping project';return;}
  if(!target||o.kind==='gather'&&target.amount===0||o.kind==='build'&&target.done){u.phase='idle';u.reason=o.kind==='gather'?'Deposit exhausted — choose another':'Construction complete';return;}
- if(this.route(u,this.around(target))){u.phase=o.kind==='gather'?'extract':'construct';u.reason=o.kind==='gather'?'Gathering '+target.kind:'Building '+target.kind;}
+ if(this.route(u,this.around(target))){u.phase=o.kind==='gather'?'extract':o.kind==='craft'?'craft':'construct';u.reason=o.kind==='gather'?'Gathering '+target.kind:o.kind==='craft'?'Knapping tools':'Building '+target.kind;}
  }
  command(ids,order){let count=0;for(const u of this.s.units.filter(u=>ids.includes(u.id))){if(JSON.stringify(u.order)===JSON.stringify(order)&&u.phase!=='idle')continue;count++;if(u.cargo){u.next=structuredClone(order);this.home(u);}else{u.order=structuredClone(order);u.next=null;this.start(u);}}return count;}
  canPay(cost){return Object.entries(cost).every(([r,n])=>this.s.stock[r]>=n);}
@@ -54,12 +57,14 @@ class Camp{
  if(targets.some(p=>!this.path(p,this.around(home)))){this.s.buildings.pop();return {error:'Leave a route through the camp'};}
  this.pay(b.cost);for(const u of this.s.units)if(u.path.length){if(u.cargo)this.home(u);else this.start(u);}this.command(ids,{kind:'build',target:b.id});return {id:b.id};}
  cancel(id){const b=this.s.buildings.find(v=>v.id===id&&!v.done);if(!b)return false;for(const[r,n]of Object.entries(b.cost)){this.s.stock[r]+=n;this.s.spent[r]-=n;}this.s.buildings=this.s.buildings.filter(v=>v.id!==id);for(const u of this.s.units)if(u.order.target===id){u.order={kind:'idle'};this.start(u);}return true;}
+ beginKnapping(workshop,ids){const b=this.s.buildings.find(b=>b.id===workshop&&b.kind==='workshop'&&b.done);if(!b)return 'Finish a workshop first';if(!this.s.units.some(u=>ids.includes(u.id)))return 'Select villagers to craft the tools';if(this.s.tools)return 'Useful edges already crafted';if(this.s.knapping&&this.s.knapping.workshop!==workshop)return 'Resume the project at its original workshop';if(!this.s.knapping){if(!this.pay(COST.knapping))return 'Need 4 wood and 8 stone';this.s.knapping={workshop,work:0,done:false};}this.command(ids,{kind:'craft',target:workshop});return null;}
  train(){if(this.s.units.length>=8)return 'All eight villagers have joined';const home=this.s.buildings.find(b=>b.kind==='hearth'),spot=this.around(home).find(p=>!this.blocked(p.x,p.y)&&!this.s.units.some(u=>Math.hypot(u.x-p.x,u.y-p.y)<.8));if(!spot)return 'Clear space beside the hearth first';if(!this.pay(COST.worker))return 'Need 25 food';const i=this.s.units.length;this.s.units.push(unit(i,spot.x,spot.y));return null;}
  tick(dt=.1){if(!Number.isFinite(dt)||dt<=0||dt>1)throw Error('Tick must be in (0,1]');this.s.time+=dt;
  for(const u of this.s.units){if(u.phase==='idle')continue;if(u.path.length){const p=u.path[0],dx=p.x-u.x,dy=p.y-u.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*3);if(d){u.x+=dx/d*step;u.y+=dy/d*step;}if(d<=step+.00001)u.path.shift();continue;}
  if(u.phase==='walk'){u.order={kind:'idle'};this.start(u);continue;}
  if(u.phase==='return'){this.s.stock[u.resource]+=u.cargo;this.s.delivered[u.resource]+=u.cargo;u.cargo=0;u.resource=null;if(u.next){u.order=u.next;u.next=null;}this.start(u);continue;}
- if(u.phase==='extract'){const d=this.s.deposits.find(d=>d.id===u.order.target);if(!d||!d.amount){if(u.cargo)this.home(u);else{u.phase='idle';u.reason='Deposit exhausted — choose another';}continue;}u.work+=dt;if(u.work+.00001>=.6){u.work-=.6;d.amount--;u.cargo++;u.resource=d.kind;if(d.amount===0)this.s.depleted++;if(u.cargo>=5||d.amount===0)this.home(u);}continue;}
+ if(u.phase==='extract'){const d=this.s.deposits.find(d=>d.id===u.order.target);if(!d||!d.amount){if(u.cargo)this.home(u);else{u.phase='idle';u.reason='Deposit exhausted — choose another';}continue;}u.work+=dt;const interval=this.s.tools?.45:.6;if(u.work+.00001>=interval){u.work-=interval;d.amount--;u.cargo++;u.resource=d.kind;if(d.amount===0)this.s.depleted++;if(u.cargo>=5||d.amount===0)this.home(u);}continue;}
+ if(u.phase==='craft'){const project=this.s.knapping;if(!project||project.done||project.workshop!==u.order.target){u.order={kind:'idle'};this.start(u);continue;}project.work=Math.min(12,project.work+dt);if(project.work+.00001>=12){project.work=12;project.done=true;this.s.tools=true;for(const artisan of this.s.units)if(artisan.order.kind==='craft'){artisan.order={kind:'idle'};this.start(artisan);artisan.reason='Useful edges crafted';}}continue;}
  if(u.phase==='construct'){const b=this.s.buildings.find(b=>b.id===u.order.target);if(!b||b.done){u.order={kind:'idle'};this.start(u);continue;}b.work+=dt;if(b.work+.00001>=WORK[b.kind]){b.work=WORK[b.kind];b.done=true;u.order={kind:'idle'};this.start(u);}}
  }
  this.reveal();this.s.complete=this.s.depleted>0&&this.s.buildings.some(b=>b.kind==='outpost'&&b.done&&b.x>20)&&this.s.buildings.some(b=>b.kind==='workshop'&&b.done);

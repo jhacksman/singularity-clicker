@@ -1,0 +1,77 @@
+Hearth depth on the accepted RTS foundation — source inventory, 2026-10-03
+
+Authority and boundaries
+The user accepted the new RTS core as a direction, explicitly kept no combat,
+and asked for the old Hearth's complexity with the new controls/economy. This
+inventory maps source behavior, not a claim that the old implementation fulfilled
+all intentions. Broader sequencing is provisional until the independently reviewed
+campaign specification is reconciled. Preserve both old Hearth and RTS saves.
+
+Old source -> mechanic -> integration direction
+src/hearth/engine.js TECH.knapping, learn(), practice(), workPerson(): discovery
+plus practice improves tool work. First increment: a real workshop knapping job,
+paid materials, assigned workers, progress, interruption/resume and a measured
+extraction improvement. No timing-bar interruption or free generated stone.
+
+TECH.bindings/baskets/pottery, cap(), worker capacity: carrying and stock capacity.
+Restore carrying/storage choices after workshop crafting; upgrades must visibly
+change a bottleneck while resource totals remain conserved. The old UI's capped
+stock was not evidence of a finite map economy.
+
+TECH.drying, preserved(), provisions(), BUILD.rack: a completed local rack reduces
+camp food use and trip food costs. RTS has neither ongoing food consumption nor
+provisioned travel yet. Do not bolt on a misleading preservation icon now; add
+preservation together with actual expedition reserves/consumption and safe return.
+
+practice(hunt/knap/gather), skills, knowledge: optional practice and ordinary work
+teach skills. Old activities all shared a timing bar and hunt used generic food
+patches. Restore substantive skill effects and readable learning; distinct
+activity designs are pending the reviewed specification, not ported wholesale.
+
+travelQuote(), migrate(), reveal(), ready(), settlement: persistent hexes,
+visibility, residents, camp support and migration. RTS currently has one continuous
+map, scouting and drop-offs only. Extend to persistent regional camps with exact
+population/cargo transfer, finite destination resources and nonlethal recovery;
+do not pretend an outpost alone already restores the regional system.
+
+TECH.routes/quarry, dispatch(), tickRoutes(), recall(): provisioned neighboring
+parties withdraw actual destination resources; safely return on shortages.
+Next logistics increment should expose destination stock, provisions and physical
+hauling. Respect finite deposits and avoid teleportation/double-credit on reload.
+
+BUILD.fence/wall/gate/pen, enclosure(), herd work, TECH.husbandry/traction:
+functional enclosures, animals settling, training a draft team, safe fence repair.
+Integrate only with preserved RTS access/command rules, clear spatial feedback
+and no animal-loss punishment. This is later than tools/storage/logistics.
+
+TECH.sledges, road(), BUILD.road, travelQuote(): hauling capacity, crossing cost
+and route improvements. The old implementation had sledges, yokes and abstract
+pass roads, NOT explicit wheel/cart construction. Wheel/cart is a requested
+extension to inventory and reconcile with the new specification, not an existing
+implemented feature being restored. Physical throughput effects must be shown.
+
+cultivation, BUILD.field/plow, workPerson(plow), prestige(): cultivation then an
+actual field-work assignment completes the age; optional prestige archives the
+world and carries capped traditions. Keep this substantive endpoint, not the
+current RTS outpost/workshop preview gate. Cultivation renewal must be an explicit
+input/work/land cycle rather than silently restoring wild deposits. Whole-age
+prestige/handoff waits for the reviewed save and campaign contracts.
+
+Current RTS strengths retained
+Finite nonregenerating wild deposits; selection/Shift/drag/context commands;
+visible cargo and delivery; responsive stable HUD; paid worker construction and
+cancellation; pathfinding/ford scouting; local outposts; shortage/idle feedback;
+independent versioned saves; no combat or offline resource loss.
+
+First increment acceptance
+Workshop is useful, not a decorative endpoint. A knapping project reserves 4
+wood and 8 stone once, needs 12 worker-seconds at its actual workshop, can be
+interrupted/reassigned/resumed without repayment, and finishes a shared toolset.
+Tools reduce extraction time per item from 0.60 to 0.45 seconds; deposits still
+lose exactly one unit per item and loads stay capped at five. Values are bounded
+prototype tuning, not a final all-age balance decision. Existing RTS v1 saves
+migrate without losing world/cargo/orders; retain the original pre-migration raw
+save separately. Reject unknown future versions. Spark must test payment,
+interruption, repeated actions, conservation, migration and the actual browser
+crafting flow following earned expansion. No broad campaign additions in this
+increment.
