@@ -4,6 +4,7 @@ const {Village,CROPS,BUILD,JOBS,RESOURCES}=AgricultureGame,KEY='singularity-clic
 let started=true;
 let village=new Village(),selected=0,paused=false,blocked=false,unread=null,lastSaved=null,last=performance.now(),acc=0,saveTime=0,modal=false;
 const canvas=$('farm'),ctx=canvas.getContext('2d');let points=[];
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function say(text){$('status').textContent=text;}
 function save(){if(blocked||!started)return;try{const text=village.serialize();localStorage.setItem(KEY,text);lastSaved=text;}catch{blocked=true;paused=true;say('Saving stopped. Open Journey and export before closing.');}}
 function show(title,body){modal=true;$('dialog-title').textContent=title;$('dialog-body').innerHTML=body;$('dialog').showModal();}
@@ -18,7 +19,7 @@ function load(){try{const raw=localStorage.getItem(KEY);if(raw){unread=raw;villa
 function render(){const s=village.s,f=s.fields[selected];
  $('stocks').innerHTML=RESOURCES.map(k=>'<div class="stock '+(s.stock[k]<4?'low':'')+'"><span>'+k[0].toUpperCase()+k.slice(1)+'</span><strong>'+Math.floor(s.stock[k])+'</strong><small>/ '+village.cap(k)+'</small></div>').join('');
  $('day').textContent='Day '+(1+Math.floor(s.time/180));$('pause').textContent=paused?'Resume':'Pause';$('step').disabled=!paused||modal||blocked;
- $('plots').innerHTML=s.fields.map(p=>'<button class="plot" data-field="'+p.id+'" aria-pressed="'+(p.id===selected)+'"><strong>Field '+(p.id+1)+' · '+p.workers+' workers</strong><small>'+Math.floor(p.soil)+'% soil · '+(p.crop?CROPS[p.crop].name:p.nextCrop?CROPS[p.nextCrop].name:'Fallow')+'</small><small>'+ (p.blocked||p.phase)+'</small></button>').join('');
+ $('plots').innerHTML=s.fields.map(p=>'<button class="plot" data-field="'+p.id+'" aria-pressed="'+(p.id===selected)+'"><strong>Field '+(p.id+1)+' · '+p.workers+' workers</strong><small>'+Math.floor(p.soil)+'% soil · '+(p.crop?CROPS[p.crop].name:p.nextCrop?CROPS[p.nextCrop].name:'Fallow')+'</small><small>'+ esc(p.blocked||p.phase)+'</small></button>').join('');
  $('field-title').textContent='Field '+(selected+1)+' · '+Math.floor(f.soil)+'% soil';$('field-status').textContent=f.phase==='fallow'?'Choose the next crop; workers sow and tend it automatically.':Math.floor(f.work)+' / '+CROPS[f.crop].work+' work · '+(f.phase==='ripe'?'Ready to harvest':'Growing');
  if(f.blocked)$('field-status').textContent=f.blocked;
  $('crop').value=f.nextCrop||'';$('field-workers').textContent=f.workers;$('field-less').disabled=!f.workers;$('field-more').disabled=!village.idle;
