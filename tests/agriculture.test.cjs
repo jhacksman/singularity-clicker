@@ -17,7 +17,7 @@ test('zero grain, seed and water recover through assigned work with no resets',(
  assert.ok(v.s.harvests>0);assert.ok(v.s.stock.grain>0&&v.s.stock.seed>0&&v.s.stock.water>0);assert.equal(v.s.population,5);assert.ok(valid(v.s));
 });
 test('invalid saves and future schemas are rejected; completed Hearth handoff is non-destructive',()=>{
- const h=new Hearth();assert.throws(()=>Village.fromHearth(h.s));h.s.complete=true;h.s.plowed=1;const before=h.serialize();const v=Village.fromHearth(h.s);assert.equal(h.serialize(),before);assert.equal(v.s.sourceArchive,before);
+ const h=new Hearth();assert.throws(()=>Village.fromHearth(h.s));h.s.complete=true;h.s.plowed=1;const before=h.serialize();const v=Village.fromHearth(h.s);assert.equal(h.serialize(),before);assert.equal(v.s.sourceArchive,before);assert.equal(v.s.population,h.s.people.length);
  for(const mutate of [s=>s.version=2,s=>s.jobs.water=-1,s=>s.stock.grain=NaN,s=>s.fields[0].workers=12,s=>s.sourceArchive='bad',s=>s.jobs.extra=100,s=>s.fields[0].crop='magic']){const bad=JSON.parse(v.serialize());mutate(bad);assert.throws(()=>new Village(bad));}
 });
 test('crop and construction state resume identically; ten seconds equals ten one-second ticks',()=>{
