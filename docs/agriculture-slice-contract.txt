@@ -55,7 +55,7 @@ its exact population and inherited traditions. Standalone preview is explicit.
 The page does not save an unaccepted preview during page exit. Unknown versions
 are rejected before replacement, and imported display text is escaped.
 
-A full farm-management browser policy is queued on Spark, including fresh start,
+A full farm-management browser policy passed on Spark, including fresh start,
 field/worker orders, both projects, the first surplus, exact refresh/export and
 non-destructive Hearth transfer. No human playtest is implied by that policy.
 
@@ -80,11 +80,24 @@ This is a short playable slice, not a measured human pacing/enjoyment result.
 Pottery, fermentation, textiles, exchange, copper, full-age prestige, continuing
 contributions from older layers and the Bronze handoff remain future work.
 
-Follow-up review candidate, not included in the verified snapshot
-Branch codex/agriculture-first-harvest, source ab7a70d638d13637fa0c4fc2c2de4d8ede3456ef,
-adds explicit crop yield/soil details, fresh project/milestone status, and a direct
-original-Hearth backup download button. Spark job agriculture-008 is queued for
-those changes. The reviewed snapshot already keeps the original Hearth intact
-and embeds its copy in the Agriculture save. Do not claim 008 has passed until
-its coordinator result is available. Publishing is on hold pending the parent's
-user approval flow; no Agriculture branch has been pushed.
+Final review refinements verified — 2026-10-03
+Source: ab7a70d638d13637fa0c4fc2c2de4d8ede3456ef
+Spark job: singularity-20261003-agriculture-008, gb10-02, exit 0.
+The same 34 tests, three builds and both sandboxed browser suites passed.
+Crop yield/soil details, project/milestone status and direct preserved-Hearth
+export are now included. The displayed milestone screenshot was inspected.
+The tracked dist files are the exact final008 outputs retrieved from Spark.
+
+Native Library review deliverables
+agriculture.html: libfile_78efbf86d2688191b7756a3d3a07c1fc
+agriculture-first-surplus.png: libfile_849d38f1c9f88191b26d9948c0570c2b
+singularity-clicker-review.zip: libfile_bfcccb6b310481919d4bf749aacc438a
+REVIEW-GUIDE.txt: libfile_3694f2d1cd848191bb073ff0cecc7787
+The ZIP preserves all three pages and a loopback server for same-origin handoff.
+These are private review deliverables. Repository publishing remains held.
+
+Further QA
+Job singularity-20261003-gameplay-009 adds a complete Hearth browser-control
+playthrough, Agriculture depleted-store recovery, failed storage writes, stale
+second-tab protection and a real paused-time check. Only the test harness is
+changed for that job; do not report its outcome until the coordinator result.
