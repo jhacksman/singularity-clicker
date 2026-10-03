@@ -53,7 +53,7 @@ class Camp{
  if(targets.some(p=>!this.path(p,this.around(home)))){this.s.buildings.pop();return {error:'Leave a route through the camp'};}
  this.pay(b.cost);for(const u of this.s.units)if(u.path.length){if(u.cargo)this.home(u);else this.start(u);}this.command(ids,{kind:'build',target:b.id});return {id:b.id};}
  cancel(id){const b=this.s.buildings.find(v=>v.id===id&&!v.done);if(!b)return false;for(const[r,n]of Object.entries(b.cost)){this.s.stock[r]+=n;this.s.spent[r]-=n;}this.s.buildings=this.s.buildings.filter(v=>v.id!==id);for(const u of this.s.units)if(u.order.target===id){u.order={kind:'idle'};this.start(u);}return true;}
- train(){if(this.s.units.length>=8)return 'All eight villagers have joined';if(!this.pay(COST.worker))return 'Need 25 food';const i=this.s.units.length;this.s.units.push(unit(i,7+i%3,15));return null;}
+ train(){if(this.s.units.length>=8)return 'All eight villagers have joined';const home=this.s.buildings.find(b=>b.kind==='hearth'),spot=this.around(home).find(p=>!this.blocked(p.x,p.y)&&!this.s.units.some(u=>Math.hypot(u.x-p.x,u.y-p.y)<.8));if(!spot)return 'Clear space beside the hearth first';if(!this.pay(COST.worker))return 'Need 25 food';const i=this.s.units.length;this.s.units.push(unit(i,spot.x,spot.y));return null;}
  tick(dt=.1){if(!Number.isFinite(dt)||dt<=0||dt>1)throw Error('Tick must be in (0,1]');this.s.time+=dt;
  for(const u of this.s.units){if(u.phase==='idle')continue;if(u.path.length){const p=u.path[0],dx=p.x-u.x,dy=p.y-u.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*3);if(d){u.x+=dx/d*step;u.y+=dy/d*step;}if(d<=step+.00001)u.path.shift();continue;}
  if(u.phase==='walk'){u.order={kind:'idle'};this.start(u);continue;}

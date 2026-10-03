@@ -23,7 +23,7 @@ Scout east and place the outpost near a second concentration of deposits to
 shorten hauling. Build a workshop from actual deliveries to finish this slice.
 The objective is one satisfying expansion, not a renamed full-age endpoint.
 
-No combat while the parent's question is pending. No copied SC2 assets or AI
+No combat: explicitly confirmed by the user. No copied SC2 assets or AI
 images. New map, units and feedback use directly authored Canvas/vector shapes.
 No hunger death, offline depletion, forced restart or timed punishment. Planned
 sites can be cancelled; a bare worker can always scout/gather remaining supplies.
