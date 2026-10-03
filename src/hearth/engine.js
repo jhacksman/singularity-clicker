@@ -82,11 +82,15 @@ class Hearth{
  people(t=this.tile){return this.s.people.filter(p=>p.tile===t.id&&!p.route);}
  cap(t=this.tile){return 70+t.buildings.filter(b=>b.done&&b.kind==='store').length*65+(this.has('pottery')?35:0);}
  add(t,k,n){const actual=Math.max(0,Math.min(n,this.cap(t)-t.stock[k]));t.stock[k]+=actual;return actual;}
- pay(t,cost){if(Object.entries(cost).some(([k,v])=>t.stock[k]+1e-8<v))return false;for(const[k,v]of Object.entries(cost))t.stock[k]-=v;return true;}
+ pay(t,cost){if(Object.entries(cost).some(([k,v])=>t.stock[k]+1e-8<v))return false;for(const[k,v]of Object.entries(cost))t.stock[k]=Math.max(0,t.stock[k]-v);return true;}
  quote(cost,t=this.tile){return Object.entries(cost).map(([k,v])=>v+' '+k+(t.stock[k]+1e-8<v?' (need '+Math.ceil(v-t.stock[k])+' more)':'')).join(' · ')||'Observation only';}
  learn(id){const d=TECH[id];if(!d||this.has(id))return false;if(d.needs.some(k=>!this.has(k))||this.s.knowledge<d.knowledge||!this.pay(this.tile,d.cost))return false;this.s.tech.push(id);this.message(d.name+'. '+d.text);return true;}
  assign(ids,kind,target){if(!JOBS[kind])return false;if(['farm','herd','plow'].includes(kind)&&!this.has({farm:'cultivation',herd:'husbandry',plow:'plow'}[kind]))return false;
- for(const p of this.people().filter(p=>ids.includes(p.id))){if(p.load)this.add(this.tile,p.loadKind,p.load);Object.assign(p,{job:kind,target:target||null,phase:'seek',work:0,load:0,loadKind:null,blocked:''});}return true;}
+ for(const p of this.people().filter(p=>ids.includes(p.id))){
+  if(p.job===kind&&p.target===(target||null))continue;
+  // A new order keeps any gathered load on its normal trip home.
+  Object.assign(p,{job:kind,target:target||null,phase:p.load?'home':'seek',work:0,blocked:''});
+ }return true;}
  blocked(t,x,y){return t.buildings.some(b=>b.done&&['fence','wall'].includes(b.kind)&&b.x===x&&b.y===y);}
  path(t,from,to){const start={x:Math.round(from.x),y:Math.round(from.y)},end={x:Math.round(to.x),y:Math.round(to.y)};const id=p=>p.x+','+p.y,queue=[start],prev=new Map([[id(start),null]]);let found=null;
  while(queue.length){const a=queue.shift();if(a.x===end.x&&a.y===end.y){found=a;break;}for(const[dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const b={x:a.x+dx,y:a.y+dy};if(b.x<1||b.y<1||b.x>17||b.y>17||prev.has(id(b))||this.blocked(t,b.x,b.y))continue;prev.set(id(b),a);queue.push(b);}}
@@ -113,8 +117,8 @@ class Hearth{
  }
  walk(p,t,to,dt){if(Math.hypot(p.x-to.x,p.y-to.y)<.08){p.x=to.x;p.y=to.y;return true;}const route=this.path(t,p,to);if(!route){p.blocked='Needs an open path';return false;}const aim=route[0]||to,dx=aim.x-p.x,dy=aim.y-p.y,dist=Math.hypot(dx,dy),step=Math.min(dist,dt*(this.has('sledges')?1.65:1.35));if(dist){p.x+=dx/dist*step;p.y+=dy/dist*step;}return Math.hypot(p.x-to.x,p.y-to.y)<.08;}
  workPerson(p,t,dt){
- if(p.job==='idle'){p.blocked='';return;}
  if(p.phase==='home'||p.phase==='deliver'){if(this.walk(p,t,HOME,dt)){if(p.load){this.add(t,p.loadKind,p.load);if(this.s.stats[p.loadKind]!==undefined)this.s.stats[p.loadKind]+=p.load;}p.load=0;p.phase='seek';}return;}
+ if(p.job==='idle'){p.blocked='';return;}
  if((t.stock.food<=0||t.stock.water<=0)&&['build','herd','plow','stone'].includes(p.job)){p.blocked='Resting until supplies recover';this.walk(p,t,HOME,dt);return;}
  const n=this.target(p,t);if(!n){p.blocked=p.job==='farm'?'Waiting for the crop':p.job==='herd'?'Needs an enclosed herd shelter':p.job==='plow'?'Needs a draft team, plow, and field':'Work area complete';this.walk(p,t,HOME,dt);return;}
  if(RESOURCE.includes(p.job)&&t.stock[p.job]>=this.cap(t)-.01){p.blocked='Storage is full';this.walk(p,t,HOME,dt);return;}
@@ -130,7 +134,7 @@ class Hearth{
   if(!n.paid){if(!this.pay(t,BUILD[n.kind].cost)){p.blocked='Waiting for '+this.quote(BUILD[n.kind].cost,t);return;}n.paid=true;}
   if(n.done){n.durability=Math.min(100,n.durability+dt*4);return;}n.work+=dt*speed;if(n.work>=BUILD[n.kind].work){n.done=true;if(['fence','wall'].includes(n.kind)&&[...this.people(t),...t.nodes.filter(v=>v.kind==='water')].some(v=>!this.path(t,v,HOME))){n.done=false;p.blocked='Leave a gate opening before finishing this fence';return;}this.s.stats.buildings++;if(n.kind==='field')n.growth=1;if(n.kind==='road')t.road=true;this.message(BUILD[n.kind].name+' completed at '+t.name+'.');p.phase='home';}return;
  }
- if(p.job==='herd'){if(p.work<20)return;p.work=0;if(t.herd<2&&this.pay(t,{food:6,water:3})){t.herd++;this.message('An animal settles into the enclosure.');}else if(this.has('traction')&&t.trained<t.herd&&this.pay(t,{food:4,water:2})){t.trained++;this.message('The draft team is ready.');}else p.blocked='The herd is settled';return;}
+ if(p.job==='herd'){if(p.work<20)return;p.work=0;if(t.herd<2){if(this.pay(t,{food:6,water:3})){t.herd++;this.message('An animal settles into the enclosure.');}else p.blocked='Needs 6 food and 3 water to settle an animal';}else if(this.has('traction')&&t.trained<t.herd){if(this.pay(t,{food:4,water:2})){t.trained++;this.message('The draft team is ready.');}else p.blocked='Needs 4 food and 2 water to train the team';}else p.blocked='The herd is settled';return;}
  if(p.job==='plow'){if(p.work<55)return;if(t.stock.wood<8||t.stock.food<10||t.stock.water<8){p.blocked='Prepare 8 wood, 10 food, and 8 water for the camp';return;}n.plowed=true;p.work=0;this.s.plowed++;this.s.complete=true;this.message('The first furrow. Tonight, the hearth stays.');return;}
  if(p.work<7)return;p.work=0;const capacity=(this.has('baskets')?8:5)+(this.has('traction')?3:0);
  if(p.job==='farm'){if(t.stock.seed<1){p.blocked='Keep one seed for the next planting';return;}t.stock.seed--;p.load=12;p.loadKind='food';this.add(t,'seed',3);n.growth=1;p.phase='home';return;}

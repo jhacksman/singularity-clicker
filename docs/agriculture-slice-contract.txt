@@ -1,0 +1,41 @@
+Agriculture vertical slice — proposed implementation contract
+
+Established direction
+Stage 2 makes farming and settlement central, with an isometric/top-down farm
+management perspective. Discussed subjects include domestication, granaries,
+irrigation, pottery, fermentation, textiles, exchange and copper. The campaign
+changes gameplay across ages; later stages must not be copies of one button list.
+Browser first, authored art only, no loss of existing Cave/Hearth save data.
+
+Bounded first slice, implementation proposal rather than approved final balance
+- Manage a small set of fields and allocate a finite workforce between farming,
+  gathering water, gathering building materials and safe food recovery.
+- Choose between grain production and a restorative crop. Trade immediate yield
+  against soil recovery and water demand; keep choices visible on the field.
+- Assigned farm workers sow, tend, harvest and repeat. Clicking faster must never
+  increase their production. Pausing and closing the page halt the simulation.
+- Build storage and irrigation improvements through resources and worker time.
+  Teach shortfalls through specific status text rather than unexplained waiting.
+- First slice objective: demonstrate dependable harvest and storage. This is a
+  milestone inside Agriculture, not a claim that Bronze or the whole age exists.
+- Depleted food, water or seed must have a normal recovery route, without deaths,
+  a forced reset or premium currency. Prevent over-allocation and negative stock.
+- Preserve completed Hearth data before importing a starting settlement snapshot.
+  Keep stage saves independent and reject unsupported future schemas. A later
+  campaign contract will specify ongoing contributions from older stages and
+  how new technology automates them; do not fabricate those links silently.
+
+Deferred full-age mechanics
+Exchange/copper endpoint, fermentation/textiles, broader settlement economy,
+prestige and final Bronze transition need a coherent follow-on slice and tests.
+The broader accepted direction remains recorded in campaign-readiness.txt.
+
+Acceptance criteria
+1. New settlement reaches the slice objective through ordinary commands, without
+   direct state boosts or requiring repeated manual harvesting.
+2. Soil/crop/water choices produce distinct observable outcomes.
+3. Invalid or repeated commands preserve resource and workforce accounting.
+4. Save/reload matches an uninterrupted run; old stages remain intact.
+5. Browser playthrough covers planting, allocation, harvest, construction,
+   shortage recovery, pause, refresh and stage navigation, with screenshots.
+6. No simulated-time result is presented as proof of human enjoyment or pacing.

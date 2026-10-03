@@ -1,0 +1,60 @@
+Readiness milestone — 2026-10-03
+
+Base inspected: 05b8402 (main). The repository already contains playable Cave and
+Hearth stages, directly authored SVG/Canvas art, design requirements, and tests.
+No new stage mechanics or art are introduced by this milestone.
+
+Corrections
+- Repeating an identical Hearth assignment no longer resets work or deposits a
+  carried load instantly. A different job (including rest) finishes carrying the
+  existing load home before beginning the new job.
+- Payments accepted within the existing floating-point tolerance clamp their
+  final balance to zero, so ordinary arithmetic cannot produce a negative stock
+  that the save validator subsequently rejects.
+- Cave saves with contradictory completion/event flags are rejected before they
+  can strand the fire sequence. Valid v1 saves remain unchanged. There is no
+  documented pre-v1 migration; unsupported versions are rejected, not guessed.
+- Hearth export after a failed write exports current progress, not an older
+  stored snapshot. A save rejected at load is retained verbatim for recovery.
+- Builds decode file URLs correctly in checkout paths containing spaces or '#'.
+
+Verification
+Tested source commit: 127c463b28eaef3e8d1309e95abe21375ee7301e
+Spark job: singularity-20261003-playable-005, host gb10-02, exit 0.
+Command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs
+Result: 28 passed, 0 failed, 0 skipped; both self-contained pages built;
+sandboxed Chromium browser smoke passed with no page errors.
+Image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e
+Node 24.20.0, Playwright 1.63.0, Chromium 153.0.8010.12 (ARM64).
+The tracked dist files were retrieved from this Spark job, not built on M6.
+
+A command-only Hearth policy reaches the first plow at 3744 simulated seconds,
+with save restoration every 300 seconds. It learns the practices, builds a gated
+enclosure, settles/trains animals, and plows without modifying state directly.
+This verifies one complete route, not human enjoyment or the two-hour target.
+
+Browser actions cover fresh Cave gathering/refresh, completion and Hearth entry,
+repeated orders/refresh, assigning wood/food/water, placing and finishing a
+shelter, learning useful edges, map/navigation, failed-write export, unsupported
+save preservation and natural-depletion migration. An emulated 390px touch
+layout verifies tapping a job. Desktop video and full-page screenshots are
+retained in the Spark job's artifacts/ directory; screenshots were inspected.
+
+Additional Hearth improvements
+- Current camp goals explain supply roles, construction, learning and the plow.
+- Actual blocked-job reasons are visible without requiring a hover tooltip.
+- Supply depletion opens safe neighboring migration choices with no deaths.
+- Herders identify missing supplies instead of incorrectly claiming completion.
+
+Browser smoke is in tests/browser/smoke.cjs and runs separately from npm test.
+It requires an externally provisioned, matching Playwright/browser runtime:
+  node build.mjs && node tests/browser/smoke.cjs
+PLAYWRIGHT_MODULE may name its absolute package path; BROWSER defaults to
+chromium. It starts and cleans up a loopback-only local server. No package is
+downloaded by the test itself. Run all CI on the shared Spark queue.
+
+Limits
+No native Apple build, touch-device QA, production deployment, main merge,
+measured two-hour playthrough, or new game/design implementation is claimed.
+The existing simulation suite covers recovery, migration, routes and plowing;
+the browser flow checks navigation and persistence, not a full paced Hearth run.
