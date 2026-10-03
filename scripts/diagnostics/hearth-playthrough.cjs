@@ -1,7 +1,7 @@
 // Deterministic diagnostic policy using only public game commands; never edits state.
 // This is a planning probe, not evidence of human pacing or enjoyment.
 const {Hearth,TECH,BUILD}=require('../../src/hearth/engine.js');
-const g=new Hearth();
+let g=new Hearth();
 const milestones=[];
 function place(kind){
  if(g.tile.buildings.some(b=>b.kind===kind))return;
@@ -38,6 +38,7 @@ for(let second=0;second<7200&&!g.s.complete;second++){
   g.assign([ps[i].id],job);
  }
  g.tick(1);
+ if(second%300===299)g=new Hearth(JSON.parse(g.serialize()));
  if(second%600===599)console.log(JSON.stringify({time:g.s.time,people:g.people().length,knowledge:g.s.knowledge,tech:g.s.tech,stock:g.tile.stock,buildings:g.tile.buildings.map(b=>({kind:b.kind,done:b.done})),blocked:g.people().map(p=>({job:p.job,reason:p.blocked})),migration:g.s.migration}));
 }
 let enclosures=0;
@@ -46,3 +47,5 @@ for(let x=1;x<=14;x++)for(let y=1;y<=14;y++){
  if(perimeter.every(p=>Math.hypot(p.x-9,p.y-9)>=2&&!g.tile.buildings.some(b=>b.x===p.x&&b.y===p.y)&&!g.tile.nodes.some(n=>n.x===p.x&&n.y===p.y&&(n.kind==='water'||n.amount>0))))enclosures++;
 }
 console.log(JSON.stringify({time:g.s.time,milestones,emptyFourByFourEnclosureFootprints:enclosures,complete:g.s.complete}));
+
+if(!g.s.complete)throw Error('The command-only policy did not reach the first furrow within 7200 simulated seconds.');

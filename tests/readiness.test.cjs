@@ -46,3 +46,18 @@ test('Cave rejects contradictory completion flags that strand the fire encounter
   const state=JSON.parse(new Camp().serialize());mutate(state);assert.equal(Camp.valid(state),false);assert.throws(()=>new Camp(state));
  }
 });
+
+test('herders explain missing animal provisions instead of claiming the herd is settled',()=>{
+ const g=new Hearth();g.s.tech=['husbandry'];
+ for(let x=12;x<=15;x++)for(let y=12;y<=15;y++)if(x===12||x===15||y===12||y===15)g.tile.buildings.push({id:`f${x}-${y}`,kind:x===13&&y===12?'gate':'fence',x,y,done:true,paid:true,work:10,growth:0,durability:100});
+ g.tile.buildings.push({id:'pen',kind:'pen',x:13,y:13,done:true,paid:true,work:50,growth:0,durability:100});
+ const p=g.s.people[0];Object.assign(p,{x:13,y:13,job:'herd',work:19});g.tile.stock.food=2;g.tile.stock.water=3;
+ g.tick(1);assert.equal(g.tile.herd,0);assert.match(p.blocked,/Needs 6 food and 3 water/);
+});
+test('an ordinary Hearth policy completes with recurring save restoration and no boosted state',()=>{
+ const {execFileSync}=require('node:child_process'),path=require('node:path');
+ const output=execFileSync(process.execPath,[path.join(__dirname,'../scripts/diagnostics/hearth-playthrough.cjs')],{encoding:'utf8'});
+ const summary=JSON.parse(output.trim().split('\n').at(-1));assert.equal(summary.complete,true);assert.ok(summary.time<=7200);
+ assert.ok(summary.milestones.some(m=>m.planned==='enclosure'));assert.ok(summary.milestones.some(m=>m.learned==='plow'));
+ console.log('Command-only Hearth completion with periodic save restoration:',summary.time,'simulated seconds');
+});
