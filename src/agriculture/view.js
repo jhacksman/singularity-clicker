@@ -1,0 +1,56 @@
+(function(){
+'use strict';
+const {Village,CROPS,BUILD,JOBS,RESOURCES}=AgricultureGame,KEY='singularity-clicker.agriculture.v1',HEARTH='singularity-clicker.hearth.v1',$=id=>document.getElementById(id);
+let started=true;
+let village=new Village(),selected=0,paused=false,blocked=false,unread=null,lastSaved=null,last=performance.now(),acc=0,saveTime=0,modal=false;
+const canvas=$('farm'),ctx=canvas.getContext('2d');let points=[];
+function say(text){$('status').textContent=text;}
+function save(){if(blocked||!started)return;try{const text=village.serialize();localStorage.setItem(KEY,text);lastSaved=text;}catch{blocked=true;paused=true;say('Saving stopped. Open Journey and export before closing.');}}
+function show(title,body){modal=true;$('dialog-title').textContent=title;$('dialog-body').innerHTML=body;$('dialog').showModal();}
+function close(){if(!started)return;modal=false;$('dialog').close();last=performance.now();acc=0;}
+$('close').onclick=close;$('dialog').addEventListener('cancel',e=>{if(!started){e.preventDefault();return;}modal=false;last=performance.now();acc=0;});
+function load(){try{const raw=localStorage.getItem(KEY);if(raw){unread=raw;village=new Village(JSON.parse(raw));unread=null;lastSaved=raw;return;}
+ started=false;$('close').hidden=true;
+ const rawHearth=localStorage.getItem(HEARTH);let completed=null;try{const state=rawHearth&&JSON.parse(rawHearth);if(state?.complete&&HearthGame.valid(state))completed=state;}catch{}
+ if(completed){show('A place for the next harvest.','<p>Carry your people and inherited traditions into a farming settlement. Your completed Hearth remains unchanged, and a copy is kept inside this new journey.</p><p>This is the first Agriculture slice: fields, soil, water, storage and irrigation. The rest of the age is still ahead.</p><button id="begin">Begin the settlement</button>');$('begin').onclick=()=>{started=true;$('close').hidden=false;village=Village.fromHearth(completed);close();save();render();};}
+ else{show('Agriculture · first harvest preview.','<p>Finish the first furrow in The Hearth to carry that journey onward, or try a separate settlement here. Neither choice replaces your Cave or Hearth.</p><button id="begin">Try a standalone settlement</button><a href="hearth.html">Return to The Hearth</a>');$('begin').onclick=()=>{started=true;$('close').hidden=false;close();save();render();};}
+ }catch{blocked=true;paused=true;say('This save could not be opened. Journey can export the original or import a backup.');}}
+function render(){const s=village.s,f=s.fields[selected];
+ $('stocks').innerHTML=RESOURCES.map(k=>'<div class="stock '+(s.stock[k]<4?'low':'')+'"><span>'+k[0].toUpperCase()+k.slice(1)+'</span><strong>'+Math.floor(s.stock[k])+'</strong><small>/ '+village.cap(k)+'</small></div>').join('');
+ $('day').textContent='Day '+(1+Math.floor(s.time/180));$('pause').textContent=paused?'Resume':'Pause';$('step').disabled=!paused||modal||blocked;
+ $('plots').innerHTML=s.fields.map(p=>'<button class="plot" data-field="'+p.id+'" aria-pressed="'+(p.id===selected)+'"><strong>Field '+(p.id+1)+' · '+p.workers+' workers</strong><small>'+Math.floor(p.soil)+'% soil · '+(p.crop?CROPS[p.crop].name:p.nextCrop?CROPS[p.nextCrop].name:'Fallow')+'</small><small>'+ (p.blocked||p.phase)+'</small></button>').join('');
+ $('field-title').textContent='Field '+(selected+1)+' · '+Math.floor(f.soil)+'% soil';$('field-status').textContent=f.phase==='fallow'?'Choose the next crop; workers sow and tend it automatically.':Math.floor(f.work)+' / '+CROPS[f.crop].work+' work · '+(f.phase==='ripe'?'Ready to harvest':'Growing');
+ if(f.blocked)$('field-status').textContent=f.blocked;
+ $('crop').value=f.nextCrop||'';$('field-workers').textContent=f.workers;$('field-less').disabled=!f.workers;$('field-more').disabled=!village.idle;
+ $('workforce').textContent=village.idle+' unassigned of '+s.population+' people. One water carrier supports several fields.';
+ $('jobs').innerHTML=Object.entries(JOBS).map(([k,name])=>'<div class="allocation"><span>'+name+'</span><button data-job="'+k+'" data-change="-1" aria-label="Remove '+name+' worker" '+(!s.jobs[k]?'disabled':'')+'>−</button><strong>'+s.jobs[k]+'</strong><button data-job="'+k+'" data-change="1" aria-label="Add '+name+' worker" '+(!village.idle?'disabled':'')+'>+</button></div>').join('');
+ $('projects').innerHTML=Object.entries(BUILD).map(([k,d])=>{const unavailable=s.harvests<2||s.project||village.has(k)||(k==='irrigation'&&!village.has('granary'))||Object.entries(d.cost).some(([r,n])=>s.stock[r]<n);return '<button data-plan="'+k+'" '+(unavailable?'disabled':'')+'>'+d.name+(village.has(k)?' · built':'')+'<small>'+Object.entries(d.cost).map(([r,n])=>n+' '+r).join(' · ')+'</small></button>';}).join('')+(s.project?'<p>'+BUILD[s.project.kind].name+' · '+Math.floor(s.project.work)+' / '+BUILD[s.project.kind].work+' work. Assign construction workers.'+(s.stock.grain<=0?' Work waits for food.':'')+'</p><progress max="'+BUILD[s.project.kind].work+'" value="'+s.project.work+'"></progress>':s.harvests<2?'<p>Complete two harvests to begin building.</p>':'<p>A granary expands grain storage. Irrigation halves field water use and expands the water reserve. Projects need assigned construction workers.</p>');
+ $('goal-title').textContent=s.milestone?'The first dependable surplus.':'A harvest worth keeping.';
+ $('goal-detail').textContent=s.milestone?'This Agriculture milestone is complete. Keep experimenting with crop rotation. Exchange, copper and the next age are still to come.':'Complete five harvests, finish a granary and irrigation, and store 40 grain. Start by choosing Grain for a field and assigning two workers.';
+ $('goal-progress').innerHTML=[[(s.harvests>=5),Math.min(5,s.harvests)+' / 5 harvests'],[village.has('granary'),'Granary'],[village.has('irrigation'),'Irrigation'],[s.stock.grain>=40,Math.min(40,Math.floor(s.stock.grain))+' / 40 grain']].map(([done,label])=>'<div class="goal-check">'+(done?'✓':'○')+' '+label+'</div>').join('');draw();
+}
+function draw(){const rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height,dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const u=Math.min(w/12,h/7),ox=w*.5,oy=h*.36;const iso=(x,y)=>({x:ox+(x-y)*u,y:oy+(x+y)*u*.43});const polygon=(pts,color,stroke)=>{ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}};
+ polygon([iso(-2,-1),iso(5,-1),iso(5,4),iso(-2,4)],'#536647');polygon([iso(-1.7,-1),iso(-1.25,-1),iso(-1.25,4),iso(-1.7,4)],'#789c98');points=[];
+ for(const f of village.s.fields){const x=f.id%3*1.45,y=Math.floor(f.id/3)*1.45;const corners=[iso(x,y),iso(x+1.25,y),iso(x+1.25,y+1.25),iso(x,y+1.25)];polygon(corners,f.nextCrop?'#72563a':'#647347',selected===f.id?'#efdc9c':'#948868');points.push({id:f.id,p:iso(x+.625,y+.625),r:u*.65});
+ for(let i=1;i<6;i++){const a=iso(x+.15,y+i*.19),b=iso(x+1.1,y+i*.19);ctx.strokeStyle='#453d2c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();if(f.crop)for(let j=0;j<5;j++){const p=iso(x+.2+j*.2,y+i*.19),height=3+12*f.work/CROPS[f.crop].work;ctx.strokeStyle=f.crop==='grain'?'#d8bf72':'#98b66f';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x,p.y-height);ctx.stroke();}}
+ const center=iso(x+.625,y+.625);ctx.fillStyle='#faf0c9';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(String(f.id+1),center.x,center.y+7);for(let n=0;n<f.workers;n++){const p=iso(x+.25+n*.28,y+1.1);ctx.fillStyle='#dac39a';ctx.beginPath();ctx.arc(p.x,p.y-8,3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d7aa73';ctx.fillRect(p.x-3,p.y-5,6,9);}
+ }
+ if(village.has('granary')){const p=iso(-.4,2.5);polygon([{x:p.x-18,y:p.y},{x:p.x+18,y:p.y},{x:p.x+18,y:p.y-23},{x:p.x-18,y:p.y-23}],'#ad9462');polygon([{x:p.x-23,y:p.y-23},{x:p.x,y:p.y-43},{x:p.x+23,y:p.y-23}],'#d3bd7e');}
+ if(village.has('irrigation')){const a=iso(-1,1.36),b=iso(4.3,1.36);ctx.strokeStyle='#9eb7ae';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+}
+function change(fn,message){if(blocked||modal)return;if(fn()===false){say('That order needs more available workers, materials, or progress.');return;}if(message)say(message);save();render();}
+$('plots').onclick=e=>{const b=e.target.closest('[data-field]');if(b){selected=Number(b.dataset.field);render();}};
+canvas.onclick=e=>{const r=canvas.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top},hit=points.find(a=>Math.hypot(p.x-a.p.x,p.y-a.p.y)<a.r);if(hit){selected=hit.id;render();}};
+$('crop').onchange=e=>change(()=>village.crop(selected,e.target.value||null),'The next crop order is set. Workers handle the whole cycle.');
+$('field-less').onclick=()=>change(()=>village.allocate(selected,village.s.fields[selected].workers-1));$('field-more').onclick=()=>change(()=>village.allocate(selected,village.s.fields[selected].workers+1));
+$('jobs').onclick=e=>{const b=e.target.closest('[data-job]');if(b)change(()=>village.allocate(b.dataset.job,village.s.jobs[b.dataset.job]+Number(b.dataset.change)));};
+$('projects').onclick=e=>{const b=e.target.closest('[data-plan]');if(b)change(()=>village.plan(b.dataset.plan),'Materials set aside. Assign construction workers to finish the project.');};
+$('pause').onclick=()=>{paused=!paused;last=performance.now();acc=0;render();};$('step').onclick=()=>{if(paused&&!modal&&!blocked){village.tick(1);save();render();}};
+function download(text){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.href=url;a.download='singularity-clicker-agriculture.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
+$('journey').onclick=()=>{show('Your settlement.','<p>A separate Agriculture save. The Cave and Hearth remain unchanged. Hidden tabs and closed pages do not advance time.</p><button id="export">Export this journey</button><button id="import">Import a journey</button><a href="hearth.html">Return to The Hearth</a>');$('export').onclick=()=>download(unread??village.serialize());$('import').onclick=()=>$('import-file').click();};
+$('import-file').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{if(f.size>6e6)throw Error();const incoming=new Village(JSON.parse(await f.text()));if(!confirm('Replace only the active Agriculture journey with this save?'))return;village=incoming;blocked=false;unread=null;selected=0;close();save();render();}catch{say('This is not a compatible Agriculture save. Current progress is unchanged.');}};
+window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue!==lastSaved){blocked=true;paused=true;say('Another window changed this journey. Reload before continuing.');render();}});
+document.addEventListener('visibilitychange',()=>{last=performance.now();acc=0;if(document.hidden)save();});window.addEventListener('pagehide',save);new ResizeObserver(draw).observe(canvas);
+function frame(now){const dt=Math.min(.25,(now-last)/1000);last=now;if(!paused&&!modal&&!blocked&&!document.hidden){acc+=dt;saveTime+=dt;while(acc>=1){village.tick(1);acc--;render();}if(saveTime>=5){save();saveTime=0;}}requestAnimationFrame(frame);}
+load();render();requestAnimationFrame(frame);
+})();

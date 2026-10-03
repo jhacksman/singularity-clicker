@@ -1,0 +1,23 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),{spawn}=require('node:child_process'),{once}=require('node:events');
+const playwright=require(process.env.PLAYWRIGHT_MODULE||'playwright'),{Hearth}=require('../../src/hearth/engine.js');
+const KEY='singularity-clicker.agriculture.v1',HEARTH='singularity-clicker.hearth.v1';fs.mkdirSync('artifacts',{recursive:true});
+(async()=>{const server=spawn(process.execPath,['scripts/serve.cjs'],{stdio:['ignore','pipe','inherit']});let browser;
+ try{await Promise.race([once(server.stdout,'data'),once(server,'exit').then(()=>{throw Error('Server did not start');})]);browser=await playwright.chromium.launch({headless:true,chromiumSandbox:true});const context=await browser.newContext({viewport:{width:1280,height:900},recordVideo:{dir:'artifacts/agriculture-video',size:{width:1280,height:900}}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:8080/agriculture.html');await page.locator('#begin').waitFor();await page.reload();assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),null);await page.locator('#begin').click();await page.locator('#pause').click();
+ await page.locator('#crop').selectOption('grain');await page.locator('#field-more').click();await page.locator('#field-more').click();
+ await page.locator('[data-field="1"]').click();await page.locator('#crop').selectOption('pulses');await page.locator('#field-more').click();
+ let state;for(let i=0;i<240;i++){
+  state=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),KEY));if(state.milestone)break;
+  const next=state.buildings.includes('granary')?'irrigation':'granary',plan=page.locator('[data-plan="'+next+'"]');if(await plan.isEnabled())await plan.click();
+  state=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),KEY));const job=state.project?'build':state.stock.wood<(state.buildings.includes('granary')?18:12)?'wood':state.stock.clay<(state.buildings.includes('granary')?10:8)?'clay':'forage';
+  await page.evaluate(({state,job})=>{for(const k of ['wood','clay','forage','build'])if(k!==job)for(let n=0;n<state.jobs[k];n++)document.querySelector('[data-job="'+k+'"][data-change="-1"]').click();if(!state.jobs[job])document.querySelector('[data-job="'+job+'"][data-change="1"]').click();for(let n=0;n<10;n++)document.getElementById('step').click();},{state,job});
+ }
+ state=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),KEY));assert.equal(state.milestone,true);assert.ok(state.harvests>=5);assert.ok(state.stock.grain>=40);await page.screenshot({path:'artifacts/agriculture-first-surplus.png',fullPage:true});
+ await page.reload();await page.locator('#pause').click();assert.deepEqual(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),KEY)),state);
+ await page.locator('#journey').click();const downloaded=page.waitForEvent('download');await page.locator('#export').click();await (await downloaded).saveAs('artifacts/agriculture-export.json');assert.deepEqual(JSON.parse(fs.readFileSync('artifacts/agriculture-export.json','utf8')),state);await context.close();
+ // Completed-Hearth import is explicit, non-destructive and included in export.
+ const h=new Hearth();h.s.complete=true;h.s.plowed=1;const source=h.serialize(),transfer=await browser.newContext(),hp=await transfer.newPage();hp.on('pageerror',e=>errors.push(e.message));await hp.addInitScript(([k,v])=>localStorage.setItem(k,v),[HEARTH,source]);await hp.goto('http://127.0.0.1:8080/agriculture.html');await hp.locator('#begin').click();
+ const carried=JSON.parse(await hp.evaluate(k=>localStorage.getItem(k),KEY));assert.equal(carried.sourceArchive,source);assert.equal(await hp.evaluate(k=>localStorage.getItem(k),HEARTH),source);await transfer.close();assert.deepEqual(errors,[]);
+ console.log('PASS Agriculture browser: ordinary crop/workforce/construction decisions reach surplus at '+state.time+'s; refresh/export exact; explicit Hearth handoff preserves original; no page errors');
+ }catch(error){if(browser)for(const [i,c] of browser.contexts().entries())for(const [j,p] of c.pages().entries()){await p.screenshot({path:`artifacts/agriculture-failure-${i}-${j}.png`,fullPage:true}).catch(()=>{});fs.writeFileSync(`artifacts/agriculture-failure-${i}-${j}.txt`,await p.locator('body').innerText().catch(()=>''));}throw error;}finally{if(browser)await browser.close();server.kill();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

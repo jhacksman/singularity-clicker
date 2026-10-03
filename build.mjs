@@ -13,3 +13,7 @@ console.log('Built self-contained cave: '+(Buffer.byteLength(html)/1024/1024).to
 const hearth=read('src/hearth/shell.html').replace('/*__CSS__*/',()=>read('src/hearth/styles.css')).replace('/*__ENGINE__*/',()=>read('src/hearth/engine.js')).replace('/*__VIEW__*/',()=>read('src/hearth/view.js'));
 fs.writeFileSync(path.join(root,'dist/hearth.html'),hearth);
 console.log('Built self-contained hearth: '+(Buffer.byteLength(hearth)/1024).toFixed(0)+' KB');
+
+const agriculture=read('src/agriculture/shell.html').replace('/*__CSS__*/',()=>read('src/agriculture/styles.css')).replace('/*__HEARTH__*/',()=>read('src/hearth/engine.js')).replace('/*__ENGINE__*/',()=>read('src/agriculture/engine.js')).replace('/*__VIEW__*/',()=>read('src/agriculture/view.js'));
+fs.writeFileSync(path.join(root,'dist/agriculture.html'),agriculture);
+console.log('Built self-contained Agriculture slice: '+(Buffer.byteLength(agriculture)/1024).toFixed(0)+' KB');

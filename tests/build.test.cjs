@@ -9,7 +9,7 @@ test('self-contained builds work in encoded paths and retain stage navigation',(
  try{
   for(const name of ['src','assets','build.mjs'])fs.cpSync(path.join(__dirname,'..',name),path.join(root,name),{recursive:true});
   execFileSync(process.execPath,[path.join(root,'build.mjs')],{cwd:os.tmpdir()});
-  for(const [file,link] of [['index.html','hearth.html'],['hearth.html','index.html']]){
+  for(const [file,link] of [['index.html','hearth.html'],['hearth.html','index.html'],['agriculture.html','hearth.html']]){
    const html=fs.readFileSync(path.join(root,'dist',file),'utf8');
    assert.ok(html.includes('href="'+link+'"'));assert.doesNotMatch(html,/\/\*__(?:ENGINE|VIEW|CSS|STYLES)__\*\//);
   }
