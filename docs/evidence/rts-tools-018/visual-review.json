@@ -1,0 +1,25 @@
+{
+  "job": "singularity-20261003-rts-tools-018",
+  "commit": "f4e2d237125c0025606868b64fc9f0957c855826",
+  "result": "pass",
+  "tests": 49,
+  "builds": 4,
+  "simulation_seconds": 121,
+  "browser_errors": 0,
+  "verified": [
+    "Fresh expansion and finite resources/hauling",
+    "Knapping reserves4wood8stone once, interruption preserves progress, resume finishes12worker-seconds",
+    "Exact restore remains frozen for2500ms; explicit Resume advances time",
+    "Separate v1 browser compatibility fixture preserves exact raw backup, stock/deposits and upgrades schema to2"
+  ],
+  "visual_review": "Interrupted2.4/12worker-seconds,0assigned and reserved materials displayed clearly; completion progress/status/disabled button and individual worker cards legible. Floating TOOLS READY label removed from map; workers unobscured. Explanation now correctly distinguishes25percent less extraction time and33.3percent greater extraction rate, with delivery travel caveat. No new layout defects observed at1440x1100.",
+  "video": {
+    "codec": "VP8",
+    "duration_seconds": 55.84,
+    "width": 1440,
+    "height": 1100,
+    "inspection": "Sampled contact sheet plus full-size crafting screenshots reviewed."
+  },
+  "limits": "Virtual clock does not establish real-time pacing. Migration is explicitly fixture-based, separate from uninjected gameplay. No native macOS/iOS tests.",
+  "infrastructure_blockers": []
+}

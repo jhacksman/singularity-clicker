@@ -1,0 +1,10 @@
+{
+  "id": "singularity-20261003-rts-tools-018",
+  "commit": "f4e2d237125c0025606868b64fc9f0957c855826",
+  "host": "gb10-02",
+  "exit_code": 0,
+  "reason": "completed",
+  "started": 1791069226.3506405,
+  "finished": 1791069284.4025898,
+  "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e"
+}

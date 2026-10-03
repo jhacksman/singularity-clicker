@@ -1,3 +1,33 @@
+Current checkpoint — Spark Tools018
+Tested source f4e2d237125c0025606868b64fc9f0957c855826, gb10-02, exit 0.
+49 tests, four builds, actual fresh expansion/crafting/browser migration passed.
+Exact command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/hearth-rts.cjs
+Library hearth-rts-core-preview.html was replaced in place at version 1.
+Evidence/identity: docs/evidence/rts-tools-018. Earlier screenshot/video remain
+RTS016 evidence, not demonstrations of the newer workshop feature.
+
+New guide steps
+1. Finish a workshop using the existing finite gathering/construction loop.
+2. Select villagers, then left-click the completed workshop. The inspector shows
+   Useful edges: reserve 4 wood + 8 stone and assign selected villagers.
+3. Workers return any cargo, walk to the workshop and perform 12 worker-seconds
+   of knapping. Stop/reassign to interrupt; progress and reserved materials stay.
+   Right-click the active workshop or use its inspector to resume.
+4. Completed tools reduce extraction time from 0.60 to 0.45 seconds per item:
+   25% less time, 33.3% higher extraction rate. Hauling and five-item loads do not
+   change, so delivery throughput depends on travel. Wild deposits stay finite.
+5. Reloaded/imported camps open paused. Resume explicitly when ready. The exact
+   world stays frozen beforehand; no clock tolerance is hidden in verification.
+6. RTS v1 saves migrate to v2 with an exact original raw backup under the existing
+   save key plus .before-v2. Old abandoned-Hearth saves are a separate format and
+   remain untouched. Unknown future RTS formats are rejected.
+
+Status: bounded restored-depth increment, not full Hearth parity. Inventory is
+in hearth-mechanic-inventory.txt. Broader mechanics wait for Astra specification
+reconciliation. No new source work or publication after this checkpoint.
+
+Historical first-core guide follows (Spark016):
+
 RTS core preview — verified Spark016
 
 Tested source: 69eaba9d3cb031fefc0c1fcfd090b67d96dd36bc

@@ -87,3 +87,11 @@ reload and 2.5 seconds of waiting, then proves Resume advances time. No clock
 tolerance or skipped-state comparison was introduced. Migration also opens
 paused. The floating TOOLS READY caption was removed from worker space; workshop
 completion is shown in the existing building caption and fixed inspector.
+
+Verified checkpoint
+Spark Tools018 at f4e2d237125c0025606868b64fc9f0957c855826 passed all49tests,
+fourbuilds, fresh earned crafting reserve-once/interruption/resume/completion,
+exact restore frozen2500ms plus explicit Resume, and browserv1 rawbackup/migration.
+Feedback overlap was visually corrected. Evidence: docs/evidence/rts-tools-018.
+The existing LibraryRTS HTML is now version1. Hold broader mechanics pending
+Astra review reconciliation; inventory above remains the staged integration map.
