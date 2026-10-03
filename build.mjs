@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const root=path.dirname(new URL(import.meta.url).pathname);
+import {fileURLToPath} from 'node:url';
+const root=path.dirname(fileURLToPath(import.meta.url));
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 const image=name=>'data:image/svg+xml;base64,'+fs.readFileSync(path.join(root,'assets',name)).toString('base64');
 const css=read('src/styles.css').replace('__CAVE_IMAGE__',image('cave.svg')).replace('__ATLAS_IMAGE__',image('objects.svg'));
