@@ -1,0 +1,64 @@
+Spark gameplay009 — exact verification record
+
+Source commit: 95c8a99d186cfeeff8819eb14658331cfe952bfb
+Job: singularity-20261003-gameplay-009
+Host: gb10-02 (Spark2); exit 0, reason completed.
+Start/end Unix seconds: 1791044860.3835187 / 1791044975.4598892
+Image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e
+Node 24.20.0; Playwright 1.63.0; ARM64 Chromium 153.0.8010.12.
+Browser sandbox enabled; 2 CPU, 4 GiB, no network, 600-second limit.
+Coordinator approved/dispatched. No tests/builds were executed on M6.
+
+Exact command
+node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs && node tests/browser/agriculture.cjs && node tests/browser/hearth-progression.cjs
+
+Results
+- 34 deterministic tests passed; zero failed, skipped or cancelled.
+- Self-contained Cave, Hearth and Agriculture pages built.
+- Cave/Hearth browser smoke passed: refresh, navigation, repeated assignments,
+  supply jobs, shelter, learning, failed-write export, future-save preservation,
+  shortage migration and an emulated touch job assignment.
+- Agriculture browser policy reached first surplus at 370 simulated seconds.
+  Exact refresh/export, original Hearth preservation, escaped imported status,
+  depleted-save recovery, failed-write live export, conflicting-tab prevention
+  and paused-time checks passed. Fault cases use explicitly labelled fixtures,
+  separately from ordinary unboosted progression.
+- Fresh Hearth browser policy reached an actual first furrow at 2163 simulated
+  seconds. Commands use UI buttons/canvas; state is read for planning, not boosted
+  or replaced. Includes enclosure, herd training and plow. Earned save has
+  complete=true. No browser page errors were reported.
+- Separate command-only Hearth regression completed at 3744 simulated seconds
+  with restoration every 300 seconds. This is a different policy/trajectory;
+  2163 versus 3744 is not a measured performance or balance improvement.
+
+Evidence
+Coordinator result, complete job log and browser milestone trace are copied
+verbatim in docs/evidence/gameplay-009/ as result.json, run.log and
+hearth-browser-milestones.json. The trace records discoveries; final completion
+is asserted by the test, log and earned save. SHA256SUMS records the three local
+files and the external earned-save/screenshot evidence.
+
+Original shared queue root on the review machine:
+/Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/
+  approved/singularity-20261003-gameplay-009.json
+  results/singularity-20261003-gameplay-009.json
+  logs/singularity-20261003-gameplay-009.log
+  results/singularity-20261003-gameplay-009-artifacts.tar
+  results/singularity-009-evidence/hearth-earned-completed-save.json
+  results/singularity-009-evidence/hearth-full-browser-completion.png
+Large save/screenshot/archive remain there rather than being added to the repo.
+
+Commit and delivery boundaries
+The reviewed branch cherry-picks the test-only change as 15d0371. Its source/test
+content matches the exact tested commit above. The branch also holds Spark008
+generated dist pages and review docs. Do not label the later documentation commit
+itself as an executed CI commit. App source is unchanged since Spark008 source
+ab7a70d638d13637fa0c4fc2c2de4d8ede3456ef. The delivered Library review package stays
+the verified Spark008 output; no new upload/publication occurs in this follow-up.
+
+Limits
+Fast single-step simulation is not a real-time human two-hour session. The fresh
+Hearth policy proves one route, not all strategies, travel/resident flows,
+prestige UI or every design requirement. Emulated touch is not physical iOS QA.
+No native build, main merge or production deployment occurred. Campaign gaps
+and prioritized acceptance are in campaign-readiness.txt.

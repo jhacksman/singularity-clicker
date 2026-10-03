@@ -42,12 +42,12 @@ Do not tie simulation speed to animation frame rate. Do not simulate unattended 
 ## Known first-build limitations
 
 - Two-hour pacing has not been established through human playtesting.
-- Browser UI and touch interactions have not undergone a browser/device QA session in this delivery.
+- Sandboxed Chromium smoke, full Hearth progression and Agriculture recovery flows passed on Spark (see `gameplay-009-evidence.txt`). One emulated touch job assignment is covered; physical-device and broad interaction QA remain outstanding.
 - macOS and iOS packaging has not been performed.
 - The minigames currently share a simple timing interaction; distinct hunting, plant-identification, and knapping activities need further design/art work.
 - Woodland regeneration and periodic field growth are modeled, but there is no full seasonal ecology, crop diversity, or detailed waste/sanitation simulation yet.
 - Construction uses material reservation at the worksite and visible completion; individual trips carrying construction ingredients are abstracted.
-- Fences occupy grid cells. Gates remain passable; repairs restore condition before fences disappear. Stone walls have no maintenance decay.
+- Fences occupy grid cells and gates remain passable. Wooden durability decreases and builders repair it, but zero-durability fences still block paths and count toward enclosures. Functional breakage remains a concrete gap. Stone walls have no maintenance decay.
 - Roads are built as a local project and reduce travel cost; terrain-wide road drawing is not implemented.
 - Resident groups, recurring adjacent gathering parties, and emergency returns work; multi-hop logistics and configurable stock thresholds are not implemented.
 - Buildings can be dismantled and reconstructed, and outlines moved. A separate portable-building carry animation is not implemented.

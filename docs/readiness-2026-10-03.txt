@@ -1,5 +1,10 @@
 Readiness milestone — 2026-10-03
 
+Historical Hearth repair record (Spark005). Newer Agriculture work and the full
+Hearth browser run are recorded in gameplay-009-evidence.txt. Current all-stage
+status and remaining acceptance criteria are in campaign-readiness.txt. Scope
+claims below describe Spark005, not the entire current branch.
+
 Base inspected: 05b8402 (main). The repository already contains playable Cave and
 Hearth stages, directly authored SVG/Canvas art, design requirements, and tests.
 No new stage mechanics or art are introduced by this milestone.

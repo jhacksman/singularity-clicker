@@ -1,65 +1,173 @@
-Campaign readiness and next milestones — 2026-10-03
+Campaign readiness and acceptance backlog — 2026-10-03
 
-Numbering
-The shipped code labels The Cave 0 and The Hearth 1. The user's references to a
-working first stage and broken second stage may be ordinal. Use stage names in
-repair discussions; do not rename or shift saved stage identities on that basis.
+Current result
+Cave and Hearth are playable. A bounded Agriculture first-surplus slice is
+playable and delivered for review. Stages 3–13 do not exist. This is not completion
+of the fourteen-stage request. See gameplay-009-evidence.txt for exact Spark
+verification and its limits. Publication remains on hold: no further push, merge
+or production deployment is authorized by this document.
 
-Recovered direction, relayed by parent from September 7 discussion
-A fourteen-stage journey was accepted. Industrialization must be Stage 5, with
-three pre-singularity stages concerned with avoiding extinction. The names below
-were assistant proposals within that structure, not independently approved full
-mechanical specifications. Recovered gameplay directions include farm management
-for Agriculture; workshops and accounting for Bronze; infrastructure/mechanisms
-for Iron; Factorio-like production/logistics from Industrialization; a compute
-clicker echoing the Cave for early computers; automation, networks and AI in the
-following ages; then resilience, accountable coordination and distributed life
-support before cosmic-scale compute/prosperity. Later ages become increasingly
-3D/immersive. Each age should have upgrades, automation and prestige; earlier
-layers continue contributing and later technology automates them. The final
-return to a simulated Cave was proposed, not a settled reset contract.
-  0 Survival / The Cave                 implemented
-  1 Fire and Craft / The Hearth         implemented; current repair focus
-  2 Agriculture and Settlement         not implemented
-  3 Bronze and Cities                  not implemented
-  4 Iron, Mechanisms and Science        not implemented
-  5 Industrialization                  not implemented
-  6 Electronics and First Computers    not implemented
-  7 Microprocessors and Automation     not implemented
-  8 Networked Civilization             not implemented
-  9 Machine Intelligence               not implemented
- 10 Planetary Resilience               not implemented
- 11 Cooperative Intelligence           not implemented
- 12 Distributed Civilization           not implemented
- 13 Singularity / Cosmic Expansion     not implemented
+Authority
+Existing saves identify Cave as 0 and Hearth as 1; preserve those identities.
+The September 7 campaign direction was recovered through the parent thread;
+stage-1-design.md and platforms.md preserve the September 9 Hearth requirements.
+The accepted structure includes Industrialization at stage 5 and three ages
+before singularity about avoiding extinction. Later names remain working names,
+not independently approved complete specifications. Proposed acceptance slices
+below do not settle balance, exact exit thresholds, resources or prestige rules.
 
-The later Cave/Hearth documents refine stages 0/1. Agriculture begins as small
-cultivation in The Hearth; the next age makes agriculture central and larger in
-scale. Do not claim the plow precedes all cultivation. Browser-first and directly
-authored art remain requirements. macOS/iOS reuse is an architectural goal, not
-an implemented native release.
+Established direction: browser first; directly authored art; different gameplay
+and perspectives across ages; increasingly immersive later presentation; upgrades,
+automation and prestige in every age; earlier layers keep contributing and later
+technology automates them. macOS/iOS are future required platforms, not shipped
+packages. A final return to a simulated Cave remains a proposal.
 
-Evidence-based repair priorities
-1. Preserve the Cave and valid existing saves. Fix concrete arithmetic/lifecycle
-   failures without changing its resource or prestige rules.
-2. Make the Hearth's actual loop legible: maintain supplies, build, learn, travel,
-   enclose animals, train a draft team, and plow. Show real blocked-work reasons
-   and recover safely from shortages. Do not tune the economy based on an
-   unverified assumption that learning or enclosure placement is impossible.
-3. Regress full progression through public commands with periodic save reloads.
-   Cover real browser setup, work, construction, learning, travel and persistence.
-   A scripted completion time is not evidence of human pacing or enjoyment.
-4. Before implementing Agriculture, recover its detailed discussed contract:
-   meaningful decisions, feedback, automation, endpoint and transition payload.
-   Preserve the completed Hearth world before any stage handoff. The existing
-   separate v1 saves must remain importable; reject unsupported versions instead
-   of silently converting them to a fresh game.
-5. Deliver one playable age at a time, each with resource conservation, unlock,
-   repeated-action, restart/import, safe-recovery and browser progression checks.
-   Do not replace the unimplemented campaign with fourteen placeholder panels.
+Hearth's six accepted defaults: automatic time with pause/single-step; optional
+post-completion prestige preserving completed worlds; fertile discovery helpful
+but not mandatory; newcomers attracted to comfortable camps; safe suspension and
+migration during shortages; authored first geography. No death/starvation/combat;
+autonomous routine work; repeated orders must not accelerate production. Roughly
+two hours of meaningful first play is a human experience target, not a timer to
+pad and not established by CI.
 
-Unsettled by current repository evidence
-Later-stage mechanics and milestones, cross-stage inheritance, optional replay
-and prestige boundaries, migration between campaign save versions, and the actual
-pacing/enjoyment of each age need recovered requirements and playtesting. The
-stage outline alone is insufficient to claim those decisions have been made.
+Priority 0 — truthful effects and recoverable progress
+1. Keep Cave/Hearth v1 imports, rejected raw-save recovery and old-world export.
+   Pass atomic payment, repeated commands, reload, failed writes and malformed/
+   future saves on Spark. Existing tests pass; no historic pre-v1 conversion or
+   global campaign schema migration is claimed.
+2. Resolve two material existing Hearth discrepancies before calling it done:
+   - TECH.drying promises longer food life and cheaper expeditions. No spoilage
+     rule exists; travelQuote applies sledges/traction/roads, not drying. Define
+     the intended preservation/provision benefit within the established design,
+     implement it and prove the displayed effect with before/after resource and
+     travel cases. Do not add punitive starvation merely to make text true.
+   - tick reduces fence durability to zero, while blocked/enclosure still count
+     the completed fence. Define visible broken-fence behavior; prove decay
+     changes barrier/enclosure effectiveness, repair restores it, stone walls
+     do not decay and nobody is irrecoverably trapped. This is source-traced,
+     not a failing reproduction already run on Spark.
+3. Label Agriculture's five harvests + granary + irrigation + 40 grain as a
+   provisional slice gate, not the full-age endpoint. The Library package is
+   Spark008 output; gameplay009 changes only tests, leaving app source identical.
+
+Priority 1 — established Hearth experience and missing browser evidence
+4. Distinct hunting/gathering/invention remain partial: all practices share a
+   timing bar and hunt consumes a generic food node. Acceptance: meaningfully
+   different decisions; practice/equipment observably ease the difficult first
+   hunt; knapping improves useful tools; narrative travel decisions have legible,
+   nonlethal consequences. Exact minigame designs remain open. Preserve autonomous
+   camp work and authored art; differently labelled timing bars are insufficient.
+5. The northeast herd clue is a timed message, not observable migrating herds.
+   Acceptance: discoverable in-world guidance toward the fertile region, correct
+   ridge/height visibility, optional discovery advantage and a viable ordinary
+   route without it. Do not make escaped-animal scripting a mandatory gate.
+6. Browser-test existing group drag/right-click and equivalent tap commands;
+   resident splits, provisioned adjacent routes, safe recall, mountain crossing,
+   returning to changed camps, prestige and reopening preserved worlds. Existing
+   simulation coverage does not verify these UI paths. Refresh must preserve
+   each flow without resource duplication or invalid state.
+7. Observe fresh human play: supply-job discovery, group assignment, building,
+   blocked-work interpretation, shortage recovery and understanding the plow
+   goal without coaching. Record decisions, unexplained waits, revisits and
+   feedback. Assess meaningful duration separately from expert scripted time;
+   fix observed friction rather than slowing production to pad a timer.
+
+Other Hearth boundaries
+Construction materials are reserved at the worksite; separate ingredient-hauling
+trips are abstracted. Adjacent parties use timers rather than travelling actors.
+Buildings can be dismantled/rebuilt and outlines moved; portable carry animation
+is absent. Work radius exists but adjustable order-area preview is absent.
+Remote reserve dashboards, multi-hop logistics, seasonal ecology/sanitation,
+rotation previews and audio are unfinished refinements/proposals, not all settled
+blocking requirements. Do not elevate every design suggestion into a new mandate.
+
+Priority 2 — Agriculture and the shared campaign contract
+8. Preserve the finite-workforce, grain/restorative crop, soil/water, automated
+   sow/tend/harvest, granary, irrigation and wild-recovery loop. Full-age acceptance:
+   connect domestication and settlement production to pottery, fermentation,
+   textiles, exchange and copper through meaningful allocation/storage choices.
+   A button per subject is insufficient. Each chain needs visible inputs/outputs,
+   an upgrade, autonomous routine, depletion recovery and save/reload parity.
+   Review the full-age endpoint and optional prestige before a Bronze transition.
+9. Current handoff preserves exact Hearth JSON and transfers population/traditions;
+   it does NOT run older production or integrate all old buildings into a live
+   economy. Define stable stage IDs, inheritance, contribution units, later
+   automation, pause/background policy and prestige scope before adding many
+   ages. Gate implementation on conservation, no double credit on repeated
+   entry/import, atomic handoff or rollback, completed-world restore, no unwanted
+   offline depletion and cross-stage stale-tab protection. Fixture-test each
+   actually supported schema migration; reject unknown future formats.
+
+Priority 3 — all-stage acceptance slices, in sequence
+Later rows are proposals for concrete review, not approved mechanics or shipped
+content. Each slice must meet the common gate below, not add a placeholder page.
+
+0 Survival / Cave — implemented and regression-tested.
+  Preserve authored clicker/events/completion. Verify repeated actions and refresh
+  cannot strand the fire encounter; separately define any campaign bonus.
+1 Fire and Craft / Hearth — playable; gaps above remain.
+  Ordinary assignment through enclosure, trained team and actual plowing, plus
+  established experience, recovery and preserved-world requirements in items 2–7.
+2 Agriculture and Settlement — first-surplus slice only.
+  Coherent settlement production and copper/exchange endpoint, with prestige and
+  a defined Bronze handoff, rather than only today's five-harvest objective.
+3 Bronze and Cities — absent.
+  Proposed slice: copper/tin, furnaces/workshops and written accounting. Gate:
+  repeatable bronze chain with a visible bottleneck, administrative benefit and
+  normal recovery from a missing input.
+4 Iron, Mechanisms and Science — absent.
+  Proposed slice: regional infrastructure/trade, mills/gears, printing/scientific
+  method. Gate: improve a connected network through an observable mechanism or
+  research decision, not a renamed bronze recipe list.
+5 Industrialization — absent; required position in the sequence.
+  Proposed slice: first Factorio-like production/logistics, steam/electricity and
+  machine tools. Gate: construct and automate a material/energy chain, diagnose a
+  blockage and restart without resetting.
+6 Electronics and First Computers — absent.
+  Proposed slice: Cave-echo compute clicker, logic/transistors/information. Gate:
+  turn manual computation into an automated machine with bounded resource costs
+  and a visible benefit to earlier production.
+7 Microprocessors and Automation — absent.
+  Proposed slice: circuits/programming/robotics/factory control. Gate: configure
+  an inspectable routine that handles real factory work, can be stopped/repaired
+  and preserves its program and state through reload.
+8 Networked Civilization — absent.
+  Proposed slice: distributed logistics/internet/cloud. Gate: connect productive
+  sites, expose capacity/reliability tradeoffs and recover a disconnected site
+  without duplicating goods or compute.
+9 Machine Intelligence — absent.
+  Proposed slice: AI research/robotics/automated labs. Gate: a visible research-to-
+  deployment loop improves autonomous work, shows cost/limits and recovers when
+  delegated work cannot proceed.
+10 Planetary Resilience — absent; first extinction-avoidance age.
+  Proposed slice: energy/food/water/health/ecology/recovery. Gate: visible system
+  dependencies and a successful resilience intervention in a reversible stress
+  scenario. Exact risks/metrics require design.
+11 Cooperative Intelligence — absent; second extinction-avoidance age.
+  Proposed slice: authority/coordination/accountability/failure investigation.
+  Gate: set delegation boundaries, inspect a coordination failure and restore
+  correct operation; more agents alone is not a completion metric.
+12 Distributed Civilization — absent; third extinction-avoidance age.
+  Proposed slice: habitats/life support/repair/planetary defense. Gate: maintain
+  distributed settlements through a bounded disruption with visible redundancy
+  and repair choices. Exact hazards/failure semantics remain open.
+13 Singularity / Cosmic Expansion — absent.
+  Proposed slice: autonomous discovery, cosmic energy/compute/prosperity. Gate:
+  coordinate expanding systems with legible constraints/outcomes. Review an
+  ending and prestige semantics before any simulated-Cave return; preserve old
+  worlds and player agency.
+
+Common completion gate for every age
+Distinct playable interaction; deterministic resource arithmetic; meaningful
+upgrades; automation; explicit optional prestige/preservation; defined handoff;
+legible shortages and normal recovery; authored art; accessible browser/touch
+controls. Spark CI covers prerequisites, conservation, repeated actions, ordinary
+full progression, refresh/import/export, supported migration fixtures and browser
+completion. Record exact commit/commands/results. Humans assess pacing/clarity;
+CI timing cannot substitute. No broad refactor is needed to document this backlog.
+
+Platform gate
+Physical-device touch, keyboard/accessibility, safe areas, foreground/background
+and file/share behavior need validation. Native macOS/iOS projects, bridges,
+packaging/signing and Apple verification are absent. Spark-only execution does
+not authorize Apple builds on M6; coordinate an approved future testing approach.
