@@ -1,0 +1,62 @@
+[
+  {
+    "time": 61,
+    "learned": "knapping"
+  },
+  {
+    "time": 121,
+    "learned": "bindings"
+  },
+  {
+    "time": 221,
+    "learned": "baskets"
+  },
+  {
+    "time": 311,
+    "learned": "drying"
+  },
+  {
+    "time": 491,
+    "learned": "woodland"
+  },
+  {
+    "time": 621,
+    "learned": "routes"
+  },
+  {
+    "time": 761,
+    "learned": "pottery"
+  },
+  {
+    "time": 919,
+    "learned": "cultivation"
+  },
+  {
+    "time": 975,
+    "learned": "quarry"
+  },
+  {
+    "time": 1013,
+    "learned": "sledges"
+  },
+  {
+    "time": 1183,
+    "learned": "settlement"
+  },
+  {
+    "time": 1383,
+    "learned": "husbandry"
+  },
+  {
+    "time": 1383,
+    "planned": "enclosure"
+  },
+  {
+    "time": 1713,
+    "learned": "traction"
+  },
+  {
+    "time": 2053,
+    "learned": "plow"
+  }
+]

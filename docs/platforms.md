@@ -47,7 +47,7 @@ Do not tie simulation speed to animation frame rate. Do not simulate unattended 
 - The minigames currently share a simple timing interaction; distinct hunting, plant-identification, and knapping activities need further design/art work.
 - Woodland regeneration and periodic field growth are modeled, but there is no full seasonal ecology, crop diversity, or detailed waste/sanitation simulation yet.
 - Construction uses material reservation at the worksite and visible completion; individual trips carrying construction ingredients are abstracted.
-- Fences occupy grid cells and gates remain passable. Wooden durability decreases and builders repair it, but zero-durability fences still block paths and count toward enclosures. Functional breakage remains a concrete gap. Stone walls have no maintenance decay.
+- Fences occupy grid cells and gates remain passable. Wooden durability decreases and builders repair it, and zero-durability fences become passable and cease enclosing animals. Repair checks access before restoring barriers (Spark012 verified). Stone walls have no maintenance decay.
 - Roads are built as a local project and reduce travel cost; terrain-wide road drawing is not implemented.
 - Resident groups, recurring adjacent gathering parties, and emergency returns work; multi-hop logistics and configurable stock thresholds are not implemented.
 - Buildings can be dismantled and reconstructed, and outlines moved. A separate portable-building carry animation is not implemented.

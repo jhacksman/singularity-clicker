@@ -1,0 +1,71 @@
+Agriculture first surplus: 374 simulated seconds
+✔ Agriculture allocations and repeated crop orders cannot invent workers or reset growth (1.925935ms)
+✔ crop choices trade food yield for soil recovery and apply after the current harvest (1.176912ms)
+✔ zero grain, seed and water recover through assigned work with no resets (0.638464ms)
+✔ invalid saves and future schemas are rejected; completed Hearth handoff is non-destructive (61.388765ms)
+✔ crop and construction state resume identically; ten seconds equals ten one-second ticks (0.302448ms)
+✔ ordinary farm decisions reach dependable surplus across refreshes without boosted resources (2.043536ms)
+✔ self-contained builds work in encoded paths and retain stage navigation (41.306622ms)
+Actual-engine median actions / seconds at 1 action per second: [ 764, 493, 530 ]
+✔ A depleted camp recovers without resets or emergency experience (0.771696ms)
+✔ Unaffordable searches are atomic, reserve the worst case, and do not reroll RNG (0.4416ms)
+✔ Stone tools reduce gathering costs, wear exactly once, and hand over to the next tool (0.145088ms)
+✔ Food origins use FIFO and output caps reflect supply expenditure (0.627264ms)
+✔ Bedding and responsive signals multiply learning; innovation is never spent (0.225776ms)
+✔ Routines run at boundaries, check full output, and never create manual experience (0.140752ms)
+✔ Prestige grants each milestone once, resets the camp, and retains first-journey time (0.1284ms)
+✔ Fire depends on innovation alone, survives saves, is free, and preserves the completed baseline (0.231632ms)
+✔ Saving preserves exact random sequence and full camp state (0.3568ms)
+✔ The actual game completes ordinary, efficient, and optional-prestige playthroughs (35.080542ms)
+✔ completed drying racks conserve camp food without changing water or creating food (40.579661ms)
+✔ drying reduces actual mountain and gathering-party food provisions, not free migration (1.793568ms)
+✔ exhausted side fences open a cardinal enclosure; a missing corner alone does not (7.50104ms)
+✔ repair cannot seal a worker inside an enclosure without a gate (18.374719ms)
+✔ knapping practice improves tool work beyond the initial discovery (12.391551ms)
+✔ autonomous workers return loads and serialized progress round trips (36.052494ms)
+✔ empty supplies preserve people and always permit a normal neighboring migration (5.105919ms)
+✔ ordinary recovery gathering still works without food or water (4.110496ms)
+✔ protected trees remain untouched and clearing slows regrowth (29.332895ms)
+✔ high elevation sees two away and another ridge blocks the middle (0.821136ms)
+✔ outlines reserve no materials; assigned builders complete and migration preserves them (2.984784ms)
+✔ gathering routes debit provisions, deliver actual resources, and recall safely (15.588607ms)
+✔ a plow needs a prepared field and trained team; prestige preserves completed state (15.436911ms)
+✔ malformed saves are rejected before replacing the running journey (22.267183ms)
+Command-only Hearth completion with periodic save restoration: 5195 simulated seconds
+✔ repeated assignments preserve deterministic work across refreshes (101.567211ms)
+✔ changing jobs or resting carries an existing load home before depositing (23.498831ms)
+✔ fractional payment tolerance never writes a negative balance or invalid save (18.705551ms)
+✔ locked practices and unaffordable payments are atomic (8.819392ms)
+✔ v1 saves preserve both stages; unknown versions are rejected without migration guesses (34.382398ms)
+✔ Cave rejects contradictory completion flags that strand the fire encounter (0.582976ms)
+✔ herders explain missing animal provisions instead of claiming the herd is settled (3.184384ms)
+✔ an ordinary Hearth policy completes with recurring save restoration and no boosted state (749.732091ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1559.622707
+Built self-contained cave: 0.10 MB
+Built self-contained hearth: 82 KB
+Built self-contained Agriculture slice: 51 KB
+PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors
+PASS Agriculture browser: ordinary crop/workforce/construction decisions reach surplus at 370s; refresh/export exact; explicit Hearth handoff preserves original; shortage/write-failure/tab-conflict recovery pass; no page errors
+{"time":71,"latest":{"time":61,"learned":"knapping"},"people":4,"knowledge":10,"food":56}
+{"time":131,"latest":{"time":121,"learned":"bindings"},"people":4,"knowledge":18,"food":54}
+{"time":231,"latest":{"time":221,"learned":"baskets"},"people":4,"knowledge":30,"food":52}
+{"time":321,"latest":{"time":311,"learned":"drying"},"people":4,"knowledge":43,"food":50}
+{"time":501,"latest":{"time":491,"learned":"woodland"},"people":4,"knowledge":67,"food":47}
+{"time":631,"latest":{"time":621,"learned":"routes"},"people":4,"knowledge":82,"food":35}
+{"time":779,"latest":{"time":761,"learned":"pottery"},"people":5,"knowledge":105,"food":53}
+{"time":937,"latest":{"time":919,"learned":"cultivation"},"people":5,"knowledge":130,"food":56}
+{"time":985,"latest":{"time":975,"learned":"quarry"},"people":5,"knowledge":139,"food":71}
+{"time":1023,"latest":{"time":1013,"learned":"sledges"},"people":5,"knowledge":147,"food":70}
+{"time":1193,"latest":{"time":1183,"learned":"settlement"},"people":5,"knowledge":172,"food":73}
+{"time":1393,"latest":{"time":1383,"planned":"enclosure"},"people":6,"knowledge":203,"food":58}
+{"time":1723,"latest":{"time":1713,"learned":"traction"},"people":6,"knowledge":253,"food":45}
+{"time":2063,"latest":{"time":2053,"learned":"plow"},"people":7,"knowledge":311,"food":66}
+PASS full Hearth browser controls: first furrow at 2122 simulated seconds; no boosted state, no page errors
+PASS earned-world browser travel/resident return, route refresh/recall, failed archive write, prestige refresh and exact archived-world restore

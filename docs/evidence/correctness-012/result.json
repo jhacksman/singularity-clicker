@@ -1,0 +1,10 @@
+{
+  "id": "singularity-20261003-correctness-012",
+  "commit": "91f4b10ddfea790ed0706e44ed08d5613efcaf22",
+  "host": "gb10-02",
+  "exit_code": 0,
+  "reason": "completed",
+  "started": 1791046531.2892208,
+  "finished": 1791046650.3854327,
+  "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e"
+}

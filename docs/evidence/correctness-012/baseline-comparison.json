@@ -1,0 +1,19 @@
+{
+  "baseline": {
+    "commit": "a7c61899898c458c64ea8453558e69e01c6d70b7",
+    "tests": 5,
+    "assertion_failures": 5,
+    "exit_code": 1,
+    "interpretation": "Expected defects reproduced, not release pass"
+  },
+  "fixed": {
+    "commit": "2170ae11feac641048191b4b1edf65ee6a60da06",
+    "tests": 39,
+    "pass": 38,
+    "fail": 1,
+    "exit_code": 1,
+    "failure": "tests/hearth-correctness.test.cjs:15:441 g.enclosure(t,pen) expected false, actual true after exhausting selected fence",
+    "fixture_observation": "First fence selected by test is corner(4,4); inspect fixture geometry as well as implementation. Baseline failed earlier blocked assertion at column400; fixed code reaches enclosure assertion.",
+    "build_and_browser": "Not reached because && chain stopped on unit failure"
+  }
+}

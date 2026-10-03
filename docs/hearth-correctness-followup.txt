@@ -1,17 +1,22 @@
-Hearth correctness follow-up — queued for Spark, not yet verified
+Hearth correctness follow-up — verified on Spark012
 
 Baseline commit a7c61899898c458c64ea8453558e69e01c6d70b7
 Job singularity-20261003-regression-010
 Command: node --test tests/hearth-correctness.test.cjs
 Five tests are expected to fail against the unchanged engine: camp preservation,
 travel/party food costs, broken barriers/enclosures, unsafe repair and practice
-improving tool work. The expected failure must be confirmed by Spark evidence.
+improving tool work. Spark010 confirmed all five assertion failures. Spark011 passed 38/39; its
+remaining failure was a corner-gap fixture mistake, corrected explicitly with
+both diagonal corner and cardinal side assertions.
 
-Fixed source commit 2170ae11feac641048191b4b1edf65ee6a60da06
-Job singularity-20261003-correctness-011
+Verified source commit 91f4b10ddfea790ed0706e44ed08d5613efcaf22
+Job singularity-20261003-correctness-012
 Command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs && node tests/browser/agriculture.cjs && node tests/browser/hearth-progression.cjs
-Expected: 39 tests, three builds and all browser suites. This is an expectation,
-not a result. Both manifests use the already verified sandboxed ARM64 browser
+PASS: 39 tests, three builds and all browser suites; no page errors.
+Fresh Hearth browser completion: 2122 simulated seconds. Travel/resident return,
+route refresh/recall, failed archive write, prestige refresh and exact archived
+world restoration all passed. Command-only completion with recurring restores:
+5195 simulated seconds. Different policies, not a performance comparison. All manifests use the already verified sandboxed ARM64 browser
 image with no network, new dependency, hardware or credentials.
 
 Implementation
@@ -42,6 +47,14 @@ prestige/reload and exact preserved-world restoration. No boosted completion is
 used. Failure injection replaces Storage.setItem only for the archive key and
 restores it after that case.
 
-Publication hold remains active. Existing dist/Library files still represent
-Spark008, not this source change. Retrieve the new generated pages only after a
-passing Spark run. All execution remains on Spark; M6 only edits/inspects/commits.
+Publication hold remains active. Tracked dist pages and connected Library ZIP
+now contain Spark012-generated pages. ZIP and guide were replaced in place at
+Library version 1; identities are in docs/evidence/correctness-012/library.json.
+Separate Agriculture HTML/screenshot remain unchanged at version 0. The full
+output archive is retained locally as correctness-012-output.tar. Result, run log,
+baseline comparison, milestone trace and hashes accompany this report. All tests
+and builds ran on Spark; M6 only edited, inspected, packaged and committed.
+
+Remaining boundaries: practices still share a timing interaction; moving herds,
+narrative decisions, full human pacing and native Apple delivery are not complete.
+No full campaign completion or production deployment is claimed.

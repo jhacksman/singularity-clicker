@@ -30,11 +30,13 @@ autonomous routine work; repeated orders must not accelerate production. Roughly
 two hours of meaningful first play is a human experience target, not a timer to
 pad and not established by CI.
 
-Follow-up status: local source commit 2170ae1 implements drying food/provision
-benefits, functional fence breakage/safe repair and a bounded knapping tool-work
-benefit. Spark regression010 and correctness011 are queued, not yet verified.
-The gaps below describe the reviewed gameplay009 baseline; do not treat the
-new source as a verified replacement until the follow-up passes.
+Follow-up: Spark012 verified source 91f4b10 implements rack food/provision
+benefits, functional broken fences/safe repair and bounded knapping/tool/hunting
+equipment effects. All 39 tests, three builds and browser suites passed, including
+travel/resident return, route reload/recall and prestige/archive recovery. See
+hearth-correctness-followup.txt. Items 2 and the corresponding portions of 6 below
+record the baseline gaps now repaired; distinct activities, moving herds and
+human pacing remain open. Later campaign work remains separate.
 
 Priority 0 — truthful effects and recoverable progress
 1. Keep Cave/Hearth v1 imports, rejected raw-save recovery and old-world export.

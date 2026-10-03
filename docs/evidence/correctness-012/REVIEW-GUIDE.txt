@@ -1,0 +1,64 @@
+Singularity Clicker — first Agriculture harvest review
+
+Verified source: 91f4b10ddfea790ed0706e44ed08d5613efcaf22
+Spark job: singularity-20261003-correctness-012, gb10-02, passed.
+39 deterministic tests; all three pages built; all sandboxed Chromium suites
+passed. All execution occurred on Spark. No public deployment is included.
+
+Hearth repair milestone
+Completed drying racks stretch camp food and reduce packed food by 25%.
+Exhausted fences become passable and stop enclosing; builders repair safely.
+Knapping lessons improve tool work; useful edges help hunting. Practice feedback
+reports actual gains. Existing v1 saves remain compatible.
+Browser checks cover a fresh first furrow, leaving/returning to residents,
+route refresh/recall, failed archive writes, prestige and exact world restoration.
+Distinct minigame designs, moving herds and human pacing remain unfinished.
+
+Quick preview
+Open agriculture.html in a browser and choose “Try a standalone settlement”.
+This file contains its own code, style and directly drawn art. The separate
+screenshot shows the first-surplus milestone. This is a playable slice, not a
+claim that the entire Agriculture age or later ages are complete.
+
+Connected review with the Cave and Hearth
+Extract singularity-clicker-review.zip. With Node.js 22 or later available,
+open a terminal in the extracted singularity-clicker-review folder and run:
+  node scripts/serve.cjs
+Open http://127.0.0.1:8080/agriculture.html (or the root address for the Cave).
+The bundle includes index.html, hearth.html and agriculture.html under dist/.
+Use this shared browser address for navigation and save handoff. A save from a
+different browser/address needs export/import; it is not automatically shared.
+Stop the server with Ctrl+C after review. There are no third-party dependencies.
+
+Suggested 5–10 minute review
+1. Pause while planning. Choose Grain for Field 1 and assign two workers. Choose
+   Restorative crop for Field 2 and assign one. One water carrier is assigned at
+   the start; the fifth worker is free for materials and construction.
+2. Resume and watch complete cycles. Compare food yield, seed and soil. Change a
+   next-crop order during growth: the current harvest must finish normally.
+3. Gather wood/clay with the spare worker. After two harvests, reserve a granary
+   project and assign that worker to Construction. Reassign after completion.
+4. Build irrigation, keep five harvests and 40 grain. The milestone is a first
+   dependable surplus; fermentation, textiles, exchange and copper are not built.
+5. Pause and reload; progress should remain. Journey exports the active save.
+   Empty supplies can recover through water and wild food/seed assignments.
+
+Hearth handoff
+Finish the first plow in the Hearth, then choose Continue to Agriculture from
+Journey. Confirm the new settlement. The original Hearth save stays unchanged;
+a copy is embedded in Agriculture and Journey can export the preserved Hearth.
+If you already have a completed Hearth elsewhere, export it there and import it
+into the bundle's Hearth first. Do not overwrite a valued save without a backup.
+
+What to judge
+Is it obvious who is working, what is blocked and what to do next? Do crop/soil,
+water and workforce choices feel meaningful? Does waiting feel calm or empty?
+Where would a richer decision help? Report confusing moments and browser/device.
+
+Evidence limits
+The command-only Hearth policy completes in 5195 simulated seconds with periodic
+save restoration; a different fresh browser policy completes in 2122 simulated
+seconds. These are different strategies, not a performance comparison. The farm browser policy reaches its first surplus at 370
+simulated seconds using controls and single-step time. Those are deterministic
+coverage results, not human pacing, real-time duration or proof of enjoyment.
+Native Apple packaging and full real-device QA remain unimplemented.
