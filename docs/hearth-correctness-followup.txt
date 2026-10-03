@@ -1,0 +1,47 @@
+Hearth correctness follow-up — queued for Spark, not yet verified
+
+Baseline commit a7c61899898c458c64ea8453558e69e01c6d70b7
+Job singularity-20261003-regression-010
+Command: node --test tests/hearth-correctness.test.cjs
+Five tests are expected to fail against the unchanged engine: camp preservation,
+travel/party food costs, broken barriers/enclosures, unsafe repair and practice
+improving tool work. The expected failure must be confirmed by Spark evidence.
+
+Fixed source commit 2170ae11feac641048191b4b1edf65ee6a60da06
+Job singularity-20261003-correctness-011
+Command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs && node tests/browser/agriculture.cjs && node tests/browser/hearth-progression.cjs
+Expected: 39 tests, three builds and all browser suites. This is an expectation,
+not a result. Both manifests use the already verified sandboxed ARM64 browser
+image with no network, new dependency, hardware or credentials.
+
+Implementation
+A completed local rack plus drying knowledge reduces ongoing camp food use and
+packed food by 25%. It is an abstraction of less waste and efficient provisions,
+not a new perishable-stock/age system. Water use is unchanged; ordinary migration
+remains free; mountain food is rounded up as before. Multiple racks do not stack.
+Initial/recurring party costs and UI quotes share the same calculation. No new
+save fields/version are introduced; existing rack and skill fields are reused.
+
+Zero-durability wooden fences remain visible as broken, repairable structures
+but no longer block paths or complete enclosures. Safe repair checks villager
+and water access before restoring a barrier. Stone walls retain existing rules;
+animals are not killed/lost because a fence breaks. Basic recovery remains open.
+
+Knapping lessons add 0.01 of base work speed per lesson, capped at 0.15, alongside
+existing discovery/worker experience bonuses. Hunting's approach window gains
+0.10 width from Useful edges, alongside practice's existing width/speed easing.
+Practice results report the actual resource gain, including no material when
+food/storage is unavailable. Construction help now describes reservation rather
+than nonexistent separate ingredient hauling. Distinct minigame designs and
+narrative choices remain outside this bounded correctness patch.
+
+Browser continuation uses the genuinely earned completed save from its own
+fresh progression. It checks leaving a resident, returning with the old buildings
+intact, reload, gathering route reload/recall, failed archive write without reset,
+prestige/reload and exact preserved-world restoration. No boosted completion is
+used. Failure injection replaces Storage.setItem only for the archive key and
+restores it after that case.
+
+Publication hold remains active. Existing dist/Library files still represent
+Spark008, not this source change. Retrieve the new generated pages only after a
+passing Spark run. All execution remains on Spark; M6 only edits/inspects/commits.
