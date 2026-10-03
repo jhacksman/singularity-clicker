@@ -67,7 +67,8 @@ First increment acceptance
 Workshop is useful, not a decorative endpoint. A knapping project reserves 4
 wood and 8 stone once, needs 12 worker-seconds at its actual workshop, can be
 interrupted/reassigned/resumed without repayment, and finishes a shared toolset.
-Tools reduce extraction time per item from 0.60 to 0.45 seconds; deposits still
+Tools reduce extraction time per item from 0.60 to 0.45 seconds (25% less time,
+33.3% higher extraction rate; delivery gains also depend on hauling). Deposits still
 lose exactly one unit per item and loads stay capped at five. Values are bounded
 prototype tuning, not a final all-age balance decision. Existing RTS v1 saves
 migrate without losing world/cargo/orders; retain the original pre-migration raw
@@ -75,3 +76,14 @@ save separately. Reject unknown future versions. Spark must test payment,
 interruption, repeated actions, conservation, migration and the actual browser
 crafting flow following earned expansion. No broad campaign additions in this
 increment.
+
+Spark017 diagnosis and follow-up
+All 49 tests and four builds passed; the earned crafting flow passed through
+completion. Reload started the simulation immediately, so one 0.1-second tick
+could run before the browser clicked Pause. That violated exact restored-state
+expectations. Saved camps now open paused with an explicit Resume action; fresh
+camps still begin running. The browser asserts complete state equality after
+reload and 2.5 seconds of waiting, then proves Resume advances time. No clock
+tolerance or skipped-state comparison was introduced. Migration also opens
+paused. The floating TOOLS READY caption was removed from worker space; workshop
+completion is shown in the existing building caption and fixed inspector.
