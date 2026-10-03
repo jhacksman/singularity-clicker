@@ -19,3 +19,7 @@ test('workers path through the ford and an eastern outpost shortens return trips
 test('invalid/future saves fail closed; unknown orders and unreachable sites cannot corrupt saves',()=>{
  const g=new Camp();for(const change of [s=>s.version=2,s=>s.stock.wood=-1,s=>s.units[0].cargo=9,s=>s.deposits[0].amount=Infinity,s=>s.units[0].order={kind:'made-up'}]){const s=JSON.parse(g.serialize());change(s);assert.throws(()=>new Camp(s));}const before=g.serialize();assert.ok(g.build('outpost',18,2,['u0']).error);assert.equal(g.serialize(),before);assert.ok(valid(g.s));
 });
+test('a selected group reserves distinct gathering positions around a deposit',()=>{
+ const g=new Camp();g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});
+ const destinations=g.s.units.map(u=>u.path.at(-1));assert.ok(destinations.every(Boolean));assert.equal(new Set(destinations.map(p=>p.x+','+p.y)).size,4);
+});

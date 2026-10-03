@@ -35,7 +35,7 @@ class Camp{
  if(!end)return null;const result=[];while(prev.get(key(end))){result.unshift(end);end=prev.get(key(end));}return result;
  }
  around(o){const z=o.kind==='hearth'?3:['outpost','workshop'].includes(o.kind)?2:1,out=[];for(let i=0;i<z;i++)out.push({x:o.x-1,y:o.y+i},{x:o.x+z,y:o.y+i},{x:o.x+i,y:o.y-1},{x:o.x+i,y:o.y+z});return out;}
- route(u,targets){const path=this.path(u,targets);if(!path){u.phase='idle';u.reason='Blocked — choose a reachable target';u.path=[];return false;}u.path=path;return true;}
+ route(u,targets){const free=targets.filter(p=>!this.s.units.some(v=>v!==u&&((v.path.length&&v.path.at(-1).x===p.x&&v.path.at(-1).y===p.y)||Math.hypot(v.x-p.x,v.y-p.y)<.4)));const path=this.path(u,free.length?free:targets);if(!path){u.phase='idle';u.reason='Blocked — choose a reachable target';u.path=[];return false;}u.path=path;return true;}
  home(u){const choices=this.s.buildings.filter(b=>b.done&&['hearth','outpost'].includes(b.kind)).map(b=>({b,path:this.path(u,this.around(b))})).filter(v=>v.path).sort((a,b)=>a.path.length-b.path.length);if(!choices.length){u.phase='idle';u.reason='No reachable drop-off';return false;}u.path=choices[0].path;u.phase='return';u.reason='Returning '+u.cargo+' '+u.resource;return true;}
  start(u){u.work=0;u.path=[];const o=u.order;if(o.kind==='idle'){u.phase='idle';u.reason='Ready for orders';return;}
  if(o.kind==='move'){if(this.route(u,[o])){u.phase='walk';u.reason='Moving';}return;}
