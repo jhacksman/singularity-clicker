@@ -23,3 +23,9 @@ test('a selected group reserves distinct gathering positions around a deposit',(
  const g=new Camp();g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});
  const destinations=g.s.units.map(u=>u.path.at(-1));assert.ok(destinations.every(Boolean));assert.equal(new Set(destinations.map(p=>p.x+','+p.y)).size,4);
 });
+test('final deliveries reserve distinct drop-off positions without losing cargo',()=>{
+ const g=new Camp(),before=totals(g);g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});steps(g,100);
+ assert.equal(g.s.stock.wood,68);assert.ok(g.s.units.every(u=>u.cargo===0&&u.phase==='idle'));assert.deepEqual(totals(g),before);
+ for(let i=0;i<g.s.units.length;i++)for(let j=i+1;j<g.s.units.length;j++)assert.ok(Math.hypot(g.s.units[i].x-g.s.units[j].x,g.s.units[i].y-g.s.units[j].y)>=.9,'Returned workers must remain individually visible');
+ const copy=new Camp(JSON.parse(g.serialize()));steps(copy,10);assert.deepEqual(copy.s.units,g.s.units);
+});
