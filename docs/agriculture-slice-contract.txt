@@ -39,3 +39,52 @@ Acceptance criteria
 5. Browser playthrough covers planting, allocation, harvest, construction,
    shortage recovery, pause, refresh and stage navigation, with screenshots.
 6. No simulated-time result is presented as proof of human enjoyment or pacing.
+
+Implementation notes for this slice
+The provisional numerical balance lives in src/agriculture/engine.js. Grain
+produces more food but lowers soil condition; the restorative crop produces less
+food and restores soil/seed. The field order repeats automatically, and changing
+its next crop never restarts the current cycle. Water and food recovery stay
+available even from empty stores. Worker allocation is checked before changes.
+Two harvests unlock construction; one active project reserves its materials once
+and advances only with assigned builders. The granary expands grain capacity;
+irrigation reduces field water demand and expands the reserve. These values are
+prototype balance, not historical claims or a final pacing promise.
+The separate agriculture.v1 save embeds the completed Hearth snapshot and carries
+its exact population and inherited traditions. Standalone preview is explicit.
+The page does not save an unaccepted preview during page exit. Unknown versions
+are rejected before replacement, and imported display text is escaped.
+
+A full farm-management browser policy is queued on Spark, including fresh start,
+field/worker orders, both projects, the first surplus, exact refresh/export and
+non-destructive Hearth transfer. No human playtest is implied by that policy.
+
+Verified milestone — 2026-10-03
+Source commit: 83b31e0574a161b7b85e74eff838cd4a27fbf049
+Spark job: singularity-20261003-agriculture-007, gb10-02, exit 0
+Runtime image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e
+Commands:
+  node --test tests/*.test.cjs
+  node build.mjs
+  node tests/browser/smoke.cjs
+  node tests/browser/agriculture.cjs
+Results: 34 tests pass, zero failures/skips; all three self-contained pages built;
+both sandboxed Chromium browser suites pass without page errors. Farm browser
+policy reaches first surplus at 370 simulated seconds through actual controls.
+Refresh and JSON export match exactly; Hearth handoff preserves the original.
+Screenshots and WebM recordings were retained in the job's artifacts directory;
+the Agriculture completion screenshot was visually inspected. Tracked dist pages
+were retrieved from that exact Spark job. No M6 build/test was executed.
+
+This is a short playable slice, not a measured human pacing/enjoyment result.
+Pottery, fermentation, textiles, exchange, copper, full-age prestige, continuing
+contributions from older layers and the Bronze handoff remain future work.
+
+Follow-up review candidate, not included in the verified snapshot
+Branch codex/agriculture-first-harvest, source ab7a70d638d13637fa0c4fc2c2de4d8ede3456ef,
+adds explicit crop yield/soil details, fresh project/milestone status, and a direct
+original-Hearth backup download button. Spark job agriculture-008 is queued for
+those changes. The reviewed snapshot already keeps the original Hearth intact
+and embeds its copy in the Agriculture save. Do not claim 008 has passed until
+its coordinator result is available. Publishing is on hold pending the parent's
+user approval flow; no Agriculture branch has been pushed.

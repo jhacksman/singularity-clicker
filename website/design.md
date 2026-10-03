@@ -54,7 +54,7 @@ The existing prototypes use directly authored SVG and Canvas artwork. No image-g
 
 ## Development status
 
-The Cave and a first playable Hearth prototype have been built. Both browser stages are included in this repository and built by the Pages workflow. Native binaries, human/device playtesting, and later stages are not complete.
+The Cave, The Hearth, and a first Agriculture slice are included in the repository. Agriculture currently covers fields, soil, worker allocation, safe supply recovery, a granary and irrigation; it ends at a first-surplus milestone, not completion of the full age. The remaining Agriculture systems, later ages, native binaries and human/device playtesting are not complete.
 
 [View the repository](https://github.com/jhacksman/singularity-clicker)
 

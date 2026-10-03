@@ -12,11 +12,12 @@ npm test
 npm start
 ```
 
-Open `http://127.0.0.1:8080` for The Cave, or `/hearth.html` for The Hearth. The generated HTML files can also be opened directly. Each page contains its scripts, styles, and artwork; no server is needed for the simulation.
+Open `http://127.0.0.1:8080` for The Cave, or `/hearth.html` for The Hearth. `/agriculture.html` opens the first Agriculture slice. The generated HTML files can also be opened directly. Each page contains its scripts, styles, and artwork; no server is needed for the simulation.
 
 - **Stage 0 — The Cave:** resource gathering, tools, communication, automation, traditions, and the first fire encounter.
 - **Stage 1 — The Hearth:** playable first implementation of an isometric settlement and migration game. Assign villagers, build outlines, manage supplies, explore 61 persistent hexes, learn practices, establish gathering routes, manage animals, and complete the first plowing.
-- **Stage 2 onward:** planned, not implemented. The ending honestly indicates this.
+- **Stage 2 — Agriculture:** first playable slice with crop rotation, workforce allocation, water, seed recovery, a granary and irrigation. Reach a dependable-surplus milestone; this is not the full age. Completed Hearth entry preserves the original save and embeds a recovery copy. A standalone preview is also available.
+- **Stage 3 onward:** not implemented. The recovered campaign direction is in `docs/campaign-readiness.txt`; no placeholder ages are presented as finished gameplay.
 
 Stage 1's two-hour target is a design goal, not a measured playtest result. Its economy, tutorial, touch ergonomics, and minigames need further playtesting. Native apps have not yet been packaged or tested.
 
@@ -32,6 +33,7 @@ No enemies, combat, starvation, or villager deaths. Food and water shortages sus
 - `src/hearth/engine.js`: deterministic, platform-independent Stage 1 rules and save schema.
 - `src/hearth/view.js`: Canvas 2D rendering, pointer controls, UI, and platform adapter.
 - `src/hearth/styles.css`, `src/hearth/shell.html`: responsive browser interface.
+- `src/agriculture/`: independent deterministic farming simulation, local save adapter, directly drawn Canvas field map and interface.
 - `assets/`: directly authored editable SVG drawings for Stage 0. Stage 1 draws directly with Canvas 2D.
 - `docs/stage-1-design.md`: design baseline and decisions.
 - `docs/platforms.md`: browser/macOS/iOS architecture and remaining native work.
@@ -41,7 +43,7 @@ All game art is authored directly. Do not introduce image-generator assets.
 
 ## Saves and native reuse
 
-Stage 0 keeps `singularity-clicker.cave.v1`; Stage 1 uses `singularity-clicker.hearth.v1`. Opening Stage 1 does not alter Stage 0's save. Stage 1's optional completion prestige archives the finished world before resetting, with up to five inherited traditions. Import requires confirmation. Export/import supports manual transfer between devices; there is no account or cloud synchronization.
+Stage 0 keeps `singularity-clicker.cave.v1`; Stage 1 uses `singularity-clicker.hearth.v1`; Agriculture uses `singularity-clicker.agriculture.v1`. Opening Stage 1 does not alter Stage 0's save. Stage 1's optional completion prestige archives the finished world before resetting, with up to five inherited traditions. Import requires confirmation. Export/import supports manual transfer between devices; there is no account or cloud synchronization.
 
 `Hearth` accepts serializable state and advances only through explicit `tick(seconds)` calls. Native hosts can provide `window.SingularityPlatform` with asynchronous `load(key)`, `save(key, text)`, and `download(name, text)` methods. The browser adapter uses device-local storage and JSON downloads. A native file/share bridge, application lifecycle wiring, and actual Apple builds remain future work.
 
