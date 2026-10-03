@@ -1,5 +1,7 @@
 // Run only on the Spark CI browser runtime. No browser package is installed by this script.
 const assert=require('node:assert/strict');
+const fs=require('node:fs');
+fs.mkdirSync('evidence',{recursive:true});
 const {spawn}=require('node:child_process');
 const {once}=require('node:events');
 const {Camp}=require('../../src/engine.js');
@@ -21,8 +23,9 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await page.reload();
   assert.equal(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),CAVE)).run.counts.forage,1);
   const completed=new Camp(null,17);completed.r.innovation=1198;completed.act('grunt');for(let i=0;i<3;i++)completed.fireStep();
-  await page.evaluate(([key,value])=>localStorage.setItem(key,value),[CAVE,completed.serialize()]);
+  await page.addInitScript(([key,value])=>{if(!sessionStorage.getItem('completion-fixture')){localStorage.setItem(key,value);sessionStorage.setItem('completion-fixture','1');}},[CAVE,completed.serialize()]);
   await page.reload();await page.locator('#event-action').click();
+  await page.screenshot({path:'evidence/cave-completion.png',fullPage:true});
   await page.locator('#modal a[href="hearth.html"]').click();
   await page.locator('#people [data-person="0"]').waitFor();
   await page.locator('#pause').click();await page.locator('[data-job="wood"]').click();
@@ -32,6 +35,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await page.reload();await page.locator('#pause').click();
   const after=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),HEARTH));
   assert.deepEqual(after,before);
+  await page.screenshot({path:'evidence/hearth-orders.png',fullPage:true});
   await page.locator('#map-toggle').click();await page.locator('#map-toggle').click();
   await page.locator('#settings').click();await page.locator('#modal a[href="index.html"]').click();
   assert.equal(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),CAVE)).run.complete,true);
@@ -61,5 +65,10 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   assert.equal(await cp.evaluate(()=>window.exported),unknown);
   await corrupt.close();assert.deepEqual(errors,[]);
   console.log('PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation; no page errors');
+ }catch(error){
+  if(browser)for(const [i,context] of browser.contexts().entries())for(const [j,page] of context.pages().entries()){
+   await page.screenshot({path:`evidence/failure-${i}-${j}.png`,fullPage:true}).catch(()=>{});
+   fs.writeFileSync(`evidence/failure-${i}-${j}.txt`,await page.locator('body').innerText().catch(()=>''));
+  }throw error;
  }finally{if(browser)await browser.close();server.kill();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
