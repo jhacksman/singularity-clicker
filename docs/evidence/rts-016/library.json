@@ -1,0 +1,65 @@
+[
+  {
+    "operation": "create_library_file",
+    "status": "succeeded",
+    "path": "/hearth-rts-core-preview.html",
+    "file_id": "file_00000000477482309039434e4ed87a8e",
+    "library_file_id": "libfile_c5a729d019c48191861239287487a120",
+    "file_name": "hearth-rts-core-preview.html",
+    "current_version_number": 0,
+    "restored_from_version_number": null,
+    "xattrs": [
+      {
+        "name": "user.library-file-version",
+        "value": "0"
+      }
+    ],
+    "directory_id": "libdir_cad02bccbf288191bfb77ae89c4eaa8c",
+    "mime_type": "text/html",
+    "library_artifact_type": "other",
+    "file_size_bytes": 36934,
+    "external_connectors_accessed": false
+  },
+  {
+    "operation": "create_library_file",
+    "status": "succeeded",
+    "path": "/hearth-rts-core-preview.png",
+    "file_id": "file_0000000020b08230963aa4ebc73fe796",
+    "library_file_id": "libfile_5e4457aa87d08191aad2f128052aa5e7",
+    "file_name": "hearth-rts-core-preview.png",
+    "current_version_number": 0,
+    "restored_from_version_number": null,
+    "xattrs": [
+      {
+        "name": "user.library-file-version",
+        "value": "0"
+      }
+    ],
+    "directory_id": "libdir_cad02bccbf288191bfb77ae89c4eaa8c",
+    "mime_type": "image/png",
+    "library_artifact_type": "image",
+    "file_size_bytes": 240843,
+    "external_connectors_accessed": false
+  },
+  {
+    "operation": "create_library_file",
+    "status": "succeeded",
+    "path": "/hearth-rts-core-playthrough.webm",
+    "file_id": "file_00000000468c81f7b153b27d1628aba7",
+    "library_file_id": "libfile_5f174db8e2f881918024eaafcde41877",
+    "file_name": "hearth-rts-core-playthrough.webm",
+    "current_version_number": 0,
+    "restored_from_version_number": null,
+    "xattrs": [
+      {
+        "name": "user.library-file-version",
+        "value": "0"
+      }
+    ],
+    "directory_id": "libdir_cad02bccbf288191bfb77ae89c4eaa8c",
+    "mime_type": "video/webm",
+    "library_artifact_type": "other",
+    "file_size_bytes": 4112582,
+    "external_connectors_accessed": false
+  }
+]

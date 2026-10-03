@@ -1,0 +1,48 @@
+{
+  "job": "singularity-20261003-rts-016",
+  "commit": "69eaba9d3cb031fefc0c1fcfd090b67d96dd36bc",
+  "functional_result": "pass",
+  "tests": 46,
+  "builds": 4,
+  "browser_errors": 0,
+  "simulation_seconds": 109,
+  "video": {
+    "codec": "VP8",
+    "width": 1440,
+    "height": 1100,
+    "duration_seconds": 50.32,
+    "inspection": "Four full-size screenshots and Spark-generated sampled video contact sheet inspected."
+  },
+  "targeted_defects": [
+    {
+      "issue": "Idle workers superimposed after final drop-off",
+      "result": "fixed in tested scenario",
+      "evidence": "hearth-rts-depletion.png shows four distinct figures and selection rings around hearth; browser asserts every pair at least0.9 tiles apart; engine regression asserts conservation and stable positions after restore."
+    },
+    {
+      "issue": "Stale resource counts in persistent command feedback",
+      "result": "fixed",
+      "evidence": "Depletion inspector0/48 and expansion160/180 remain live; toast/log now say Gather wood \u00b7 workers return each load without initial count; browser regression rejects numeric remaining acknowledgments."
+    }
+  ],
+  "verified": [
+    "Drag and held-press portrait selection",
+    "Blocked ground feedback",
+    "Cargo hauling and finite depletion",
+    "Expected stock balances and construction debits",
+    "Ford expansion, completed outpost/workshop, eastern deliveries",
+    "Exact paused-state refresh persistence"
+  ],
+  "remaining_observations": [
+    {
+      "severity": "low",
+      "issue": "In-transit workers may still visually overlap: expansion capture has u0 at(25,11) and returning u1 at(25,11.3). Distinct final destination reservations are verified; collision-free movement is not implemented or claimed."
+    }
+  ],
+  "limits": [
+    "Virtual clock run does not establish real-time pacing.",
+    "Only1440x1100 browser viewport tested.",
+    "No native macOS/iOS tests."
+  ],
+  "infrastructure_blockers": []
+}

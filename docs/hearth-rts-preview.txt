@@ -1,0 +1,30 @@
+RTS core preview — verified Spark016
+
+Tested source: 69eaba9d3cb031fefc0c1fcfd090b67d96dd36bc
+Job: singularity-20261003-rts-016, gb10-02, exit 0.
+Command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/hearth-rts.cjs
+Result: 46 tests, four pages built, fresh actual-control browser expansion and
+exact refresh passed; zero page errors. Details and visual review are retained
+in docs/evidence/rts-016. The tracked RTS HTML was retrieved from Spark, not built
+on M6. Earlier entrypoints and saves are preserved.
+
+Controls: drag a box around villagers; Shift adds to selection. Right-click a
+resource to gather or open ground to move. Select builders, choose Outpost or
+Workshop, then left-click clear ground. Space pauses; M arms move; S stops work
+and returns carried goods. Idle selects idle villagers. Journey exports/imports
+the independent RTS camp. Standalone Previous Hearth links need hearth.html next
+to this file; the new core itself is self-contained.
+
+Demonstrated: finite extraction, visible carrying/return, blocked commands,
+construction costs, depletion, ford scouting, eastern drop-off/workshop and save
+restoration. Drop-off positions are separate and command feedback no longer
+shows stale deposit counts. Moving workers can still briefly overlap. No broad
+stage balance, campaign compatibility or full Hearth completion is claimed.
+Recruitment, cancellation, narrow/touch and all hotkeys lack complete browser
+coverage. No native platform QA. The 50.32-second video uses virtual-time browser
+execution and does not prove real-time pacing, enjoyment or final polish.
+
+Three Library deliverables (HTML, screenshot, WebM) are version 0, with exact IDs
+in docs/evidence/rts-016/library.json. Original Library Hearth and connected ZIP
+are unchanged. No publication/deployment or main merge. Further broad work waits
+for the independently reviewed campaign specification.
