@@ -1,0 +1,131 @@
+Native navigation smoke update: independent oracle review
+2026-10-04 — /root/skeptic_three
+
+Verdict: no new concrete false-pass, save-preservation, fixture-timing or lost
+legacy-coverage blocker was found in this bounded update. The test exercises the
+actual native completion control, establishes a fresh RTS v4 destination, and
+checks exact preservation of the four earlier save strings. All old hex-Hearth
+assertions remain in place. Execution on the assembled Spark build is pending.
+
+Identity and scope
+
+tests/browser/smoke.cjs SHA256
+41b71f2ecc3c2f55aafa5703eff9b3ab540c72eba6d32785dff880e638f84c48
+
+The hash matched the requested frozen artifact before reading and still matched
+after inspection. Compared its actual diff and complete source against baseline
+4e391c2e2ebf255e1cf0fb5b57bed6d123b51558. Read the actual Cave completion host,
+RTS startup/save flow and legacy Hearth/Agriculture loaders and constructors as
+needed. Did not read the unfinished main campaign browser harness or another
+review. No app/test edits, execution, parser, tests, build, lint or browser runtime.
+Only this requested report was written.
+
+Native route and fixture provenance
+
+The existing initial Cave action/refresh assertions remain unchanged (:20-25).
+The completed Cave is explicitly a controlled compatibility fixture (:26-31):
+it begins from a real Camp, raises innovation, invokes grunt and the three fire
+steps, then serializes. This does not demonstrate an earned full Cave journey;
+the comments and revised PASS message accurately avoid that claim.
+
+The init script seeds only Cave, earlier Hearth, Agriculture and archive. It does
+not seed RTS. A sessionStorage guard ensures these earlier worlds are inserted
+once for this page/session, not silently restored after each later navigation.
+The test immediately asserts all raw strings equal the fixtures and that RTS is
+absent before opening the modal (:33-34). The old Hearth fixture is a genuine
+fresh, valid time-zero Hearth; Agriculture likewise uses its actual constructor.
+The archive is intentionally an array containing a preservation sentinel string,
+not a valid completed-world fixture. The adapter treats the archive as preserved
+strings and does not open its entries. This is adequate namespace/byte-preservation
+evidence, not proof of archived-world playability or completed progression.
+
+The test clicks visible #event-action, waits for the enabled native
+#campaign-navigation open-hearth control, checks its Explore label and the real
+dialog's open state (:35-38). There is no test-side mount, injected navigation
+slot, replaced product link or direct internal controller activation. If the
+product did not mount its widget, this selector would not appear. If it retained
+the old Hearth route, the RTS URL and destination checks would fail.
+
+The enabled control wait accommodates the actual asynchronous saved-source
+inspection. The before/after reads are synchronous localStorage snapshots, so
+there is no stale toast or unresolved file-read completion used as the success
+oracle. The waitForURL promise is installed together with the real forward click
+(:42), avoiding a later wait which might miss the transition.
+
+Fresh RTS proof and raw preservation
+
+Before entry, the test repeats exact string equality for all retained keys and
+confirms RTS is still absent (:39-40). This catches accidental creation/adoption
+at native helper mount, rather than assuming that a later fresh destination was
+created by the loader.
+
+At the destination, it waits for a real u0 portrait, requires the running Pause
+label, explicitly pauses, requires Resume and unblocked Stop, then reads the
+saved state (:43-45). RTS togglePause synchronously saves the live camp; these
+assertions therefore avoid reading a pre-pause autosave as if it were current.
+An invalid/blocked startup would have Resume initially and disabled controls,
+so it cannot masquerade as this successful fresh entry.
+
+The saved world must be schema4 with exact opening stock, four empty idle actors,
+one completed hearth, untouched deposits, no completion/tools/knapping, zero
+spent/produced/transferred counters, one correct local store and no transfer jobs
+(:46-51). This establishes the claimed fresh opening without requiring time===0:
+the initially running idle RTS can legitimately advance its clock before Pause.
+Because no actor is assigned work, that timing cannot legitimately consume the
+checked deposits or change the economy. This is an opening-state smoke proof,
+not full RTS gameplay/custody verification.
+
+The exact retained string map is checked again after entry (:52), covering Cave,
+previous Hearth, Agriculture and archive bytes across the real navigation and
+destination bootstrap. The completed Cave fixture does not advance its simulation
+while the panel is open; its complete state also causes Camp.advance to return
+without modification. Existing Cave pagehide saving serializes the same fixture
+without losing its bytes. Other game simulations never run in Cave or RTS, so the
+earlier Hearth's time-zero fixture does not accrue time during this detour.
+
+The test's raw equality is an end-state preservation assertion. It does not prove
+that no redundant identical write occurred, enumerate every storage key, exercise
+backup families or demonstrate recovery from write faults. Those are separate
+navigation/persistence cases. No broader zero-write or all-profile claim should
+be inferred from this smoke result.
+
+Legacy coverage retained
+
+After the native RTS proof, an explicit ordinary page.goto opens the supported
+previous hearth.html URL (:55). From the original first-person wait onward, the
+old hex flow and assertions are textually unchanged aside from shifted lines:
+
+- Twenty-five manual steps with repeated wood assignment, exact time25 and job.
+- Refresh and exact saved-world equality.
+- Independent food/water workers, shelter placement/construction, gathered
+  resource/knowledge assertions and knapping unlock.
+- Map toggling, settings return to Cave and retained completed Cave assertion.
+- Async failed-save host still exporting its live wood assignment.
+- Unknown-version exact raw export without replacement.
+- Depleted-camp migration retaining people and choosing the requested location.
+- Touch assignment smoke, screenshots and accumulated no-page-error assertion.
+
+The recovery/corrupt/migration/touch contexts remain independent fresh contexts.
+No old assertions were removed or weakened to accommodate the new route. The
+sentinel archive is not opened during the existing old-Hearth coverage, so it
+does not introduce an invalid-world load into those tests.
+
+The legacy flow still uses real time rather than a controlled clock. Its initial
+pause must occur before the first automatic one-second tick for time25 to hold;
+the reload comparison also retains its preexisting timing assumptions. Those
+were already present in the baseline. The added native RTS visit happens before
+the legacy page is loaded and cannot advance that inactive saved world. I found
+no source-supported reason this patch necessarily violates the old timing
+assumption, but only Spark can establish actionability and actual timing on the
+selected runtime. This observation is not a request to broaden the navigation
+patch into a legacy smoke rewrite.
+
+Remaining gate
+
+Run the frozen test against the final built native candidate on Spark and inspect
+its Cave completion/RTS entry/legacy screenshots and failure diagnostics. A pass
+would support this fixture-based native route and preservation smoke, not earned
+campaign progression, browser-cache lifecycle closure, every backup/loader case,
+full RTS gameplay, or production/publication approval. The separately reviewed
+main campaign browser harness remains responsible for its wider native lifecycle
+and compatibility cases. No additional fix is requested by this source review.

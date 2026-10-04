@@ -1,0 +1,131 @@
+Native navigation adapter — independent concrete static review
+2026-10-04. Read-only source review. No app/test edits, execution, parser, tests,
+builds, lint or browser run. Only this assigned report was written.
+
+Verdict: no concrete blocker found in the three frozen adapter-owner files.
+This is a bounded static verdict, not a test pass or whole-candidate acceptance.
+The native browser test owner was still working separately. Exact combined
+immutable Spark execution and artifact review remain required.
+
+Workspace: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-navigation-native
+Host HEAD: 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558
+Actual three-file diff reviewed against original widget:
+  444d252c09b205e1f431ee870d2e328f1803214c
+Verified frozen SHA-256 values:
+  src/campaign-navigation/adapter.cjs
+    1eb0e7e0d4ae968d22869236744d6e77920fbd04a318fafe4c06e6cdbc3a4fcd
+  src/campaign-navigation/browser.js
+    8c2fa82af650f9e594d186cb2cb36324c22860586333551a2ffdfccc37c024c6
+  tests/campaign-navigation.test.cjs
+    38c8d7fb2411ef4870d130070a9903cf9ce4e6cfd00d4a2e6af1767fb6b844ec
+Matching pure RTS engine independently checked for admission behavior:
+  src/hearth-rts/engine.js
+    ea412f31690fd5b398263dfd5cdaeb1c81aef23a21bdc2ab3dab4ceb9ec4cb55
+
+Compatibility and actual destination admission
+
+adapter.cjs:23 now recognizes live RTS versions 1/2/3/4. Version 5 remains
+unsupported before the validator runs; invalid JSON, primitives, arrays, missing
+versions and campaign/content metadata remain blocked with original raw retained.
+The compatibility BASE_COMMIT now names the actual host base, with an explicit
+comment distinguishing this source anchor from combined execution evidence.
+
+The adapter still invokes its validator with structuredClone(state) at :66.
+The reviewed native host callback (src/view.js:134) applies repairWorkResidue
+then new HearthRTS.Camp, matching src/hearth-rts/view.js:11–20 admission after
+the policy's object/version checks. The helper accepts only eligible legacy
+versions 1/2/3; v4 negative work is not repaired. The constructor validates both
+the input and the migrated v4 result (engine.js:70). Consequently eligibility
+does not accidentally use valid() alone, seed a replacement for falsy payloads,
+accept an unreloadable migrated obligation, or adopt the constructed clone.
+
+browser.js still has a generic valid-only default for opt-in consumers; the
+native host explicitly overrides it. This review does not claim that an external
+consumer omitting that callback obtains the same admission semantics.
+
+No engine tick, save, backup, migration persistence, grant or source adoption was
+added to the adapter. Constructor/repair normalization acts on detached data and
+is discarded. Source schema, hash and export raw remain those of the input,
+not the repaired or migrated representation. A successful eligibility check
+cannot certify subsequent destination backup/main-write availability.
+
+Exact backup families and source identity
+
+The seven recognized suffix families match the actual RTS retainRaw callers:
+  before-v2                         raw v1
+  before-v3, import-before-v3        raw v1/v2
+  before-v4, import-before-v4        raw v1/v2/v3
+  before-work-roundoff,
+    import-before-work-roundoff     raw v1/v2/v3
+KEYS, schema rows, common hearth-rts identity namespace and display labels are
+updated consistently. Base slots and positive canonical decimal suffixes are
+recognized. The full-match equality at :28 also defeats JavaScript dollar-anchor
+acceptance before a trailing newline; .0, .01, suffix text, extra segments,
+wrong prefixes/versions and nonexistent import-before-v2 remain excluded.
+
+inspect() enumerates input key names but reads extra values only after exact
+backupKind recognition. The browser's unchanged read loop likewise lists names
+then reads known sources and recognized backups; storage-event refresh uses the
+same updated matcher. No unrelated value read was introduced by this diff.
+
+Backups remain preserved-only after syntax/schema checks and never invoke playable
+validation. Invalid or unsupported backups remain exportable raw. Identical raw
+has the same RTS identity across live/base/numbered copies; whitespace differences
+have different hashes. All rows remain present independently of equal identity.
+No backup substitutes for an absent or rejected live source: absence stays a
+not-entered preview, rejection blocks. Recognized unreadable backups deliberately
+block entry under the existing documented policy. No silent recovery is implied.
+
+browser.js differs only in labels. Its established read/refresh/dispose/export
+behavior was not changed by this adapter-owner patch. Exact UTF-8/ill-formed-UTF-16
+download behavior still needs native browser evidence rather than a unit-only
+claim. No people, stock, entitlements, destination IDs or completed handoff are
+created; immutable inspected snapshots remain required for navigation plans.
+
+Test oracle assessment — 18 declared cases, not executed here
+
+All cases and the complete diff were read. The new current-v4 coverage uses an
+ordinary fresh camp, a genuine gather command, bounded ticks until actual cargo,
+then an accepted Move to (4,9), an in-progress tick and a held arrival. It asserts
+the real phases/cargo/target before inspecting raw checkpoints. This is stronger
+than merely relabeling a fabricated idle save as v4. Inspection checks exact raw,
+digest, source schema, caller snapshot immutability and navigation-only intent.
+
+Legacy v1/v2/v3 data is explicitly labeled as compatibility projections, with
+storage and tool-era fields removed where necessary. The residue case explicitly
+injects tiny negative work into a naturally gathered checkpoint and disclaims a
+historical reproduction claim. It proves the distinction between strict valid()
+and the loader callback, preservation of unrepaired raw, legacy repair acceptance
+and v4 rejection. Historical roundoff reachability is not established by this test.
+
+The post-migration fixture deliberately adds an unfinished paid-cost obligation
+without corresponding spent history to a v1/v2 projection. Input valid() accepts
+it; constructor migration must reject it. The test separately asserts these
+preconditions and contrasts input-only versus constructor-backed admission, so it
+does not pass merely because the fixture was already input-invalid.
+
+The backup matrix covers every declared supported version, base and numbered
+copies, exact raw/identity, no validator invocation, no live fallback and rejected
+schema/content cases. Excluded keys have throwing getters, making accidental
+unrelated value reads observable instead of merely checking omitted output rows.
+Unreadable base/numbered keys are tested against a valid live save. Existing Cave
+baseline gating, unavailable validators, future versions, primitive rejection,
+metadata refusal, immutable snapshot ownership and no handoff remain exercised.
+
+The test admission helper makes an additional clone, so these units alone do not
+prove the real host supplied the intended callback. That host binding was checked
+separately in host-static-review.txt. Likewise caller raw strings are immutable:
+their equality and the hostile-validator test are useful preservation/rejection
+checks, but the actual policy clone boundary is independently visible in source.
+
+Remaining evidence and limits
+
+Run the 18 adapter cases against the exact combined candidate on Spark. Native
+browser evidence must prove the real built host mount, current and legacy loader
+decisions, all backup labels/download bytes, excluded-key read behavior, read-only
+widget operations, fresh storage-event/activation reads, lifecycle disposal and
+destination migration/write-failure recovery. Host pagehide/Replay and destination
+writes must be distinguished from widget writes. This report inherits no opt-in
+browser pass and approves no publication, full campaign handoff or native custody
+conformance. No further source/report work is pending for this frozen adapter
+review unless the files or requested scope change.

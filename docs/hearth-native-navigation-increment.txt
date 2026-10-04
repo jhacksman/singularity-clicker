@@ -1,0 +1,87 @@
+Native Cave completion navigation — bounded integration candidate
+
+Base: immutable 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558 (Move025). Its Spark run
+passed 106 tests, four builds and five browser flows; separate artifact review returned
+verified_scoped_pass with no remaining blockers in that requested run.
+Widget provenance: reviewed/standalone Spark-verified
+444d252c09b205e1f431ee870d2e328f1803214c from task13. Seven files were copied
+exactly before integration. Neither predecessor result certifies this assembly.
+
+Current player flow
+The completed Cave now offers the Hearth RTS opening through its actual completion
+modal. Its introduction describes finite gathering, an eastern outpost and a
+workshop. Completed-Cave statistics, Stay by the fire and Replay the cave remain.
+Earlier Hearth and Agriculture pages remain available under their existing URLs.
+The opening has its own saved camp; the navigation does not transfer people,
+supplies, grants, entitlements or full-age completion. No campaign transaction or
+new storage backend is introduced. Authored art and stage engines remain intact.
+
+Build and admission
+Cave embeds its existing art/styles/engine plus the scoped navigation stylesheet,
+pure RTS engine, policy and opt-in browser module before the Cave view. The RTS
+view is not loaded in Cave. There are no new network assets or dependencies.
+The native mount explicitly validates RTS through the destination's existing
+repairWorkResidue + Camp constructor path on the policy's clone. Original raw bytes
+remain unchanged in Cave, and only the destination performs migration/adoption.
+Unknown and invalid current saves cannot silently produce a fresh replacement.
+
+The adapter recognizes outer RTS1/2/3/4 under the unchanged key and all exact
+before-v2/before-v3/import-before-v3/before-v4/import-before-v4/work-roundoff backup
+families with positive numeric copy suffixes. Backups stay preserved-only, with
+exact source identities and original-byte downloads; no fallback adoption occurs.
+
+Lifecycle
+One controller belongs to the current completion panel. Its reference is retained
+synchronously so an in-flight initial inspection can be disposed immediately.
+Every modal replacement, Close, Stay, Replay, native Escape/cancel/close and pagehide
+uses idempotent disposal. A queued old close event cannot dispose a newly reopened
+modal. Persisted pageshow resets the elapsed-time origin and remounts only the
+currently open completion slot, with a fresh read and no automatic navigation.
+The existing Cave view still owns its ordinary saves; widget inspection is read-only.
+
+Review and evidence
+The independent boundary reviewer, plan critic and plan skeptic identified the
+conditional Back-cache lifecycle gap before implementation: pagehide disposal alone
+would leave restored controls inert. The plan added persisted-pageshow remount.
+This is a source-level integration risk, not a reported historical runtime failure.
+Two independent host reviews statically closed that lifecycle gap with exact source
+hashes. Independent adapter review found no concrete blocker in the v4/backup/label
+changes and 18 authored policy tests. Independent browser review found two Medium
+oracle gaps: queued-close assertions did not prove the replacement controller was
+live, and unchanged save bytes did not prove zero widget storage writes. Two fresh
+reviewers independently confirmed both gaps. These are test gaps, not established
+product defects. The sole browser owner corrected both and the independent critic
+found no remaining concrete blocker at the frozen harness hash below. Exact
+combined Spark execution remains pending. This assembly has 124 authored reducer
+tests.
+
+The corrected browser harness observes the actual queued close event, then requires
+a fresh controller snapshot and a real export. A separate successful inspection
+window records and forwards setItem/removeItem/clear calls from immediately before
+the native mount through visible refresh and export, and asserts zero calls before
+any intentional host or destination writes. Current-v4 idle, loaded Move and held
+cargo checkpoints enter through the real completion panel and retain exact state
+on paused reload and Journey export. The loaded checkpoints come from public engine
+commands and ticks; they are explicitly compatibility fixtures, not browser-earned
+progression. Sixteen native contexts retain the standalone helper cases separately.
+
+Frozen campaign-navigation.cjs SHA-256:
+4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841
+Frozen smoke.cjs SHA-256:
+41b71f2ecc3c2f55aafa5703eff9b3ab540c72eba6d32785dff880e638f84c48
+Source reviews, author release and original findings are preserved under
+docs/evidence/native-navigation-static/. These are static conclusions only.
+
+Tests must use ordinary built index.html and the real completion action, never an
+injected product mount or substituted introduction. Compatibility seed mutations
+must be labeled; they are not earned Cave progression. Standalone helper fixtures
+remain useful for isolated callback races but cannot prove native host integration.
+Any read-only mount telemetry calls the original once with unchanged arguments
+and returns the identical controller. Actual Back evidence records persisted versus
+reload; a synthetic lifecycle fault fixture cannot be reported as real BFCache.
+
+All parser/tests/build/browser execution belongs on Spark via parent/coordinator.
+No M6 execution, push/main merge, production deployment or Library replacement.
+Native platform/accessibility/human enjoyment/full-age/campaign acceptance remain
+outside this bounded flow. Native custody exporter eight-pass/exit3 is separate:
+all 15 conformance checkpoints remain unestablished across its capability gaps.

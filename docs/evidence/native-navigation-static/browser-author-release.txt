@@ -1,0 +1,193 @@
+Native navigation browser author release — 2026-10-04
+Author: /root/skeptic_one
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-navigation-native
+Baseline: 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558
+
+Frozen browser files, SHA-256
+tests/browser/campaign-navigation.cjs
+4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841
+tests/browser/smoke.cjs
+41b71f2ecc3c2f55aafa5703eff9b3ab540c72eba6d32785dff880e638f84c48
+
+The final bounded correction changed campaign-navigation.cjs only. Smoke is
+unchanged from the separately reviewed release. No product, host, engine, adapter,
+build, or other browser source was edited by this correction. No commit was made.
+No M6 runtime, parser, lint, test, browser, build, or engine execution was used.
+The cases below are authored assertions and static conclusions, not runtime PASS
+claims. Final immutable assembled execution and independent verification remain
+the parent's Spark gate.
+
+Pre-correction campaign SHA-256:
+b60a0f94ea5eeaae10ed9da1825b437703e76af051e7cacaaa340e68d202e473
+No separate full pre-correction source copy was located or reconstructed. The
+original hash and line-specific oracle descriptions remain in browser-oracle-
+review.txt, queued-close-skeptic-two.txt, and queued-close-skeptic-three.txt.
+
+Accepted oracle corrections
+
+B01: After the existing labeled synthetic same-turn Stay/reopen button.click()
+fixture, an observer awaits the actual browser-generated dialog close event.
+It records isTrusted, modal.open, mount count, and whether replacement markup
+exists. Assertions require exactly one close event, an open replacement dialog,
+and two native mounts. The close observer does not dispatch or replace close.
+After the event has been observed, the test focuses the replacement forward
+control, records controller 2's snapshot, and dispatches a SYNTHETIC recognized
+RTS-key StorageEvent without changing a save. A new validated snapshot must
+appear, focus must remain on the forward control within the modal, and an actual
+visible native export must download the exact original RTS bytes. There is no
+test-side mount, reconstruction of product DOM, or controller-method override.
+Disposed rendered DOM or an already-resolved ready promise alone cannot satisfy
+this liveness sequence. The event-order record is saved as
+native-queued-close-event.json. This is a test-oracle correction; the reviewed
+host already has the appropriate modal.open guard.
+
+B02: The native-route context arms a forwarded Storage mutation recorder. Its
+window begins synchronously immediately before the original host-requested
+api.mount(options), after the host has opened and paused the completion dialog.
+It records every call to Storage.prototype.setItem, removeItem, and clear,
+including the storage receiver label and original arguments, then invokes the
+original method through Reflect.apply with the exact receiver and arguments.
+It does not block, filter, rewrite, or suppress any mutation. The original return
+and thrown behavior propagate. Initial fixture writes and ordinary pre-modal
+Cave saves occur before this window.
+
+The window includes successful original ready, a visible native refresh button
+click followed by a new validated snapshot, and an actual downloaded RTS export.
+All three Storage methods are restored before later close/pagehide/Replay,
+navigation, migration, import, or destination writes. The recorder asserts zero
+calls, including same-value rewrites, temporary keys, and unlisted keys. Exact
+fixture raw comparisons remain a separate assertion. The result and scope are
+written to native-successful-storage-observation.json before the zero-call
+assertion. B02 uses an actual button refresh, not a synthetic StorageEvent.
+
+Additional bounded current-v4 admission fixtures
+
+The previous idle-v4 witness remains. Two more checkpoints are constructed only
+through public Camp.command()/tick()/serialize(): gather from d0 until exactly
+two wood, issue Move to (2,3), and tick once for a carryMove checkpoint; continue
+until idle at (2,3) for the held-cargo checkpoint. Preconditions assert cargo,
+resource, phase, destination, and validator admission. No state fields are
+rewritten to manufacture these two checkpoints. Each is presented to the actual
+native Cave helper, downloaded exactly, entered through the real forward button,
+and compared as a full destination state. The destination must be paused and
+unblocked. Reload retains the exact state, and its real Journey export must
+equal the original canonical checkpoint bytes. Earlier save strings remain
+exact. These are public-engine-generated compatibility fixtures, not browser-
+earned gameplay or a repetition of Move025 movement/custody verification.
+
+Authored context and case matrix
+
+Two existing opt-in helper contexts remain for standalone integration, keyboard
+presentation, raw exports, read denial, stale inspection, overlapping activation,
+disposed callbacks, focus/error recovery, and asynchronous race contracts. They
+may explicitly mount/call the helper API; they are not native-wiring evidence.
+
+Sixteen independent native contexts now cover:
+1. Native route/presentation plus successful zero-mutation observation; v1-to-v4
+   destination migration, occupied startup backup retention, two real v2 imports,
+   actual Back/reload, and exact native exports of startup/import backup families.
+2–6. Five delayed initial-inspection cases: Close, Stay, Escape, Replay, and a
+   storage-conflict replacement. Disposal must resolve original ready to null
+   and leave the original slot unchanged. Replay checks its separate new run.
+7. The queued-close event and post-event replacement-liveness fixture (B01).
+8. Labeled synthetic persisted pagehide/pageshow with the open completion modal,
+   disposal before remount, and no remount while the modal is closed.
+9. Native activation closed while inspection is delayed; no late navigation,
+   exact source preservation, and a usable later native mount.
+10–12. Native blockers: current-v4 negative work, unknown-v5 save, and a legacy-v2
+   state that passes old validation but fails constructor/migration admission.
+   Each retains the original and exports it exactly without creating recovery
+   backups or allowing entry.
+13–15. Current-v4 idle, carryMove, and held-cargo admission/export/entry/reload.
+16. Controlled legacy-v3 tiny work residue: clone-only admission, exact pre-entry
+   raw export, destination repair, occupied startup v4/roundoff backup retention,
+   two real imports, and exact exports of their base/numbered retained originals.
+
+Native integration and instrumentation boundaries
+
+The loopback server serves rebuilt dist/index.html and dist/hearth-rts.html
+byte-for-byte. It injects no native slot, product link, script, or replacement
+completion screen. Checked-in dist is historical until the Spark build runs;
+this release does not claim to have executed today's host from that old output.
+Native telemetry calls the original API mount exactly once with unchanged host
+options, retains the original controller and ready promise, and returns that
+exact controller. It does not wrap lifecycle/activation methods or host options.
+The bounded B02 recorder is additional observation at that same mount boundary.
+
+Actual browser Back records a trusted pageshow and identifies whether return was
+BFCache or a full reload. The actual Back branch waits for the returned document
+or restored mount and validates the corresponding native behavior. Separately
+dispatched persisted lifecycle events are explicitly synthetic fault fixtures;
+they are not claimed as real BFCache observations. The queued-close button.click
+inputs and its recognized StorageEvent are synthetic; the awaited UA close and
+subsequent native download are actual. The delayed replacement case uses an
+actual second page's localStorage change and the receiving native storage event.
+
+Delayed SHA-256 instrumentation preserves the real digest function and drains
+newly appended inspection batches before restoring it. Initial-disposal cases
+also await the original ready promise. Native pending activation uses the drained
+work and observed non-navigation; separate opt-in callback-race cases await the
+original activation promises directly. Completed Cave advance is inert, so
+unchanged completed-world counters do not prove the host's dialog pause flag.
+The release does not make that claim.
+
+Fixture and scope limitations
+
+Completed Cave is a deliberately constructed compatibility source using the real
+constructor/fire operations plus authored progression fields. Legacy v1/v2 seeds
+are controlled projections of a fresh current world with legacy fields omitted.
+The v3 recovery case deliberately authors a balanced gathered load and a tiny
+negative work residue, then independently checks repair changes only work and
+constructor adoption changes only the version. These do not demonstrate earned
+Cave progression, pacing, enjoyment, a campaign grant/handoff, branch completion,
+or a complete multi-age playthrough. No destination storage-fault matrix or
+transfer-custody gameplay expansion was added; unchanged RTS predecessor coverage
+belongs to the separately verified Move025 gate.
+
+Presentation checks cover desktop and narrow headless Chromium, focus trapping,
+keyboard-visible focus, disclosure, visible action reachability, and simulated
+200% root text. This is not browser zoom, assistive-device, or broad platform
+accessibility coverage. Failure handling captures native-failure.png and
+failure.json with the current native page's body, lifecycle/close observations,
+mutation calls, mount count, prior evidence, and page errors where available.
+
+Smoke preservation
+
+The smoke change goes through actual native completion into a fresh RTS v4 camp,
+asserts exact earlier Cave/Hearth/archive/Agriculture bytes before and after,
+pauses the fresh RTS, and checks its opening economy. It then explicitly opens
+the supported old hearth.html URL and retains the previous hex-Hearth gameplay,
+refresh, failed-save export, unknown-save recovery, depleted migration, and
+touch assertions. The archived string fixture proves byte retention, not an
+archived playable world. Old smoke's real-time pause/reload timing assumptions
+are preexisting and unchanged. Smoke makes no zero-Storage-call claim.
+
+Static review attribution
+
+- /root/skeptic_one/migration_browser authored smoke and reviewed its own diff;
+  that was author self-review, with no execution.
+- /root/skeptic_three independently reviewed frozen smoke (41b71f...), finding
+  no new concrete blocker; see smoke-oracle-review.txt. Spark remains pending.
+- /root/skeptic_one/roundtrip_scan independently found two earlier harness timing
+  gaps: Back needed a trusted pageshow wait, and digest draining needed to include
+  later appended backup batches. Both were corrected before the b60a freeze and
+  statically rechecked. That review did not identify B01/B02.
+- /root/implementation_critic identified B01/B02 in b60a; /root/skeptic_two and
+  /root/skeptic_three independently confirmed those bounded oracle gaps before
+  parent authorized this correction. No current product defect was established.
+- /root/skeptic_one/roundtrip_scan freshly reviewed only the final B01/B02 and
+  loaded-v4 additions. It found no concrete static blocker: forwarding/window
+  boundaries, post-close fresh snapshot plus real export, and public-command
+  checkpoint admission/reload/export were consistent. It performed no edits or
+  execution. This is not the parent's separate final acceptance review.
+- Author final static read found no further concrete blocker. No measured event
+  ordering, mutation count, download, or gameplay outcome is asserted by that
+  source review.
+
+Release state
+
+The two hashes above are frozen for the parent's separate implementation_critic
+verification and immutable Spark build/browser run. No further browser source
+change is authorized under this frozen release without explicitly reopening
+ownership. The author report and static child reviews do not substitute for the
+remaining runtime gate or independent artifact review.

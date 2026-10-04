@@ -1,0 +1,151 @@
+Native campaign browser harness — independent static oracle critique
+2026-10-04. No app/test edits or M6 execution, parser, tests, build, lint or
+browser run. Only this assigned report was written. No video was watched.
+
+Verdict: two concrete candidate test-oracle gaps require the parent's fresh
+skeptic gate before owner changes. Neither is a demonstrated product defect.
+The frozen harness substantially exercises the actual built native integration,
+but is not yet a complete proof of its stated lifecycle/read-only obligations.
+No obvious deterministic stall or falsely labeled earned-play fixture was found
+by static inspection. Runtime results are entirely pending Spark.
+
+Workspace: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-navigation-native
+Reviewed complete tests/browser/campaign-navigation.cjs, SHA-256:
+  b60a0f94ea5eeaae10ed9da1825b437703e76af051e7cacaaa340e68d202e473
+Reviewed diff against original widget 444d252c09b205e1f431ee870d2e328f1803214c.
+Dependency hashes matched the separately reviewed host/widget:
+  src/view.js
+    2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+  src/campaign-navigation/browser.js
+    8c2fa82af650f9e594d186cb2cb36324c22860586333551a2ffdfccc37c024c6
+Also traced RTS loader/import, Cave completion/clock behavior and the policy.
+The smoke harness is owned by another reviewer and was not re-reviewed here.
+
+B01 — Medium candidate oracle gap: queued close can leave a dead rendered panel
+
+At test lines 372–376, Stay and completion reopen run synchronously, readyNative
+is awaited, then a zero-delay timer and assertions check modal.open, mount count,
+an enabled rendered button and preserved raw saves. There is no observation that
+the old native close event actually ran before the assertions, or that the second
+controller remains active after it runs.
+
+The dependency's dispose() at browser.js:138 removes listeners and invalidates
+generation but leaves rendered DOM and the last snapshot intact. Therefore, if
+the second refresh renders before an unguarded old close listener disposes it,
+the existing enabled button, open dialog and count of two mounts still satisfy
+the assertions. Delivery after the timer/assertions is another uncovered ordering.
+An early old close might instead invalidate ready and make this test fail; that
+possible failure does not establish deterministic coverage of the later ordering.
+
+This is an adversarial counterexample to the oracle, not a claim that the current
+host lacks its guard: view.js:139 correctly guards all cleanup with !modal.open.
+The test advertises exposing that exact queued-close hazard, so its proof should
+not depend on incidental digest/event scheduling.
+
+Minimal observables after independent confirmation: record/await the real queued
+dialog close event for this opening, then demonstrate that the second controller
+responds to a fresh recognized storage change or a native action. A refreshed
+snapshot/new rendered state must belong to that controller after event delivery;
+mere existing enabled DOM is insufficient. A controlled delayed second refresh
+can additionally establish event ordering. Preserve the explicit synthetic-control
+label and avoid replacing controller behavior. Separately verify pause/focus if
+claiming those properties; mount count alone does not prove them.
+
+B02 — Medium candidate oracle gap: exact final raw does not prove zero writes
+
+The native successful inspection, refresh and export cases compare selected raw
+keys before/after, but never record setItem/removeItem/clear calls. The only
+write-throwing setup is the opt-in case at :133–142, which simultaneously makes
+every readSource call throw. It does not exercise successful admission/export.
+
+Concrete undetected regression: write each successfully read live RTS raw back
+to the same key during inspection. The read-failure case never obtains such raw,
+and every successful-case exact-byte assertion still passes. A temporary or new
+unasserted key write is also invisible to selected-key comparisons. The source
+review found no actual such write; this finding concerns the acceptance oracle.
+
+The reviewed plan/boundaries explicitly require instrumented zero widget writes
+while distinguishing ordinary Cave pagehide/Replay and destination writes. After
+fresh skeptic confirmation, record mutation method calls during a successful
+native open-modal inspection + refresh + export window and assert zero. Start
+early enough to include initial mounting; end before close/navigation/pagehide/
+Replay or identify those host writes independently. Keep exact raw comparisons
+as an additional preservation oracle rather than replacing them with call counts.
+
+Sound native integration and asynchronous observations
+
+The server serves ordinary built dist/index.html and dist/hearth-rts.html. The
+old injected cave-integration.html route and test-side completion slot/mount are
+removed. The opt-in navigation-fixture.html remains clearly separate. All fourteen
+native contexts begin through the actual #event-action control. The wrapper at
+:231–233 calls the original host-requested mount once with untouched options and
+returns its exact controller; it records ready/controller without replacing their
+methods. This telemetry does not manufacture a native mount or its lifecycle.
+
+The five delayed-initial-refresh cases hold an actual digest, close/Stay/Escape/
+Replay/replace through host controls, and release only after those transitions.
+They await the original ready and require null plus unchanged old-slot DOM. In
+the replacement case a real second page changes the Cave key and the host opens
+its real conflict modal. These are stronger than checking only a new panel: a
+late old refresh cannot silently finish and be hidden by replacement. Replay
+checks incomplete fresh run, retained baseline/records and foreign saves, without
+pretending to earn another campaign or asserting exact elapsed run time.
+
+releaseDigest dynamically drains promises appended by the later numbered-backup
+inspection batch. This addresses a one-shot Promise.all that would observe only
+primary hashes. The pending-action-close case then checks no navigation, closed
+modal, exact sources and working reopening. The actual activation promise is not
+intercepted; its narrower evidence is digest-drained native non-navigation, while
+separate opt-in callback races await the original activation promises explicitly.
+
+backToCave waits for a trusted pageshow and distinguishes a changed document from
+a persisted document with an additional host mount. It records actual persisted
+versus full reload instead of calling every Back a BFCache success. The synthetic
+persisted case is separate, verifies original pending ready becomes null before
+remount, and ensures closed completion does not remount. This is honest coverage
+of the handler branch if actual Chromium Back does not preserve the page.
+
+Native fixtures, imports and preservation
+
+Completed Cave and version-projected legacy saves are compatibility fixtures,
+not earned-play claims. The legacy residue is explicitly authored with balanced
+gathered cargo and tiny negative work, and its preconditions assert repair changes
+only work before version migration. The v4 negative is explicitly unrepairable.
+The post-migration invalid legacy obligation is asserted input-valid and rejected
+by the actual constructor before the browser case, preventing an already-invalid
+fixture from masquerading as constructor-postvalidation coverage.
+
+Rejected native routes require disabled entry, exact original downloads and no
+new v4/roundoff backups. Successful migration/import compares actual durable
+destination state to the loader result and checks paused UI. importRTS opens the
+dialog afresh, uploads through the actual file input/confirmation, then waits for
+this attempt's dialog closure; it does not reuse an already-true version==4 wait.
+Distinct raw imports must occupy distinct immutable backup slots. Native downloads
+read actual browser download bytes for all seven backup families across the cases.
+
+Presentation checks are bounded: actual native modal Tab/Shift-Tab focus wrapping,
+visible focus, 390px layout, doubled root text and elementFromPoint reachability.
+The final report labels root-font doubling separately from browser zoom/device
+accessibility. The retained opt-in tests separately exercise Enter/Space disclosure,
+real UTF-16-preserving download and asynchronous callback/focus races.
+
+Other explicit coverage limits, not additional product findings
+
+1. The native current-v4 fixture at :396/:414 is a fresh idle world after one
+   tick. It does not implement plan B's genuine carryMove/held-cargo native-load
+   witness. The adapter unit suite does cover ordinary generated Move/hold states;
+   this harness alone cannot claim loaded-custody preservation on the native route.
+2. Successful native operations do not presently exercise real RTS/backup key
+   storage events or stale-enabled activation after a changed RTS source. The
+   retained opt-in tests use manual RTS StorageEvents, while the native second-page
+   event tests Cave-conflict modal replacement. Keep those claims distinct.
+3. Native storage read/enumeration denial and destination backup/main-write failure
+   recovery are not included here. Other exact-candidate regression harnesses may
+   supply that evidence, but these successful migrations/imports do not.
+4. Neither widget inspection nor a constructor-backed eligibility decision proves
+   destination storage can durably write. No full campaign handoff, grants, native
+   custody conformance or broad UX acceptance follows from these checks.
+
+Both candidate findings were sent to the parent before any requested correction.
+The parent owns independent disproof, sole-owner edits and subsequent verification.
+No corrected harness or runtime evidence has been reviewed in this report.

@@ -1,0 +1,80 @@
+Native Cave completion navigation integration plan
+
+Host isolated branch codex/hearth-navigation-native from immutable4e391c2.
+Move025/core remain frozen. Seven new widget files copied exactly from reviewed
+444d252; no runtime pass inherited. All execution exclusively via parent/Spark.
+
+Bounded implementation
+1. Build only index.html with existing Cave engine/art/styles/view plus matching
+pure HearthRTS engine, scoped navigation CSS and policy/browser scripts. New shell
+placeholders are fully substituted before Cave view initialization. No other view
+or simulation runs in Cave. No external script/runtime/dependency introduced.
+2. Replace Cave completion's old Hearth anchor with #campaign-navigation section
+and truthful finite-supplies/eastern-outpost/workshop introduction. Keep completion
+facts, Stay and Replay behavior. Existing old-game URLs remain available elsewhere.
+3. Store controller synchronously on mount, not after awaiting ready. Dispose and
+clear it before every modal replacement, on closeModal, native cancel/close and
+pagehide. Do not close a newly opened replacement modal when an earlier close event
+arrives: native-close cleanup must check !modal.open. Never let an old refresh,
+failed callback or storage event touch the replacement content or navigate later.
+4. Explicit host validateRTS callback uses repairWorkResidue(state)||state then
+new HearthRTS.Camp on a cloned input inside try/catch. This mirrors destination
+startup pre/post-migration admission without writes or adopting the clone in Cave.
+Keep live exact raw identity/export and migration responsibilities at destination.
+5. Adapter supports current RTS1/2/3/4; pre-v4 backups1/2/3; work-roundoff backups
+1/2/3. Add exact .before-v4, .import-before-v4, .before-work-roundoff,
+.import-before-work-roundoff families with positive numbered suffixes. These remain
+preserved-only, never alternate playable sources; old families remain unchanged.
+Add ordinary recovery labels. No unrelated key enumeration/read or silent fallback.
+6. Update adapter tests for real current4 and explicit version projections, unknown5,
+all backup namespaces/suffix rejection, clone-only constructor admission including
+postmigration rejection and legacy-only repair. Existing durable-handoff refusal,
+identity/source immutability/absence/read-failure tests remain meaningful.
+7. Preserve opt-in fixture tests for helper-specific callback races/presentation.
+Replace actual Cave integration's JS-injected slot/mount/intro with native ordinary
+built index.html and visible #event-action. Expand assembled cases for close/Stay/
+Replay/reopen, Escape, modalreplacement, pending initialrefresh/action-dispose,
+focus trap, reload/browserback, actual legacy migration and v4/roundoff exactexports.
+No tests inject the new product mount. Explicit compatibility fixtures are allowed
+and labeled; no earned Cave campaign or new-gameplay claim.
+8. Existing smoke.cjs currently depends on removed completion legacy anchor. Update
+that one navigation portion to follow native RTS control and prove save preservation;
+then independently open the still-supported previous Hearth URL for its existing
+hex-stage coverage. Preserve latter tests; do not remove them to make navigationpass.
+9. Update build test for new fully-substituted embedded scripts and route while
+retaining existing stage links/art. No new tests that merely mirror copy strings.
+
+Ownership once plan review clears
+- Root: host src/view.js, src/shell.html, build.mjs, tests/build.test.cjs, docs/provenance.
+- Adapter owner: adapter.cjs + browser.js labels only + tests/campaign-navigation.test.cjs.
+- Browser owner: tests/browser/campaign-navigation.cjs and existing smoke.cjs only.
+- Separate reviewers: concrete change critic, fresh skeptics for any claimed findings,
+sole area fixer, separate actual fix verification. No one else edits owned files.
+
+Acceptance is exact combined immutable Spark source, not standalone444d252 or
+Move025 evidence. Preserve app art and all raw saves. No navigation-root commit,
+resource/people carryover/grants, stageproof/fullAge/handoff claim, storage replacement,
+push/main merge/production or Library publication. Native custody remains separately
+blocked8testpass/exit3 with all15profilecasesunestablished. Parent owns native custody
+decisions; current integration will neither add capacities nor imitate conformance.
+
+Reviewed lifecycle clarification before implementation
+The pagehide cleanup also requires pageshow recovery for back-forward-cache restores.
+On pageshow with persisted===true reset lastNow and synchronously remount only if
+#modal is currently open and contains the native #campaign-navigation slot. Keep
+its returned controller immediately. A fresh read may update the panel; no
+navigation or widget storage write occurs automatically. Guard native close
+cleanup with !modal.open so an old queued close cannot clear a reopened modal.
+Economy boundary review, independent skeptic_three and implementation critic each
+identified/confirmed the conditional missing-remount risk; this is a plan correction,
+not an observed game/browser defect. Actual Back evidence must report persisted
+versus reload; a separately labeled synthetic persisted-event fixture can exercise
+the otherwise-unobserved branch without claiming real BFCache acceptance.
+
+Browser instrumentation boundary
+Read-only wrapper around the real supplied mount may record the returned original
+controller and its ready promise while calling original mount once with untouched
+options and returning that exact controller. Never invoke mount from the native
+case driver, replace its returned controller, wrap its disposal/activation behavior,
+or change host options. This telemetry proves the host mounted/remounted; native
+DOM, input, raw saves, lifecycle events and completed promises remain the oracles.

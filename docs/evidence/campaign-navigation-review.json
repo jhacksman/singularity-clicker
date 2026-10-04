@@ -1,0 +1,35 @@
+{
+  "package": "campaign-navigation-handoff",
+  "base_commit": "d3116663cebd336ace24b39a84c171634aae0e88",
+  "base_correction": "Parent reported Spark020 parser failure in05d132c; rebased only six added navigation files onto main worker d311666 with exact one-character parser correction and upstream syntax gate. Navigation001 superseded before dispatch; no own edit to the RTS engine.",
+  "spec_manifest_sha256": "1a1d987bd4efefdeb4b5f6a9356784ad9973dc726e6ec3e6943e87498f1ebbbc",
+  "scope": "New-files-only, opt-in navigation artifact; no root/save engine, existing-game edit, push or main merge",
+  "author": "/root",
+  "critic": "/root/navigation_critic",
+  "skeptic_policy": "Each critic finding must receive three independent read-only skeptic verdicts when high severity, two otherwise, before correction",
+  "verifier": "/root/navigation_verifier",
+  "reviewed_candidate": "a40a10c42e0d97ddac1001eff4c8e07fb8487ec6",
+  "review_status": "Independent critic and separate verifier preflight complete; each finding validated by two independent skeptics before author correction. No high findings.",
+  "skeptics": ["/root/navigation_skeptic_a", "/root/navigation_skeptic_b"],
+  "findings": [
+    {"id": "V01", "finder": "/root/navigation_verifier", "proposed_severity": "medium", "validated_severity": "low", "title": "Real completed-Hearth archive array reported invalid", "skeptic_a": "uphold low; raw bytes/export/navigation unaffected", "skeptic_b": "uphold low; reporting error only", "correction": "Recognize unversioned array-of-string envelope as preservation-only, do not certify entries; exact archive-container identity and exports", "acceptance": "Empty/one/multiple/unvalidated-member and malformed-container fixtures; real raw-array browser export", "status": "corrected after both verdicts; Spark verification pending"},
+    {"id": "NC-01", "finder": "/root/navigation_critic", "proposed_severity": "medium", "validated_severity": "medium", "title": "Actual import-before-v3 backups absent from discovery/export", "skeptic_a": "uphold medium", "skeptic_b": "uphold medium", "correction": "Recognize exact base/positive-numbered import backup namespace and exclude lookalikes", "acceptance": "Actual v2 import through RTS UI, occupied slot and exact base/numbered raw downloads", "status": "corrected after both verdicts; Spark verification pending"},
+    {"id": "NC-02", "finder": "/root/navigation_critic", "proposed_severity": "low", "validated_severity": "low", "title": "Disposed callback rejection overwrites replacement panel status", "skeptic_a": "uphold low", "skeptic_b": "uphold low", "correction": "Guard post-callback failure rendering by disposal, current mount ownership and accepted inspection generation", "acceptance": "Reject deferred old export and navigation callbacks after remount; replacement DOM/snapshot unchanged", "status": "corrected after both verdicts; Spark verification pending"},
+    {"id": "NC-03", "finder": "/root/navigation_critic", "proposed_severity": "low", "validated_severity": "low", "title": "Refresh loses backup disclosure and keyboard focus continuity", "skeptic_a": "uphold low", "skeptic_b": "uphold low; not total keyboard inaccessibility", "correction": "Preserve disclosure state and stable summary/action focus with a visible fallback", "acceptance": "Keyboard consecutive exports and storage-triggered refresh preserve focus/open state without pointer reopening", "status": "corrected after both verdicts; Spark verification pending"}
+  ],
+  "verified_functional_candidate": {"commit": "82e6c74f8b2be8832d45afa76d8100b4c7f1bd0b", "job": "singularity-20261004-navigation-002", "syntax_files": 29, "tests_passed": 90, "tests_failed": 0, "builds": 4, "browser_groups": 8, "page_errors": [], "separate_verifier": "approved opt-in handoff after exact source hash, results, assertions and all three PNGs; production integration not claimed"},
+  "presentation_review": {
+    "candidate": "82e6c74f8b2be8832d45afa76d8100b4c7f1bd0b",
+    "workflow": "Same independent Astra-ultra critic; both independent Astra-ultra skeptics completed verdicts before edits; separate verifier supplied its own acceptance oracle without reading critic/skeptic reports",
+    "findings": [
+      {"id": "NP-01", "severity": "low", "title": "Internal policy wording exposed in ordinary player flow", "skeptic_a": "uphold low; optional exact recovery identifiers remain useful", "skeptic_b": "uphold low; preserve separate-save/no-transfer explanation", "correction": "Browser-only human presentation mapping; recognizable saves with exact keys in optional backup section; unchanged policy, filenames and raw exports"},
+      {"id": "NP-02", "severity": "medium", "title": "Actual Cave seam has small touching controls without primary hierarchy", "skeptic_a": "uphold medium; Command section3 line55 specifies44 CSSpx; existing focus outline already present", "skeptic_b": "uphold medium; screenshot supports sizing/hierarchy defect but measured dimensions still require Spark", "correction": "Owned scoped stylesheet and explicit inclusion contract;44px targets, primary forward action, readable wrapping; actual Cave desktop/narrow/doubled-text measurements and captures"},
+      {"id": "NP-03", "severity": "low", "title": "Second refresh drops focus from disabled-navigation status fallback", "skeptic_a": "uphold low for storage/API refresh while status remains focused", "skeptic_b": "uphold low; manual Refresh click is not the counterexample", "correction": "Stable status focus token; consecutive API/storage refresh tests plus retry/removed-export/external-focus checks"},
+      {"id": "NP-04", "severity": "low", "title": "Anchor-only guide retains mismatched old Hearth introduction", "skeptic_a": "uphold low as guide/main-owner obligation", "skeptic_b": "uphold low; no policy or existing-game edit warranted", "correction": "Guide requires main owner to align introduction with finite gathering/outpost/workshop preview; fixture demonstrates proposed copy without editing main-owned source"},
+      {"id": "NP-T01", "severity": "low", "reviewed_candidate": "7c6f761513fc5673f3376076c443525f0190cac4", "title": "Refresh-focus test could pass before the keyboard refresh completed", "skeptic_a": "uphold low test-only; old focus predicate already true before asynchronous inspection", "skeptic_b": "uphold low test-only; subsequent explicit refresh can supersede the unobserved activation", "correction": "After both verdicts, hold the keyboard activation digest, assert prior snapshot/node while held, release, await a new non-null snapshot, assert replacement focus and disconnected old node, then restore hook"}
+    ],
+    "status": "NP01-04 source/guide closed by critic at7c6f761 and independent verifier preflight approved; NP-T01 test correction follows both completed skeptic verdicts. Exact revised test closure and Spark execution pending"
+  },
+  "execution_status": "Functional82e6 candidate verified on Spark002; follow-up presentation changes unrun and must use Spark coordinator",
+  "integration_status": "pending main Hearth worker acceptance"
+}

@@ -1,0 +1,143 @@
+Independent skeptical review: queued-close and zero-write browser oracles
+2026-10-04. Reviewer /root/skeptic_two. Static inspection only.
+
+Scope and immutable source identity
+Inspected hearth-navigation-native at base
+4e391c2e2ebf255e1cf0fb5b57bed6d123b51558, with these frozen candidate files:
+  tests/browser/campaign-navigation.cjs
+  SHA-256 b60a0f94ea5eeaae10ed9da1825b437703e76af051e7cacaaa340e68d202e473
+  src/view.js
+  SHA-256 2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+  src/campaign-navigation/browser.js
+  SHA-256 8c2fa82af650f9e594d186cb2cb36324c22860586333551a2ffdfccc37c024c6
+
+The supplied b60a0f94 was the browser file's SHA-256 prefix, not a Git revision;
+the full file hash matched before inspection. I read the test, relevant host and
+widget source. I did not read another reviewer's report. No application/test
+edits, runtime, parser, browser, build, lint or commit occurred. This report is
+the only file written for this task.
+
+1. Queued-close liveness: CONFIRMED Medium harness gap, narrowly stated
+
+Attempted disproof A: awaiting the replacement's ready promise proves it remains
+live after the old close event.
+Counterevidence: readyNative at test lines 241-245 awaits the already captured
+controller.ready promise, maps its result to null, then waits for a status node.
+It neither checks disposal nor invokes an action after the close event. In widget
+refresh lines 77-83, rendering and latest assignment happen once a successful
+read resolves. dispose at line 138 subsequently sets disposed, increments the
+generation, removes the click/storage listeners and deletes the mounts entry.
+It does not remove rendered nodes, clear latest or change the resolved promise.
+
+Attempted disproof B: modal open, mount count or enabled-button assertions would
+detect disposal of the replacement.
+Counterevidence: the host's close listener at src/view.js:139 has the correct
+current !modal.open guard. If that guard were removed, its body would call
+disposeNavigation, clear dialogPauses and render the ordinary Cave UI; it does
+not close the newly opened dialog. render at lines 14-54 does not replace the
+completion's navigation markup. The mount telemetry at test lines 228-233 is
+an append-only record, with no disposal removal. Widget dispose leaves the
+enabled button in that same markup. Thus open=true, mounts.length=2 and
+isEnabled()=true do not establish a working replacement controller.
+
+Concrete conditional ordering exposed by the source:
+  1. keep-flame.click() runs closeModal, disposes the first controller and closes
+     the dialog. event-action.click() immediately reopens and mounts controller 2
+     in the same test evaluation (lines 372-373).
+  2. Controller 2 completes its initial read, sets latest, renders its enabled
+     control, and resolves ready.
+  3. An old close event is handled after that render. Without the host guard, it
+     disposes controller 2 while leaving the modal and rendered control intact.
+  4. Every assertion at 374-375 can still succeed. No visible navigation or export
+     is then exercised before context closure at 376.
+
+This is a source-derived blind spot, not a claim that step 2 precedes step 3 in
+the tested Chromium run. The code records no close event or its order, and the
+zero-delay timer at 374 only proves that its timer callback executed. It supplies
+no observation that the relevant close handler ran, or that the replacement was
+rendered when it ran. No runtime ordering was measured in this review.
+
+Important limit of the finding: if disposal occurs before controller 2's initial
+refresh renders, refresh returns null at widget line 81 and the new slot lacks
+the expected status node. readyNative can then time out. The current test has
+real sensitivity to that early ordering; it is not universally incapable of
+catching a missing guard. I reject the broader assertion that the mutant must
+always pass. I confirm that the current oracle does not prove late-close
+liveness or even explicitly observe the close event it claims to exercise.
+
+Suggested bounded Spark regression
+- Install a close-event observer before the synchronous Stay/reopen sequence;
+  record whether the replacement is open/rendered when the event is observed.
+  Await that event explicitly, not a timer as a substitute for observation.
+- After the observed close, use a visible native helper control and assert its
+  real outcome: e.g. an exact original download or actual navigation. Checking
+  enabled DOM or a stale snapshot is insufficient.
+- For the late-render case, a separately labelled synthetic close dispatched
+  after replacement ready can deterministically exercise that ordering without
+  pretending it was a trusted browser event. It should reach the real host
+  listener and the visible control afterwards, not replace controller methods.
+- Pair the corrected test with a narrowly altered host guard negative control
+  on Spark. The good host must remain actionable; the bad guard must fail the
+  liveness assertion. Preserve the real-event case and label each observation.
+
+Current product conclusion: the host already contains the relevant guard. No
+product fix is established by this finding; the authorized fix belongs to the
+browser test owner and requires actual immutable Spark evidence.
+
+2. Successful-path zero-write proof: CONFIRMED Medium harness gap
+
+Attempted disproof A: raw byte equality is sufficient evidence of zero writes.
+Counterevidence: rawSources at test line 240 reads a caller-specified set of
+keys. Native checks at 277, 298, 410, 415 and 418 compare final values with the
+fixtures. Those checks detect changed retained values, but cannot detect:
+- setItem(key, the exact existing value);
+- writing and then restoring the original value before the comparison;
+- creating then removing a temporary key;
+- a write to a key outside the compared set that leaves the selected values alone.
+None requires the existing byte comparisons, exact export bytes, or page-error
+assertion to fail. These are hypothetical regression witnesses, not behavior
+found in the current widget.
+
+Attempted disproof B: the mutation-throw fixture already guards these paths.
+Counterevidence: lines 134-138 replace setItem/removeItem/clear with throwing
+functions, but the same mount supplies readSource that throws on every read.
+Lines 140-142 verify the unreadable-source branch. Successful admission, saved
+world inspection and export never execute in that fixture. It provides useful
+read-failure coverage, not a successful-path no-write oracle. Later native
+contexts have their own Storage prototype and no equivalent recorder.
+
+Attempted disproof C: current read-only implementation and unit input-immutability
+checks close the browser evidence gap.
+The adapter and widget contain no storage mutation call in the inspected source;
+host admission constructs a clone without saving (host lines 132-135). That is
+positive static evidence for the current implementation. It does not establish
+that a successful-path browser regression which writes identical bytes would
+be caught. Unit raw-input immutability similarly concerns the supplied objects
+and strings, not browser Storage calls made elsewhere.
+
+Suggested bounded Spark regression
+- In a native assembled-page case, record calls to Storage.prototype.setItem,
+  removeItem and clear while preserving their original receiver/arguments and
+  behavior. Successful source reads and admission must still occur.
+- Scope recording after fixture seeding/initialization, around the real
+  completion opening, completed initial inspection, explicit refresh and an
+  exact original export. Assert zero mutation calls and retain byte comparisons.
+- Finish the recording before intentional host pagehide/Replay or destination
+  migration/import/save writes. Host save() at src/view.js:8 writes storage;
+  pagehide at :154 intentionally invokes it. Those legitimate writes must not
+  be mislabeled navigation defects or silently exempted inside the tested phase.
+- Use a labelled negative control that performs a same-value setItem, and/or a
+  temporary create/remove, on a successful helper path. The mutation-call oracle
+  must fail even when every final raw-byte comparison passes. Keep this control
+  separate from production source and execute only through parent/Spark.
+
+Current product conclusion: no storage-writing product defect was found. The
+finding concerns a missing positive-branch oracle for the promised no-write
+boundary. It does not authorize host storage rewrites, another fallback source,
+or a broader widget refactor.
+
+Overall verdict
+Both requested candidates survive independent static disproof as bounded test
+coverage defects. Neither is a demonstrated production failure or a measured
+false-pass result. Fresh actual patch review and paired Spark evidence remain
+necessary after the sole browser owner implements the admitted test corrections.

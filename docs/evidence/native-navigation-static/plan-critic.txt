@@ -1,0 +1,185 @@
+Native Cave navigation — independent pre-implementation critique
+2026-10-04. Read-only design review; no app/test edits, parser, runtime, tests,
+build, lint or browser execution. Only this assigned report was written.
+
+Verdict: bounded no-blocker for the proposed integration, incorporating root's
+explicit pageshow(persisted) resolution below. The material loader, preservation,
+modal-disposal and native-test hazards are addressed by the combined plan. This
+does not approve an implementation or inherit any earlier widget/Move CI result.
+Concrete source and exact combined Spark evidence remain required.
+
+Reviewed basis
+
+Host: hearth-navigation-native, HEAD
+4e391c2e2ebf255e1cf0fb5b57bed6d123b51558.
+Only the seven widget additions were present in git status when inspected;
+existing host implementation had not yet been edited for navigation.
+
+Plans inspected:
+- integration-plan.txt SHA256
+  a43d8c7f4bfef5afd7e6dc3e67cc377349f2bd2bec509251a2c4a500b03c7543
+- boundaries.txt SHA256
+  7a40927811166ee1230f53d0f9f3ec681691e9add678ccc86b7ddfd39aca9c4a
+
+Actual files inspected: host build.mjs, Cave shell/view/engine and build/smoke
+tests; current RTS loader/repair/constructor seam; copied widget adapter, browser,
+scoped stylesheet, adapter/browser tests and provenance/integration documents.
+Key copied-file hashes:
+- adapter.cjs: d775a9af0e242c44303e14b2638e33873c7b9aac75a8abb7e8f6405bda4a6383
+- browser.js: aecc3d02c198ed0709ab842f48e25a5a2925ffc826fef34b6f0c0b5800f9ef85
+- styles.css: 1caf1cef9da8d8eb0ce5fce3f2512ccac1a59e5cb76e405815916923f147a4e6
+- browser test: fa80246121d0c8828944bd96498a82ade5869a002b4cad5065e2cb9116879a93
+- adapter test: ff456fdaaeb17e413efcdcadf7d017d58df09f8aab433c3cfe426db25c70bebd
+
+1. Loader admission: clear with the explicit host binding
+
+Current adapter source() rejects incompatible schema rows before invoking its
+validator (adapter.cjs:52–61), and browser.js:15 defaults to HearthRTS.valid.
+Neither copied default suffices for the v4 destination. The plan correctly changes
+the RTS compatibility row to 1/2/3/4 and explicitly supplies a clone-only check
+that performs repairWorkResidue(state)||state followed by new Camp(...).
+
+The destination really does that sequence (RTS view.js:11–20): object parse,
+optional narrow legacy repair, constructor pre/postvalidation and migration,
+then raw retention and adoption. The adapter already rejects null/primitive/array
+payloads and passes a structured clone to validation. Camp clones again; any
+repair/migration/reveal changes belong to disposable copies. Do not tick or save
+that constructed camp, export its serialization, or pass it to the Cave game.
+Absent RTS is handled before validation, so inspection must not create even an
+in-memory fresh destination as a substitute for a rejected source.
+
+The constructor check matters both ways: it admits recoverable historical residue
+that valid() alone rejects, and rejects old inputs whose migration cannot produce
+valid custody. Keep v4 negative-work repair forbidden. Native tests must include
+both directional distinctions, not merely a fresh v4 save and a future v5 save.
+Compare all raw slots before and after inspection and exact exports. The continued
+source remains the original bytes; this eligibility check is not a repaired save,
+write-permission check, committed handoff or cross-key transaction.
+
+2. Backup recognition: proposed families match actual writers
+
+Current RTS startup writes .before-v2 for v1, .before-v3 for v1/v2, .before-v4 for
+v1/v2/v3, and .before-work-roundoff for eligible repaired v1/v2/v3. Import writes
+.import-before-v3, .import-before-v4 and .import-before-work-roundoff under the
+corresponding predicates. All use retainRaw's exact-byte deduplication followed
+by distinct positive-numbered slots. There is no actual .import-before-v2 writer.
+
+The proposed new families and version rows are therefore appropriate. Update
+KEYS/KINDS, source-identity mapping, exact backupKind matching, browser labels,
+storage-event matching and tests together. Prefix matching would be too broad;
+retain complete-key and positive-suffix matching, rejecting .0, .01 and suffix
+lookalikes. Enumerate unrelated key names only; never read their values.
+
+Backup contents remain exportable even when malformed or unsupported. They must
+not serve as a fallback playable camp or become completion evidence. The current
+adapter preserves raw text before schema/JSON validation and browser download
+preserves UTF-8 or explicitly labelled UTF-16LE code units; keep that boundary.
+Assert each base and numbered backup independently rather than only a backup
+count. Different whitespace must remain a distinct identity/export, not silently
+normalize through the clone validator.
+
+3. Modal lifecycle: clear with synchronous ownership and Back recovery
+
+Current host openModal() replaces innerHTML; closeModal() closes directly, and
+native cancel has a separate path (Cave view.js:128–130). The widget's WeakMap only
+replaces a mount on the SAME container; replacing modal HTML creates a different
+container. Synchronous host disposal before replacement/close/cancel is necessary.
+Store the returned controller immediately, before awaiting controller.ready, so
+closure during the initial asynchronous digest is also fenced off. The widget's
+disposed/generation checks already prevent that old refresh from rendering or
+initiating an action after it resumes (browser.js:77–103,138).
+
+Keep native close cleanup idempotent and guarded by !modal.open. A close event is
+queued by the HTML closing algorithm; a rapid close/reopen can therefore make an
+old close notification arrive during a new opening. An unguarded callback could
+dispose the new controller or clear dialogPauses behind a still-open modal.
+The proposed guard must cover BOTH controller cleanup and pause/render updates.
+Source: HTML Standard, close-the-dialog step 13:
+https://html.spec.whatwg.org/multipage/interactive-elements.html#close-the-dialog
+
+Root explicitly resolved the pagehide/Back question during this review: on
+pageshow(persisted), reset lastNow and synchronously remount only if the modal is
+still open and contains #campaign-navigation; take a fresh read and never navigate
+automatically. I accept that resolution. It prevents a restored visible panel
+from retaining only its permanently disposed controller/listeners, and resetting
+the clock avoids treating the frozen interval as active Cave time. Closed or
+replaced modals must not acquire a new widget. Retain one current controller and
+the same explicit validator on this remount path.
+Browser lifecycle reference:
+https://developer.mozilla.org/en-US/docs/Web/API/Window/pageshow_event
+
+Test real Back with page-transition telemetry: record whether persisted was
+actually true. A normal reload on Back cannot prove the BFCache branch ran. If
+headless CI does not retain that page, a separately labelled synthetic lifecycle
+test may exercise the handler, but must not be called actual BFCache evidence.
+Do not require cancellation of a navigation/export side effect already committed
+before disposal; the essential gate is disposal during pending inspection and
+protection from old callback completions mutating replacement content.
+
+4. Native browser oracle: remove every test-side integration substitute
+
+The existing test server injects scripts/styles into cave-integration.html
+(browser test:18), then replaces the introduction and legacy link and mounts the
+widget from evaluate() (:230–235). Those checks can pass while ordinary index.html
+has no native integration. The plan correctly replaces them with actual built
+index.html plus the real event-action/completion control.
+
+There is a second injection seam to account for: after RTS imports, the old test
+injects the widget into an extra RTS body section (:284–286) to export backups.
+That can remain only as an explicitly separate helper fixture. Native backup
+discovery/export evidence should return to the real Cave completion panel and
+use its real controls. No addScriptTag/addStyleTag, replaced mount/container or
+test-edited introduction can establish production integration.
+
+Keep isolated helper fixtures for controlled delayed digests, failed callbacks,
+same-container replacement and presentation measurements. Native lifecycle tests
+should drive Stay/Replay/close/Escape/backdrop and genuine external-storage modal
+replacement, hold the old read, then release it after disposal. Wait for a new
+snapshot/render or actual callback completion before asserting; an old matching
+status/focus predicate is not evidence that an asynchronous action finished.
+
+Instrument writes around widget inspection, refresh and export while the Cave
+modal is paused. Account separately for Cave's existing visibility/pagehide save,
+Replay's intended Cave write, and the destination's migration/new-camp write.
+Otherwise a blanket zero-write assertion across navigation either fails for the
+wrong reason or encourages removing legitimate host persistence. A failed Cave
+completion save must not be bypassed with an in-memory completion snapshot.
+
+For destination proof, distinguish (a) no pre-navigation RTS/backup changes,
+(b) successful destination migration with exact retained raw originals, and
+(c) backup/main-write failure with destination recovery. Never label navigation
+eligibility itself as durable migration. Fresh v4 carryMove/held fixtures should
+resume paused with exact custody, but their injection remains compatibility
+evidence rather than an earned Cave-to-Hearth resource transfer.
+
+5. Host build and old-game regression boundary
+
+The build must inline pure Cave engine, pure RTS engine, policy/browser helper
+and scoped CSS before Cave view uses them. Do not include the RTS view, which
+expects its own DOM and starts simulation/persistence. Preserve the other three
+build outputs, existing art substitutions and legacy header routes. Expand the
+unsubstituted-marker check for the new placeholder names; the current test only
+matches ENGINE/VIEW/CSS/STYLES. Source-presence checks alone are not a substitute
+for the native browser flow.
+
+Current smoke.cjs:29 follows the legacy completion anchor and then exercises the
+old hex Hearth's people/jobs, paused refresh, shelter, learning, maps, recovery,
+migration and touch routes. The plan's split is correct: follow the new native
+RTS control and prove preservation, then explicitly open supported hearth.html
+for all those old tests. Keep their assertions and separate save namespaces;
+deleting or skipping the old flow would turn a navigation change into lost
+regression coverage. Build assertions may still retain the ordinary hearth.html
+header link, but must additionally establish the intended new completion route.
+
+Bounded conclusion
+
+No remaining Medium/High design blocker is identified after the explicit Back
+resolution. The items above are concrete implementation/evidence conditions of
+the reviewed plan, not newly discovered defects in an unimplemented patch.
+The older 444d252 package's provenance and opt-in evidence remain historical;
+BASE_COMMIT, docs and test labels must identify the new bundled compatibility
+without rewriting that history as native acceptance. Final approval requires
+the actual isolated source diff, independent concrete review, required skeptic
+gates for new findings and an exact combined immutable Spark result. This review
+adds no campaign root, grants, full-age proof, native custody conformance, capacity,
+Library publication or production authorization.

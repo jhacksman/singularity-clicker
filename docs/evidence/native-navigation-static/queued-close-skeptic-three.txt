@@ -1,0 +1,30 @@
+Independent static disproof review — queued close and successful native read-only evidence
+
+Verdict: both candidates are confirmed, bounded Medium test-oracle gaps. Neither is a demonstrated defect in the current game or navigation implementation. No app or harness changes, runtime, parser, tests, builds, lint, or browser execution were performed. This report does not establish observed Chromium event ordering.
+
+Frozen inputs, SHA-256:
+tests/browser/campaign-navigation.cjs b60a0f94ea5eeaae10ed9da1825b437703e76af051e7cacaaa340e68d202e473
+src/view.js 2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+src/campaign-navigation/browser.js 8c2fa82af650f9e594d186cb2cb36324c22860586333551a2ffdfccc37c024c6
+
+Q1. Queued-close assertions do not establish that the replacement controller survives the old close event.
+
+The case at campaign-navigation.cjs:372–376 opens the real completion modal, synchronously activates Stay and the underlying event-action control, waits for readyNative, then waits for a zero-delay timer. It checks modal.open, mount count two, an enabled rendered forward button, and unchanged source bytes. The native setup observes pagehide/pageshow but does not observe the modal's close event. readyNative at 241–244 awaits the stored controller.ready promise without checking its result and then checks rendered status DOM.
+
+The widget's dispose implementation at browser.js:138 removes click/storage listeners and invalidates pending refreshes. It leaves the rendered DOM, latest snapshot, already-resolved ready promise, and external mount telemetry intact. An enabled button therefore does not establish that the controller still handles it.
+
+Concrete conditional regression witness: remove the host close handler's !modal.open guard, and let the replacement refresh/render finish before the old queued close handler runs. The old handler then disposes the replacement and resets dialogPauses while the new modal remains open. Every current queued-close assertion can still pass: DOM and ready are retained, mount count remains two, and source bytes remain unchanged. The completed Cave fixture also masks loss of the host pause flag because Cave advance() returns immediately when complete. The current source correctly retains the guard at view.js:139; this is a missing regression oracle, not a claim that today's guarded handler disposes the replacement.
+
+Disproof limit: if the old close event runs before the replacement finishes refreshing, disposed refresh returns null and no status DOM is rendered; the existing test can fail in that ordering. It therefore provides some protection. It does not force or observe the relevant event ordering, and the zero-delay timer is not proof that the specific old close event ran. The concern is a permitted false-pass interleaving and insufficient liveness evidence, not an assertion that the current browser always follows that interleaving.
+
+Bounded correction: install a read-only close-event observer before the synchronous Stay/reopen operation and await the actual old close event. Afterward require a fresh externally observable operation from the replacement controller, such as a recognized source-key storage change followed by a newly identified snapshot/export, or a real native action with a fresh expected result. Merely awaiting the original ready promise, inspecting its existing snapshot, or checking an enabled DOM control is insufficient. Keep the modal-open and mount-count assertions; additionally check focus remains in the open modal and an applicable host pause guard. Unchanged completed-Cave bytes alone cannot prove that pause guard. No current host behavior change is needed to address this evidence gap.
+
+Q2. Successful native inspection/refresh/export is not observed for Storage mutation calls.
+
+The only Storage.prototype setItem/removeItem/clear trap is campaign-navigation.cjs:134–142. That standalone case supplies readSource which always throws, so it tests unreadable-source handling. The successful native path at 224 onward seeds fixtures and compares rawSources bytes, but it does not record mutation calls during inspection, refresh, or export.
+
+Concrete counterexample: a helper regression that calls localStorage.setItem(KEYS.rts, snapshot.sources.rts.raw) only after successfully admitting a present RTS source rewrites identical bytes. The failing-read trap never reaches that branch. All existing native before/after byte comparisons can remain equal. A transient write/delete of an unobserved key is another blind spot, but the identical-value rewrite alone establishes the gap. This is a test counterexample; I found no such write in the reviewed current widget source.
+
+Bounded correction: record calls to setItem, removeItem, and clear during a successful native helper window, beginning after fixture seeding and before visible completion opens the helper. Exercise inspection plus refresh/export, assert zero calls, and end the window before intentional host pagehide, Replay, or destination saves. Wrappers should record attempted calls even if application code catches an exception. Preserve the existing raw-byte comparisons as separate preservation checks. Avoid interpreting unrelated host lifecycle writes as helper violations by keeping the observation window explicit.
+
+Remaining gate: the browser owner must implement the accepted oracle changes and Spark must execute the frozen native browser suite. This report supplies static independent confirmation only.

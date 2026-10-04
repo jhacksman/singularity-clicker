@@ -1,0 +1,168 @@
+Native Cave navigation: independent third plan skepticism
+2026-10-04 — /root/skeptic_three
+
+Read-only review of integration-plan.txt and the actual host, widget, destination
+loader and existing tests in hearth-navigation-native. I did not read other
+navigation critiques. No application/test edits, execution, parser, lint, build,
+browser or M6 runtime. The frozen Move025 worktree was not changed.
+
+Source anchor: HEAD 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558. At inspection the
+seven navigation artifact files were newly copied, and host source was unchanged.
+Plan SHA256 a43d8c7f4bfef5afd7e6dc3e67cc377349f2bd2bec509251a2c4a500b03c7543.
+Widget browser.js SHA256
+aecc3d02c198ed0709ab842f48e25a5a2925ffc826fef34b6f0c0b5800f9ef85.
+Adapter SHA256
+d775a9af0e242c44303e14b2638e33873c7b9aac75a8abb7e8f6405bda4a6383.
+Host view.js SHA256
+cdac3745af75dc457c4f083cad8e9c8379d3842b013bfc8ed70f4c03675acb05.
+
+Verdict
+
+The bounded integration is justified and its principal admission, preservation
+and stale-callback guards are coherent. I found one concrete lifecycle omission:
+pagehide disposal must have a corresponding persisted-pageshow restoration for
+an open completion panel. Root acknowledged it and proposed a narrow resolution
+while this review was in progress. With that addition, I have no other confirmed
+unresolved plan blocker. This is design scrutiny, not implementation or runtime
+closure; the new source and actual native build still require review and Spark.
+
+NAV-P1 — Medium, recoverable: restored cached document has a disposed panel
+
+Witness implied by plan step3 and the current widget:
+1. A completed Cave opens its native completion modal and mounts navigation.
+2. The player activates Open Hearth. The default widget callback uses
+   location.assign; it does not close or remove the source modal.
+3. Planned pagehide cleanup disposes the controller. dispose() removes the
+   container click listener and storage listener, sets disposed=true and advances
+   its generation (browser.js:138). Rendered controls remain in the container.
+4. Browser Back restores that same document from the back-forward cache. Its
+   open modal and button DOM survive, but initial source evaluation does not run
+   again. Without a restoration handler, the buttons remain visibly available
+   with no delegated click handler and no storage refresh listener.
+
+The symptom is an inert native navigation/download/refresh panel after this
+specific Back restoration. Host Close/Stay/Replay remain separate controls, so
+closing and reopening the completion modal can recover it. No wrong save is
+adopted and no material or progress loss follows from the described omission.
+Medium reflects failure of the explicit native navigation flow, with bounded
+recoverability; this is not a persistence corruption or startup blocker.
+
+Disproof attempts:
+- A full reload on Back reconstructs source and can work, but does not test the
+  same-document restoration branch. Its success would not refute this witness.
+- Widget generation/disposed checks prevent stale rendering/navigation; they do
+  not reinstall listeners. dispose is deliberately permanent for that controller.
+- Storage changes during the destination visit do not help because the old
+  controller has removed its listener. A restored panel needs a fresh read.
+- Same-container automatic replacement disposal only runs when mount is called;
+  no mount is specified on return in the original plan or current host source.
+- A particular Spark browser may choose not to cache this page. That changes
+  which branch is observed, not the source consequence if it is restored.
+
+Root's proposed resolution, received during review: on pageshow with
+event.persisted, reset lastNow and remount only if the native modal is open and
+contains #campaign-navigation. Keep the new controller reference synchronously,
+use a fresh inspection, and perform no automatic navigation or widget save.
+This is a sufficient bounded design direction. It must use the same actual-loader
+validator and normal mount helper as initial completion, and avoid reviving a
+closed/replaced modal. A remount must also dispose any still-present old reference
+before replacing it, so repeated lifecycle events cannot stack listeners.
+Concrete authored source was not yet present at this report's inspection point.
+
+Evidence needs to distinguish a real pageshow.persisted restoration from a full
+reload. Record the event and document identity, then exercise the restored visible
+control and current save inspection. If the available headless runtime does not
+produce a persisted restore, say so. An explicitly labelled synthetic lifecycle
+event can test host callback wiring, but cannot be called observed browser-cache
+behavior. Keep the ordinary native Back/reload flow as its own case.
+
+Other boundaries which resisted disproof
+
+1. Matching the actual RTS loader is necessary. Existing adapter schemas stop at3,
+   and its default validateRTS is HearthRTS.valid (adapter:18; browser:15). Current
+   destination startup first rejects non-object parsed data, optionally repairs
+   known legacy residue, then constructs Camp with pre/post-migration validation
+   (hearth-rts/view.js:11-22; engine constructor:70). A plain valid() predicate
+   would reject repairable legacy work and can accept a legacy object whose
+   migration fails. The planned callback correctly needs cloned-input
+   repairWorkResidue(state)||state followed by new Camp and explicit boolean true
+   on success, false on failure. Adapter source() requires validate(...)===true;
+   returning the Camp object itself would not meet that interface. This is an
+   implementation guard, not a new confirmed plan defect.
+
+2. The clone-only admission operation is read-only. Both the optional repair and
+   Camp construction operate on copies; loading the pure Hearth engine introduces
+   no DOM simulation, storage write or auto-navigation. The source adapter has
+   already checked payload object/version and clones before calling validators.
+   Keep the RTS view out of Cave. Destination-owned backup/adoption/save work must
+   occur only after actual navigation into that destination.
+
+3. Updating the schema gate and exact backup families is necessary independently
+   of the validator callback: adapter source() rejects unsupported schema rows
+   before calling a validator. Backup raw strings remain downloadable even when
+   their content is invalid/unsupported. They are never selected as an alternate
+   playable RTS save. Preserve exact source text/hashes and malformed UTF-16's
+   existing explicit code-unit export behavior. Positive numbered suffixes must
+   remain anchored to the named families, not broaden to arbitrary profile data.
+   The current widget enumerates storage key names to discover those families,
+   then reads only whitelisted values (browser:67-75). Describe that accurately;
+   it is not literally zero enumeration of unrelated key names.
+
+4. Synchronous controller retention is the right lifecycle choice. mount starts
+   refresh and returns its controller immediately (browser:138-141). Waiting for
+   ready before retaining it would leave a close/replacement window during the
+   first digest/read. Disposal marks old work dead even if it later resolves.
+   refresh checks disposed/generation before render; activate checks disposed
+   after its fresh read; rejection feedback additionally checks current controller
+   and generation (browser:77-127). The native host's default navigate/export
+   callbacks perform their effect synchronously when invoked. These guards do
+   not cancel an arbitrary external callback which has already begun and later
+   performs its own side effect; do not overstate the widget API. No such delayed
+   custom callback is required by this bounded native integration.
+
+5. Native close/reopen is a distinct host race. An old queued close event must
+   not dispose the new controller if the same dialog was reopened before that
+   event arrives. The plan's !modal.open guard addresses this. Keep disposal
+   before innerHTML replacement for Help/Settings/reset/import/storage-conflict
+   dialogs, and retain cleanup on explicit close, native cancel/close, backdrop,
+   Stay, Replay and pagehide. The planned storage-conflict modal must preserve
+   its existing saveBlocked behavior. Failed old callbacks must leave replacement
+   content, status and focus unchanged.
+
+6. Existing host save behavior must be separated from widget side effects.
+   Cave already writes its own key after actions and on pagehide/visibilityhide;
+   Replay intentionally changes Cave progress. The promise for this integration
+   is no new widget writes, no RTS adoption in Cave, and no mutation of other raw
+   saves. A global setItem trap spanning ordinary host pagehide or intentional
+   Replay would reject existing behavior rather than isolate a navigation defect.
+   Assert widget mount/refresh/export inactivity during the modal, preserve exact
+   unrelated keys, and identify expected destination migration writes separately.
+
+7. Native built-page evidence must replace the old test-side integration. The
+   copied browser test server injects scripts/style into /cave-integration.html
+   (:18), then rewrites the completion introduction and replaces its old anchor
+   with a mounted widget through evaluate (:230-234). That cannot prove new host
+   wiring. The plan explicitly removes these substitutions and opens the actual
+   built index.html through the visible event-action. Keep standalone opt-in
+   fixtures for injected faults/races, with their scope labelled; do not let them
+   substitute for native mount/disposal/build evidence. Verify all new script/style
+   placeholders are substituted, ordered before Cave view, and self-contained.
+
+8. Preserve existing legacy-game smoke coverage. Replacing completion's old
+   hearth.html link changes that test's navigation assumption. The plan correctly
+   follows the new native RTS route, then opens the still-supported old Hearth URL
+   separately for its existing hex-game coverage. Removing those old tests would
+   conceal a regression instead of establishing the navigation increment.
+
+Final scope and gates
+
+The reviewed direction creates no campaign root, resource/people transfer, grant,
+durable handoff or full-age proof. Old URLs and raw backup namespaces remain
+available. Completed-Cave compatibility fixtures are acceptable here but are not
+earned-play or pacing evidence. Standalone444d252 and frozen Move025 passes do not
+cover this combined native build. Root must freeze the assembled candidate and
+obtain independent concrete source review plus exact-commit Spark results.
+
+Only NAV-P1 was identified as a new concrete plan gap. Its proposed persisted
+pageshow resolution is accepted at design level; implementation verification and
+the separately labelled real/synthetic restoration evidence remain pending.

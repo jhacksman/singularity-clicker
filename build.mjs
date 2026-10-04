@@ -4,9 +4,9 @@ import {fileURLToPath} from 'node:url';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 const image=name=>'data:image/svg+xml;base64,'+fs.readFileSync(path.join(root,'assets',name)).toString('base64');
-const css=read('src/styles.css').replace('__CAVE_IMAGE__',image('cave.svg')).replace('__ATLAS_IMAGE__',image('objects.svg'));
+const css=read('src/styles.css').replace('__CAVE_IMAGE__',image('cave.svg')).replace('__ATLAS_IMAGE__',image('objects.svg'))+'\n'+read('src/campaign-navigation/styles.css');
 const people=read('assets/people.svg').replace('<svg ', '<svg aria-hidden="true" ');
-const html=read('src/shell.html').replace('<!--__PEOPLE__-->',()=>people).replace('/*__STYLES__*/',()=>css).replace('/*__ENGINE__*/',()=>read('src/engine.js')).replace('/*__VIEW__*/',()=>read('src/view.js'));
+const html=read('src/shell.html').replace('<!--__PEOPLE__-->',()=>people).replace('/*__STYLES__*/',()=>css).replace('/*__ENGINE__*/',()=>read('src/engine.js')).replace('/*__RTS_ENGINE__*/',()=>read('src/hearth-rts/engine.js')).replace('/*__NAVIGATION_POLICY__*/',()=>read('src/campaign-navigation/adapter.cjs')).replace('/*__NAVIGATION_VIEW__*/',()=>read('src/campaign-navigation/browser.js')).replace('/*__VIEW__*/',()=>read('src/view.js'));
 fs.mkdirSync(path.join(root,'dist'),{recursive:true});fs.writeFileSync(path.join(root,'dist/index.html'),html);
 console.log('Built self-contained cave: '+(Buffer.byteLength(html)/1024/1024).toFixed(2)+' MB');
 

@@ -1,0 +1,45 @@
+/* Load alongside the opt-in helper. No rules affect the surrounding game. */
+[data-campaign-navigation] {
+  --journey-ink: var(--ink, #21291e);
+  --journey-surface: var(--panel, #f6f5ee);
+  --journey-accent: var(--accent, var(--gold, #d6bd84));
+  box-sizing: border-box;
+  color: var(--journey-ink);
+  font: 1rem/1.5 Arial, Helvetica, sans-serif;
+  min-width: 0;
+  margin-block: 1.5rem;
+  overflow-wrap: anywhere;
+}
+[data-campaign-navigation] *, [data-campaign-navigation] *::before { box-sizing: border-box; }
+[data-campaign-navigation] h2 { font: 1.5rem/1.25 Georgia, serif; margin: 0 0 1rem; }
+[data-campaign-navigation] h3 { font: 600 1rem/1.4 Arial, Helvetica, sans-serif; margin: 0 0 .5rem; }
+[data-campaign-navigation] p { font: inherit; color: inherit; margin: .75rem 0; }
+[data-campaign-navigation] small { display: block; font: .875rem/1.5 Arial, Helvetica, sans-serif; margin-top: .5rem; overflow-wrap: anywhere; }
+[data-campaign-navigation] [data-navigation-controls] { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; margin-block: 1rem; }
+[data-campaign-navigation] button, [data-campaign-navigation] summary {
+  min-height: 44px;
+  min-width: 44px;
+  width: 100%;
+  margin: 0;
+  padding: .75rem;
+  border: 1px solid var(--journey-accent);
+  border-radius: 3px;
+  font: inherit;
+  line-height: 1.4;
+  text-align: left;
+  color: var(--journey-ink);
+  background: var(--journey-surface);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+[data-campaign-navigation] button[data-navigation-primary] { font-weight: 700; background: var(--journey-accent); color: #20261c; text-align: center; }
+[data-campaign-navigation] button:disabled { opacity: .65; cursor: not-allowed; }
+[data-campaign-navigation] button:focus-visible, [data-campaign-navigation] summary:focus-visible, [data-campaign-navigation] [data-navigation-focus="status"]:focus {
+  outline: 3px solid var(--journey-accent);
+  outline-offset: 3px;
+}
+[data-campaign-navigation] details { margin-top: 1rem; }
+[data-campaign-navigation] summary { list-style-position: inside; }
+[data-campaign-navigation] [data-navigation-save] { border-top: 1px solid var(--journey-accent); padding-block: 1rem; }

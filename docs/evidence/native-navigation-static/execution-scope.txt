@@ -1,0 +1,26 @@
+Proposed native navigation Spark gate
+
+This execution-scope review precedes the immutable candidate commit. The parent
+handoff will record its exact identity after final owner releases and independent
+source/test review close the findings.
+Parent owns coordinator approval/dispatch; no direct worker dispatch is implied.
+
+Command proposal:
+node scripts/check-syntax.cjs && node --test tests/*.test.cjs && node build.mjs && node tests/browser/smoke.cjs && node tests/browser/campaign-navigation.cjs
+
+Use the already approved pinned ARM64 browser image, 2CPU/4GiB/900s/networknone,
+Chromium sandboxtrue. This executes all deterministic suites and all four builds,
+then the affected actual Cave/RTS navigation plus preserved legacy Hearth smoke
+and the focused native navigation/admission/backup/lifecycle/presentation matrix.
+Move025 separately covers all five RTS browser suites on exact4e391c2. Before
+claiming that predecessor coverage still applies, compare every RTS engine/view/
+shell/style input and resulting dist/hearth-rts.html byte-for-byte with Move025.
+If Move025 fails or a relevant source/build-output difference appears, retain that
+failure and run the required corrected source's RTS gates before acceptance.
+Do not broadly repeat unchanged browser flows merely to report a larger count.
+
+Keep actual runtime source/image/commands/log/result/artifacts and independent
+verification. Test wrappers/compatibility fixtures/synthetic lifecycle signals must
+remain distinguishable from native product wiring, actual Back BFCache behavior,
+earned play, physical touch and general campaign acceptance. No publication follows
+from this manifest. Preserve previous evidence and accepted Library artifact.

@@ -6,8 +6,9 @@ const {spawn}=require('node:child_process');
 const {once}=require('node:events');
 const {Camp}=require('../../src/engine.js');
 const {Hearth}=require('../../src/hearth/engine.js');
+const {Village}=require('../../src/agriculture/engine.js');
 const playwright=require(process.env.PLAYWRIGHT_MODULE||'playwright');
-const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
+const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1',RTS='singularity-clicker.hearth-rts.v1',AGRICULTURE='singularity-clicker.agriculture.v1',ARCHIVE=HEARTH+'.completed';
 (async()=>{
  const server=spawn(process.execPath,['scripts/serve.cjs'],{stdio:['ignore','pipe','inherit']});
  let browser;
@@ -22,11 +23,36 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   assert.equal(acted.run.counts.forage,1);
   await page.reload();
   assert.equal(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),CAVE)).run.counts.forage,1);
+  // Controlled completion and preservation fixtures, not an earned Cave campaign.
+  // The archive tests the legacy array-of-raw-strings format, not completion proof.
+  // Keep the previous Hearth at time zero for its unchanged 25-step coverage below.
   const completed=new Camp(null,17);completed.r.innovation=1198;completed.act('grunt');for(let i=0;i<3;i++)completed.fireStep();
-  await page.addInitScript(([key,value])=>{if(!sessionStorage.getItem('completion-fixture')){localStorage.setItem(key,value);sessionStorage.setItem('completion-fixture','1');}},[CAVE,completed.serialize()]);
-  await page.reload();await page.locator('#event-action').click();
+  const retained={[CAVE]:completed.serialize(),[HEARTH]:new Hearth().serialize(),[AGRICULTURE]:new Village().serialize(),[ARCHIVE]:JSON.stringify(['Controlled archive preservation fixture; no completed-world claim.'],null,2)+'\n'};
+  await page.addInitScript(saves=>{if(!sessionStorage.getItem('completion-fixture')){for(const [key,raw] of Object.entries(saves))localStorage.setItem(key,raw);sessionStorage.setItem('completion-fixture','1');}},retained);
+  const readRetained=()=>page.evaluate(keys=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)])),Object.keys(retained));
+  await page.reload();const beforeNavigation=await readRetained();assert.deepEqual(beforeNavigation,retained);
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),RTS),null,'No RTS save exists before the native completion helper opens');
+  await page.locator('#event-action').click();
+  const forward=page.locator('#campaign-navigation [data-navigation-action="open-hearth"]:enabled');await forward.waitFor();
+  assert.equal(await forward.innerText(),'Explore the Hearth opening');
+  assert.equal(await page.locator('#modal').evaluate(d=>d.open),true);
+  assert.deepEqual(await readRetained(),beforeNavigation,'Opening the native helper preserves every earlier raw save');
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),RTS),null,'The helper must not create an RTS save before navigation');
   await page.screenshot({path:'artifacts/cave-completion.png',fullPage:true});
-  await page.locator('#modal a[href="hearth.html"]').click();
+  await Promise.all([page.waitForURL('**/hearth-rts.html'),forward.click()]);
+  await page.locator('[data-unit="u0"]').waitFor();assert.equal(await page.locator('#pause').innerText(),'Pause');await page.locator('#pause').click();
+  assert.equal(await page.locator('#pause').innerText(),'Resume');assert.equal(await page.locator('#stop').isDisabled(),false);
+  const opening=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),RTS));
+  assert.equal(opening.version,4);assert.deepEqual(opening.stock,{wood:20,stone:10,food:0});assert.equal(opening.units.length,4);
+  assert.ok(opening.units.every(u=>u.order.kind==='idle'&&u.phase==='idle'&&u.cargo===0));
+  assert.equal(opening.buildings.length,1);assert.equal(opening.buildings[0].kind,'hearth');assert.equal(opening.buildings[0].done,true);
+  assert.ok(opening.deposits.every(d=>d.amount===d.initial));assert.equal(opening.complete,false);assert.equal(opening.tools,false);assert.equal(opening.knapping,null);
+  assert.deepEqual(opening.spent,{wood:0,stone:0,food:0});assert.deepEqual(opening.delivered,{wood:0,stone:0,food:0});
+  assert.deepEqual(opening.storage.stores,{b0:{wood:20,stone:10,food:0}});assert.deepEqual(opening.storage.transfers,[]);assert.deepEqual(opening.storage.transferred,{wood:0,stone:0,food:0});
+  assert.deepEqual(await readRetained(),beforeNavigation,'Native RTS entry preserves Cave, previous Hearth, Agriculture and archive bytes');
+  await page.screenshot({path:'artifacts/cave-native-rts-entry.png',fullPage:true});
+  // The previous hex Hearth remains separately supported, with all its coverage below.
+  await page.goto('http://127.0.0.1:8080/hearth.html');
   await page.locator('#people [data-person="0"]').waitFor();
   await page.locator('#pause').click();await page.locator('[data-job="wood"]').click();
   for(let i=0;i<25;i++){await page.locator('#step').click();await page.locator('[data-job="wood"]').click();}
@@ -94,7 +120,7 @@ const CAVE='singularity-clicker.cave.v1',HEARTH='singularity-clicker.hearth.v1';
   await tp.locator('[data-job="wood"]').tap();
   assert.equal(JSON.parse(await tp.evaluate(k=>localStorage.getItem(k),HEARTH)).people[0].job,'wood');
   await tp.screenshot({path:'artifacts/hearth-touch-layout.png',fullPage:true});await touch.close();assert.deepEqual(errors,[]);
-  console.log('PASS browser smoke: Cave actions/refresh, completion/navigation, Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors');
+  console.log('PASS browser smoke: Cave actions/refresh, fixture-based native completion route to fresh RTS v4 with earlier raw saves preserved, separate previous Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors');
  }catch(error){
   if(browser)for(const [i,context] of browser.contexts().entries())for(const [j,page] of context.pages().entries()){
    await page.screenshot({path:`artifacts/failure-${i}-${j}.png`,fullPage:true}).catch(()=>{});

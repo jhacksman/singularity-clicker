@@ -1,0 +1,315 @@
+{
+  "schema": "independent-spark-move-verification-v1",
+  "verified_utc": "2026-10-04T04:48:13.559676+00:00",
+  "verifier": "custody_trust",
+  "job": "singularity-20261004-rts-move-025",
+  "verdict": "verified_scoped_pass",
+  "method": "Read-only raw JSON/log/container/tar/Git byte comparisons and independent arithmetic on recorded states. No repository code imported, built, linted or executed; no browser or tests rerun. Images/videos inventoried and hashed, not a new visual acceptance review.",
+  "identity": {
+    "commit": "4e391c2e2ebf255e1cf0fb5b57bed6d123b51558",
+    "host": "gb10-02",
+    "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+    "source_archive_sha256": "2cb1e02fff117fa3619b8d3782ecec75c18984e24659eab360f481e5245ca029",
+    "source_archive_exact_git_bytes": true,
+    "source_regular_files": 155,
+    "approved_manifest_sha256": "e42886bbd37add6b03c07d32e833895f7e0169fab8115008dd7e453ba243d702",
+    "result_sha256": "445fc889c5dd3bd9cd6f4f25db31334a91d6d2c95309fed431e9aa789e1a1824",
+    "log_sha256": "c2212f368591805ba36a7e825783f4d51c4d484171f5f4cb5edf8376fc9ebd57",
+    "container_sha256": "f3dcdb336840044e0a8f94196bb3a750ae04240d57d794f52146bf851aa87cc3",
+    "artifact_archive_sha256": "d8f6839dbb1bb908644e7a4133111ccde37d958935b96bf76d820233bec8ea2e",
+    "all_160_artifact_members_match_archive_and_extraction": true,
+    "member_manifest_sha256": "af6dabab54520b38e1d9e18a14401ddb3723c15b213dc97eb4bf4c2840ee17e6"
+  },
+  "gates": {
+    "syntax": {
+      "passed": true,
+      "files": 29
+    },
+    "node": {
+      "tests": 106,
+      "pass": 106,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "independently_counted_pass_lines": 106,
+      "duration_ms": 11598.690942,
+      "includes_new_Move_and_current_v4_residue_cases": true
+    },
+    "build": {
+      "passed": true,
+      "count": 4,
+      "messages": [
+        "Built self-contained cave: 0.10 MB",
+        "Built self-contained hearth: 82 KB",
+        "Built self-contained Agriculture slice: 51 KB",
+        "Built self-contained Hearth RTS core: 83 KB"
+      ]
+    },
+    "browser": {
+      "passed": true,
+      "scripts": 5,
+      "ordered_completion_markers": {
+        "hearth-rts.cjs": [
+          "PASS fresh RTS:",
+          "PASS projected v1 compatibility fixture:",
+          "PASS projected v2 compatibility fixture:",
+          "PASS projected v3 compatibility fixture:"
+        ],
+        "hearth-rts-recovery.cjs": [
+          "PASS same-viewport focus regression:",
+          "PASS projected v2/v3 persistence fixtures:"
+        ],
+        "hearth-rts-roundtrip.cjs": [
+          "PASS earned-tool extraction:"
+        ],
+        "hearth-rts-bootstrap.cjs": [
+          "PASS startup/read-denial and raw retention:"
+        ],
+        "hearth-rts-move.cjs": [
+          "PASS IC02 Move subset:"
+        ]
+      },
+      "not_run": []
+    }
+  },
+  "artifacts": {
+    "total_files": 160,
+    "json": 105,
+    "png": 47,
+    "webm": 8,
+    "member_hashes_record": "spark-ci/results/singularity-20261004-rts-move-025-artifact-members.json",
+    "partial_failure_artifact_detected": false
+  },
+  "built_html": {
+    "job": "singularity-20261004-rts-move-025",
+    "commit": "4e391c2e2ebf255e1cf0fb5b57bed6d123b51558",
+    "remote_source": "/home/devin/codex-ci-20261003/jobs/singularity-20261004-rts-move-025/src/dist/hearth-rts.html",
+    "bytes": 85447,
+    "sha256": "50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef",
+    "review_only": true,
+    "published": false,
+    "local_path": "spark-ci/results/singularity-20261004-rts-move-025-hearth-rts.html",
+    "embedded_exact_source_parts": [
+      "src/hearth-rts/engine.js",
+      "src/hearth-rts/view.js",
+      "src/hearth-rts/styles.css"
+    ],
+    "qualification": "Byte checks against exact source and returned provenance; no local rebuild or publication."
+  },
+  "main_browser": {
+    "actual_earned_checkpoint_seconds": 178.29999999999416,
+    "log_rounded_seconds": 178,
+    "schema": 4,
+    "storage_schema": 1,
+    "tools_earned": true,
+    "migration_versions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "move_browser": {
+    "complete": true,
+    "group_count": 7,
+    "group_names": [
+      "ordinary-earned-load",
+      "m",
+      "button",
+      "touch",
+      "context",
+      "old-return-first-negative-control",
+      "loaded-transfer"
+    ],
+    "all_group_page_errors_empty": true,
+    "gathered_controls": [
+      {
+        "method": "m",
+        "cargo": 2,
+        "resource": "wood",
+        "first_tick_displacement": 0.3,
+        "shortest_route_cells": 7,
+        "held_at": [
+          2,
+          3
+        ],
+        "exact_repeated_rejected_state": true,
+        "exact_held_reload": true,
+        "physical_return_credit": 2,
+        "trusted_input_observed": true
+      },
+      {
+        "method": "button",
+        "cargo": 2,
+        "resource": "wood",
+        "first_tick_displacement": 0.3,
+        "shortest_route_cells": 7,
+        "held_at": [
+          2,
+          3
+        ],
+        "exact_repeated_rejected_state": true,
+        "exact_held_reload": true,
+        "physical_return_credit": 2,
+        "trusted_input_observed": true
+      },
+      {
+        "method": "touch",
+        "cargo": 2,
+        "resource": "wood",
+        "first_tick_displacement": 0.3,
+        "shortest_route_cells": 7,
+        "held_at": [
+          2,
+          3
+        ],
+        "exact_repeated_rejected_state": true,
+        "exact_held_reload": true,
+        "physical_return_credit": 2,
+        "trusted_input_observed": true
+      },
+      {
+        "method": "context",
+        "cargo": 2,
+        "resource": "wood",
+        "first_tick_displacement": 0.3,
+        "shortest_route_cells": 7,
+        "held_at": [
+          2,
+          3
+        ],
+        "exact_repeated_rejected_state": true,
+        "exact_held_reload": true,
+        "physical_return_credit": 2,
+        "trusted_input_observed": true
+      }
+    ],
+    "old_return_first_control": {
+      "source_commit": "3b15d6081f5396fcc579140c09d86e532674e2dd",
+      "page_sha256": "4fa74911ae0a0650885355e5e20b4cd2b532c83e4b8bed496a50866a09a63b0a",
+      "explicit_version3_seed_projection": true,
+      "phase": "return",
+      "queued_Move": true,
+      "first_x": 5.3,
+      "current_first_x": 4.7
+    },
+    "loaded_transfer": {
+      "cargo": 5,
+      "resource": "stone",
+      "job_id": "t1",
+      "first_tick_custody_preserved": true,
+      "held_reload_equal": true,
+      "duplicate_order_unchanged": true,
+      "per_tick_return_samples": 49,
+      "single_receipt_transition": true,
+      "maximum_displacement_per_tick": 0.30000001,
+      "receipt_store": "b0",
+      "final_store_stone": {
+        "b0": 5,
+        "b1": 15
+      },
+      "other_carriers_delivered": 15,
+      "transferred_counter_unchanged_by_source_return": true,
+      "no_new_gathered_production": true,
+      "typed_totals_preserved": true
+    }
+  },
+  "recovery_and_roundtrip": {
+    "focus_control": {
+      "old_scroll_y": 71,
+      "old_site_button_count": 0,
+      "fixed_scroll_y": 0,
+      "fixed_site_button_count": 1
+    },
+    "projected_v2_v3_failed_imports_preserve_downloaded_live_bytes": true,
+    "startup_main_failure_exports_same_adopted_v4_as_success": true,
+    "retained_failed_C_replacement_preserves_B_bytes": true,
+    "roundtrip_controls": [
+      {
+        "label": "old-subtraction",
+        "version": 4,
+        "negative_control": true,
+        "sample_count": 46,
+        "last_work": -5.551115123125783e-17,
+        "last_checkpoint_time": 182.7999999999939,
+        "download_matches_checkpoint": true
+      },
+      {
+        "label": "clamped",
+        "version": 4,
+        "negative_control": false,
+        "sample_count": 46,
+        "last_work": 0,
+        "last_checkpoint_time": 182.7999999999939,
+        "download_matches_checkpoint": true
+      },
+      {
+        "label": "legacy-v3-old-subtraction",
+        "version": 3,
+        "negative_control": true,
+        "sample_count": 46,
+        "last_work": -5.551115123125783e-17,
+        "last_checkpoint_time": 182.7999999999939,
+        "download_matches_checkpoint": true
+      }
+    ],
+    "legacy_repair_changes_only_observed_residue_then_outer_version": true,
+    "current_v4_negative_retained_unrepaired": true,
+    "bootstrap_case_count": 20,
+    "bootstrap_cases": [
+      "read-denied-method",
+      "read-denied-getter",
+      "present-invalid-null",
+      "present-invalid-false",
+      "present-invalid-0",
+      "present-invalid-json-empty-string",
+      "present-invalid-empty-bytes",
+      "absent-starts-fresh",
+      "current-v4-negative-boot-rejected-unrepaired",
+      "current-v4-negative-import-rejected-before-confirmation",
+      "roundoff-boot-roundoff-backup",
+      "roundoff-boot-version-backup",
+      "roundoff-boot-main",
+      "roundoff-boot-saved",
+      "roundoff-import-roundoff-backup",
+      "roundoff-import-version-backup",
+      "roundoff-import-main",
+      "roundoff-import-saved",
+      "invalid-imports-rejected-before-confirmation",
+      "native-link-space-keeps-pause-state"
+    ],
+    "native_link_space_events": 12,
+    "errors": [],
+    "basis": "Returned states/download bytes corroborate scoped assertions and completion logs; localStorage fault behavior itself was exercised on Spark."
+  },
+  "execution_cleanup": {
+    "elapsed_seconds": 228.1502923965454,
+    "exit_code": 0,
+    "execution_exit_code": 0,
+    "reason": "completed",
+    "executor_error": null,
+    "cleanup_verified": true,
+    "cleanup_state": "absent",
+    "cleanup_errors": [],
+    "container_running": false,
+    "container_pid": 0,
+    "oom_killed": false,
+    "container_user": "1001:1001",
+    "cpus": 2.0,
+    "memory_bytes": 4294967296,
+    "network": "none",
+    "private_pid_namespace": true,
+    "sandbox_requested_in_reviewed_all_browser_launches": true,
+    "runtime_attribution": "Pinned prepared Node24/Playwright1.63/Chromium153 ARM64 image; this job log does not independently print every runtime version.",
+    "scope": "Returned result and exited-container evidence, not a fresh host probe."
+  },
+  "limitations": [
+    "IC02 Move subset only; work-switch/cache/general Hold/automation and full-age progression are not certified.",
+    "Headless Chromium with emulated touch; no physical touch, macOS/iOS, screen-reader or human comprehension/enjoyment acceptance.",
+    "Task10 independent UX/native-blur remains separate.",
+    "Legacy HTML is retained Input023 output whose overall historical browser run failed; only explicitly exercised old controls are claimed here. Projected legacy seeds are labeled compatibility fixtures, not untouched historical saves.",
+    "No native custody capacity/receiving hold/protected floor/explicit transfer amount/durable receipt conformance, navigation integration or IndexedDB integration acceptance.",
+    "HTML is for review only. Accepted Library remains Storage022; no publication performed."
+  ],
+  "remaining_blockers_in_requested_run": []
+}

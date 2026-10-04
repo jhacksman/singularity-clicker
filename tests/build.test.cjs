@@ -11,7 +11,7 @@ test('self-contained builds work in encoded paths and retain stage navigation',(
   execFileSync(process.execPath,[path.join(root,'build.mjs')],{cwd:os.tmpdir()});
   for(const [file,link] of [['index.html','hearth.html'],['hearth.html','index.html'],['agriculture.html','hearth.html']]){
    const html=fs.readFileSync(path.join(root,'dist',file),'utf8');
-   assert.ok(html.includes('href="'+link+'"'));assert.doesNotMatch(html,/\/\*__(?:ENGINE|VIEW|CSS|STYLES)__\*\//);
+   assert.ok(html.includes('href="'+link+'"'));assert.doesNotMatch(html,/\/\*__[A-Z_]+__\*\//);
   }
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });

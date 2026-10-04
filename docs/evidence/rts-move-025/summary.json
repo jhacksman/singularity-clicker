@@ -1,0 +1,36 @@
+{
+  "id": "singularity-20261004-rts-move-025",
+  "commit": "4e391c2e2ebf255e1cf0fb5b57bed6d123b51558",
+  "status": "pass-pending-independent-evidence-review",
+  "exit_code": 0,
+  "cleanup_verified": true,
+  "syntax_files": 29,
+  "node_tests": {
+    "passed": 106,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "builds_passed": 4,
+  "browser_gates": {
+    "main": "pass",
+    "recovery": "pass",
+    "roundtrip": "pass",
+    "bootstrap": "pass",
+    "move": "pass"
+  },
+  "elapsed_seconds": 228.1502923965454,
+  "main_browser_simulated_seconds_log_rounded": 178,
+  "artifact_files": 160,
+  "html_review_only": true,
+  "published": false,
+  "hashes": {
+    "archives/singularity-20261004-rts-move-025.tar": "2cb1e02fff117fa3619b8d3782ecec75c18984e24659eab360f481e5245ca029",
+    "approved/singularity-20261004-rts-move-025.json": "e42886bbd37add6b03c07d32e833895f7e0169fab8115008dd7e453ba243d702",
+    "logs/singularity-20261004-rts-move-025.log": "c2212f368591805ba36a7e825783f4d51c4d484171f5f4cb5edf8376fc9ebd57",
+    "logs/singularity-20261004-rts-move-025.container.json": "f3dcdb336840044e0a8f94196bb3a750ae04240d57d794f52146bf851aa87cc3",
+    "results/singularity-20261004-rts-move-025-artifacts.tar": "d8f6839dbb1bb908644e7a4133111ccde37d958935b96bf76d820233bec8ea2e",
+    "results/singularity-20261004-rts-move-025-hearth-rts.html": "50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef"
+  },
+  "limitations": "Headless Chromium and emulated touch only. No physical touch/native macOS/iOS, screen-reader or human comprehension/enjoyment evidence. IC02 work-switch/cache/general Hold/automation and full-age progression are not included. Native storage has no capacity/receiving hold/protected floor/explicit transfer amount/durable receipt IDs; exporter conformance is separate. Native blur closure belongs to task10."
+}

@@ -1,0 +1,99 @@
+Native navigation host/build — independent concrete static review
+2026-10-04. Read-only. No app/test edits, execution, parser, tests, builds, lint
+or browser run. Only this report was written.
+
+Verdict: no concrete blocker found in the four released host/build files.
+The implementation follows the reviewed bounded plan, including the explicit
+persisted-pageshow resolution. This is a file-hash-specific static verdict,
+not a whole-candidate pass. Adapter and browser-owner changes are separate,
+and exact combined immutable Spark evidence is still required.
+
+Workspace: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-navigation-native
+Diff base/HEAD: 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558
+Verified frozen SHA-256 values:
+  src/view.js
+    2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+  src/shell.html
+    b035ae72a95916da9da4be005ce1af1f97d07bad0002f94d1a4edd10b6ba7e33
+  build.mjs
+    cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47
+  tests/build.test.cjs
+    03afa0e28ad5eccb7f5a9de83994fcf16f6dc2ab0224cea30a0e2980fddd61a8
+
+Actual completion and loader binding
+
+Cave view.js:152 creates the real #campaign-navigation section inside the
+existing completion dialog, installs Stay/Replay, then calls mountNavigation().
+The old completion anchor and ember/cooking introduction are replaced by the
+bounded finite-gathering/outpost/workshop opening description. Completion facts,
+baseline-preservation copy, Stay and Replay behavior remain. This is actual host
+mounting, not a browser-test-injected container or substitute link.
+
+mountNavigation():129–135 refuses a closed modal or absent completion container.
+It disposes the previous controller and synchronously stores the mount result;
+there is no wait for ready before ownership is retained. The explicit RTS
+validator runs repairWorkResidue(state)||state and new HearthRTS.Camp inside a
+try/catch. Under the reviewed policy's structured-clone invocation, constructor
+normalization remains isolated from caller/raw data. It performs no tick, save,
+backup, adopt, export reserialization or Cave mutation. It neither falls back to
+HearthRTS.valid alone nor bypasses constructor post-migration validation.
+
+If mount construction fails, the host leaves a status message and the ordinary
+close/Stay/Replay controls. It does not insert an unvalidated Continue link or
+seed a destination. Eligibility/schema/backup-row correctness remains the adapter
+owner's obligation; this callback alone does not certify those concurrent edits.
+
+Lifecycle and ordering
+
+disposeNavigation():128 clears the host reference before idempotent disposal.
+openModal():137 disposes before replacing innerHTML, including Settings, recovery,
+reset and external Cave-storage conflict replacements. closeModal():138 disposes
+before closing. Close button, Stay and backdrop call that function. Native cancel
+is prevented and routed through it, closing the earlier Escape bypass.
+
+The native close listener at :139 guards the entire cleanup/unpause/render block
+with !modal.open. Thus an older queued close notification cannot dispose a newly
+opened panel or unpause a reopened modal. A genuine direct native close still
+gets cleanup when the dialog remains closed. Replay's existing Cave mutation/save
+and close run synchronously in one handler; there is no await between its mutation
+and disposal that would allow an old pending inspection to act in between.
+
+pagehide():154 disposes before the existing Cave save. pageshow():155 handles
+persisted restoration by resetting lastNow and reusing mountNavigation(). The
+helper's open-modal/container checks prevent remounting Settings or a closed
+dialog; an open cached completion gets a fresh controller/read with the same
+explicit validation callback. This path does not call navigate or change saves.
+It does not claim that headless tests have actually entered BFCache.
+
+Late-read/callback safety depends jointly on this synchronous disposal and the
+widget's disposed/generation guards. Those boundaries matched the previously
+reviewed widget; newly changed widget files require their own concrete review.
+
+Build and preservation
+
+shell.html places classic scripts in dependency order: Cave engine, pure RTS
+engine, navigation policy, navigation browser helper, then Cave view. build.mjs
+substitutes each distinct slot and appends the scoped navigation CSS after the
+existing Cave styles. It does not bundle the RTS view or start another simulation.
+The existing Cave/atlas image substitutions and people SVG insertion are intact.
+The ordinary legacy header route remains available. The previous Hearth,
+Agriculture and RTS build branches are unchanged in this diff.
+
+tests/build.test.cjs retains the encoded-path build test and legacy stage-link
+assertions, widening the unresolved-marker check to all uppercase placeholder
+names, including the new script slots. That test is meaningful for bundling, but
+does not by itself prove native mounting, the completion destination, exact
+backup exports, lifecycle event behavior or browser Back. It also does not replace
+the planned old hex Hearth smoke flow. Those are explicitly pending browser/Spark
+obligations, not claims made by this static review.
+
+Required remaining evidence
+
+On the final combined immutable source, verify the real built index.html route,
+clone-only v4/legacy-repair and post-migration-rejection admission, no widget writes,
+all exact backup exports, delayed-read disposal and replacement focus/pause state,
+close/reopen ordering, recorded persisted versus nonpersisted Back behavior,
+destination migration/write-failure recovery and preserved legacy smoke coverage.
+Keep host pagehide/Replay and destination writes distinct from read-only widget
+activity. No old opt-in pass is inherited, and no publication, full campaign or
+native custody conformance approval is implied.

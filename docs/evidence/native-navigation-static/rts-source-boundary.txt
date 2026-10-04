@@ -1,0 +1,30 @@
+Native navigation: unchanged RTS source boundary
+
+Compared the integration worktree against Move025 commit
+4e391c2e2ebf255e1cf0fb5b57bed6d123b51558 with Git source reads only.
+No differences in src/hearth-rts, assets, the Cave engine, legacy Hearth source,
+Agriculture source or tracked dist. The four RTS build inputs remain:
+  src/hearth-rts/engine.js
+  src/hearth-rts/view.js
+  src/hearth-rts/shell.html
+  src/hearth-rts/styles.css
+The build.mjs expression that creates dist/hearth-rts.html is also unchanged.
+Only the Cave build expression gains navigation and its pure RTS admission API.
+
+Move025 separately passed syntax, 106 deterministic tests, four builds and all
+five RTS browser runners on Spark. Its independent verifier returned
+verified_scoped_pass with no remaining blockers in that run. This is predecessor
+evidence, not an execution result for the new native Cave integration.
+
+Required after the new Spark build: retrieve dist/hearth-rts.html and compare
+its bytes with the Move025 output. Expected size: 85,447 bytes. Expected SHA-256:
+50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef
+A mismatch must be explained and the affected RTS checks run before acceptance;
+do not silently carry predecessor coverage across changed output.
+
+The focused candidate gate runs all deterministic tests and all four builds,
+then the changed smoke and campaign-navigation browser runners. These exercise
+actual rebuilt index.html, native completion, current/legacy RTS admission,
+destination migration and imports, exact backup exports, lifecycle handling and
+preserved legacy Hearth smoke. Platform, full campaign and storage-backend
+acceptance remain outside this gate. No generated file was built or run on M6.

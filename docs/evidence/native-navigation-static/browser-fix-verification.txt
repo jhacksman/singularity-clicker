@@ -1,0 +1,141 @@
+Native navigation browser oracle corrections — separate static verification
+2026-10-04. Read-only. No application/harness edits, execution, parser, tests,
+builds, lint or browser run on M6. Only this assigned report was written.
+
+Verdict: B01 and B02 are corrected at the source/oracle level in the frozen
+candidate below. No remaining concrete blocker was found in these bounded fixes
+or the added current-v4 carryMove/held admission-and-reload cases. This is not
+runtime closure or whole-candidate acceptance; exact immutable Spark execution
+and actual artifact review remain required.
+
+Workspace: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-navigation-native
+Host base: 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558
+Reviewed frozen tests/browser/campaign-navigation.cjs SHA-256:
+  4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841
+Original finding source SHA-256:
+  b60a0f94ea5eeaae10ed9da1825b437703e76af051e7cacaaa340e68d202e473
+Original browser-oracle-review.txt is preserved, SHA-256:
+  c851a411c41176f1c55e5d1161d6d918a331567047db454b043aa0fc2a8eaed9
+Both independent queued-close-skeptic-two.txt and queued-close-skeptic-three.txt
+were read after they completed their fresh disproof and confirmed both gaps.
+The sole browser owner supplied the new freeze before this concrete verification.
+
+Dependencies and unchanged boundaries
+  src/view.js
+    2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+  src/campaign-navigation/browser.js
+    8c2fa82af650f9e594d186cb2cb36324c22860586333551a2ffdfccc37c024c6
+  src/campaign-navigation/adapter.cjs
+    1eb0e7e0d4ae968d22869236744d6e77920fbd04a318fafe4c06e6cdbc3a4fcd
+  src/hearth-rts/engine.js
+    ea412f31690fd5b398263dfd5cdaeb1c81aef23a21bdc2ab3dab4ceb9ec4cb55
+  src/hearth-rts/view.js
+    ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c
+  tests/browser/smoke.cjs (hash checked only; separate reviewer owns its review)
+    41b71f2ecc3c2f55aafa5703eff9b3ab540c72eba6d32785dff880e638f84c48
+No host/widget product correction was needed or made for these two oracle gaps.
+
+B01 — statically closed: event observation plus replacement liveness
+
+The corrected queued-close case at :396–412 installs a close-event observer
+before the synchronous Stay/reopen fixture. The real host close listener was
+registered earlier, so the observer records after that listener for the same
+event. The case waits for a trusted close event, requires exactly one observed
+event with modal open and two mounts, and writes its event record to an artifact.
+It no longer substitutes a zero-delay timer for observing that specific event.
+
+After event delivery and replacement ready, the test captures controller 2's
+current snapshot, dispatches a labeled recognized-key StorageEvent, and requires
+a different validated snapshot from that same controller. It then checks focus
+remains on the expected control inside the open modal and invokes the real native
+download control, comparing actual download bytes to the source.
+
+This defeats the reported dead-but-rendered counterexample. dispose() leaves DOM
+and latest intact, but removes the storage/click listeners: a disposed controller
+cannot satisfy the new fresh-snapshot wait or actual export. Early unguarded
+disposal would prevent ready/render; late unguarded disposal would fail the new
+liveness evidence. The recorder's rendered flag describes which ordering Spark
+actually observes; this review does not claim that the event was measured after
+replacement render, or that every browser scheduler interleaving was exercised.
+
+The same-turn control clicks remain explicitly synthetic. The close event itself
+must be trusted/UA-generated; the subsequent StorageEvent is explicit test input,
+not a claim of another-tab delivery. Actual native export is the visible liveness
+result. The final report now explicitly states that completed Cave advance is
+inert, so unchanged completed-camp counters do not prove the host pause flag.
+
+B02 — statically closed: forwarded successful-path mutation recorder
+
+observeStorage() at :230–235 records calls to setItem, removeItem and clear before
+forwarding with the original receiver and arguments via Reflect.apply. It does
+not block calls, return fabricated success, or discard attempted calls if the
+underlying method throws. Same-value writes and temporary-key mutations are now
+observable independently of final raw equality.
+
+The read-only host-mount wrapper starts recording immediately before api.mount
+when explicitly armed (:238–242), after fixture seeding and after the host opened
+and paused the modal. It still calls the real mount exactly once with untouched
+options and returns the exact original controller. This is a scoped instrumentation
+addition, not test-side product mounting or replacement of controller behavior.
+
+The native-route case arms this window at :289, requires successful initial
+inspection/entry eligibility, performs visible Refresh, waits for a new validated
+snapshot, and completes an actual exact-byte export. It then restores original
+methods and asserts zero calls (:297–300), writing the observed call array and
+scope to native-successful-storage-observation.json. Exact raw comparisons remain
+as separate preservation evidence. Recording ends before later close/pagehide,
+Replay or destination saves, so those intentional writes are not silently waived
+inside the observed window or falsely classified as widget violations.
+
+The previous same-value setItem witness would now add a call and fail this oracle.
+This is source-derived sensitivity, not an executed negative-control result.
+The bounded observation is successful native mount/refresh/export; it does not
+claim zero writes across navigation or across all future asynchronous schedules.
+
+Current-v4 loaded native compatibility — planned gap statically addressed
+
+At :452–458 the harness constructs an ordinary camp and uses only public gather,
+Move and tick operations to produce two wood cargo, an in-progress carryMove
+checkpoint, and an idle held checkpoint at (2,3). It does not assign cargo, work,
+phase, coordinates or paths to obtain these two checkpoints. Bounded loops have
+explicit cargo/phase/arrival assertions; each serialized source is validated before
+browser admission. The independent controlled legacy-residue fixture remains
+separately and honestly labeled as authored compatibility input.
+
+The native loop at :459–467 now includes idle, carryMove and held current-v4
+worlds. For each it opens the actual built Cave panel, requires enabled entry,
+downloads the unchanged source, enters the real RTS page, and compares the full
+durable state to the exact precomputed checkpoint. It requires paused and unblocked
+UI both on entry and reload, then compares the complete reloaded state again.
+The Stop enabled check is a meaningful blocked-state guard: RTS view.js:274 sets
+it disabled exactly when blocked, independently of selected actor count.
+
+The post-reload Journey export compares the live loaded game's serialized bytes
+to the original command-generated raw. Together with the unblocked check, this
+avoids a false pass from merely leaving valid bytes on disk while the runtime
+silently adopts a fallback camp. Full-state comparisons include cargo, resource,
+work, coordinates, order, path, storage/accounting and visibility state. Foreign
+save slots are also compared. These cases cover gathered loaded cargo; they do
+not expand into a new transfer-custody or movement-gameplay acceptance campaign.
+
+Other preservation and remaining evidence
+
+The native server/mount boundary, delayed-initial-refresh disposal, dynamic digest
+drain, actual Back versus synthetic persisted-event distinction, real migration/
+imports and backup export cases remain intact in the inspected regions. The
+harness now has sixteen native contexts. Failure capture additionally preserves
+a screenshot and JSON with event/storage/mount diagnostics when a live native page
+is available. No success log, screenshots or videos were produced or viewed here.
+
+Parent's execution-scope.txt assigns unchanged RTS read/write-fault matrices to
+the separately passed Move025 gate, contingent on byte-identical RTS build output
+in this new build. That is an explicit coverage boundary, not a claim that this
+navigation harness exercises those fault matrices. The required output comparison
+and exact candidate Spark pass still belong to final evidence verification.
+
+Remaining gates: freeze the combined source; execute syntax/unit/build/smoke/native
+navigation through parent/Spark; inspect queued-close event plus post-event action
+artifacts, the zero-call storage record, current-v4 destination exports and actual
+Back mode; verify unchanged RTS output before carrying predecessor evidence.
+No publication, full campaign handoff, Apple/native-device support, full pause
+semantics or broader UX acceptance is implied by this static closure.
