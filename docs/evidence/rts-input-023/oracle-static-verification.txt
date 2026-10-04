@@ -1,0 +1,111 @@
+Input024 water-rejection oracle — independent static verification
+
+Verdict: source/oracle clear for the narrow idle, empty-camp case. The patch
+observes the current in-memory camp through actual Journey/Export downloads,
+compares complete serialized bytes while paused, then restores the prior running
+flow. I found no concrete stale-disk, dialog-completion, focus, download, or
+selection race that invalidates this sequence. Spark execution remains required;
+this is not a browser pass or broader loaded-command acceptance.
+
+Identity and scope
+
+Compared the actual tests/browser/hearth-rts.cjs working-tree patch against
+immutable baseline 3b15d608. Inspected patch SHA-256:
+35c64285cc64d21881da26a41dd302ae4f3f03a8610990796410ff0aef331fb1
+Git blob: 7d0e1e2a400230c026c8d5879067cc3679a1766d.
+
+The diff adds only the export helper and replaces the obsolete /blocked/ toast
+assertion with a paused rejection/equality checkpoint plus screenshot. The rest
+of the main browser progression is unchanged. Source reasoning used the frozen
+3b15d608 view, including its export, cancellation, selection and frame code.
+Root was the sole test fixer after the prior two skeptical dispositions. I made
+no implementation or test edits and ran no application, browser, parser, tests,
+lint or build on M6. This report is the only authored file for this task.
+
+Why the new reads are live
+
+The helper at test line 7 clicks Journey, installs waitForEvent('download') before
+clicking Export, awaits that specific download, saves it to the requested
+artifact path, and reads those downloaded bytes. The two invocations use distinct
+before/after names and await completion sequentially. There is no substitution
+of localStorage.getItem for the comparison and no reading an old artifact before
+the new download finishes.
+
+Frozen view line 251 exports game.serialize() when rejected is null. This fresh
+context has no rejected import/save; the observed ordinary water-rejection branch
+also requires ready() to accept a nonblocked camp. A storage/recovery failure
+would instead produce the blocked warning and fail the exact toast assertion.
+Thus this test cannot silently count a rejected-raw export as a successful live
+game observation under its stated setup.
+
+Pause and dialog sequencing
+
+The earlier portrait/control probe ends by resuming the fresh camp. The new
+checkpoint immediately clicks Pause and requires the button to say Resume before
+the first export. Frozen togglePause (view line 82) changes paused synchronously,
+then saves and refreshes UI. Frame line 261 cannot tick while paused, whether the
+dialog is open or closed. Autosave may continue writing the same state but cannot
+alter this paused engine checkpoint.
+
+Journey line 250 cancels transient input and synchronously shows the modal.
+The export button is then reached by a normal locator click with actionability
+checks. After download completion the helper clicks the actual Close button;
+its handler synchronously calls dialog.close(), with no asynchronous work or
+closing animation in this path. The next map coordinates are computed from a
+fresh canvas bounding box after that close. No forced click, direct engine call,
+scripted state mutation, or synthetic close event bypasses the user controls.
+Actual layout and actionability still need the Spark run; an obstruction should
+fail setup rather than be counted as a passed product check.
+
+The water right-click at world (18.5,3.5) maps to blocked water. Contextual
+dispatch chooses Move and returns at view line 46 before constructing or issuing
+actor orders. reject() at line 39 changes feedback/UI only. The expected current
+toast, 'Move needs clear ground. Previous orders kept.', is therefore consistent
+with the product intent. It was also the exact Input023 failure output, so this
+is correcting a stale message oracle rather than changing game behavior to fit
+the old /blocked/ literal.
+
+The after-export is obtained while the camp is still paused. Byte equality
+covers time, all units and their order/next/path/work/cargo/resource fields,
+deposits, buildings, stores, reservations, accounting and every other serialized
+world field. A hidden in-memory order change cannot escape merely because the
+rejection did not save: the download serializes the actual game object. The
+test confirms Resume again and clicks Pause once to restore running state before
+continuing its existing resource-gathering progression.
+
+Selection and progression limits
+
+Journey's cancelInput clears mode, ghost, owned keys and pending pointer; it does
+not clear selected IDs or issue Stop. At this checkpoint there is no armed mode
+or pending pointer. Selection remains the four IDs previously chosen by Select
+all. ui() only prunes selected IDs that no longer exist. The later ordinary
+deposit inspection preserves that selection, and the original contextual Gather
+sequence therefore remains available after Resume. Any real browser scrolling
+caused by focusing visible controls is accommodated by the helper's fresh map
+bounding-box calculation; camera remains unpanned in this sequence.
+
+The added UI operations can change incidental wall-clock timing and the initial
+amount of idle simulation time before the paused baseline. They cannot change
+resource progression here: no unit has begun work, no load exists, and the
+comparison interval itself is paused. No test assertion relies on an identical
+overall playthrough duration. Exact equality proves the complete serialized
+world for this checkpoint, not equality of transient selection/focus/feedback
+state, which is intentionally changed by inspection and rejection.
+
+This is candidly an IDLE, EMPTY-CARGO fixture. Existing orders are idle, cargo is
+zero, and there are no paid construction or transfer obligations to preserve.
+The added comment correctly states that scope. Do not use its green result to
+claim loaded Move, preserved nonidle gathering progress, group path edge cases,
+or IC02 compliance. Those need their separate planned cases. The test also does
+not establish persistence success merely by exporting; its purpose is live
+nonmutation, while save/reload coverage remains elsewhere.
+
+Remaining execution gate
+
+Freeze the exact candidate and run the main browser progression on Spark,
+retaining both JSON downloads and the rejection screenshot. Input023's syntax
+gate, 83 passing unit tests and four successful builds remain prior evidence;
+its first browser stopped on the stale toast assertion, so later browser suites
+were not run and must not be reported as passed. This static report authorizes
+no such execution-success claim. A successful Input024 must report actual
+results for the main browser and whichever later suites really execute.

@@ -1,0 +1,27 @@
+Independent Input023 failure diagnosis — skeptic one
+
+Scope: frozen source 3b15d6081f5396fcc579140c09d86e532674e2dd.
+No tests, runtime, parser, lint, build or browser execution occurred on M6.
+No application or test source was edited by this review.
+
+Actual log:
+/Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/logs/singularity-20261004-rts-input-023.log
+
+Source repository:
+/Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts
+Immutable files inspected using git show 3b15d608:
+tests/browser/hearth-rts.cjs, src/hearth-rts/view.js.
+
+Verdict: stale test wording assertion; no product defect established by this failure.
+
+The actual log reports 83 passing tests, zero failures in that unit-test phase, and four completed self-contained builds. The first browser suite subsequently fails at tests/browser/hearth-rts.cjs:10 because /blocked/ does not match the actual toast:
+
+Move needs clear ground. Previous orders kept.
+
+The requested point is (18.5,3.5), a water cell with no contextual entity. In the frozen view, contextualOrder at line68 selects move. dispatch line46 returns reject('Move needs clear ground.') after game.blocked(x,y), before game.command at lines63–64 or feedback/save at line66. reject at line39 only emits the message and refreshes UI. The observed text accurately describes rejection; the old /blocked/ expectation is no longer the emitted wording.
+
+Suggested narrow test correction: assert the new clear-ground rejection, and strengthen behavior coverage by pausing before real Journey/Export snapshots on both sides of the invalid right-click. Close Journey to issue the actual click, export the current camp afterward, compare complete state/bytes, then resume before continuing the normal progression journey. Real exports inspect in-memory state rather than relying only on potentially stale localStorage. This is a test-oracle correction, not approval for an application change.
+
+Scope limit: this early journey checkpoint has selected idle villagers with zero cargo. Exact preservation here proves the invalid move does not change that initial camp; it does not independently prove preservation of active work, carried loads or transfer reservations. Those cases require their own existing or targeted input coverage.
+
+Overall Input023 status remains FAIL. Passing syntax/unit/build phases do not turn the job into a pass. The first browser failed before its progression journey completed; the later three browser suites were NOT RUN in this job. Do not claim their validation from Input023.

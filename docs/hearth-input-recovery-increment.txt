@@ -1,4 +1,23 @@
-Input and persistence readiness increment — candidate, Spark execution pending
+Input and persistence readiness increment — candidate, browser closure pending
+
+Observed Spark result (Input023)
+Exact source 3b15d6081f5396fcc579140c09d86e532674e2dd ran on gb10-02 under
+singularity-20261004-rts-input-023. Syntax passed, all 83 tests passed with no
+failures or skips, and four builds passed. Overall exit was 1: the first browser
+script stopped because its obsolete /blocked/ expectation did not match the
+current rejection, "Move needs clear ground. Previous orders kept." Recovery,
+roundtrip and bootstrap browser scripts did not run. Cleanup was verified.
+The built HTML is retained as failed-job evidence and has not been published.
+Exact result, summary and log are in docs/evidence/rts-input-023/.
+
+Two independent reviewers confirmed the wording assertion was stale by tracing
+the actual water rejection before any command/save. The follow-up changes only
+the test and documentation: assert the current message and compare ordinary
+Journey exports before/after the click while paused, then resume progression.
+The snapshots come from live game.serialize(), not possibly stale localStorage.
+This initial fixture has idle, empty workers; loaded/nonidle preservation remains
+a separate UX gate. No application source changed after Input023 for this repair.
+The repaired browser oracle still requires a new exact-commit Spark run.
 
 Base source: f93798b3cd5b3f38697e1696a058e55e449b676d (Storage022 passed).
 Base delivery: 0e13ba4b42096a0aa91354f5769984ebe013eeec.
@@ -67,7 +86,7 @@ engine-generated camp. Absence alone starts fresh; present primitives/arrays rej
 before Camp construction. The same guard applies to file import. Empty raw bytes
 remain exportable through explicit null-presence checks instead of truthiness.
 
-Verification authored, not yet executed
+Verification authored; reducer coverage passed, later browsers not yet executed
 Four new reducer cases: actually earned workshop/tools; every .1-second gathering
 state roundtrips through strict validation for60 seconds with conservation/delivery;
 single-assignment old-subtraction negative control; explicit repair, migration and
@@ -89,7 +108,13 @@ roundoff-retention families and numeric suffixes without treating those original
 as current playable saves. Surrounding Cave completion copy must describe the actual
 RTS opening; dispose navigation controller with modal removal. Combined source then
 requires its own exact Spark evidence. No durable campaign grant/handoff is implied.
-Task11 economy trace comparison follows agreement on its data-only schema. Current
-RTS stores are intentionally uncapped: capacity/floor/durable receipt capabilities
-must be reported unsupported where absent, never supplied from the reference model.
+Task11 owns new test-only exporter files under tests/custody-adapter in its isolated
+storage-custody-exporter worktree based on verified f93798b. Main owner retains
+later integration; do not duplicate its exporter. Use CUSTODY-TRACE-V1.md and schema
+sc14-custody-trace-v1. Current RTS stores are intentionally uncapped, with no receiver
+capacity or receiving-hold ledger, no protected floor, no explicit transfer-amount
+argument (quantity is min(source availability, workers times five)), and no durable
+receipt IDs after terminal jobs are pruned. These are concrete integration gaps;
+unsupported profile cases must remain open, never fabricated or treated as passed.
+Finite deposit depletion is implemented separately from storage capacity.
 Task12 IndexedDB adapter remains isolated and is not integrated by this increment.
