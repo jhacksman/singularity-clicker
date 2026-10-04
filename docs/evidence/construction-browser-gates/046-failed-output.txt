@@ -1,0 +1,13 @@
+Built self-contained cave: 0.19 MB
+Built self-contained hearth: 82 KB
+Built self-contained Agriculture slice: 51 KB
+Built self-contained Hearth RTS core: 127 KB
+page.waitForEvent: Timeout 30000ms exceeded while waiting for event "download"
+=========================== logs ===========================
+waiting for event "download"
+============================================================
+    at nativeExport (/work/tests/browser/campaign-navigation.cjs:286:24)
+    at async /work/tests/browser/campaign-navigation.cjs:535:20 {
+  log: [],
+  name: 'TimeoutError'
+}

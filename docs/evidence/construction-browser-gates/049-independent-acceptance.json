@@ -1,0 +1,125 @@
+{
+  "job": "singularity-20261004-construction-touch-049",
+  "reviewer": "/root/gaze_admission",
+  "semantic_reviewer": "/root/gaze_admission/hearth_browser",
+  "reviewed_utc": "2026-10-04 22:10:34 UTC",
+  "verdict": "PASS — EXACT TOUCH/SELECTED-ROSTER STATUS AUTOMATED SCOPE; PIXEL REVIEW SEPARATE",
+  "accepted": true,
+  "prerequisite_049_satisfied": true,
+  "blockers": [],
+  "scope": "Retained source/text/JSON and data hashing only. No execution/import/compile/browser replay, image/video decoding, remote calls, edits or approvals.",
+  "custody": {
+    "job": "singularity-20261004-construction-touch-049",
+    "result": {
+      "id": "singularity-20261004-construction-touch-049",
+      "commit": "51de4488a55dc60082e8f2800909823ba24491a7",
+      "host": "gb10-02",
+      "exit_code": 0,
+      "reason": "completed",
+      "started": 1791151322.920225,
+      "finished": 1791151342.9997835,
+      "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+      "execution_exit_code": 0,
+      "execution_reason": "completed",
+      "executor_error": null,
+      "cleanup_verified": true,
+      "cleanup_state": "absent",
+      "cleanup_errors": []
+    },
+    "container_id": "066ca46d5050df012c8b5c3337a92a45a528d0ecd039142ac49545947ed91a3c",
+    "container_state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-04T22:02:03.020085138Z",
+      "FinishedAt": "2026-10-04T22:02:21.905102216Z"
+    },
+    "command_sha256": "9d6a196d15e387a59629e6a504f95501068c8b73ae27a3bc566f33b4d647b479",
+    "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+    "resources": {
+      "NanoCpus": 2000000000,
+      "Memory": 4294967296,
+      "MemorySwap": 4294967296,
+      "PidsLimit": 512,
+      "NetworkMode": "none",
+      "SecurityOpt": [
+        "no-new-privileges",
+        "reviewed seccomp JSON matches exact local profile"
+      ],
+      "ShmSize": 1073741824
+    },
+    "remote_records": 135,
+    "artifact_files": 125,
+    "artifact_directories": 3,
+    "artifact_bytes": 5396480,
+    "artifact_types": {
+      ".json": 96,
+      ".png": 23,
+      ".webm": 6
+    },
+    "hashes": {
+      ".json": "2eb3926f162fecb32029b777a318245951c5f995a716650912379169c6834a89",
+      "-artifact-members.json": "303a2382627165252cbfbe38e052ca260d1931fe5ad0fe172efcf788822fdeab",
+      "-remote-provenance.json": "ee3d52dc0bfe64acc5ca55610a5500aec5b90016fa1b01d783a3c37a61323307",
+      "approved": "6d15a31be5801f6a8a3a86e732ef25d0bbfc1ff5da2d51308fa0ee4928317028",
+      "log": "0db446df86f25fef62ca979cd96ba949f3061f7f21fbe0c73fe73c7714e1c847",
+      "container": "9c46c475dbd1ab9ceadf6ba47a950c9ef5985b7cc40d6fc67be63f377a45831b",
+      "source_archive": "22d9282e0d5782b8cfbefaa3536501c56119153fdd0a0eb10d994018bb2ca1de",
+      "artifact_tar": "24ad5591299ee6ba216422dc7b4e20d342cfae20dbc122ed1891999ecf211a81"
+    },
+    "dist": [
+      {
+        "name": "index.html",
+        "bytes": 198536,
+        "sha256": "925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd"
+      },
+      {
+        "name": "hearth.html",
+        "bytes": 83881,
+        "sha256": "a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93"
+      },
+      {
+        "name": "agriculture.html",
+        "bytes": 52583,
+        "sha256": "690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec"
+      },
+      {
+        "name": "hearth-rts.html",
+        "bytes": 129904,
+        "sha256": "588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e"
+      }
+    ]
+  },
+  "custody_checks": "All135 local records match both recorded remote/local sizes/hashes, exact inventory/mappings and no duplicates/traversal/symlinks. All125 tar files match extraction/inventory. Exact command/source/archive/image/runtime/sole source mount/cleanup verified. Reviewed seccomp JSON matches approved local profile. Four final builds match accepted043 bytes and exact source; actual log confirms build completion.",
+  "semantics": {
+    "log": "PASS Hearth RTS selected touch status: old-CSS clipping control; actual four/eight roster, planned/moving/held, mixed loads, measured roster text enlargement, desktop and real Move/Stop controls",
+    "source_harness_sha256": "c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020",
+    "report_sha256": "1882cdf1b42ace4c478dab59e52b03144b487b26340e0933b67ab63df1c18e48",
+    "source_review": "Independent reviewer read complete221-line exact harness and checked actual reports/geometry/states/event logs against it.",
+    "rows": 24,
+    "captures": 23,
+    "measured_font_scaling_rows": 1,
+    "roster": "Old CSS1; touch7; enlarged touch7 plus measured scale1; eight-worker2; desktop old3/current3.",
+    "geometry": "All23 geometry records match report/state/text/font metadata; all23 before/after-layout Journey pairs byte-identical. Desktop old/current geometry identical foru0/u1/u2. No failure artifact.",
+    "movement": "Normal/enlarged u0 follows t37idle(2,3) -> pausedcarryMove sameposition/time ->t37.2moving(2.6,3) ->t41.7idle(13,3) ->pausedreturn sameposition/time. Loads/resources unchanged.",
+    "conservation": "Every snapshot conserves416wood/220stone/225food. Four/eight-worker fixtures correct; additional four workers actually consume100food through fixture public commands.",
+    "inputs": "Required trusted touch targets present;207events each normal/enlarged,69eight, zero untrusted events.",
+    "binding": "ReportHTML588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e equals returned build. CSS and oldCSS control identities recomputed; exact51de engine/view bytes embedded."
+  },
+  "limits": [
+    "Controlled engine fixtures, not additional browser-earned gameplay.",
+    "Twofold text sizing applies to roster names/status only; not whole-page zoom or a browser zoom claim.",
+    "Stop and Return is checked as planned, not completed physical delivery.",
+    "Selected cards/status only, not every unselected card or full mobile usability.",
+    "No G01/G02 placement/construction visual qualification from this touch suite.",
+    "PNG/video bytes hashed but not visually inspected or decoded by these reviewers; separate pixel reviewer supplies visual observations.",
+    "Coordinator remote observations not independently repeated; cleanup relies on retained result/container."
+  ],
+  "downstream": "049 prerequisite satisfied within exact scope. Failed045 and046 continue to hold047/048/050; this acceptance grants no dispatch or release."
+}

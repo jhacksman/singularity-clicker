@@ -1,0 +1,136 @@
+{
+  "job": "singularity-20261004-construction-navigation-046",
+  "reviewer": "/root/gaze_admission",
+  "static_skeptics": [
+    "/root/gaze_admission/hearth_browser",
+    "/root/gaze_admission/greeting_tests"
+  ],
+  "reviewed_utc": "2026-10-04 22:10:34 UTC",
+  "verdict": "VERIFIED FAILURE — NATIVE EXPORT11 DOWNLOAD TIMEOUT; ROOT CAUSE UNCONFIRMED",
+  "execution_pass": false,
+  "failure_verified": true,
+  "custody_review_pass": true,
+  "prerequisite_046_satisfied": false,
+  "scope": "Retained data, source text and hashes only. No source execution/import/compile/browser, media decoding, remote calls, edits, approvals or reruns.",
+  "custody": {
+    "job": "singularity-20261004-construction-navigation-046",
+    "result": {
+      "id": "singularity-20261004-construction-navigation-046",
+      "commit": "51de4488a55dc60082e8f2800909823ba24491a7",
+      "host": "gb10-02",
+      "exit_code": 1,
+      "reason": "completed",
+      "started": 1791151323.8426478,
+      "finished": 1791151378.9467163,
+      "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+      "execution_exit_code": 1,
+      "execution_reason": "completed",
+      "executor_error": null,
+      "cleanup_verified": true,
+      "cleanup_state": "absent",
+      "cleanup_errors": []
+    },
+    "container_id": "9b8f74b2e55d422153a13fd43cba0f385cc3878f29e97d954eaa5ab97148f80c",
+    "container_state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 1,
+      "Error": "",
+      "StartedAt": "2026-10-04T22:02:03.936074004Z",
+      "FinishedAt": "2026-10-04T22:02:57.922112598Z"
+    },
+    "command_sha256": "acce9e748babac4c680eaa0d79235c4481d2f15096c44ec1dffda45c469476a3",
+    "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+    "resources": {
+      "NanoCpus": 2000000000,
+      "Memory": 4294967296,
+      "MemorySwap": 4294967296,
+      "PidsLimit": 512,
+      "NetworkMode": "none",
+      "SecurityOpt": [
+        "no-new-privileges",
+        "reviewed seccomp JSON matches exact local profile"
+      ],
+      "ShmSize": 1073741824
+    },
+    "remote_records": 73,
+    "artifact_files": 63,
+    "artifact_directories": 3,
+    "artifact_bytes": 6031360,
+    "artifact_types": {
+      ".json": 41,
+      ".webm": 17,
+      ".png": 5
+    },
+    "hashes": {
+      ".json": "1373c753280e29a33ad0471f06606114f47e24b8fc039134b2104d8abef422fa",
+      "-artifact-members.json": "6941b9ad2ecd7f680ff9f000e02a0e2f75d3334e5e0d815322e43a47c65a7662",
+      "-remote-provenance.json": "b003487bfa4ca01fbdcec78b4ba2ac4cee4d9424fb531d134f0dc5336ca00728",
+      "approved": "2d96cd96e53df5f6dcad2fee69229cc8c269b08f7302cf22b7b2bf295945bc5f",
+      "log": "b19da2d19b001dd2760866b8dfd6e31b57b0ea0ac71569d9b00647c1718e9430",
+      "container": "8519fec80a16ec8099c8ec060c45806af8833c262a51c769065db1b6d8e10898",
+      "source_archive": "22d9282e0d5782b8cfbefaa3536501c56119153fdd0a0eb10d994018bb2ca1de",
+      "artifact_tar": "54d5d5329ddb39b7406f7bc41a2cab0adec8688ea02b3a7fe064106159aa8d9a"
+    },
+    "dist": [
+      {
+        "name": "index.html",
+        "bytes": 198536,
+        "sha256": "925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd"
+      },
+      {
+        "name": "hearth.html",
+        "bytes": 83881,
+        "sha256": "a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93"
+      },
+      {
+        "name": "agriculture.html",
+        "bytes": 52583,
+        "sha256": "690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec"
+      },
+      {
+        "name": "hearth-rts.html",
+        "bytes": 129904,
+        "sha256": "588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e"
+      }
+    ]
+  },
+  "custody_checks": "Independently recomputed all73 local provenance records against both recorded remote/local sizes and hashes, exact mapped inventory, no duplicate JSON keys, duplicate paths, symlinks or traversal. All63 regular tar members match inventory and extraction. Returned four builds exactly match accepted043 candidate builds; actual log shows build ran before failure. Reviewed seccomp JSON matches local profile.",
+  "failure": {
+    "location": "tests/browser/campaign-navigation.cjs:286 nativeExport called at535",
+    "message": "Timeout30000ms waiting for download event",
+    "action": "export:rtsOutgoingBackupV5",
+    "retained_export_index": 11,
+    "observed_completed_retained_exports": 10,
+    "expected_total_retained_exports": 14,
+    "record_sha256": "ac740c4bab92b80dcddc243da529deefae35ebb952cdb5ae5c5acb693e8c0ef9",
+    "record_path": "spark-ci/results/singularity-20261004-construction-navigation-046-evidence/artifacts/campaign-navigation/failure.json",
+    "source_flow": "nativeExport registers download event listener before clicking the original navigation button, then waits for actual event/saveAs and compares returned exact bytes in caller.",
+    "retained_successes": "Base and .1 copies for rtsBackupV6,rtsImportBackupV6,rtsOutgoingBackupV6,rtsStoredBackupV6,rtsRejectedBackupV6.",
+    "observed_state": "Focused exact outgoingV5 button, native completion modal open, one mount, normal ready status, no pageErrors. OutgoingV5 key/kind/schema mapping exists and its raw legacy bytes already exported successfully as rtsBackupV6.",
+    "timing": "Original tar mtimes for ten completed exports are1791151343 or1791151344 (two adjacent seconds). Extracted local file mtimes were extraction timestamps and are not execution evidence.",
+    "not_completed": [
+      "OutgoingV5 export and remaining retained exports",
+      "All14-export final storage-immutability assertion",
+      "Current-v6 destination/reload routes after541",
+      "Later residue routes after551",
+      "Final navigation suite completion"
+    ]
+  },
+  "diagnosis": {
+    "agreement": "Two independent static skeptics agree on observed boundary, valid source mapping, and uncertainty.",
+    "established": "Native export contract did not produce an observed browser download within30s. Existing harness lacks per-action activation/download/console telemetry needed to resolve this boundary.",
+    "hypothesis": "Rapid sequential10-export burst may hit browser download throttling, but retained evidence does not establish that as cause.",
+    "alternatives": "Activation could return busy/disposed/null refresh, generation/refresh race, missed effective activation, browser refusal, or anchor default-action failure without a JS exception. Listener-before-click ordering excludes the obvious late-listener race.",
+    "product_defect": "Neither a product export defect nor a harmless harness-only fault is proven. Preserve046 failure.",
+    "bounded_next_change_for_owner_review": "Harness-only pacing of distinct export clicks (about1.1s real wall time) with per-action timing/outcome, trusted control/anchor activity and console/download telemetry is a diagnostic option. Preserve original button/default exporter path, every base+.1 family, actual download events and exact bytes. No retries, skipped families, longer timeout as a substitute, browser policy bypass, production rewrite or relaxed assertions.",
+    "limit": "Any paced completion would establish that revised execution passed; by itself it would not prove the old timeout's root cause."
+  },
+  "cleanup": "Result and container exit1/completed, no executor error/OOM/timeout at coordinator level, cleanup verified absent. Coordinator remote observations not independently repeated; retained records establish custody, not host-wide exclusivity.",
+  "gate": "046 remains failed and047/048/050 remain held with failed045. Corrected source and new job IDs require exact admission; no rerun authorized here."
+}

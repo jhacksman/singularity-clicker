@@ -1,0 +1,121 @@
+{
+  "job": "singularity-20261004-construction-rts-regression-045",
+  "reviewer": "/root/gaze_admission",
+  "independent_static_skeptic": "/root/gaze_admission/hearth_browser",
+  "independent_custody_reviewer": "/root/gaze_admission/hearth_custody",
+  "reviewed_utc": "2026-10-04 22:06:21 UTC",
+  "verdict": "VERIFIED FAILURE — RECOVERY HARNESS SELECTOR AMBIGUITY; DOWNSTREAM PREREQUISITES UNSATISFIED",
+  "execution_pass": false,
+  "failure_verified": true,
+  "custody_review_pass": true,
+  "prerequisite_045_satisfied": false,
+  "scope": "Retained data/text/Git/hash review only. No source execution/import/compile/browser replay, image/video decoding, remote calls, edits, approvals or reruns.",
+  "source": {
+    "commit": "51de4488a55dc60082e8f2800909823ba24491a7",
+    "source_archive_sha256": "22d9282e0d5782b8cfbefaa3536501c56119153fdd0a0eb10d994018bb2ca1de",
+    "exact_archive_matches_git_and_043": true,
+    "manifest_admission_and_043_prerequisite_bindings_verified": true
+  },
+  "execution": {
+    "command": "node build.mjs && node tests/browser/hearth-rts.cjs && node tests/browser/hearth-rts-roundtrip.cjs && node tests/browser/hearth-rts-bootstrap.cjs && node tests/browser/hearth-rts-recovery.cjs && node tests/browser/hearth-rts-move.cjs",
+    "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+    "container_id": "d93ab99899d6271f56fc61672a2ece5e0471e60ac36bab597c441df6f3f7d316",
+    "cpus": 2,
+    "memory_gib": 4,
+    "memory_swap_gib": 4,
+    "pids": 512,
+    "network": "none",
+    "user": "1001:1001",
+    "gpu": false,
+    "timeout_seconds": 900,
+    "isolation": "Sole owned source mount; cap-dropALL/no-new-privileges, reviewed browser seccomp,1GiB private shared memory.",
+    "exit_code": 1,
+    "execution_exit_code": 1,
+    "reason": "completed",
+    "duration_seconds_approximately": 231.16,
+    "executor_error": null,
+    "timeout": false,
+    "oom": false,
+    "cleanup_verified": true,
+    "cleanup_state": "absent",
+    "cleanup_errors": []
+  },
+  "reached": {
+    "fresh_build": "All four final HTML build logs before browser suites; returned files match accepted043 bytes and exact candidate source.",
+    "completed_suites": [
+      "hearth-rts.cjs",
+      "hearth-rts-roundtrip.cjs",
+      "hearth-rts-bootstrap.cjs"
+    ],
+    "failed_suite": "hearth-rts-recovery.cjs",
+    "failure_location": "tests/browser/hearth-rts-recovery.cjs:161",
+    "not_run": [
+      "Recovery colliding-ID import/checks at lines162–170",
+      "Recovery final success statements",
+      "hearth-rts-move.cjs after &&",
+      "Dependent047/048/050"
+    ],
+    "partial_recovery_evidence": "Earlier recovery loops and old-focus control reached their assertions; fixed-focus geometry and unchanged-state assertions through160 passed before text-locator failure. Partial progress is not recovery-suite acceptance."
+  },
+  "diagnosis": {
+    "classification": "Harness selector assumption; this failure does not demonstrate a product defect.",
+    "observed_error": "locator.innerText strict mode violation: '#inspect button' resolves to visible #site-cancel and hidden, disabled #site-recover.",
+    "source_cause": "view.js siteUI at286 intentionally creates both controls;287 hides recovery unless construction cancelling;288 renders legacy prepaid full-refund content. Generic multi-button locator in recovery161 cannot serve as a single Cancel text locator.",
+    "corroboration": {
+      "fixed_focus": {
+        "scroll_before": 0,
+        "scroll_after": 0,
+        "final_scroll": 0,
+        "mapped_x": 26.5,
+        "mapped_y": 16.5,
+        "active_element": "world",
+        "button_count": 2,
+        "inspector": "Workshop site; Legacy prepaid materials; Cancel site · full refund",
+        "page_errors": []
+      },
+      "old_focus": {
+        "scroll_before": 0,
+        "scroll_after": 71,
+        "mapped_y": 19.263289920437845,
+        "button_count": 0
+      },
+      "unchanged_rect_and_paused_state_assertions_passed": true,
+      "colliding_id_import_artifact_absent": true
+    },
+    "independent_agreement": "Main reviewer and separate static skeptic reached same diagnosis from exact source, actual error and saved probes.",
+    "narrow_fix_for_owner_review": "Target '#inspect #site-cancel' for the intended single-control text assertion; optional count/visibility/enabled/exact-label checks may clarify intent. Keep old-focus zero-button control and post-import ALL '#inspect button' count0 so stale inspector removal remains tested.",
+    "forbidden_shortcuts": "Do not use .first(), remove focus geometry controls, weaken post-import all-button emptiness, relabel045 pass, or reuse failedID.",
+    "limit": "Suggested fix is not applied or run by reviewers. Successful colliding-ID import and Move remain unverified; any corrected source/job requires fresh exact admission."
+  },
+  "evidence": {
+    "artifact_tar": {
+      "path": "spark-ci/results/singularity-20261004-construction-rts-regression-045-artifacts.tar",
+      "bytes": 23511040,
+      "sha256": "eb7a4a155a0265a5a79f7b1555d84c739e5a0672014a3c6f6576829eafad8eb2",
+      "regular_files": 138,
+      "directories": 2,
+      "types": {
+        "json": 102,
+        "png": 35,
+        "webm": 1
+      },
+      "all_members_equal_inventory_and_extraction": true,
+      "unsafe_duplicate_members": false
+    },
+    "approved_manifest_sha256": "3b91d9338c90e2db5babc9bf264b867720728f4654e6febc42fb1bcc98f83df7",
+    "log_sha256": "fdb885d01c1561f0b71f39bed687edb9bb471d013635f8fe7d480a5a66c1f4e9",
+    "container_sha256": "15dcf36ce546711161d86c8160c32693422d9a4f093edac95a2181bf8dfa9855",
+    "result_sha256": "f1c85ed605685162a57a1c51a5ba4f957a9546ca096e9ed6f7f0bd9441b68f0b",
+    "inventory_sha256": "d0d54a49f9f5c3b090096079f89bf2462f4442f7dad1de055c03714a02dce2b3",
+    "built_dist_provenance_sha256": "3f84661e930e9983c895d27924b292c0c750b49c6df606a4abad3195004369a2",
+    "remote_provenance_sha256": "54033c211005aa342e1ae455832a30d98d0d75f82bec6e96ee0b6d5ae6a92118",
+    "failure_notice_sha256": "a395da417a02e7e23a35db933b7cb7c8efc822715f74acb0e0e1b0b07eacadc5",
+    "during_conditions_sha256": "6c5f54425f264027a066a41ce69b0711eebcbc68c258a2bd743ecc549e0bab91",
+    "remote_records": 148,
+    "independently_rehashed_local_records": 148,
+    "inventory": "Six metadata/source/runtime files,138 artifacts and four built pages; exact mappings, no missing/duplicate/unsafe paths.",
+    "all_recorded_remote_local_sizes_hashes_match": true,
+    "limitation": "Coordinator remote observations not independently repeated. Images/video hashed only. No045-specific before/after snapshots available; cleanup supported by result/stopped-container evidence. During snapshot falls within execution and observes045 but does not prove host-wide exclusivity."
+  },
+  "gate": "045 stays failed.047/048/050 remain held despite separately cleared source and input adapter. Independent046/049 require043 only, but each own observed result controls its acceptance. No source change or rerun authorized by this report."
+}

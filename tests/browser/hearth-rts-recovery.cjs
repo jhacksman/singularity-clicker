@@ -158,7 +158,11 @@ for(const fixture of fixtures){
     assert.equal(probe.finalScrollY,probe.initial.scrollY,'Native pointer handling must not shift the map after focus returns');
     assert.deepEqual(probe.calls[0].after.rect,probe.calls[0].before.rect);
     assert.equal(probe.calls[0].after.activeElement,'world','Keyboard focus remains on the canvas');
-    assert.match(await page.locator('#inspect button').innerText(),/Cancel site/);
+    const cancel=page.locator('#inspect #site-cancel');
+    assert.equal(await cancel.count(),1,'The site inspector exposes one Cancel control');
+    assert.equal(await cancel.isVisible(),true,'The prior site Cancel control is visible');
+    assert.equal(await cancel.isEnabled(),true,'The prior site Cancel control is usable');
+    assert.equal(await cancel.innerText(),'Cancel site · full refund');
     await page.locator('#journey').click();page.once('dialog',d=>d.accept());
     await page.locator('#file').setInputFiles({name:'different-project-same-id.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(incoming))});
     await page.locator('#dialog').waitFor({state:'hidden'});

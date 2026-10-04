@@ -1,0 +1,64 @@
+Construction navigation QA follow-up source verification — 2026-10-04
+Reviewer: /root/construction_final_verifier
+
+VERDICT: No concrete source blocker found. Static review only; fresh navigation
+runtime acceptance is still required. Preserved job046 remains failed, and even
+a paced pass cannot establish the cause of its original download timeout.
+
+Frozen file: hearth-physical-construction/tests/browser/campaign-navigation.cjs
+SHA256: 6b4b320bb9bcc5f7c84c4f910816f0b2bfdb31dfd6c2c4ea4f58f2cf6668f96f
+Baseline: 51de4488a55dc60082e8f2800909823ba24491a7
+Review: actual complete diff plus relevant surrounding source and retained046
+failure evidence. Separate narrow reviewer /root/construction_final_verifier/
+partial045046_evidence checked waiter/event-callback failure paths and agrees.
+No application/parser/test/build/browser/media execution or source edits.
+
+Pacing and native behavior
+- Each later export on the same page waits at least 1100ms of Node monotonic
+  time after the previous click completed. A real setTimeout/deadline loop and
+  explicit measured-gap assertion enforce this; browser clock manipulation is
+  not used. This is conservative spacing between clicks, not an action retry.
+- Failed actions are rethrown and abort the suite. There is no catch path that
+  continues to another export with an unrecorded previous-click timestamp.
+- The original selector/native click/default exporter remain in use. The
+  download waiter is registered before click with unchanged default timeout.
+  Both outcomes receive .then handlers immediately. Ordinary timeout or page
+  closure becomes {error}, so a failed click leaving the waiter pending does
+  not itself create an unhandled rejection. Success still requires actual
+  download, saveAs and reading the returned bytes.
+- No export retry, skipped family, policy bypass, substitute exporter, custom
+  download trigger or timeout extension is introduced. The seven retained
+  families still execute base and .1 exports (14 strict exact-byte assertions),
+  followed by exact primary/retained storage equality. Current-v6/reload and
+  residue cases retain their assertions.
+
+Diagnostics and observation limits
+- New DOM listeners observe trusted pointer/click activity, connected controls,
+  user activation, modal membership and anchor add/remove/click evidence.
+  They do not call preventDefault/stopPropagation, wrap controller activation,
+  replace anchor methods or modify product storage/behavior.
+- The capture-enqueued microtask is correctly labeled capture-microtask and
+  explicitly disclaims final-dispatch defaultPrevented semantics. A separate
+  bubble observation is retained. Neither observation establishes private
+  controller busy/disposed/activation-return state; report limits say so.
+- Per-action stages/times, actual browser downloads, console/page errors and
+  saved byte counts are recorded. The action finally block attempts browser
+  observation and persists its result before outer browser cleanup. Outer
+  success and failure paths also persist diagnostics; failure includes the
+  accumulated evidence. Page-observation failure is recorded, not hidden.
+- Synchronous artifact writes are not exception-isolated. If disk/serialization
+  persistence throws inside a page event listener it can escape dispatch; if
+  it throws inside a waiter .then handler it can reject the derived promise
+  before it is awaited. Therefore telemetry is browser-behavior-passive, not
+  infallible or incapable of interference under artifact I/O failure. Existing
+  source also depends on synchronous artifact writes. No normal-flow defect
+  was established; an I/O/uncaught error or incomplete evidence is a failed
+  gate, never acceptance. This review does not require speculative recovery.
+
+Boundary
+Only QA pacing/observability changed. Production/build-input identity and
+carryforward conditions remain in construction-043-050-owner-evidence-review.txt
+(SHA256 cae897dbd8a60e978442a2e63623a096a9ce486ab12ad0fc118f4bde98c3932d).
+Fresh syntax and full corrected navigation execution must use a newly frozen
+candidate/job. No 046 failure relabeling, full construction pass, G02 placement
+visual acceptance or release clearance follows from this source verdict.

@@ -1,0 +1,20 @@
+Built self-contained cave: 0.19 MB
+Built self-contained hearth: 82 KB
+Built self-contained Agriculture slice: 51 KB
+Built self-contained Hearth RTS core: 127 KB
+PASS fresh RTS: drag selection, ordinary clicks/right-click gathering, visible cargo, finite depletion, source reservation and physical construction supply, ford scouting, eastern outpost/workshop and refresh; paid/interrupted/resumed workshop knapping completes once; 286 simulated seconds; no page errors
+PASS projected v1 compatibility fixture: byte-exact raw backups, unchanged world/cargo and pooled-stock adoption in playable uncertified v4
+PASS projected v2 compatibility fixture: byte-exact raw backups, unchanged world/cargo and pooled-stock adoption in certified v6
+PASS projected v3 compatibility fixture: byte-exact raw backups, unchanged world/cargo and preserved local custody in certified v6
+PASS earned-tool extraction: current-v6 old subtraction stays invalid and unrepaired; clamped saves conserve resources and survive paused reload; pinned v3 UI generates the separate repairable legacy checkpoint from a labeled v6-to-v3 seed projection omitting reclaim and construction authority
+PASS startup/read-denial and raw retention: absent versus invalid input; generated legacy-v3 residue repairs into v6 after exact source backups and durable main write; current-v6 and old-v5 negatives, malformed construction and future7 stay rejected; failed boot/import writes preserve original exports
+locator.innerText: Error: strict mode violation: locator('#inspect button') resolved to 2 elements:
+    1) <button id="site-cancel">Cancel site · full refund</button> aka getByRole('button', { name: 'Cancel site · full refund' })
+    2) <button disabled hidden="" id="site-recover">Resume supply recovery with selected villagers</button> aka getByText('Resume supply recovery with')
+
+Call log:
+  - waiting for locator('#inspect button')
+
+    at /work/tests/browser/hearth-rts-recovery.cjs:161:56 {
+  log: [ "  - waiting for locator('#inspect button')" ]
+}

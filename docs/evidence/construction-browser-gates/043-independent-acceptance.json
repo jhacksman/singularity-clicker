@@ -1,0 +1,252 @@
+{
+  "job": "singularity-20261004-construction-unit-043",
+  "reviewer": "/root/gaze_admission",
+  "supporting_reviewer": "/root/gaze_admission/hearth_custody",
+  "reviewed_utc": "2026-10-04 21:53:44 UTC",
+  "verdict": "PASS — EXACT043 SYNTAX/190-TEST/FINAL-BUILD/CUSTODY/CLEANUP ACCEPTED",
+  "accepted": true,
+  "prerequisite_043_satisfied": true,
+  "blockers": [],
+  "scope": "Independent returned-evidence review as data only. No repository execution/import/compilation, test/build/browser, remote calls, lease/approval/dispatch mutation. No local rebuild or static reconstruction of complete HTML was performed.",
+  "execution": {
+    "commit": "51de4488a55dc60082e8f2800909823ba24491a7",
+    "archive_sha256": "22d9282e0d5782b8cfbefaa3536501c56119153fdd0a0eb10d994018bb2ca1de",
+    "archive_bytes": 3112960,
+    "archive_matches_frozen_and_fresh_exact_git_archive": true,
+    "archive_members": {
+      "regular_files": 270,
+      "directories": 41,
+      "unsafe_or_duplicate": false
+    },
+    "pending_manifest_sha256": "3e6ebaa39b2c72ef8c88050dc29a45ab02f1a8d755d66e8dd691de9037bfb8e4",
+    "approved_manifest_sha256": "05fdbea488b3b704ae9ca9a43e48e68c32f40f94065ae9b864f6591853b40e66",
+    "approved_differences": "Coordinator approval metadata only; exact command/source/image/resource parameters unchanged.",
+    "command": "node scripts/check-syntax.cjs && node --test tests/*.test.cjs && node build.mjs",
+    "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+    "host": "gb10-02",
+    "container_id": "c3e622a358f67b2552cd4b73d7de480e65c2d98efceb5c63871ef551331eb3ca",
+    "resources": {
+      "cpus": 2,
+      "memory_bytes": 4294967296,
+      "memory_swap_bytes": 4294967296,
+      "pids": 512,
+      "user": "1001:1001",
+      "network": "none",
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges"
+      ],
+      "devices": [],
+      "gpu": false,
+      "timeout_seconds": 900
+    },
+    "filesystem": "Sole bind is exact job source into /work.",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-04T21:46:17.46185516Z",
+      "FinishedAt": "2026-10-04T21:46:36.966967034Z"
+    },
+    "result_sha256": "33b4c1f0d32f9ac281395d6ed90c13c0ad8253c0fbfb48cfa61b48e7c44be44f",
+    "result_exit_code": 0,
+    "execution_exit_code": 0,
+    "result_reason": "completed",
+    "wall_seconds_approximately": 20.08,
+    "cleanup_verified": true,
+    "cleanup_state": "absent",
+    "cleanup_errors": [],
+    "observations": "Before/after snapshots record no owned/running containers or cleanup markers."
+  },
+  "observed_results": {
+    "syntax_files": 42,
+    "tests": 190,
+    "individual_passing_test_lines": 190,
+    "passed": 190,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "corrected_tests_passed": [
+      "waiting construction workers report installation when the final physical load unlocks their work",
+      "Tools018 adds exactly twelve actual worker-seconds for one and four adjacent artisans including the capped final tick",
+      "source and planned-pickup identities reject coercible or inherited keys without mutating any intrinsic object"
+    ],
+    "final_top_level_build_executed": true,
+    "final_build_lines": [
+      "Built self-contained cave: 0.19 MB",
+      "Built self-contained hearth: 82 KB",
+      "Built self-contained Agriculture slice: 51 KB",
+      "Built self-contained Hearth RTS core: 127 KB"
+    ],
+    "evidence": "Exact command chains syntax, all tests and final build with &&; complete actual log has190 individual passing lines and zero failure/skip/cancel/todo, followed by four build lines, and process/result exit0.",
+    "log_sha256": "b87c681e05c19eac67dd51e137a1b07125e260415340a381e04813ed1b9f1225"
+  },
+  "returned_dist": {
+    "directory": "spark-ci/results/singularity-20261004-construction-unit-043-returned-dist",
+    "count": 4,
+    "unexpected_entries": false,
+    "bindings": [
+      {
+        "name": "index.html",
+        "bytes": 198536,
+        "sha256": "925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd",
+        "identical_to_preexisting_committed_dist": false,
+        "embedded_exact_source": [
+          {
+            "source_path": "src/engine.js",
+            "source_sha256": "5a0077277e594b124b9969b0dd7e703319e266db704c22eb1de488cf50652466",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth-rts/engine.js",
+            "source_sha256": "abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/campaign-navigation/adapter.cjs",
+            "source_sha256": "55fdfe34fadcf86c4593dea36f7249335c9022447f8a8bfd432ff0bf320668a9",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/campaign-navigation/browser.js",
+            "source_sha256": "bbf091b3b08b4ec67113527ccab38eace2dcd58565bab1c6dcbb10f06e64ccc6",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/view.js",
+            "source_sha256": "2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/campaign-navigation/styles.css",
+            "source_sha256": "1caf1cef9da8d8eb0ce5fce3f2512ccac1a59e5cb76e405815916923f147a4e6",
+            "exact_occurrences": 1
+          }
+        ]
+      },
+      {
+        "name": "hearth.html",
+        "bytes": 83881,
+        "sha256": "a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93",
+        "identical_to_preexisting_committed_dist": true,
+        "embedded_exact_source": [
+          {
+            "source_path": "src/hearth/styles.css",
+            "source_sha256": "c5f13761cead722a5d6382d3e81137048f993cd695db9c56c09d522c39d8640c",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth/engine.js",
+            "source_sha256": "c034f7446ca853caaf5b1389d96ff3e8ca339cf5ae48dc5c3d70e0073340bd93",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth/view.js",
+            "source_sha256": "417aa15a351d8eebae93896918cc3eb9df434ae459aa1ca3a87210820108b148",
+            "exact_occurrences": 1
+          }
+        ]
+      },
+      {
+        "name": "agriculture.html",
+        "bytes": 52583,
+        "sha256": "690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec",
+        "identical_to_preexisting_committed_dist": true,
+        "embedded_exact_source": [
+          {
+            "source_path": "src/agriculture/styles.css",
+            "source_sha256": "8bc8320485ece9247a01d24c21fc0ebf54d661a64c192d662ac9c23112846c47",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth/engine.js",
+            "source_sha256": "c034f7446ca853caaf5b1389d96ff3e8ca339cf5ae48dc5c3d70e0073340bd93",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/agriculture/engine.js",
+            "source_sha256": "d6704fdb623fb3462fb9b750a5636f4650942d1365433440a5364efa6da1cd69",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/agriculture/view.js",
+            "source_sha256": "2fbf78cb98d37a456c5faee4a75f7b5912f2ba160cfec7e482aca8b9cf9c57cd",
+            "exact_occurrences": 1
+          }
+        ]
+      },
+      {
+        "name": "hearth-rts.html",
+        "bytes": 129904,
+        "sha256": "588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e",
+        "identical_to_preexisting_committed_dist": false,
+        "embedded_exact_source": [
+          {
+            "source_path": "src/hearth-rts/styles.css",
+            "source_sha256": "3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth-rts/engine.js",
+            "source_sha256": "abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b",
+            "exact_occurrences": 1
+          },
+          {
+            "source_path": "src/hearth-rts/view.js",
+            "source_sha256": "a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955",
+            "exact_occurrences": 1
+          }
+        ]
+      }
+    ],
+    "method": "Read archive member bytes and returned HTML only; verified each listed unchanged source segment appears exactly once. Hashes/bytes independently match built-dist and remote provenance. No source execution or local reconstruction.",
+    "fresh_build_caveat": "Hearth/agriculture output bytes match preexisting committed dist because their source is unchanged. Fresh execution is established by successful final command stage and four final log lines. Index/RTS differ and contain exact corrected source bytes."
+  },
+  "custody": {
+    "remote_provenance_records": 10,
+    "independently_rehashed_local_records": 10,
+    "remote_local_size_and_hash_fields_all_match": true,
+    "exact_inventory": true,
+    "duplicate_keys_paths_traversal_symlinks": false,
+    "collector_review": "Read collect_construction_builds.py as source only. It validates stable no-follow bounded reads, exact job/commit/source archive and verified absent cleanup before returning four fixed dist files; local exclusive writes check bytes and hashes.",
+    "evidence": [
+      {
+        "path": "spark-ci/results/singularity-20261004-construction-unit-043-remote-provenance.json",
+        "bytes": 4822,
+        "sha256": "c3fe7c16acc03f8d7f88ee9f7b1fc41c1ce75bd439608d3afd4a0fc66f1f056d"
+      },
+      {
+        "path": "spark-ci/results/singularity-20261004-construction-unit-043-built-dist-provenance.json",
+        "bytes": 1113,
+        "sha256": "8b3d167e0539c373ffaccef5f99940a5ea378632447e0303747a2ba640939da7"
+      },
+      {
+        "path": "spark-ci/results/singularity-20261004-construction-unit-043-conditions-before.json",
+        "bytes": 877,
+        "sha256": "78123f74a9c4403ad406ca86428886be0e9a62341a754787855e617fce7677fd"
+      },
+      {
+        "path": "spark-ci/results/singularity-20261004-construction-unit-043-conditions-after.json",
+        "bytes": 876,
+        "sha256": "7950c100c26fa80dae375375b05d021c10a69f8d8e6742701a83bf68828e1b89"
+      },
+      {
+        "path": "spark-ci/logs/singularity-20261004-construction-unit-043.container.json",
+        "bytes": 8760,
+        "sha256": "2632cedc203c32224fd7afa946d9a085f7aa3159df126001a2eaafc8eb4dab87"
+      }
+    ],
+    "limitation": "Coordinator remote observations were not independently repeated. Cleanup rests on retained result/container/after-condition evidence; snapshots do not prove in-flight exclusivity."
+  },
+  "downstream": "043 prerequisite is independently satisfied for044/045/046/049 and later jobs that name043. Coordinator must still apply each job's remaining prerequisites, capacity/cleanup gates and exact reviewed manifest.047/048 separate in-container witness staging review remains mandatory.",
+  "history": "036 remains failed and037–042 remain unrun superseded. No browser, journey, gameplay, publication, release or full-campaign acceptance follows from043 alone."
+}

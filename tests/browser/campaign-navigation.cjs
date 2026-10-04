@@ -2,6 +2,7 @@
 'use strict';
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path'), http = require('node:http');
 const {once} = require('node:events');
+const {performance} = require('node:perf_hooks');
 const {Camp: Cave} = require('../../src/engine.js'), RTS = require('../../src/hearth-rts/engine.js');
 const {Hearth} = require('../../src/hearth/engine.js'), {Village} = require('../../src/agriculture/engine.js');
 const Navigation = require('../../src/campaign-navigation/adapter.cjs'), {KEYS} = Navigation;
@@ -28,6 +29,11 @@ function sources() {
   return {[KEYS.cave]: cave.serialize(), [KEYS.rts]: raw, [KEYS.rtsBackup]: 'occupied v2 backup', [KEYS.rtsBackupV3]: 'occupied v3 backup', [KEYS.rtsBackup + '.7']: raw + ' ', [KEYS.hearth]: new Hearth().serialize(), [KEYS.hearthCompleted]: ' \n' + JSON.stringify([completed.serialize()]) + '\n', [KEYS.agriculture]: new Village().serialize()};
 }
 const reports = [], errors = [], presentation = [], nativeEvidence = [];
+const nativeExportEvidence = {minimumClickGapMs: 1100, timing: 'Node real monotonic time; browser timestamps are observational', limits: ['A paced completion does not establish the cause of the preserved 046 timeout', 'Native control activation return, busy and disposed state are private and are not inferred'], actions: [], pages: []};
+const nativePageTracking = new WeakMap();
+const wallStamp = () => ({wallTimeMs: Date.now(), monotonicMs: performance.now()});
+const exportError = error => ({name: error?.name || null, message: String(error?.message || error), stack: error?.stack || null});
+function persistNativeExports() { fs.writeFileSync(path.join(output, 'native-export-diagnostics.json'), JSON.stringify(nativeExportEvidence, null, 2) + '\n'); }
 let browser, nativeDiagnosticPage = null;
 async function mount(page, options = {}) {
   await page.evaluate(async options => {
@@ -227,6 +233,31 @@ async function checkPresentation(page, label) {
       if (!sessionStorage.getItem('native-navigation-fixture-seeded')) { for (const [key, value] of Object.entries(fixtures)) localStorage.setItem(key, value); sessionStorage.setItem('native-navigation-fixture-seeded', 'yes'); }
       window.__nativeMounts = []; window.__nativeLifecycle = []; window.__nativeDocument = crypto.randomUUID();
       for (const type of ['pagehide', 'pageshow']) window.addEventListener(type, event => window.__nativeLifecycle.push({type, persisted: event.persisted, trusted: event.isTrusted}));
+      // Passive telemetry only: no controller activation wrapper, exporter
+      // substitution, anchor method override, or prevented browser default.
+      const exportProbe = window.__nativeExportProbe = {actionId: null, events: []};
+      const recordExportEvent = entry => exportProbe.events.push({actionId: exportProbe.actionId, document: window.__nativeDocument, browserWallTimeMs: Date.now(), browserMonotonicMs: performance.now(), ...entry});
+      const exportTarget = target => target instanceof Element ? target.closest('[data-navigation-action], a[download]') : null;
+      const describeExportTarget = target => ({tag: target.tagName, action: target.dataset.navigationAction || null, connected: target.isConnected, disabled: 'disabled' in target ? target.disabled : null, download: target.getAttribute('download'), href: target.getAttribute('href'), insideModal: !!target.closest('#modal')});
+      const observeExportControl = (event, phase) => {
+        const target = exportTarget(event.target);
+        if (!target || !(target.matches('a[download]') || target.dataset.navigationAction?.startsWith('export'))) return;
+        const entry = {type: event.type, phase, trusted: event.isTrusted, defaultPrevented: event.defaultPrevented, ...describeExportTarget(target), userActivation: {isActive: navigator.userActivation?.isActive ?? null, hasBeenActive: navigator.userActivation?.hasBeenActive ?? null}};
+        recordExportEvent(entry);
+        if (event.type === 'click' && phase === 'capture') {
+          const actionId = exportProbe.actionId;
+          // This observation may precede full dispatch; defaultPrevented is not a final-dispatch claim.
+          queueMicrotask(() => recordExportEvent({...entry, actionId, phase: 'capture-microtask', defaultPrevented: event.defaultPrevented, connected: target.isConnected}));
+        }
+      };
+      for (const type of ['pointerdown', 'pointerup', 'click']) document.addEventListener(type, event => observeExportControl(event, 'capture'), {capture: true, passive: true});
+      document.addEventListener('click', event => observeExportControl(event, 'bubble'), {passive: true});
+      new MutationObserver(records => {
+        for (const record of records) for (const [activity, nodes] of [['anchor-added', record.addedNodes], ['anchor-removed', record.removedNodes]]) for (const node of nodes) {
+          if (!(node instanceof Element)) continue;
+          for (const anchor of [...(node.matches('a[download]') ? [node] : []), ...node.querySelectorAll('a[download]')]) recordExportEvent({type: activity, phase: 'mutation-observer', ...describeExportTarget(anchor)});
+        }
+      }).observe(document, {subtree: true, childList: true});
       function observeStorage() {
         const methods = ['setItem', 'removeItem', 'clear'], originals = Object.fromEntries(methods.map(method => [method, Storage.prototype[method]]));
         const observation = {calls: [], active: true, stop() { for (const method of methods) Storage.prototype[method] = originals[method]; observation.active = false; }};
@@ -243,7 +274,11 @@ async function checkPresentation(page, label) {
         }});
       }});
     }, fixtures);
-    const page = await context.newPage(); page.on('pageerror', error => errors.push(label + ': ' + error.message));
+    const page = await context.newPage(), record = {label, console: [], pageErrors: [], downloads: []};
+    const tracking = {record, activeActionId: null, lastClickCompletedMs: null}; nativePageTracking.set(page, tracking); nativeExportEvidence.pages.push(record);
+    page.on('console', message => { record.console.push({...wallStamp(), actionId: tracking.activeActionId, type: message.type(), text: message.text(), location: message.location()}); persistNativeExports(); });
+    page.on('pageerror', error => { errors.push(label + ': ' + error.message); record.pageErrors.push({...wallStamp(), actionId: tracking.activeActionId, ...exportError(error)}); persistNativeExports(); });
+    page.on('download', download => { record.downloads.push({...wallStamp(), actionId: tracking.activeActionId, suggestedFilename: download.suggestedFilename(), url: download.url()}); persistNativeExports(); });
     nativeDiagnosticPage = page;
     await page.goto(origin + '/index.html'); await page.locator('#event-action').waitFor({state: 'visible'});
     assert.equal(await page.evaluate(() => window.__nativeMounts.length), 0, 'The native host mounts only when completion is opened');
@@ -282,9 +317,59 @@ async function checkPresentation(page, label) {
     assert.fail('Keyboard focus did not reach ' + expected + ' within eight inputs');
   }
   async function nativeExport(page, action, name) {
-    const details = page.locator('#campaign-navigation details'); if (!await details.evaluate(node => node.open)) await page.locator('#campaign-navigation summary').click();
-    const event = page.waitForEvent('download'); await page.locator('#campaign-navigation [data-navigation-action="' + action + '"]').click();
-    const download = await event, filename = path.join(output, name); await download.saveAs(filename); return fs.readFileSync(filename, 'utf8');
+    const tracking = nativePageTracking.get(page);
+    const evidence = {id: nativeExportEvidence.actions.length + 1, page: tracking.record.label, action, name, url: page.url(), started: wallStamp(), stage: 'opening-disclosure', outcome: 'pending'};
+    nativeExportEvidence.actions.push(evidence); tracking.activeActionId = evidence.id; persistNativeExports();
+    try {
+      const details = page.locator('#campaign-navigation details'); if (!await details.evaluate(node => node.open)) await page.locator('#campaign-navigation summary').click();
+      evidence.stage = 'pacing'; evidence.pacingStarted = wallStamp();
+      const previous = tracking.lastClickCompletedMs;
+      // A real Node timer spaces distinct clicks. This loop only checks the
+      // monotonic deadline; it never retries an action or a download.
+      if (previous !== null) while (performance.now() - previous < nativeExportEvidence.minimumClickGapMs) {
+        await new Promise(resolve => setTimeout(resolve, Math.ceil(nativeExportEvidence.minimumClickGapMs - (performance.now() - previous))));
+      }
+      evidence.beforeClick = await page.evaluate(({id, action}) => {
+        window.__nativeExportProbe.actionId = id;
+        const button = Array.from(document.querySelectorAll('#campaign-navigation [data-navigation-action]')).find(node => node.dataset.navigationAction === action), modal = document.getElementById('modal');
+        return {document: window.__nativeDocument, browserWallTimeMs: Date.now(), control: button ? {tag: button.tagName, action: button.dataset.navigationAction, disabled: button.disabled, connected: button.isConnected, insideModal: !!modal?.contains(button)} : null, modalOpen: modal?.open || false, mounts: window.__nativeMounts?.length, hasSnapshot: !!window.__nativeMounts?.at(-1)?.controller.snapshot, status: document.querySelector('#campaign-navigation [data-navigation-status]')?.textContent || null};
+      }, {id: evidence.id, action});
+      evidence.stage = 'clicking'; evidence.downloadListenerRegistered = wallStamp();
+      // Preserve the original listener-before-click ordering and default 30s
+      // download timeout. Observe rejection immediately without a retry.
+      const event = page.waitForEvent('download').then(download => {
+        evidence.downloadObserved = {...wallStamp(), suggestedFilename: download.suggestedFilename(), url: download.url()}; persistNativeExports(); return {download};
+      }, error => { evidence.downloadWaitError = {...wallStamp(), ...exportError(error)}; persistNativeExports(); return {error}; });
+      evidence.clickStarted = wallStamp();
+      evidence.gapSincePreviousClickCompletedMs = previous === null ? null : evidence.clickStarted.monotonicMs - previous;
+      if (previous !== null) assert.ok(evidence.gapSincePreviousClickCompletedMs >= nativeExportEvidence.minimumClickGapMs, 'Native export clicks retain the minimum real-wall pacing interval');
+      persistNativeExports();
+      await page.locator('#campaign-navigation [data-navigation-action="' + action + '"]').click();
+      evidence.clickCompleted = wallStamp(); tracking.lastClickCompletedMs = evidence.clickCompleted.monotonicMs;
+      evidence.stage = 'waiting-for-download'; persistNativeExports();
+      const received = await event; if (received.error) throw received.error;
+      const download = received.download, filename = path.join(output, name);
+      evidence.stage = 'saving-download'; evidence.saveStarted = wallStamp(); persistNativeExports();
+      await download.saveAs(filename);
+      const bytes = fs.readFileSync(filename); evidence.saved = {...wallStamp(), filename, bytes: bytes.length}; evidence.outcome = 'download-saved'; evidence.stage = 'complete';
+      return bytes.toString('utf8');
+    } catch (error) {
+      evidence.failedStage = evidence.stage; evidence.outcome = evidence.downloadWaitError?.name === 'TimeoutError' ? 'download-timeout' : 'failed'; evidence.error = exportError(error); throw error;
+    } finally {
+      // Persist the failed action before the outer handler closes its context.
+      evidence.finished = wallStamp(); evidence.elapsedMs = evidence.finished.monotonicMs - evidence.started.monotonicMs;
+      if (!page.isClosed()) {
+        try {
+          evidence.browserObservation = await page.evaluate(id => {
+            const probe = window.__nativeExportProbe, modal = document.getElementById('modal'), active = document.activeElement;
+            const observed = {document: window.__nativeDocument, browserWallTimeMs: Date.now(), events: probe?.events.filter(event => event.actionId === id) || [], modalOpen: modal?.open || false, mounts: window.__nativeMounts?.length, hasSnapshot: !!window.__nativeMounts?.at(-1)?.controller.snapshot, status: document.querySelector('#campaign-navigation [data-navigation-status]')?.textContent || null, focus: {tag: active?.tagName || null, action: active?.dataset.navigationAction || null, insideModal: !!active && !!modal?.contains(active)}};
+            if (probe?.actionId === id) probe.actionId = null;
+            return observed;
+          }, evidence.id);
+        } catch (error) { evidence.observationError = exportError(error); }
+      } else evidence.observationError = {message: 'Page closed before final export observation'};
+      tracking.activeActionId = null; persistNativeExports();
+    }
   }
   async function enterRTS(page) {
     await Promise.all([page.waitForURL('**/hearth-rts.html'), page.locator('#campaign-navigation [data-navigation-action="open-hearth"]').click()]);
@@ -560,11 +645,13 @@ async function checkPresentation(page, label) {
     nativeEvidence.push({case: 'native-legacy-v3-residue-repair-and-import', fixture: 'controlled balanced gathered cargo, deliberately authored residue; not earned play', exactOriginalExports: true}); await f.context.close(); }
   reports.push('Native clone-only admission accepts current6 and explicit legacy3 recovery; rejects v4/v5/v6 negative work, malformed construction, unknown7 and legacy post-migration invalidity; destination alone adopts and retains exact movement/roundoff/construction backup families');
   assert.deepEqual(errors, []);
-  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify({baseCommit: Navigation.BASE_COMMIT, result: 'pass', checks: reports, nativeEvidence, presentation, pageErrors: errors, limits: ['Native integration uses the ordinary unmodified built Cave page; separate opt-in fixtures still test helper APIs', 'Completed-source and recovery compatibility fixtures, not earned-play/pacing/enjoyment evidence', 'Completed Cave advance is inert; unchanged completed-camp counters do not prove dialog pause', 'Synthetic persisted events are labeled separately from actual Back/BFCache observations', 'No durable campaign handoff, grant, branch or full-age completion implemented', 'Desktop headless Chromium only; native/accessibility-device support not claimed', '200% text is simulated by doubling the root font size; browser zoom and assistive devices are not tested']}, null, 2) + '\n');
+  persistNativeExports();
+  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify({baseCommit: Navigation.BASE_COMMIT, result: 'pass', checks: reports, nativeEvidence, nativeExportDiagnostics: {file: 'native-export-diagnostics.json', actions: nativeExportEvidence.actions.length, minimumClickGapMs: nativeExportEvidence.minimumClickGapMs}, presentation, pageErrors: errors, limits: ['Native integration uses the ordinary unmodified built Cave page; separate opt-in fixtures still test helper APIs', 'Completed-source and recovery compatibility fixtures, not earned-play/pacing/enjoyment evidence', 'Export clicks use 1.1s real-wall pacing; a paced pass does not establish the cause of the retained 046 failure', 'Completed Cave advance is inert; unchanged completed-camp counters do not prove dialog pause', 'Synthetic persisted events are labeled separately from actual Back/BFCache observations', 'No durable campaign handoff, grant, branch or full-age completion implemented', 'Desktop headless Chromium only; native/accessibility-device support not claimed', '200% text is simulated by doubling the root font size; browser zoom and assistive devices are not tested']}, null, 2) + '\n');
   console.log('PASS campaign navigation browser:', reports.join('; '));
 })().catch(async error => {
   const page = nativeDiagnosticPage;
   if (page && !page.isClosed()) await page.screenshot({path: path.join(output, 'native-failure.png'), fullPage: true}).catch(() => {});
   const observed = page && !page.isClosed() ? await page.evaluate(() => { const active = document.activeElement, modal = document.getElementById('modal'); return {url: location.href, body: document.body.innerText, lifecycle: window.__nativeLifecycle, closeEvents: window.__queuedCloseEvents, storageCalls: window.__nativeStorageObservation?.calls, mounts: window.__nativeMounts?.length, focus: {tag: active?.tagName || null, id: active?.id || '', outerHTML: active?.outerHTML.slice(0, 240) || null, inside: !!active && !!modal?.contains(active), open: modal?.open || false, modal: modal?.matches(':modal') || false, hasFocus: document.hasFocus()}, focusEvents: window.__nativeFocusEvents}; }).catch(() => null) : null;
-  fs.writeFileSync(path.join(output, 'failure.json'), JSON.stringify({error: String(error), nativeEvidence, pageErrors: errors, observed}, null, 2)); console.error(error); process.exitCode = 1;
+  persistNativeExports();
+  fs.writeFileSync(path.join(output, 'failure.json'), JSON.stringify({error: String(error), nativeEvidence, nativeExportDiagnostics: nativeExportEvidence, pageErrors: errors, observed}, null, 2)); console.error(error); process.exitCode = 1;
 }).finally(async () => { if (browser) await browser.close(); server.close(); });

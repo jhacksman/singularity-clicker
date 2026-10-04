@@ -1,0 +1,162 @@
+Construction 043–050 independent owner evidence review — 2026-10-04
+Reviewer: /root/construction_final_verifier
+
+VERDICT / BLOCKERS
+Full construction acceptance remains blocked. 043, 044 and 049 passed their
+bounded gates. Only the first three completed 045 sub-suites can carry forward;
+045 recovery and Move, 046 full navigation, and held 047/048/050 remain unverified.
+The recovery QA correction below is source-reviewed, not runtime-passed. This
+report does not reclassify either failed job or authorize release/publication.
+
+SCOPE AND IMMUTABLE BINDING
+Read-only text/source/log/hash/tar-inventory review on M6. No application/parser,
+test, build, browser, media decode, dispatcher, lease or remote execution. Two
+separate delegates reviewed 045/046 custody and 049 custody/report scope; this
+reviewer independently reviewed 043/044 and the recovery source correction.
+Evidence root: /Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/
+Delivery: results/construction-043-050-delivery-20261004.json
+Delivery SHA256: c18ae623f22594214b53ac2a6d2e649574a513c112362f8b9bc240d6d9662bc7
+Executed candidate: 51de4488a55dc60082e8f2800909823ba24491a7
+Source archive SHA256: 22d9282e0d5782b8cfbefaa3536501c56119153fdd0a0eb10d994018bb2ca1de
+Image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e
+Source Git tree: 04b3e0a2eb042bcd392acc995175d8d8dccb1d48
+Assets Git tree: df69de06c43286b72444467499925f98977442a3
+build.mjs Git blob: 4ea3770d3c2e6afc7d695143af25c20cec116d11
+build.mjs SHA256: cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47
+package.json SHA256: c1d55f293916bc513b7e7dd7fb404962dabc9b3fda2d18dbdea377cfce9e4ada
+Engine SHA256: abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+View SHA256: a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955
+
+043 — ACCEPTED UNIT/SYNTAX/BUILD EVIDENCE
+Job singularity-20261004-construction-unit-043 ran the approved command:
+node scripts/check-syntax.cjs && node --test tests/*.test.cjs && node build.mjs
+The complete log reports 42 syntax checks, 190 tests, 190 pass, zero fail/skip/
+cancel/todo, followed by all four build completions. The corrected Tools exact
+labor oracle, malformed current-source/planned-pickup matrix and same-waiter
+status test passed. Result/container agree on exit 0, no executor error or OOM,
+and cleanup verified/absent. The retained after-snapshot has no owned/running
+containers or cleanup markers. Source/manifest/command/build custody matches.
+This is unit and build acceptance, not construction browser/visual acceptance.
+
+044 — ACCEPTED NAMED NEGATIVE GATE
+Job singularity-20261004-construction-negative-044 ran:
+node --check scripts/check-construction-negative.cjs && node scripts/check-construction-negative.cjs
+Wrapper exit 0 is corroborated by the report and all three complete TAP logs.
+Each filtered case ran one test and failed with exit 1 at its intended assertion,
+with zero skipped/cancelled/todo tests and no setup/process error:
+C01: C01_UNREACHABLE_BUILD_MUST_REJECT (old engine accepts unreachable build).
+C02: C02_SOURCE_ID_MUST_REJECT (old engine accepts source ["b0"]).
+G01: G01_WAITING_WORKER_MUST_SHOW_INSTALLING (old Waiting for site supplies).
+The identical candidate tests ran against pinned old engine SHA256
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e.
+Candidate construction test SHA256:
+d0cedefdc4253d4274208fc4f96aa72c5f0810329fea291fe67a6e6b6ecbebe3
+Candidate status test SHA256:
+56862f326aaf999668af64f5b6aeb3a364fdca23821a6097c57d2f03f84375dd
+C02 negative control stops at its first source-array failure; it does not prove
+every malformed variant fails on the old engine. 043 supplies the full candidate
+matrix pass. The runner's unchanged-source guard and cleanup are supported by
+retained records, not a new independent remote observation.
+Negative report SHA256: 520962d6bc8a4296ce0c9709a430fd53b08ddb273035f4c0b340329a766e20d2
+C01.log SHA256: 2f4192a4a229a16c40d8dd61da1faea1669b9c91dd109361fac7a9361f7dcc8c
+C02.log SHA256: e18ae55ecaccb0ce3ea386a7b6551f1189e900690a519a41d3c21868bae0f64d
+G01.log SHA256: c96f7e8cfd1cd590275d952a0f0d00d4a1d5db0518cc70b089a554d4b1e1725d
+
+045 — THREE COMPLETED SUB-SUITES; OVERALL FAILURE PRESERVED
+The approved sequential && command, log PASS entries, bootstrap report and
+recovery stack establish completion of hearth-rts.cjs, hearth-rts-roundtrip.cjs
+and hearth-rts-bootstrap.cjs. Their logged fresh RTS journey, projected
+compatibility, earned-tool extraction and startup/raw-retention checks can carry
+forward within those suites' bounds. Recovery failed at line 161: the generic
+#inspect button innerText locator resolved to visible #site-cancel and hidden,
+disabled #site-recover. Colliding-ID import/checks and final recovery completion
+were not reached; hearth-rts-move.cjs after && did not run. Earlier recovery
+progress does not accept the recovery suite. Exit 1, no executor error/OOM,
+cleanup verified/absent; all four builds completed before browser execution.
+
+046 — NATIVE EXPORT FAILURE PRESERVED; CAUSE UNCONFIRMED
+The log and hash-bound failure.json show a 30-second download-event timeout in
+nativeExport:286 called at 535, export:rtsOutgoingBackupV5, the eleventh retained
+export. Ten base/.1 exports from five v6 families are retained. Saved state shows
+one mount, an open modal and no page errors. The listener was registered before
+the click. Rapid-download throttling is a hypothesis, not an established cause;
+neither product failure nor a harmless harness-only fault is proven.
+OutgoingV5/remaining exports, all-14 exact-byte/storage-immutability completion,
+later current-v6/reload and residue routes and full navigation remain unverified.
+Exit 1, no executor error/OOM, cleanup verified/absent; four builds completed.
+
+049 — ACCEPTED SELECTED-ROSTER/TOUCH SCOPE
+Approved/retained command: node build.mjs && node tests/browser/hearth-rts-touch-status.cjs
+Exit 0 and suite PASS; no executor/cleanup error, cleanup verified/absent. The
+actual report contains 24 rows and 23 captures (one row only measures roster
+text enlargement), with 23 PNGs in the tar and result pass. Report candidateHTML
+matches the returned hearth-rts.html below. The prior independent visual review
+covered 18 PNGs (16 candidate, 2 control); its selected-status support and minor
+fixed-tray overlap/persistent Move planned caveats can be cited as that review's
+findings. No images were decoded in this review. Controlled fixtures, emulated
+touch, selected cards, roster-only 200% enlargement and planned return are the
+limits. Active construction placement/G02 guidance was not captured. 049 does
+not establish G01 construction DOM pairing or full mobile/construction UX.
+Returned report SHA256: 1882cdf1b42ace4c478dab59e52b03144b487b26340e0933b67ab63df1c18e48
+Report copy: task-3/touch049-readonly-evidence/report.json
+
+BUILD IDENTITY
+Returned pages were rehashed and match each job's built-dist provenance for
+043, 045, 046 and 049. Corresponding bytes are identical across those jobs:
+index.html, 198536 bytes: 925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd
+hearth.html, 83881 bytes: a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+agriculture.html, 52583 bytes: 690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+hearth-rts.html, 129904 bytes: 588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Actual commands/logs establish fresh builds; unchanged hearth/agriculture bytes
+alone would not establish that. No local rebuilding was performed.
+
+PRINCIPAL RETAINED RECORD HASHES
+Exact prefixes under results/ and logs/ are singularity-20261004-construction-:
+unit-043.json: 33b4c1f0d32f9ac281395d6ed90c13c0ad8253c0fbfb48cfa61b48e7c44be44f
+unit-043.log: b87c681e05c19eac67dd51e137a1b07125e260415340a381e04813ed1b9f1225
+negative-044.json: 340fe5792607cf90fd622b884a4cba067191963ab5d9f9bd14397dfc10212991
+negative-044.log: d009d46079ed743671f0adbf569f494a84f7a45d2a4f9efc12679854a6d8f2c1
+rts-regression-045.json: f1c85ed605685162a57a1c51a5ba4f957a9546ca096e9ed6f7f0bd9441b68f0b
+rts-regression-045.log: fdb885d01c1561f0b71f39bed687edb9bb471d013635f8fe7d480a5a66c1f4e9
+navigation-046.json: 1373c753280e29a33ad0471f06606114f47e24b8fc039134b2104d8abef422fa
+navigation-046.log: b19da2d19b001dd2760866b8dfd6e31b57b0ea0ac71569d9b00647c1718e9430
+touch-049.json: 2eb3926f162fecb32029b777a318245951c5f995a716650912379169c6834a89
+touch-049.log: 0db446df86f25fef62ca979cd96ba949f3061f7f21fbe0c73fe73c7714e1c847
+The delivery-listed remote-provenance, independent acceptance/failure review,
+built-dist and 049 visual-review file hashes were also recomputed and match the
+immutable delivery record. Approved commands match retained containers. Remote
+cleanup observations were not repeated. 044/045/046 lack separate job-specific
+before/after snapshots; retained results/container evidence support cleanup,
+not host-wide exclusivity. No provenance discrepancy was found.
+
+SEPARATE SOURCE VERDICT — RECOVERY QA CORRECTION
+File: hearth-physical-construction/tests/browser/hearth-rts-recovery.cjs
+SHA256: c670fe65a2a5b29d73edf1d7b9ce038df6027a757983d9751f95bc66da423693
+PASS, STATIC ONLY. Diff against 51de4488 is exactly +5/-1: replace the ambiguous
+generic button text assertion with unique #inspect #site-cancel count 1,
+visible, enabled and exact text Cancel site · full refund. This selects the
+intended legacy prepaid Cancel control. It preserves the old-focus absent-
+inspector count 0, fixed-focus geometry/paused-state assertions, ordinary input
+path, and post-import ALL #inspect button count 0 plus exact incoming project/
+reservation assertions. No production or fixture change. This closes the known
+locator ambiguity without discarding the stale-inspector regression oracle.
+Fresh syntax and focused recovery execution remain required; 045 stays failed.
+
+CARRYFORWARD CONDITIONS / FOLLOW-UP BOUNDARY
+At review, git diff against 51de4488 is empty for src, assets, build/package
+inputs, syntax/negative scripts, unit/status tests, the three completed 045
+harnesses, 049 harness and fixtures. Only recovery/navigation QA scripts and
+new evidence documentation are in progress. Unchanged harness SHA256 values:
+hearth-rts.cjs: edb13a212bdeb6cdde2c0090ebe95cf1ae4636d8a05310c6c153d593d1c43ac7
+hearth-rts-roundtrip.cjs: 5887b55f745cfead7c71128fb55eae6e082219312664ed52f16498280d8e2ced
+hearth-rts-bootstrap.cjs: 5949188407eead17639f1cba3ec93cc7d2f616048596365b7f5a73699a8d1b10
+hearth-rts-touch-status.cjs: c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020
+Accepted evidence can carry to a newly frozen QA-only candidate only after its
+production/build-input and respective harness/fixture identity is verified.
+043 syntax does not cover edited browser scripts. Parent's planned 051 fresh
+syntax/build + corrected recovery + previously unrun Move, 052 full navigation,
+then 053 journey/054 reclaim/055 allocation respect these boundaries; they are
+planned jobs, not accepted results. Historical 047/048/050 remain not run.
+Navigation repair is outside this report until separately frozen and reviewed.
+The unchanged main harness is not touch evidence. G02 placement visual support
+remains unestablished; no carryover here clears publication or Library release.

@@ -1,0 +1,51 @@
+Owner source review of the two QA-only corrections
+
+Baseline: 51de4488a55dc60082e8f2800909823ba24491a7.
+Recovery author: /root/construction_browser_author/browser_compat.
+Navigation author: /root/construction_unit_author.
+Both changes follow the separately retained coordinator diagnosis and two
+independent static reviews of the actual failures. Root inspected the exact
+diffs; no production correction is supported by either observed failure.
+
+Recovery SHA256
+c670fe65a2a5b29d73edf1d7b9ce038df6027a757983d9751f95bc66da423693
+The unique site-cancel locator must count1, be visible/enabled, and say
+Cancel site · full refund. No .first() or skipped assertion. Geometry, unchanged
+paused storage, actual old-focus scrolling control and post-import absence of
+ALL inspector buttons remain. Runtime after the old failure boundary is pending.
+
+Navigation SHA256
+6b4b320bb9bcc5f7c84c4f910816f0b2bfdb31dfd6c2c4ea4f58f2cf6668f96f
+The native page tracks input events passively and observes download anchors,
+console, page errors and browser download events. It never replaces exporter,
+native click path, controller activation or download policy. The Node monotonic
+timer spaces the next click at least1100ms after the prior click completed.
+An explicit assertion checks the recorded minimum. No retry of a command or file.
+The waiter still precedes the locator click and retains the normal30s timeout.
+Its rejection is handled immediately and later rethrown by the active action.
+Actual saveAs and original byte-equality/storage checks remain. Diagnostics are
+written during the action and in finally before page/browser cleanup.
+
+Root corrected a telemetry label: a capture-listener microtask need not follow
+full event dispatch. The record now says capture-microtask, with that limitation
+in its comment. The separate bubble observation remains. Anchor mutation records
+describe observation time; a removed anchor may already be disconnected when its
+addition is observed. Neither record proves a private activation return value.
+
+No source-detectable blocker remains in the inspected changes. This is source
+review, not parser/test/browser execution. All fourteen retained exports, final
+storage immutability and the rest of native navigation still require Spark.
+A paced pass cannot retroactively prove throttling caused046. Preserve046FAILED.
+
+Identity boundary for proposed carryforward
+src Git tree:04b3e0a2eb042bcd392acc995175d8d8dccb1d48
+assets Git tree:df69de06c43286b72444467499925f98977442a3
+build.mjs Git blob:4ea3770d3c2e6afc7d695143af25c20cec116d11
+package.json Git blob:34a50eba0b4c0e25fe96368a67766292b8b07aec
+All unchanged. Every test and script except the two named browser QA files is
+unchanged. Fresh051 syntax/build covers modified QA;043 units and044 negatives
+stay attributed to their tested commit.049 and the three completed045 sub-suites
+also retain their exact original scope and source attribution.
+
+Independent post-fix verification is recorded separately before source freezing.
+No M6 runtime execution, deployment, push, merge or publishing was performed.
