@@ -1,0 +1,16 @@
+{
+  "id": "singularity-20261004-navigation-focus-028",
+  "commit": "4f409b0d926ee9a943e4e0e36c621885b678eafb",
+  "host": "gb10-02",
+  "exit_code": 1,
+  "reason": "completed",
+  "started": 1791094563.3343134,
+  "finished": 1791094568.4096553,
+  "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+  "execution_exit_code": 1,
+  "execution_reason": "completed",
+  "executor_error": null,
+  "cleanup_verified": true,
+  "cleanup_state": "absent",
+  "cleanup_errors": []
+}

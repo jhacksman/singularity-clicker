@@ -1,0 +1,33 @@
+Independent actual-source verification — native dialog intermediate after028
+
+Verdict: source-cleared for the bounded028 oracle correction. The implementation admits only the exact live native dialog container as an intermediate and still requires the expected control endpoint with actual document focus within the original eight total inputs. No new concrete gap found. This is not a runtime pass; the next Tab, backward traversal, Stay/reopen, and later native groups remain unestablished until authorized Spark execution.
+
+Frozen identity and review method
+
+Repository: task-3/hearth-native-dialog-focus.
+Base HEAD:4f409b0d926ee9a943e4e0e36c621885b678eafb.
+tests/browser/campaign-navigation.cjs SHA-256:5992716d21fee4a51ae15ce18b50d59bf6e88780a4d2778746f3e746744a7117.
+
+The exact tracked diff versus4f409b0 changes only campaign-navigation.cjs:9 inserted and3 removed lines. New untracked files are documentation/preserved-evidence directories, outside the product and test implementation. No host, widget, engine, CSS, shell, save behavior, or input handler changed in the reviewed diff. The frozen hearth-touch-status candidate is separate and untouched. No other new028 fix reviews were read. This reviewer performed static file/Git/hash inspection only, with no app, parser, tests, builds, lint, browser, remote probe, or dispatch. Only this report was written.
+
+Actual change and disproof checks
+
+1. nativeFocusState:262 adds dialogItself: active===modal. This is object identity with the actual #modal element, not a loose assumption from an empty ID, generic DIALOG tag, or arbitrary descendant. All previous state fields remain, and the new field is included in every persisted sampled step.
+
+2. nativeFocusBoundary still sends one real page.keyboard.press per iteration, samples state, and writes the sample/events artifact before assertions. Its unchanged loop is count<8. No focus() call, reset, sleep, synthetic focus assignment, or nested counter is introduced.
+
+3. Every sample still requires open and native :modal. Inside-modal samples still require hasFocus===true. Only then can dialogItself be admitted; the branch additionally asserts tag DIALOG and id modal. Its continue consumes the current iteration, so repeated dialog-container samples cannot run indefinitely or succeed on exhaustion.
+
+4. The exact dialog is an intermediate only. Any other inside-modal target must still have the expected endpoint ID before the helper returns. Unexpected in-modal controls are not skipped. The expected control must be reached within the same eight-input budget; a dialog-only eighth sample falls through to failure after the loop. The revised failure text accurately names the unreached expected control.
+
+5. Outside-modal handling is unchanged: only BODY/HTML with hasFocus:false is an accepted intermediate. A focused background element, body with document focus, or nameless interactive target still fails. The new container case does not broaden that outside-state predicate.
+
+6. The same helper is still used for forward expected modal-close and backward expected replay. Existing background probes retain exact Replay focus; actual Shift+Tab to Stay, Enter closure, source preservation, native reopen, fresh-controller identity, later real destination use, and scoped event-copy retention are unchanged. No previously unrun assertion was removed or short-circuited.
+
+Relationship to observed028 failure
+
+028 recorded BODY/document-unfocused followed by DIALOG#modal/document-focused, with the native modal open in both samples. The old helper aborted on the second state because it assumed the first in-modal return must already be Close. The new branch permits precisely that second observed container state and continues using actual input. It does not claim the next input succeeds. If focus remains at the container, leaves for an unaccepted target, or never reaches the control, the bounded gate still fails and preserves diagnostics.
+
+Historical026 and028 exit1 results remain unchanged; their later native groups were not run. The source fix is a test-oracle correction, not proof that the product's complete keyboard path has passed. No custom product focus trap is introduced. Acceptance requires a new exact-source Spark result and review of actual endpoint, Stay/reopen and later native evidence.
+
+Final scoped status: no unresolved source issue found in5992716d. Await runtime gate and returned artifacts; do not describe the observed028 container return or this static clearance as completed keyboard or accessibility closure.

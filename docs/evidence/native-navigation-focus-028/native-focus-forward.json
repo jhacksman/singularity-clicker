@@ -1,0 +1,138 @@
+{
+  "key": "Tab",
+  "expected": "modal-close",
+  "steps": [
+    {
+      "tag": "BODY",
+      "id": "",
+      "action": null,
+      "outerHTML": "<body>\n<header class=\"masthead\">\n <a class=\"wordmark\" href=\"#game\" aria-label=\"Singularity Clicker game\"><span class=\"brand-symbol\" aria-hidden=\"true\">◈</span><span>SINGULARITY<small>C L I C K E R</small></span></a>\n <div class=\"chapter\"><s",
+      "inside": false,
+      "open": true,
+      "modal": true,
+      "hasFocus": false
+    },
+    {
+      "tag": "DIALOG",
+      "id": "modal",
+      "action": null,
+      "outerHTML": "<dialog id=\"modal\" aria-labelledby=\"modal-title\" open=\"\"><div class=\"modal-inner\"><button id=\"modal-close\" class=\"circle-button modal-close\" aria-label=\"Close dialog\">×</button><div class=\"eyebrow\" id=\"modal-kicker\">STAGE 00 COMPLETE</div><",
+      "inside": true,
+      "open": true,
+      "modal": true,
+      "hasFocus": true
+    }
+  ],
+  "events": [
+    {
+      "type": "focusout",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "BUTTON",
+      "id": "",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": true
+    },
+    {
+      "type": "focusin",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "BUTTON",
+      "id": "replay",
+      "activeTag": "BUTTON",
+      "activeId": "replay",
+      "hasFocus": true
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "shift": false,
+      "trusted": true,
+      "target": "BUTTON",
+      "id": "replay",
+      "activeTag": "BUTTON",
+      "activeId": "replay",
+      "hasFocus": true
+    },
+    {
+      "type": "focusout",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "BUTTON",
+      "id": "replay",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": true
+    },
+    {
+      "type": "blur",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "WINDOW",
+      "id": "",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": false
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "shift": false,
+      "trusted": true,
+      "target": "BODY",
+      "id": "",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": false
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "shift": false,
+      "trusted": true,
+      "target": "BODY",
+      "id": "",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": false
+    },
+    {
+      "type": "focus",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "WINDOW",
+      "id": "",
+      "activeTag": "BODY",
+      "activeId": "",
+      "hasFocus": true
+    },
+    {
+      "type": "focusin",
+      "key": null,
+      "shift": false,
+      "trusted": true,
+      "target": "DIALOG",
+      "id": "modal",
+      "activeTag": "DIALOG",
+      "activeId": "modal",
+      "hasFocus": true
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "shift": false,
+      "trusted": true,
+      "target": "DIALOG",
+      "id": "modal",
+      "activeTag": "DIALOG",
+      "activeId": "modal",
+      "hasFocus": true
+    }
+  ]
+}

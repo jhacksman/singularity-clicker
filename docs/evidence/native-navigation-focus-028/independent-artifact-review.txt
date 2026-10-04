@@ -1,0 +1,73 @@
+Independent returned-artifact review — Navigation Focus028
+
+Verdict: exact4f409b0 completed syntax34 and all four builds, then the campaign browser FAILED in the forward focus boundary. The second sampled Tab state is the open native dialog itself, with document focus; the oracle requires the first returned in-modal target to be modal-close and aborts. No background interactive focus or new product regression is demonstrated. This is a partial, failed gate. Control arrival, backward traversal, Stay/Enter/reopen, and all later native groups remain NOT RUN.
+
+Review method: local returned JSON/log/archive/source/hash reads, plain text diff, and viewing the returned native-failure PNG. No app, parser, tests, builds, lint, browser execution, remote probe, dispatch, or CI was performed by this reviewer on M6. Candidate4f409b0 was not edited. No other fresh028 focus critic reports were read. This report is the only file written.
+
+Execution and source identity
+
+Job: singularity-20261004-navigation-focus-028, host gb10-02.
+Commit:4f409b0d926ee9a943e4e0e36c621885b678eafb.
+Command: node scripts/check-syntax.cjs && node build.mjs && node tests/browser/campaign-navigation.cjs.
+Image:sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e.
+Returned result reports exit_code1 and execution_exit_code1, completed, no executor error, cleanup_verified:true, cleanup_state:absent. Container record agrees: exited1, not OOM-killed; network none, nonprivileged, UID1001:1001,2CPUs,4GiB,512PID limit, all capabilities dropped and no-new-privileges. The log records syntax34 PASS, four build outputs, then the assertion at campaign-navigation.cjs:273 called from339. It is not an infrastructure timeout or a completed campaign pass.
+
+SHA-256 identities:
+- Source archive:968a5ab83f8154f3a3107140d72118bff88b5c81ee8ee3006dab12d423fd3076. Independently hashing git archive of exact4f409b0 reproduces these bytes.
+- Archived campaign harness:3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14.
+- Archived RTS CSS:3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535.
+- Returned artifact TAR:68d3bbe9414319ba8e8b6ef1ff97fe5a9fa7a9df5336710416561abb59aca263.
+- Result JSON:7c4ae04fb3f733177a6575171bf5ab903bf344df2d25009313241059cf3c6298.
+- Log:ea3b135fc9ca6bfb1889377af2d25fae0aaaa7dc27d1846827ad44e5e8e68abd.
+
+Actual generated pages
+
+The coordinator-returned siblings under task-2/spark-ci/results/singularity-20261004-navigation-focus-028-returned-dist were checked directly. All four match the independently returned027 siblings exactly:
+
+index.html:160460bytes;7ab8d9ad47781f51f392d7f0446c0e0c743e38a6edfd778d591aea20ab0beee4.
+hearth.html:83881bytes;a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93.
+agriculture.html:52583bytes;690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec.
+hearth-rts.html:85744bytes;69e7a3843a1c62d2b41b4c42825a6b7e38e2c0697f0634426cc399577da3b791.
+
+The first three equal their actual026 counterparts. A direct full text diff of028 RTS versus026 RTS shows only the two reviewed appended P3 CSS lines; engine/view/shell text is unchanged. The old RTS50b7bf3 hash is therefore correctly not the candidate hash. The native Cave page implicated in the focus failure is byte-identical to026. These are identity checks of returned builds, not a new build or browser run on M6.
+
+Returned artifact completeness
+
+The TAR has seven regular artifacts: native-successful-storage-observation.json, native-focus-forward.json, native-failure.png, navigation-states.png, failure.json, native-observed-original.json, and one native browser video. Every extracted file was independently hashed against its TAR member and matched; no success report, backward focus artifact, background-probe artifact, queued-close artifact, or later destination export exists in this028 bundle. Their absence agrees with the early abort.
+
+Important individual SHA-256 values:
+native-focus-forward.json:8081c051a7e878c44334add5e0b7ba4a382a485257a255150d69711f7c4ad183.
+failure.json:2b4a5a4d62170a7dc797a846ba88d2d1653e407606dfe09bfd0ca03b3245defc.
+native-successful-storage-observation.json:acef1994b7fb1df2b97d68ce198b9cdcc80406039ec3f593ca027b78269f80bf.
+native-observed-original.json:aafbd7cd62806daec5bff83cf2646f8a784e95eb8176d3decc273cfc9f581eb8.
+
+Observed native focus sequence
+
+The recorded key is Tab, with expected endpoint modal-close. There are exactly two sampled states:
+
+1. BODY, id empty, outside modal, open:true, :modal:true, hasFocus:false.
+2. DIALOG, id modal, inside:true, open:true, :modal:true, hasFocus:true.
+
+Events show setup focus reaching Replay, trusted Tab keydown on Replay, Replay focusout, a trusted window blur, and Tab keyup with BODY/document-unfocused. The next trusted Tab is followed by window focus and focusin to DIALOG#modal, then keyup on that dialog. The failure-time snapshot agrees with sample2. No focusin to a background interactive control is recorded. The returned screenshot visibly shows the native completion panel and its controls; it cannot establish unexecuted keyboard actions.
+
+Sample1 now supplies the missing026 distinction:028 actually observes a document-focus departure with BODY as the active-element representation. It does not identify a particular browser-chrome control, and it must not retroactively supply026's missing telemetry as if recorded there. Sample2 establishes genuine return to the modal container, not return to Close. A third Tab was never sent because the exact endpoint assertion throws on sample2.
+
+Concrete critic finding: first in-modal target is overconstrained
+
+The earlier correction removed the unsupported immediate one-Tab wrap requirement but retains a second assumption: any in-modal re-entry must immediately be the endpoint control. nativeFocusBoundary:273 checks state.inside, then demands expected ID and returns; it cannot treat the exact dialog container as an intermediate. The actual source has a native dialog and no custom Tab trap. The richer evidence shows that precise container receiving focus while remaining open/modal, and the Cave build itself is unchanged. This is a confirmed oracle mismatch with observed native behavior, not evidence that game controls outside the dialog become reachable.
+
+A bounded correction may permit only the exact native modal element (activeElement===modal), with true document focus and open/:modal, as an additional intermediate state. Keep the original total eight-key bound, real key inputs, per-step artifacts, no mid-sequence focus reset, and eventual true-focus expected control requirement. Keep BODY/HTML plus hasFocus:false as the separate recorded document-boundary case. Unexpected other in-modal targets or background controls must still fail. Do not replace the check with a blanket "inside modal means continue/pass," accept the dialog container as the final endpoint, or skip Stay/reopen because the container was reached.
+
+This is a proposed minimal oracle correction subject to the parent's independent disproof/sole-fixer gate. It does not establish that the third Tab will reach Close or that the backward/Stay/reopen sequences will work. Those remain actual Spark questions. No product focus trap or other gameplay change is justified by this evidence.
+
+What completed, and what did not
+
+The successful native mount/refresh/export observation completed before the focus test. Its artifact records active:false and an empty mutation-call list after the forwarded Storage wrappers were stopped. The source window is explicitly before native helper execution through ready, visible refresh, and actual export, ending before host lifecycle/destination writes. The native original export is retained, and the executed harness compared its bytes to the fixture. failure.json records this completed native evidence item and no page errors. The neighboring forward/Cave control Tab and reverse-Tab assertions plus focus-visible check precede the failed boundary and were reached successfully.
+
+The four earlier standalone-helper downloads remain temporary-only checks: archive export, RTS original, numbered backup, and malformed UTF-16 export use download.path without saveAs at110–127. Reaching the later native case supports those executed assertions, but this returned bundle does not contain four retained copies. Do not invent filenames or treat their absence as native export corruption.
+
+Not run after failure: forward control endpoint arrival; backward boundary; background inert probes; Shift+Tab-to-Stay; Enter closure; fresh native reopen; native narrow/large-text presentation; destination migration/import and original/numbered backups; actual Back/BFCache modes; close/Stay/Escape/Replay/replacement disposal; queued-close observed-event/liveness/export case; delayed asynchronous disposal; current-v4 idle/carryMove/held destination admission; legacy residue recovery and later rejection cases. No serialized Stay/Enter/reopen trace was produced because execution never reached that code. Do not confuse its source presence with runtime evidence.
+
+The028 command intentionally did not run the deterministic suite or smoke. Their124-test/smoke passes remain attributed to026's unchanged code and are not new028 results.027 is a separate job; this review compared build identity but does not adopt or adjudicate its browser outcome.026 remains its original exit1 with only an empty-ID diagnostic, and028 remains a distinct exit1 with the richer two-state trace.
+
+Final status: returned source/build/artifact identity verified; failed partial campaign gate faithfully preserved. The next bounded oracle correction, if independently authorized, needs a new frozen candidate and actual Spark execution. No publication, full campaign acceptance, physical-device, browser-zoom, assistive-technology, earned-play, or full UX closure follows from this review.

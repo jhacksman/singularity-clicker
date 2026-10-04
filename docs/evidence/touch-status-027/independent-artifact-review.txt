@@ -1,0 +1,71 @@
+Independent returned-artifact review — Spark touch-status-027
+2026-10-04
+
+Verdict: PASS for the bounded P3 selected-card presentation correction at exact commit4f409b0d926ee9a943e4e0e36c621885b678eafb. The negative arm actually reproduces the missing selected load, and all19 corrected viewport checkpoints show the selected name, state, quantity and resource without the identified clipping/portrait/tray obstruction. The three matched old-desktop checkpoints also pass and are byte-identical to their corrected counterparts. No remaining blocker was found for this P3 scope. This does not close the separate navigation028 gate, full mobile UX or broader gameplay/platform acceptance.
+
+Method and binding
+
+I read the actual local coordinator result, log, approved command and container record; extracted a private review copy of the returned artifact tar; directly viewed all23 original PNGs with the image tool; and inspected the recorded geometry, actual downloaded saves and input telemetry. I used read-only file/hash/JSON comparisons, not repository execution. No app, parser check, reducer, test, build, lint, browser, remote probe or CI was run on M6. No source or manifest was edited. Six returned video files were checksum-verified but were not played or decoded.
+
+Job: singularity-20261004-touch-status-027, hostgb10-02.
+Commit: 4f409b0d926ee9a943e4e0e36c621885b678eafb.
+Command: node scripts/check-syntax.cjs && node build.mjs && node tests/browser/hearth-rts-touch-status.cjs
+Pinned image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e.
+Actual log: syntax34 PASS, all four builds, full touch-status browser PASS.
+Actual result/container: exit0, completed, no executor error, no OOM; cleanup verified absent with no cleanup errors. Metadata matches2CPU/4GiB, nonroot1001:1001, networknone, dropped capabilities and Chromium sandbox profile. No unchanged124-test or smoke rerun is claimed for027.
+
+SHA-256:
+  Input source archive: 968a5ab83f8154f3a3107140d72118bff88b5c81ee8ee3006dab12d423fd3076
+  Returned artifact archive: 7a3288e516004c25519e81a7b556898b7abf821aedc7c4b7f516886ad924552c
+  Result JSON: 83bac1c48dc9e9f277a54d3b7aac9cd901779bbd845f204a78e809f73e31ced8
+  Process log: 6c9771e96a8de73b9b75d042286f64d39e8a7e81c651141b438a2f6ef8b429ac
+  Browser report.json: 79619dfe7cdd08bd84e946d8bbeb35e82cd78fa21ea9665ca615a493e6153ce1
+
+The input archive hash exactly matches a read-only git archive stream of4f409b0. All125 extracted regular artifacts match the coordinator member SHA-256 index. The reviewed harness remains c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020 and stylesheet3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535. The local review copy and checksum verification are under move025-touch-review/027-evidence; coordinator originals remain in task-2/spark-ci/results.
+
+Actual output identity
+
+I hashed and counted the actual returned built pages, read their provenance and inspected the literal RTS HTML diff against the returned026 page. Only the reviewed two stylesheet lines differ; scripts and markup are unchanged.
+  hearth-rts.html: 85744 bytes; 69e7a3843a1c62d2b41b4c42825a6b7e38e2c0697f0634426cc399577da3b791
+  index.html: 160460 bytes; 7ab8d9ad47781f51f392d7f0446c0e0c743e38a6edfd778d591aea20ab0beee4
+  hearth.html: 83881 bytes; a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+  agriculture.html: 52583 bytes; 690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+Returned built-dist archive: 0e2f6d5de8587bebcad48b61e1ba6472f2aed1821febf56b60c8c842785ee27e.
+
+The three non-RTS pages equal026 exactly. The report's candidateHTML hash equals the actual new RTS page. The report's CSS-only controlHTML hash50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef also equals the returned026 RTS page. This supplies a particularly clear old-style control while holding markup/scripts constant. Cross-job output equality to028 remains the separate combined-delivery check; it is not assumed here.
+
+Negative-control sensitivity and initial surface
+
+I viewed old-css-control-held-initial.png and touch-held-initial.png at their original390x844 viewport. Both use selectedAru/u0 with2wood, idle/paused, scrollY0 and exactly the same downloaded save bytes, b6cc71b80293859d27155b7277de9fd930cecdc5839df01dcb82bb730fd72529. Their startup and both layout-bracketing exports equal that fixture. The candidate/control inputs are matched, not merely similar aggregate totals.
+
+The old selected card is79px wide at x25,y473.28125 and visibly reads "Holding…" with no quantity/resource. The shared glyph oracle records13 issues, including horizontal clipping of the2 and clipped/out-of-card wood characters. These are multiple observations of one expected clipping defect, not13 independent bugs. The corrected card is140px wide, its full "Holding · 2 wood" appears below the portrait, and its bottom530.765625 lies above the unchanged tray top654.03125. Its zero geometry issues agree with the actual raster. The negative arm therefore demonstrates real sensitivity rather than relying on unchanged DOM text.
+
+All reviewed viewport checkpoints
+
+I directly viewed every emitted PNG: one old-style touch control; seven normal touch checkpoints; seven roster-text-enlarged checkpoints; two eight-worker checkpoints; and all six old/new desktop checkpoints. There are23 viewport images, with17 at390x844 and6 at1440x1100. The additional font-measurement record is not counted as a screenshot.
+
+Normal touch: held-initial, mixed-u1, mixed-u2, planned, moving, held-after-move and stop-and-return-planned. Aru's2wood, Nara's3stone and Tavi's4food are visibly associated with the selected individual. Move planned, Moving, Holding and Return planned each remain complete with2wood. Selected text does not overlap its portrait or neighboring card and does not fall behind the fixed command tray. Initial scroll is0; later normal captures explicitly record175px vertical scroll.
+
+Enlarged roster: the same seven states visibly retain complete selected names and loads, including wrapped labels. Recorded computed fonts change from12px name/9px status to24px/18px, matching the larger raster. Aru's initial selected card bottom578.265625 remains above tray top654.03125 at scroll0. Later enlarged captures use recorded199px scrolling, except Tavi's186px. The larger layout does place other lower content beneath the tray at the initial viewport; acceptance concerns the selected surface and reachable controls, not every unselected card simultaneously visible.
+
+Eight workers: touch-eight-last-selected-with-scroll.png shows selectedOru/u7, "Holding · 4 food", after288px scrolling; touch-eight-mixed-stone-with-scroll.png shows selectedNara/u1, "Holding · 3 stone", after175px scrolling. Both labels are complete and clear of the tray. The returned eight-worker fixture retains u0/u1/u2's original typed loads, has8 units, foodspent100 and fooddelivered101, with1food in stock. Its actual boot and layout exports equal fixture4880698fbbb4fb9053f1838d467f957b8fa6d8cafbbe9cccba01b668ef59301b. The reviewed public-command fixture recipe and returned state agree. This is an eight-worker roster with sampled selection of the last and second workers, not an all-eight-selected-at-once claim.
+
+Desktop: I viewed held-u0/u1/u2 under both old and corrected CSS at1440x1100 and recorded scroll207. Every corresponding PNG is byte-identical across styles, as is its complete geometry JSON. Selected names and2wood/3stone/4food are visible; the compact row and command tray are unchanged. This establishes the three held desktop surfaces tested, not every pre-existing longer desktop label.
+
+Geometry, actual input and state corroboration
+
+All19 corrected geometry records have zero issues, as do the three old-desktop records. Only the intended old-touch control has issues. Each selected name/status glyph was checked for card/ancestor/viewport clipping, portrait/tray overlap and hit ownership by the frozen Spark oracle. My raster review agrees with those outcomes. Every mobile checkpoint records enabled, visible, center-hit-testable Move and Stop targets of118x46.984375px. The tray remains189.96875px high; this change has not reduced or removed it. Desktop controls remain about160.2x53.9px.
+
+The actual event artifacts contain trusted touch pointerdown/up/click sequences for u0/u1/u2, Move, the world point, pause/resume and Stop in both ordinary/enlarged contexts. The eight-worker events contain trusted touch selection of u7 thenu1. Desktop records trusted mouse selection. No untrusted event appears in the returned event records. These are browser-emulated touch events, not physical-device evidence.
+
+The ordinary and enlarged paths have matching exact state exports. Before Move, Aru is(2,3), idle with2wood at simulationtime37. After the paused command, it remains(2,3) with carryMove/orderMove(13,3). The actual Moving export is time37.2 with x2.6,y3; the selected raster reads Moving and the geometry records runningtrue. At time41.7 it holds at(13,3), idle with2wood. Stop changes phase toreturn at the same position/time and retains2wood; the paused raster accurately reads Return planned. All actor load/resource pairs, stock/spent/delivered/deposits remain equal across this sequence. Thus the Moving capture is supported by actual advance, not just a renamed planned label. Stop coverage ends at an accepted return plan; receipt/settlement is not claimed.
+
+All23 before/after-layout export pairs have matching SHA-256 values. Original fixture bytes are preserved across selection, inspection, scaling and layout captures. Corresponding ordinary/enlarged phase exports also match, while the planned/moving/held/return checkpoints have appropriately different state hashes. Live Journey download evidence therefore corroborates the displayed actor-specific loads without substituting global carried totals.
+
+Limits and remaining delivery work
+
+This closes the reported selected-card cargo clipping for the tested390x844 surface, the disclosed roster-only200% stress and the bounded max-roster/desktop checks. Unselected compact labels can still truncate; the original9px status font is unchanged. The fixed tray still covers lower document content while scrolling, and these checks bring the selected surface above it. Neither all-card visibility without scrolling nor broader tray redesign is claimed.
+
+Fixtures are public-command-generated compatibility saves, not fresh browser-earned progression. Font scaling is test-only measured roster text, not whole-page/native-browser/OS zoom. Touch is headless Chromium emulation with controlled time and recorded test-driven vertical scrolling; no physical phone, swipe ergonomics, screen reader, general accessibility, human comprehension/pacing or full campaign acceptance follows. Earlier mechanics evidence remains separately attributed. I did not watch the videos.
+
+The separate navigation028 review and combined same-output identity check remain required before any combined review-preview handoff. This report authorizes no publication, accepted Library replacement, main merge, new runtime or local rebuild. No new concrete P3 defect was identified from these returned artifacts.

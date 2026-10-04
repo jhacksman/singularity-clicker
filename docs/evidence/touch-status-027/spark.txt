@@ -1,0 +1,7 @@
+Syntax gate: checking 34 source, script and test files
+PASS syntax gate: 34 files; application code not executed
+Built self-contained cave: 0.15 MB
+Built self-contained hearth: 82 KB
+Built self-contained Agriculture slice: 51 KB
+Built self-contained Hearth RTS core: 84 KB
+PASS Hearth RTS selected touch status: old-CSS clipping control; actual four/eight roster, planned/moving/held, mixed loads, measured roster text enlargement, desktop and real Move/Stop controls

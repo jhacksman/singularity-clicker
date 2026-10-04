@@ -1,0 +1,28 @@
+Navigation focus 028 — fresh disproof review, 2026-10-04
+Reviewer: /root/skeptic_two. No other new reviewers' findings read. No local/remote application execution, parser, tests, builds, lint or browser session; no source edits. Only this report is written.
+
+Verdict: the requirement that the FIRST in-modal focus target equal #modal-close is over-specific. This failure does not establish a product defect. It establishes re-entry to the modal element itself, followed by an assertion that stops observation. Whether a subsequent native Tab reaches the Close button is UNTESTED. Do not claim this run proves complete keyboard reachability or a successful focus cycle.
+
+Identity and evidence
+- Spark result: singularity-20261004-navigation-focus-028, frozen commit 4f409b0d926ee9a943e4e0e36c621885b678eafb, exit 1.
+- Frozen tests/browser/campaign-navigation.cjs SHA-256: 3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14, verified directly with git show. The checkout HEAD was e9f395d39eb20a25e10135dae0b4f40146c5d97c; inspected harness, host view/shell/styles and widget browser files had no diff from the frozen commit.
+- Read the result JSON and job log under task-2/spark-ci, and tar -xOf of artifacts/campaign-navigation/native-focus-forward.json and failure.json in singularity-20261004-navigation-focus-028-artifacts.tar. Archive SHA-256: 68d3bbe9414319ba8e8b6ef1ff97fe5a9fa7a9df5336710416561abb59aca263.
+
+Exact observation boundary
+The harness first programmatically focuses #replay and asserts that it owns document focus inside the dialog. It then supplies real Playwright keyboard inputs, with no focus reset between them:
+1. First Tab: sampled active element BODY, id empty, inside false, hasFocus false, dialog open true and :modal true. The event trace records Tab on Replay, focusout, window blur, and Tab keyup while the document lacks focus. This supports a transition out of the document; it does not identify a particular browser control.
+2. Second Tab: window focus returns, then a trusted focusin and Tab keyup target DIALOG#modal. Sampled inside true, hasFocus true, open true, :modal true. The failure diagnostic independently records the same final DIALOG#modal state.
+3. nativeFocusBoundary at line 273 immediately requires state.id === 'modal-close' on any inside=true state. Its assertion aborts here. No third Tab is sent. No background interactive element is recorded as the focused target. Transient BODY during focusout is not an observed interactive background control.
+
+Disproof and remaining uncertainty
+The actual second target is the containing modal, not an unknown empty-ID element or a background button. modal.contains(modal) is true, which explains entering the helper's inside branch. Host view.js:137 uses showModal(); shell.html:60 has an ordinary labeled dialog with a Close button first in its contents. There is no custom Tab wrapping or target redirection in the host keyboard handler or widget. A native stop on the dialog before its controls is a concrete alternative explanation to a broken keyboard path. The earlier internal helper forward/backward order and focus-visible checks at 326–329 were reached successfully, but they do not establish the path from the modal element to Close.
+
+A stuck dialog, repeated cycle that never reaches controls, or actual background interactive focus would remain a plausible product problem. The present run stops too early to demonstrate any of them. The evidence supports correcting the observation rule, not changing the product or declaring the keyboard group passed.
+
+Minimum defensible harness correction and Spark gate
+Within the existing bounded real-key loop, allow exactly the modal element (verified identity, open/:modal true, hasFocus true) as an intermediate stop and continue in the requested direction. Still require eventual arrival at the specified usable button within the existing bound. Keep the strict rejection of unexpected in-document/background focus and the existing explicitly diagnosed out-of-document boundary rule. Do not accept any arbitrary in-modal node, pass immediately on #modal, synthesize Tab behavior, or refocus programmatically during the sequence.
+
+Persist every step and event through eventual success or failure. Spark must show actual further key input reaching #modal-close, the reverse path reaching #replay, retained background-inert probes, Shift+Tab reaching Stay, Enter closing, and a fresh usable reopen. Keep the downstream behavior assertions and final trace retention. A bound exhausted on the dialog remains a failure needing fresh diagnosis. No new runtime closure is claimed here.
+
+Coverage limit
+The 028 log records 34 syntax checks and four builds passing, followed by this forward-boundary failure. It does not record a fresh unit-test or smoke pass. The backward boundary, background probes, Stay/close/reopen and all later campaign groups were not reached in this run. The successful native read/refresh/export group before the failure records zero Storage mutation calls and pageErrors is empty; neither proves the unrun keyboard or navigation behavior.

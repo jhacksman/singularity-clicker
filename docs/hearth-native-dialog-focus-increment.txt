@@ -1,0 +1,31 @@
+Native dialog re-entry — bounded test-only follow-up to028
+
+028 observed real Tab leaving the document, followed by the next Tab restoring
+document focus to the open native dialog itself. Its first-in-modal-button
+assertion stopped before testing another Tab. A concrete artifact critic and two
+fresh independent disproof reviews found no established product defect; eventual
+control reachability remains unknown from that failed run.
+
+The corrected oracle records whether activeElement is exactly the modal node.
+Only that exact native DIALOG#modal, with true document focus and open/:modal,
+may be an intermediate in-modal stop. The same bounded real-key sequence then
+continues; it still must reach the expected Close or Replay control within eight
+total inputs. Repeated dialog-only focus exhausts the bound and fails. Unexpected
+in-modal controls, interactive background focus and unexplained focused BODY fail.
+There is no programmatic reset during traversal or acceptance of the dialog as
+the endpoint. All existing events, background probes, keyboard Stay/Enter, reopen,
+source preservation and downstream native navigation assertions remain.
+
+This follow-up changes no product, art, stylesheet, build or other test logic.
+The immutable4f409b0 candidate remains intact:027 passed its P3 rendering gate,
+while028 failed and all later native groups remain unrun. Both that result and
+the original026 failure are retained. The new full campaign browser must complete
+on Spark before navigation or a combined user-facing preview is declared verified.
+
+Use syntax plus four builds plus the corrected full campaign suite on one new
+immutable source. All four generated pages must match the actual027/028 outputs;
+the RTS page is85744bytes, SHA256
+69e7a3843a1c62d2b41b4c42825a6b7e38e2c0697f0634426cc399577da3b791.
+027's separately reviewed P3 raster/input evidence can then retain its exact HTML
+identity. Do not rerun unchanged deterministic/smoke/P3 gates solely for counts.
+No local parser/test/build/browser execution or publication occurred.

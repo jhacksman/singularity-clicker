@@ -259,7 +259,7 @@ async function checkPresentation(page, label) {
   async function nativeFocusState(page) {
     return page.evaluate(() => {
       const modal = document.getElementById('modal'), active = document.activeElement;
-      return {tag: active?.tagName || null, id: active?.id || '', action: active?.dataset.navigationAction || null, outerHTML: active?.outerHTML.slice(0, 240) || null, inside: !!active && modal.contains(active), open: modal.open, modal: modal.matches(':modal'), hasFocus: document.hasFocus()};
+      return {tag: active?.tagName || null, id: active?.id || '', action: active?.dataset.navigationAction || null, outerHTML: active?.outerHTML.slice(0, 240) || null, inside: !!active && modal.contains(active), dialogItself: active === modal, open: modal.open, modal: modal.matches(':modal'), hasFocus: document.hasFocus()};
     });
   }
   async function nativeFocusBoundary(page, key, expected, label) {
@@ -270,10 +270,16 @@ async function checkPresentation(page, label) {
       await page.keyboard.press(key); const state = await nativeFocusState(page); steps.push(state);
       fs.writeFileSync(path.join(output, 'native-focus-' + label + '.json'), JSON.stringify({key, expected, steps, events: await page.evaluate(() => window.__nativeFocusEvents)}, null, 2));
       assert.ok(state.open && state.modal, 'The native modal must remain open throughout keyboard navigation');
-      if (state.inside) { assert.equal(state.hasFocus, true, 'Return requires actual document focus'); assert.equal(state.id, expected); return steps; }
+      if (state.inside) {
+        assert.equal(state.hasFocus, true, 'Return requires actual document focus');
+        // Re-entry may focus the native dialog itself. It is an intermediate
+        // stop only; an actionable endpoint is still required within this loop.
+        if (state.dialogItself) { assert.equal(state.tag, 'DIALOG'); assert.equal(state.id, 'modal'); continue; }
+        assert.equal(state.id, expected); return steps;
+      }
       assert.ok(!state.hasFocus && ['BODY', 'HTML'].includes(state.tag), 'Only an observed out-of-document boundary is allowed; background or unexplained in-document focus fails');
     }
-    assert.fail('Keyboard focus did not return to the native modal within eight inputs');
+    assert.fail('Keyboard focus did not reach ' + expected + ' within eight inputs');
   }
   async function nativeExport(page, action, name) {
     const details = page.locator('#campaign-navigation details'); if (!await details.evaluate(node => node.open)) await page.locator('#campaign-navigation summary').click();

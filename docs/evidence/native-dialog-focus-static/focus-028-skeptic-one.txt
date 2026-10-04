@@ -1,0 +1,93 @@
+Navigation028 — fresh independent focus disproof
+2026-10-04, /root/skeptic_one
+
+Verdict: the observed first-in-modal-target assertion is overstrict for the
+available reachability evidence. No product keyboard defect is established.
+Reachability remains unproved because this run stops on the dialog container
+before trying the next Tab. Do not call this a runtime closure or broad focus pass.
+
+Inputs actually read
+- Returned tar members through tar -xOf:
+  task-2/spark-ci/results/singularity-20261004-navigation-focus-028-artifacts.tar
+  artifacts/campaign-navigation/native-focus-forward.json and failure.json.
+- Matching result JSON and process log under task-2/spark-ci.
+- Relevant harness/source and the frozen4f409b0 version of nativeFocusBoundary.
+  Frozen commit:4f409b0d926ee9a943e4e0e36c621885b678eafb
+  Harness SHA256:3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14
+  Local worktree HEAD has advanced, but its inspected harness hash matches and
+  git show of the frozen function confirms the same failing assertion.
+No other new reviewer report was read. No app/parser/test/build/browser/remote
+execution or source edit occurred. P3 files remain untouched.
+
+What the returned evidence establishes
+
+After actual Tab from Replay, step1 is BODY with hasFocus=false, inside=false,
+while modal.open and :modal remain true. Trusted Replay focusout and WINDOW blur
+are recorded. The next actual Tab records WINDOW focus and DIALOG#modal focusin;
+step2 is DIALOG#modal, inside=true, hasFocus=true, open=true, modal=true. The final
+failure snapshot agrees. No page errors are recorded. This is substantially more
+specific than028's predecessor's empty activeElement.id observation.
+
+The observed document-focus loss is real in this run. The artifact does not show
+which browser control, if any, held focus outside the document. Re-entry focuses
+the same open modal container, not a background Cave control or an unknown element.
+The test's contains check includes the dialog itself. Line273 then immediately
+demands id===modal-close for any inside state, so it fails without pressing a
+third Tab. There is no observation that modal-close is unreachable, that focus is
+trapped on the container, or that a background control becomes operable.
+
+Attempted product-defect disproof and remaining uncertainty
+
+The actual host uses native showModal and has no custom Tab handler or modal.focus
+override in the inspected path. The modal container is not an interactive action;
+landing there is not itself proof that controls are reachable. It could still be
+a dead end or an unwanted loop. Equally, it could be one intermediate native stop
+before the existing close button. The run provides no next-step result, so neither
+alternative may be asserted as measured fact. User-visible acceptance should
+require that the keyboard reaches and operates the intended controls while the
+background remains inert, rather than treating the very first modal-owned node
+as necessarily the first button.
+
+Primary-source context, consulted read-only
+
+The HTML Standard's sequential-navigation algorithm allows transfer to browser
+controls at a document boundary; it does not promise an immediate wrap from the
+last dialog button to its first button. Its modal inertness rule excludes the
+modal element and its descendants from the otherwise inert document. These support
+retaining strict background-focus rejection without treating the modal root as
+background leakage. They do not prove what Chromium's next Tab will do here.
+[HTML sequential focus navigation](https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation)
+[Modal dialogs and inert subtrees](https://html.spec.whatwg.org/multipage/interaction.html#modal-dialogs-and-inert-subtrees)
+
+The dialog focusing model explicitly recognizes the dialog itself as a possible
+focus target. That concerns the standard's dialog model, not a normative proof
+that this exact observed re-entry order is mandated or universally desirable.
+[Dialog focusing steps](https://html.spec.whatwg.org/multipage/interactive-elements.html#dialog-focusing-steps)
+
+Falsifiable minimum correction/gate
+
+Permit only the exact observed DIALOG#modal self-node as an intermediate inside
+state, with hasFocus/open/:modal all true, then continue the SAME bounded actual
+Tab sequence. Do not count it as success, reset focus programmatically, broaden
+acceptance to arbitrary inside nodes, or waive unexplained BODY-with-focus or
+background targets. Preserve the existing finite input bound and require eventual
+modal-close. If the root repeats until that bound, it must fail with the full
+trace. Other unexpected in-modal controls should still fail this exact boundary
+oracle rather than silently being skipped.
+
+On a new immutable Spark run require forward arrival at modal-close, backward
+arrival at Replay under the same strict intermediate-state policy, then actual
+Shift+Tab to Stay, Enter closure, unchanged saved bytes, and a fresh usable native
+controller after reopen. Persist all trace steps and final success events. This
+distinguishes a harmless intermediate stop from a real keyboard dead end without
+changing product behavior. A new failure remains evidence to investigate, not an
+excuse to keep expanding the allowed set.
+
+Run outcome and coverage boundary
+
+Result is exit1 with cleanup_verified=true. Log reports syntax34 files and all
+four builds passed, then campaign browser failed at nativeFocusBoundary:273.
+Backward boundary, Stay/reopen and all later native groups were NOT RUN in028.
+No unit or smoke rerun is claimed by this focused log. The earlier successful
+native storage observation reports zero mutation calls, but does not make the
+whole campaign browser gate pass. No product change is justified by this record.

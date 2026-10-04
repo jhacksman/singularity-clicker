@@ -1,0 +1,41 @@
+{
+  "checked_utc": "2026-10-04T06:17:13.804157+00:00",
+  "job": "singularity-20261004-touch-status-027",
+  "commit": "4f409b0d926ee9a943e4e0e36c621885b678eafb",
+  "method": "Only actual remote build files retrieved; no local rebuild",
+  "archive_sha256": "0e2f6d5de8587bebcad48b61e1ba6472f2aed1821febf56b60c8c842785ee27e",
+  "files": [
+    {
+      "name": "index.html",
+      "bytes": 160460,
+      "sha256": "7ab8d9ad47781f51f392d7f0446c0e0c743e38a6edfd778d591aea20ab0beee4"
+    },
+    {
+      "name": "hearth.html",
+      "bytes": 83881,
+      "sha256": "a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93"
+    },
+    {
+      "name": "agriculture.html",
+      "bytes": 52583,
+      "sha256": "690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec"
+    },
+    {
+      "name": "hearth-rts.html",
+      "bytes": 85744,
+      "sha256": "69e7a3843a1c62d2b41b4c42825a6b7e38e2c0697f0634426cc399577da3b791"
+    }
+  ],
+  "unchanged_pages_equal026": {
+    "index.html": true,
+    "hearth.html": true,
+    "agriculture.html": true
+  },
+  "rts_inline_css_sha256": "3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535",
+  "rts_scripts_and_markup_unchanged_from026": true,
+  "cross_job_comparison": {
+    "028_all_four_byte_identical": true
+  },
+  "published": false,
+  "user_preview": "blocked028focusfailure; reviewevidence retainedonly"
+}

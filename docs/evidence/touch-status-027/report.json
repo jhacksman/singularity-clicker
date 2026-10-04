@@ -1,0 +1,811 @@
+{
+  "baseCommit": "82dc5ed120ff608cef977a33c77b6296185c3f4e",
+  "candidateHTML": "69e7a3843a1c62d2b41b4c42825a6b7e38e2c0697f0634426cc399577da3b791",
+  "candidateCSS": "3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535",
+  "oldCSS": "022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c",
+  "controlHTML": "50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef",
+  "identicalMarkupAndScripts": true,
+  "fixtures": {
+    "four": "b6cc71b80293859d27155b7277de9fd930cecdc5839df01dcb82bb730fd72529",
+    "eight": "4880698fbbb4fb9053f1838d467f957b8fa6d8cafbbe9cccba01b668ef59301b",
+    "provenance": "Public Camp commands/ticks/train only; controlled compatibility fixtures, not browser-earned play"
+  },
+  "cases": [
+    {
+      "label": "old-css-control",
+      "stage": "held-initial",
+      "expectedFailure": true,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "old-css-control-held-initial-geometry.json",
+      "image": "old-css-control-held-initial.png",
+      "issues": [
+        {
+          "kind": "horizontal-clipping",
+          "selector": "small",
+          "glyph": {
+            "character": "2",
+            "x": 93.84375,
+            "y": 501.671875,
+            "width": 5.40625,
+            "height": 12,
+            "right": 99.25,
+            "bottom": 513.671875
+          },
+          "ancestor": "SMALL"
+        },
+        {
+          "kind": "outside-card",
+          "selector": "small",
+          "glyph": {
+            "character": "w",
+            "x": 101.9375,
+            "y": 501.671875,
+            "width": 5.9375,
+            "height": 12,
+            "right": 107.875,
+            "bottom": 513.671875
+          }
+        },
+        {
+          "kind": "horizontal-clipping",
+          "selector": "small",
+          "glyph": {
+            "character": "w",
+            "x": 101.9375,
+            "y": 501.671875,
+            "width": 5.9375,
+            "height": 12,
+            "right": 107.875,
+            "bottom": 513.671875
+          },
+          "ancestor": "SMALL"
+        },
+        {
+          "kind": "glyph-occluded",
+          "selector": "small",
+          "glyph": {
+            "character": "w",
+            "x": 101.9375,
+            "y": 501.671875,
+            "width": 5.9375,
+            "height": 12,
+            "right": 107.875,
+            "bottom": 513.671875
+          },
+          "hit": "selection"
+        },
+        {
+          "kind": "outside-card",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 107.859375,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 112.734375,
+            "bottom": 513.671875
+          }
+        },
+        {
+          "kind": "horizontal-clipping",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 107.859375,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 112.734375,
+            "bottom": 513.671875
+          },
+          "ancestor": "SMALL"
+        },
+        {
+          "kind": "glyph-occluded",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 107.859375,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 112.734375,
+            "bottom": 513.671875
+          },
+          "hit": "selection"
+        },
+        {
+          "kind": "outside-card",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 112.71875,
+            "y": 501.671875,
+            "width": 4.859375,
+            "height": 12,
+            "right": 117.578125,
+            "bottom": 513.671875
+          }
+        },
+        {
+          "kind": "horizontal-clipping",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 112.71875,
+            "y": 501.671875,
+            "width": 4.859375,
+            "height": 12,
+            "right": 117.578125,
+            "bottom": 513.671875
+          },
+          "ancestor": "SMALL"
+        },
+        {
+          "kind": "glyph-occluded",
+          "selector": "small",
+          "glyph": {
+            "character": "o",
+            "x": 112.71875,
+            "y": 501.671875,
+            "width": 4.859375,
+            "height": 12,
+            "right": 117.578125,
+            "bottom": 513.671875
+          },
+          "hit": "BUTTON"
+        },
+        {
+          "kind": "outside-card",
+          "selector": "small",
+          "glyph": {
+            "character": "d",
+            "x": 117.5625,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 122.4375,
+            "bottom": 513.671875
+          }
+        },
+        {
+          "kind": "horizontal-clipping",
+          "selector": "small",
+          "glyph": {
+            "character": "d",
+            "x": 117.5625,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 122.4375,
+            "bottom": 513.671875
+          },
+          "ancestor": "SMALL"
+        },
+        {
+          "kind": "glyph-occluded",
+          "selector": "small",
+          "glyph": {
+            "character": "d",
+            "x": 117.5625,
+            "y": 501.671875,
+            "width": 4.875,
+            "height": 12,
+            "right": 122.4375,
+            "bottom": 513.671875
+          },
+          "hit": "SPAN"
+        }
+      ],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "held-initial",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-held-initial-geometry.json",
+      "image": "touch-held-initial.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "mixed-u1",
+      "expectedFailure": false,
+      "state": {
+        "id": "u1",
+        "name": "Nara",
+        "phase": "idle",
+        "cargo": 3,
+        "resource": "stone",
+        "running": false
+      },
+      "geometry": "touch-mixed-u1-geometry.json",
+      "image": "touch-mixed-u1.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "mixed-u2",
+      "expectedFailure": false,
+      "state": {
+        "id": "u2",
+        "name": "Tavi",
+        "phase": "idle",
+        "cargo": 4,
+        "resource": "food",
+        "running": false
+      },
+      "geometry": "touch-mixed-u2-geometry.json",
+      "image": "touch-mixed-u2.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "planned",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "carryMove",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-planned-geometry.json",
+      "image": "touch-planned.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "moving",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "carryMove",
+        "cargo": 2,
+        "resource": "wood",
+        "running": true
+      },
+      "geometry": "touch-moving-geometry.json",
+      "image": "touch-moving.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "held-after-move",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-held-after-move-geometry.json",
+      "image": "touch-held-after-move.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch",
+      "stage": "stop-and-return-planned",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "return",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-stop-and-return-planned-geometry.json",
+      "image": "touch-stop-and-return-planned.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "measured-roster-only-200-percent",
+      "before": {
+        "name": 12,
+        "status": 9
+      },
+      "after": {
+        "name": 24,
+        "status": 18
+      }
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "held-initial",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-held-initial-geometry.json",
+      "image": "touch-roster-200-percent-held-initial.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "mixed-u1",
+      "expectedFailure": false,
+      "state": {
+        "id": "u1",
+        "name": "Nara",
+        "phase": "idle",
+        "cargo": 3,
+        "resource": "stone",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-mixed-u1-geometry.json",
+      "image": "touch-roster-200-percent-mixed-u1.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "mixed-u2",
+      "expectedFailure": false,
+      "state": {
+        "id": "u2",
+        "name": "Tavi",
+        "phase": "idle",
+        "cargo": 4,
+        "resource": "food",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-mixed-u2-geometry.json",
+      "image": "touch-roster-200-percent-mixed-u2.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "planned",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "carryMove",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-planned-geometry.json",
+      "image": "touch-roster-200-percent-planned.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "moving",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "carryMove",
+        "cargo": 2,
+        "resource": "wood",
+        "running": true
+      },
+      "geometry": "touch-roster-200-percent-moving-geometry.json",
+      "image": "touch-roster-200-percent-moving.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "held-after-move",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-held-after-move-geometry.json",
+      "image": "touch-roster-200-percent-held-after-move.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-roster-200-percent",
+      "stage": "stop-and-return-planned",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "return",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "touch-roster-200-percent-stop-and-return-planned-geometry.json",
+      "image": "touch-roster-200-percent-stop-and-return-planned.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 24
+        },
+        {
+          "selector": "small",
+          "size": 18
+        }
+      ]
+    },
+    {
+      "label": "touch-eight",
+      "stage": "last-selected-with-scroll",
+      "expectedFailure": false,
+      "state": {
+        "id": "u7",
+        "name": "Oru",
+        "phase": "idle",
+        "cargo": 4,
+        "resource": "food",
+        "running": false
+      },
+      "geometry": "touch-eight-last-selected-with-scroll-geometry.json",
+      "image": "touch-eight-last-selected-with-scroll.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "touch-eight",
+      "stage": "mixed-stone-with-scroll",
+      "expectedFailure": false,
+      "state": {
+        "id": "u1",
+        "name": "Nara",
+        "phase": "idle",
+        "cargo": 3,
+        "resource": "stone",
+        "running": false
+      },
+      "geometry": "touch-eight-mixed-stone-with-scroll-geometry.json",
+      "image": "touch-eight-mixed-stone-with-scroll.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop-old-css",
+      "stage": "held-u0",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "desktop-old-css-held-u0-geometry.json",
+      "image": "desktop-old-css-held-u0.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop-old-css",
+      "stage": "held-u1",
+      "expectedFailure": false,
+      "state": {
+        "id": "u1",
+        "name": "Nara",
+        "phase": "idle",
+        "cargo": 3,
+        "resource": "stone",
+        "running": false
+      },
+      "geometry": "desktop-old-css-held-u1-geometry.json",
+      "image": "desktop-old-css-held-u1.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop-old-css",
+      "stage": "held-u2",
+      "expectedFailure": false,
+      "state": {
+        "id": "u2",
+        "name": "Tavi",
+        "phase": "idle",
+        "cargo": 4,
+        "resource": "food",
+        "running": false
+      },
+      "geometry": "desktop-old-css-held-u2-geometry.json",
+      "image": "desktop-old-css-held-u2.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop",
+      "stage": "held-u0",
+      "expectedFailure": false,
+      "state": {
+        "id": "u0",
+        "name": "Aru",
+        "phase": "idle",
+        "cargo": 2,
+        "resource": "wood",
+        "running": false
+      },
+      "geometry": "desktop-held-u0-geometry.json",
+      "image": "desktop-held-u0.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop",
+      "stage": "held-u1",
+      "expectedFailure": false,
+      "state": {
+        "id": "u1",
+        "name": "Nara",
+        "phase": "idle",
+        "cargo": 3,
+        "resource": "stone",
+        "running": false
+      },
+      "geometry": "desktop-held-u1-geometry.json",
+      "image": "desktop-held-u1.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    },
+    {
+      "label": "desktop",
+      "stage": "held-u2",
+      "expectedFailure": false,
+      "state": {
+        "id": "u2",
+        "name": "Tavi",
+        "phase": "idle",
+        "cargo": 4,
+        "resource": "food",
+        "running": false
+      },
+      "geometry": "desktop-held-u2-geometry.json",
+      "image": "desktop-held-u2.png",
+      "issues": [],
+      "fonts": [
+        {
+          "selector": ".unit-name",
+          "size": 12
+        },
+        {
+          "selector": "small",
+          "size": 9
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Desktop Chromium and emulated touch, not physical-device acceptance",
+    "Clock advances only by explicit runFor; moving capture has Pause control and physically advanced actor",
+    "200% fixture enlarges measured roster name/status text only; not browser zoom or whole-page text resizing",
+    "Viewport screenshots and glyph geometry require independent artifact review; no claim of comprehension or full mobile UX"
+  ],
+  "result": "pass"
+}
