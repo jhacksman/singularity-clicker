@@ -125,3 +125,28 @@ as the first Spark command: Node --check every source/script/test file without
 importing application code, and fail clearly before the broader suite.
 No syntax check, test, build, lint or browser execution ran on M6.
 The next full candidate uses a new immutable commit and Storage021 job.
+
+Spark021 at d3116663cebd336ace24b39a84c171634aae0e88: syntax gate,79tests,
+fourbuilds, fresh actual-control browser localtransfer/craft/recruitment and exact
+pausedrefresh passed(179simulatedseconds). v1/v2 byte-exact raw migration passed.
+OveralljobFAILED in recovery's final colliding-site fixture BEFORE import, waiting
+for a Cancel button after clicking the intended unfinished site. Do not call the
+recovery suite passed. Result/log: docs/evidence/rts-storage-021.
+
+Independent critic and two skeptics checked fixture admission, on-screen target,
+actor/deposit priority, paused overlay and source event order. They confirmed a
+Medium source-level hazard: pointerdown called canvas.focus() before cell(e),
+although focus may scroll the partially visible canvas and change its rectangle.
+The unchanged client point can therefore target a different map cell. The 021
+artifacts contain no event trace, so this cause was not runtime-established there.
+
+Minimal candidate: retain canvas keyboard focus with preventScroll:true. New paired
+Spark control keeps1280x720 and the original ordinary visible click. Its old-focus
+arm drops only this option, and must reproduce actual scrolling plus the missed
+site; the fixed arm must preserve the rectangle/scroll, select the intended site,
+and then prove stale-Cancel removal with the paid imported project retained.
+Record pointer events, client/cell coordinates, focus/scroll/rect, inspector,
+loaded state, screenshots and failure diagnostics. If no old-focus scroll occurs,
+the negative-control assertion rejects the causal explanation instead of silently
+passing a larger-viewport fixture. No M6 execution; no economy/engine change.
+Focus API reference: https://html.spec.whatwg.org/multipage/interaction.html#focus-management-apis
