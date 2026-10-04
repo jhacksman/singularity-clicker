@@ -1,10 +1,11 @@
-UX023 UI input candidate — implementation contract, pending Spark verification
+Hearth input contract — IC02 Move candidate, pending combined Spark verification
 
-Edited scope: hearth-rts/src/hearth-rts/view.js, shell.html, styles.css only.
-No engine/economy/cargo changes, helper module, build integration, application
-execution, parser, test, lint, browser, or commit was performed by the UI fixer.
-The existing bootstrap and persistence code is untouched; root owns its separate
-adjudicated persistence work. Journey now cancels transient input before opening.
+Input024 source b3c8fbad passed its83tests/fourbuilds/fourbrowser scripts on Spark.
+Its separate UX temporal/native-blur evidence is maintained by task10. This branch
+adds immediate loaded Move, typed held cargo, savev4 and exact legacy raw retention;
+the Input024 result does not verify those new changes. Space/touch/camera ownership
+and existing art remain as described below. Journey cancels transient input before
+opening. No M6 application/parser/tests/build/lint/browser execution is permitted.
 
 F1 — Explicit and contextual verbs
 The persistent #move button and M arm Move-only dispatch. A live deposit cell,
@@ -14,11 +15,25 @@ All selected actors' formation orders are preflighted with engine accepts() befo
 the first command is submitted. Blocked formation offsets fall back to the valid
 clicked ground, as before; every resulting actor/target pair must be reachable.
 Ordinary contextual right-click continues choosing Gather / Build / active Craft
-or clear-ground Move. It does not route an explicitly armed Move into Gather.
+or clear-ground Move, including while a primary command is armed. Explicitly armed
+primary/touch Move never dispatches Gather when its target is a live deposit.
 Repeated accepted orders report that they are already assigned.
-Loaded actors retain the engine's legacy return-load-first semantics. Positive
-new-order feedback discloses this, and #cargo-command-note states it persistently.
-This does not claim full v3 immediate loaded Move / IC02 behavior.
+Loaded Move carries the existing load toward the target on the next running tick
+and holds it idle on arrival. Paused feedback names a planned Move starting on
+Resume. Accepted Move preserves position, resource, amount and worker remainder;
+transfer cargo retains its original job identity. Only the worker's unpicked
+future transfer share is released. Invalid commands keep every prior field.
+Active same-target Move is a no-op; a newly issued Move overrides a legacy saved
+return-then-Move queue. Migration alone preserves the old physical plan.
+#stop is labeled Stop and Return. It plans a physical store receipt then idle;
+held cargo never becomes stock just because it is beside a store. The portraits
+and inspector distinguish moving, planned, holding, blocked and returning loads.
+Repeated Send for an existing transfer leaves custody/delivery unchanged and says
+so. It cannot resume a manually diverted/held carrier through a success message.
+#cargo-command-note discloses: Move carries/holds; Stop returns; other new work
+orders still return carried goods first. This is only the Move portion of IC02.
+Work-switch caches, Hold/Resume, capacity and automation ownership remain outside
+this increment; do not claim the full canonical command contract is implemented.
 
 F2 — Space and camera
 A map/body Space keydown owns a cycle and prevents page scrolling; it never
@@ -117,7 +132,8 @@ Independent static review and exact-source Spark parser/tests/build/browser work
 Exercise native Enter/Space buttons, complete Space interruptions and threshold
 cases, actual visible pan plus inverse hits, touch second-finger/long-press/cancel
 sequences, touch preview/confirm, explicit Move on all target types and mixed
-group paths, loaded return-first disclosure, and neutral helper after refund.
+group paths, immediate loaded Move/held arrival and truthful work-switch
+return-first disclosure, and neutral helper after refund.
 The semantic-link gate must additionally test the actual brand/footer anchors:
 already-focused Space down/repeat/up never toggles or arms map Space, Enter keeps
 native navigation, and map Space down followed by link focus and release toggles

@@ -1,0 +1,11 @@
+{
+  "job": "singularity-20261004-rts-input-024",
+  "commit": "b3c8fbad63881008657f376dcce9e9b5f770afcb",
+  "remote_path": "/home/devin/codex-ci-20261003/jobs/singularity-20261004-rts-input-024/src/dist/hearth-rts.html",
+  "local_path": "/Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/results/singularity-20261004-rts-input-024-evidence/dist/hearth-rts.html",
+  "bytes": 78912,
+  "sha256": "4fa74911ae0a0650885355e5e20b4cd2b532c83e4b8bed496a50866a09a63b0a",
+  "job_result": "pass",
+  "published": false,
+  "purpose": "Exact Spark-built artifact for review; independent UX limitation remains separate"
+}

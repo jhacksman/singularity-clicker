@@ -1,0 +1,68 @@
+Fresh independent static disproof review — root-authored Move browser test
+
+Reviewed /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts-ic02/tests/browser/hearth-rts-move.cjs
+SHA256 a512c0a15c121d436731bad9d8a8e64d6ab8db5272dc89d170beaf0d10a5feb3.
+Also read current src/hearth-rts/engine.js validator, path, home, receive and tick logic.
+No application edits or execution; no parser, tests, builds, lint or browser on M6.
+These are bounded Medium test-oracle gaps, not demonstrated application defects.
+
+T1 — CONFIRMED, transfer acceptance and first movement can miss teleportation.
+Lines 124–127 assert carryMove, retained transfer/resource/cargo, no dropoff and
+unchanged storage, then first-tick cargo/transfer, then held destination. They do
+not compare acceptance x/y/work with the original carrier or its exact Move order,
+nor independently check the first movement distance/coordinates. I attempted to
+disprove this through custody()/valid(): validCarryMove requires legal contiguous
+path nodes and the last node to match the order, but explicitly permits empty path
+when current x/y equal the Move destination. Thus an erroneous Move that teleports
+the loaded carrier to target, sets carryMove with an empty path, and preserves
+storage/cargo/marker passes acceptance; the next tick changes it to holding idle,
+and the current first-tick and arrival checks also pass. The gathered-load group's
+stronger coordinate assertions do not test this transfer-specific branch.
+Minimal repair: compare transfer acceptance x/y/cargo/resource/work to its own
+before snapshot; assert exact order, next, dropoff and intended route. Observe the
+next .1s tick against an independently approved first waypoint and .3 movement
+budget, preserving typed load and marker. Do not infer correctness merely from
+strict admission: admission proves state shape, not an allowed transition.
+
+T2 — CONFIRMED, transfer settlement does not prove the receiving store or travel.
+Lines 132–134 issue Stop, wait for job disappearance and empty cargo, and check
+aggregate production/totals/transferred. They export no immediate Stop checkpoint
+and check neither the eventual receipt position nor storage.stores by store ID.
+A remote credit at Stop can already satisfy until() before it advances time. A
+settled state with the expected total stock and counters but this carrier's load
+credited to the wrong store likewise passes: valid() only checks the sum of local
+stores against stock once the transfer job is pruned. The gathered group's receipt
+at lines 102–106 also lacks an arrival-edge check, though it does assert retained
+cargo and return phase immediately after Stop.
+Counterevidence narrowing the remedy: peers in this real seed continue legitimate
+pickups/deliveries while the selected carrier moves and holds. Blanket equality of
+all stores across those running intervals would be a false oracle. A small safe
+repair is to wait until the other job participants settle while asserting the
+selected load still holds, then snapshot local stores. At Stop acceptance, assert
+the selected x/y/cargo and all stores are unchanged and the planned dropoff is the
+source hearth. At physical receipt, require the selected carrier at a legal edge
+of that store and assert source stock increases by exactly its held load, recipient
+stock is unchanged, and all other resource/store fields remain unchanged. The
+earlier peer deliveries should independently account for their destination credit.
+Alternatively derive those peer deltas from initial pending/carried partitions;
+do not count the selected load as new gathered output or destination transfer.
+
+T3 — CONFIRMED, gathered movement direction is derived from the candidate route.
+Line 90 checks only u.path.at(-1); lines 93–94 calculate expected movement from that
+same accepted u.path[0]. A legal adjacent-node path that first visits a hearth edge
+and then reaches target still satisfies validCarryMove, follows its own first-node
+oracle, retains cargo throughout and reaches the expected final held state well
+within the timeout. The pinned old-page control detects the historical return
+phase/queued-order behavior but cannot reject a new carryMove path with a hidden
+hearth detour and no receipt. No current checkpoint compares the full path to an
+independent direct-route expectation.
+Minimal repair: for this specifically earned northern/western source and (2,3)
+target, assert a separately justified shortest route or route-length/cell budget
+that excludes the hearth detour, then use its independent first waypoint for the
+step assertion. An independent small grid search based on public map obstacles is
+another option. Do not call the candidate engine's movePath to generate its own
+expected path. Avoid a general ban on store-adjacent nodes, since other legitimate
+destinations or obstacles can require those nodes.
+
+Scope: these three additions would support the existing Move browser claims.
+They do not establish full IC02 acceptance, and this review is not a Spark pass.

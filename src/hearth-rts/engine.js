@@ -12,11 +12,17 @@ const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 function unit(i,x,y){return{id:'u'+i,name:NAMES[i],x,y,order:{kind:'idle'},phase:'idle',cargo:0,resource:null,work:0,path:[],reason:'Ready for orders',next:null};}
 function fresh(){
  const deposits=[['wood',5,6,48],['wood',10,5,48],['stone',12,10,60],['food',5,18,75],['wood',26,6,180],['wood',30,9,120],['stone',29,15,150],['food',24,19,150]].map(([kind,x,y,amount],i)=>({id:'d'+i,kind,x,y,amount,initial:amount}));
- const s={version:3,tools:false,knapping:null,time:0,stock:{wood:20,stone:10,food:0},deposits,buildings:[{id:'b0',kind:'hearth',x:7,y:11,done:true,work:0,cost:{}}],units:[unit(0,6,14),unit(1,7,14),unit(2,8,14),unit(3,9,14)],seen:[],nextId:1,spent:{wood:0,stone:0,food:0},delivered:{wood:0,stone:0,food:0},depleted:0,complete:false};return s;
+ const s={version:4,tools:false,knapping:null,time:0,stock:{wood:20,stone:10,food:0},deposits,buildings:[{id:'b0',kind:'hearth',x:7,y:11,done:true,work:0,cost:{}}],units:[unit(0,6,14),unit(1,7,14),unit(2,8,14),unit(3,9,14)],seen:[],nextId:1,spent:{wood:0,stone:0,food:0},delivered:{wood:0,stone:0,food:0},depleted:0,complete:false};return s;
+}
+function validCarryMove(s,u){
+ const clear=p=>Number.isInteger(p.x)&&Number.isInteger(p.y)&&p.x>=0&&p.y>=0&&p.x<W&&p.y<H&&!((p.x===18||p.x===19)&&!(p.y>=11&&p.y<=14))&&!s.deposits.some(d=>d.amount>0&&d.x===p.x&&d.y===p.y)&&!s.buildings.some(b=>p.x>=b.x&&p.x<b.x+(b.kind==='hearth'?3:2)&&p.y>=b.y&&p.y<b.y+(b.kind==='hearth'?3:2));
+ if(s.version!==4||u.cargo<=0||u.order.kind!=='move'||u.next!==null||u.dropoff!==undefined||!clear(u.order))return false;
+ if(!u.path.length)return u.x===u.order.x&&u.y===u.order.y;
+ const first=u.path[0],last=u.path.at(-1);return clear(first)&&dist({x:Math.round(u.x),y:Math.round(u.y)},first)<=1&&last.x===u.order.x&&last.y===u.order.y&&u.path.every((p,i)=>clear(p)&&(!i||dist(u.path[i-1],p)===1));
 }
 function valid(s){
  const n=v=>Number.isFinite(v)&&v>=0&&v<1e7,point=p=>p&&n(p.x)&&n(p.y)&&p.x<W&&p.y<H;
- if(!s||![1,2,3].includes(s.version)||!n(s.time)||!n(s.nextId)||!n(s.depleted)||typeof s.complete!=='boolean')return false;
+ if(!s||![1,2,3,4].includes(s.version)||!n(s.time)||!n(s.nextId)||!n(s.depleted)||typeof s.complete!=='boolean')return false;
  if(!['stock','spent','delivered'].every(k=>s[k]&&['wood','stone','food'].every(r=>n(s[k][r]))))return false;
  if(!Array.isArray(s.deposits)||s.deposits.length!==8||!Array.isArray(s.units)||s.units.length<1||s.units.length>8||!Array.isArray(s.buildings)||s.buildings.length>30||!s.buildings.some(b=>b.kind==='hearth'&&b.done))return false;
  if(!Array.isArray(s.seen)||s.seen.length>W*H||s.seen.some(i=>!Number.isInteger(i)||i<0||i>=W*H))return false;
@@ -25,8 +31,8 @@ function valid(s){
  if(s.buildings.some(b=>!['hearth','outpost','workshop'].includes(b.kind)||typeof b.done!=='boolean'||!n(b.work)||!b.cost||Object.entries(b.cost).some(([k,v])=>!['wood','stone','food'].includes(k)||!n(v))))return false;
  if(s.version>=2&&(typeof s.tools!=='boolean'||(s.knapping!==null&&(!s.knapping||!n(s.knapping.work)||s.knapping.work>12||typeof s.knapping.workshop!=='string'||!s.buildings.some(b=>b.id===s.knapping.workshop&&b.kind==='workshop'&&b.done)||typeof s.knapping.done!=='boolean'||s.knapping.done!==s.tools||s.knapping.done&&s.knapping.work!==12))))return false;
  if(s.version>=2&&s.tools&&!s.knapping)return false;
- const order=o=>o&&['idle','move','gather','build',...(s.version>=2?['craft']:[]),...(s.version===3?['transfer']:[])].includes(o.kind)&&(o.kind==='idle'||o.kind==='move'&&point(o)||['gather','build','craft','transfer'].includes(o.kind)&&typeof o.target==='string');
- if(!s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct',...(s.version>=2?['craft']:[]),...(s.version===3?['pickup','transfer']:[])].includes(u.phase)&&(!u.resource||RESOURCES.includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200))return false;
+ const order=o=>o&&['idle','move','gather','build',...(s.version>=2?['craft']:[]),...(s.version>=3?['transfer']:[])].includes(o.kind)&&(o.kind==='idle'||o.kind==='move'&&point(o)||['gather','build','craft','transfer'].includes(o.kind)&&typeof o.target==='string');
+ if(!s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct',...(s.version>=2?['craft']:[]),...(s.version>=3?['pickup','transfer']:[]),...(s.version===4?['carryMove']:[])].includes(u.phase)&&(!u.resource||RESOURCES.includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200))return false;
  if(s.version<3)return true;
  const a=s.storage,map=v=>v&&RESOURCES.every(r=>n(v[r])),storeIds=s.buildings.filter(isStore).map(b=>b.id);
  if(!a||a.version!==1||!a.stores||!map(a.transferred)||!Number.isInteger(a.nextId)||a.nextId<1||!Array.isArray(a.transfers)||a.transfers.length>8||!a.reservations||!Array.isArray(a.payments)||a.payments.length>40)return false;
@@ -44,7 +50,7 @@ function valid(s){
   if(j.amount>5*j.workers.length||j.amount!==j.remaining+j.delivered+j.recovered+j.cancelled+cargo||j.workers.some(id=>j.pending[id]&&!s.units.some(u=>u.id===id&&(u.order.kind==='transfer'&&u.order.target===j.id||u.next&&u.next.kind==='transfer'&&u.next.target===j.id))))return false;
  }
  if(storeIds.some(id=>RESOURCES.some(r=>held[id][r]>a.stores[id][r])))return false;
- return s.units.every(u=>a.transfers.filter(j=>j.pending[u.id]>0||u.transfer===j.id).length<=1&&(!u.dropoff||storeIds.includes(u.dropoff))&&(!u.transfer||u.cargo>0&&['return','transfer','idle'].includes(u.phase)&&(u.phase!=='idle'||u.path.length===0)&&a.transfers.some(j=>j.id===u.transfer&&j.workers.includes(u.id)&&j.resource===u.resource&&j.pending[u.id]===0))&&[u.order,u.next].filter(Boolean).every(o=>o.kind!=='transfer'||a.transfers.some(j=>j.id===o.target&&j.workers.includes(u.id)))&&(u.phase!=='pickup'||u.order.kind==='transfer'&&u.cargo===0)&&(u.phase!=='transfer'||!!u.transfer));
+ return s.units.every(u=>a.transfers.filter(j=>j.pending[u.id]>0||u.transfer===j.id).length<=1&&(!u.dropoff||storeIds.includes(u.dropoff))&&(!u.transfer||u.cargo>0&&['return','transfer','idle',...(s.version===4?['carryMove']:[])].includes(u.phase)&&(u.phase!=='idle'||u.path.length===0)&&a.transfers.some(j=>j.id===u.transfer&&j.workers.includes(u.id)&&j.resource===u.resource&&j.pending[u.id]===0))&&[u.order,u.next].filter(Boolean).every(o=>o.kind!=='transfer'||a.transfers.some(j=>j.id===o.target&&j.workers.includes(u.id)))&&(u.phase!=='pickup'||u.order.kind==='transfer'&&u.cargo===0)&&(u.phase!=='transfer'||!!u.transfer)&&(u.phase!=='carryMove'||validCarryMove(s,u)));
 }
 // Explicit recovery only: callers retain the original bytes before adopting this copy.
 // No stock, construction/crafting progress, transfer cargo or ordinary negative work is repaired.
@@ -61,7 +67,7 @@ function repairWorkResidue(state){
  }catch(e){return null;}
 }
 class Camp{
- constructor(state){if(state&&!valid(state))throw Error('Not a compatible RTS Hearth save.');this.s=state?structuredClone(state):fresh();if(this.s.version===1){this.s.tools=false;this.s.knapping=null;}if(this.s.version<3||!this.s.storage)this.migrateStorage();this.s.version=3;this.reveal();if(!valid(this.s))throw Error('Not a compatible RTS Hearth save.');}
+ constructor(state){if(state&&!valid(state))throw Error('Not a compatible RTS Hearth save.');this.s=state?structuredClone(state):fresh();if(this.s.version===1){this.s.tools=false;this.s.knapping=null;}if(this.s.version<3||!this.s.storage)this.migrateStorage();this.s.version=4;this.reveal();if(!valid(this.s))throw Error('Not a compatible RTS Hearth save.');}
  migrateStorage(){
   const home=this.s.buildings.find(b=>b.kind==='hearth'&&b.done),stores=Object.fromEntries(this.s.buildings.filter(isStore).map(b=>[b.id,empty()]));stores[home.id]={...this.s.stock};
   const reservations={},sources=cost=>Object.entries(cost).filter(([,amount])=>amount>0).map(([resource,amount])=>({storeId:home.id,resource,amount}));
@@ -148,9 +154,13 @@ class Camp{
  }
  around(o){const z=o.kind==='hearth'?3:['outpost','workshop'].includes(o.kind)?2:1,out=[];for(let i=0;i<z;i++)out.push({x:o.x-1,y:o.y+i},{x:o.x+z,y:o.y+i},{x:o.x+i,y:o.y-1},{x:o.x+i,y:o.y+z});return out;}
  freeTargets(u,targets){return targets.filter(p=>!this.s.units.some(v=>v!==u&&((v.path.length&&v.path.at(-1).x===p.x&&v.path.at(-1).y===p.y)||Math.hypot(v.x-p.x,v.y-p.y)<.4)));}
- route(u,targets){const free=this.freeTargets(u,targets);const path=this.path(u,free.length?free:targets);if(!path){u.phase='idle';u.reason='Blocked — choose a reachable target';u.path=[];return false;}u.path=path;return true;}
- home(u){const choices=this.s.buildings.filter(isStore).map(b=>({b,path:this.path(u,this.freeTargets(u,this.around(b)))})).filter(v=>v.path).sort((a,b)=>a.path.length-b.path.length);if(!choices.length){u.phase='idle';u.reason='Drop-off blocked or crowded — clear space';u.path=[];return false;}u.dropoff=choices[0].b.id;u.path=choices[0].path;u.phase='return';u.reason='Returning '+u.cargo+' '+u.resource+' to '+storeName(choices[0].b);return true;}
- start(u){u.work=0;u.path=[];const o=u.order;if(o.kind==='idle'){u.phase='idle';u.reason='Ready for orders';return;}
+ // An empty grid route reaches the rounded cell; physical arrival still needs its final segment.
+ approachPath(u,path){const p={x:Math.round(u.x),y:Math.round(u.y)};return path&&!path.length&&(u.x!==p.x||u.y!==p.y)?[p]:path;}
+ route(u,targets){const free=this.freeTargets(u,targets);const path=this.path(u,free.length?free:targets);if(!path){u.phase='idle';u.reason='Blocked — choose a reachable target';u.path=[];return false;}u.path=this.approachPath(u,path);return true;}
+ home(u){const choices=this.s.buildings.filter(isStore).map(b=>({b,path:this.path(u,this.freeTargets(u,this.around(b)))})).filter(v=>v.path).sort((a,b)=>a.path.length-b.path.length);if(!choices.length){u.phase='idle';u.reason='Drop-off blocked or crowded — clear space';u.path=[];return false;}u.dropoff=choices[0].b.id;u.path=this.approachPath(u,choices[0].path);u.phase='return';u.reason='Returning '+u.cargo+' '+u.resource+' to '+storeName(choices[0].b);return true;}
+ movePath(u,o){if(!Number.isInteger(o.x)||!Number.isInteger(o.y))return null;const path=this.path(u,[o]);return path&&!path.length&&(u.x!==o.x||u.y!==o.y)?[{x:o.x,y:o.y}]:path;}
+ moveCarry(u,path=this.movePath(u,u.order)){delete u.dropoff;u.next=null;u.path=path||[];u.phase=path?'carryMove':'idle';u.reason=path?'Moving with '+u.cargo+' '+u.resource:'Holding '+u.cargo+' '+u.resource+' — Move target blocked; choose Move or Stop and Return';}
+ start(u){if(u.cargo&&u.order.kind==='move'){this.moveCarry(u);return;}u.work=0;u.path=[];const o=u.order;if(o.kind==='idle'){u.phase='idle';u.reason='Ready for orders';return;}
  if(o.kind==='move'){if(this.route(u,[o])){u.phase='walk';u.reason='Moving';}return;}
  if(o.kind==='transfer'){
   const job=this.s.storage.transfers.find(j=>j.id===o.target),source=job&&this.s.buildings.find(b=>b.id===job.from&&isStore(b));
@@ -164,14 +174,15 @@ class Camp{
  }
  accepts(u,o){
   if(!o||!['idle','move','gather','build','craft','transfer'].includes(o.kind))return false;if(o.kind==='idle')return true;
-  if(o.kind==='move')return Number.isInteger(o.x)&&Number.isInteger(o.y)&&!!this.path(u,[o]);
+  if(o.kind==='move')return !!this.movePath(u,o);
   if(o.kind==='transfer'){const j=this.s.storage.transfers.find(j=>j.id===o.target&&j.pending[u.id]>0);return !!j&&!!this.path(u,this.transferTargets(j.from,j.to));}
   const target=(o.kind==='gather'?this.s.deposits:this.s.buildings).find(v=>v.id===o.target);
   if(!target||o.kind==='gather'&&!target.amount||o.kind==='build'&&target.done||o.kind==='craft'&&(!this.s.knapping||this.s.knapping.done||this.s.knapping.workshop!==o.target))return false;
   return !!this.path(u,this.around(target));
  }
- command(ids,order){if(!Array.isArray(ids)||ids.some(id=>!this.s.units.some(u=>u.id===id)))return 0;const workers=this.s.units.filter(u=>ids.includes(u.id)),changing=workers.filter(u=>!(JSON.stringify(u.next||u.order)===JSON.stringify(order)&&u.phase!=='idle'));if(changing.some(u=>!this.accepts(u,order)))return 0;
-  let count=0;for(const u of changing){count++;this.releaseTransfer(u);if(u.cargo){u.next=structuredClone(order);this.home(u);}else{u.order=structuredClone(order);u.next=null;this.start(u);}}this.pruneTransfers();return count;
+ command(ids,order){if(!Array.isArray(ids)||ids.some(id=>!this.s.units.some(u=>u.id===id)))return 0;const workers=this.s.units.filter(u=>ids.includes(u.id)),changing=workers.filter(u=>!(order?.kind==='move'?['walk','carryMove'].includes(u.phase)&&JSON.stringify(u.order)===JSON.stringify(order):JSON.stringify(u.next||u.order)===JSON.stringify(order)&&u.phase!=='idle'));
+  const routes=new Map();for(const u of changing){if(order?.kind==='move'){const path=this.movePath(u,order);if(!path)return 0;routes.set(u.id,path);}else if(!this.accepts(u,order))return 0;}
+  let count=0;for(const u of changing){count++;this.releaseTransfer(u);if(u.cargo&&order.kind==='move'){u.order=structuredClone(order);this.moveCarry(u,routes.get(u.id));}else if(u.cargo){if(u.order.kind==='move')u.order={kind:'idle'};u.next=structuredClone(order);this.home(u);}else{u.order=structuredClone(order);u.next=null;this.start(u);}}this.pruneTransfers();return count;
  }
  canPay(cost,storeId=null){const available=storeId?this.store(storeId)?.available:this.economy().available;return !!available&&Object.entries(cost).every(([r,n])=>available[r]>=n);}
  pay(cost,storeId=null,kind='expense',target=null){
@@ -184,7 +195,7 @@ class Camp{
  // Preserve access to every worker and deposit; no irreversible choke-point seals.
  const home=this.s.buildings.find(v=>v.kind==='hearth');const targets=[...this.s.units,...this.s.deposits.filter(d=>d.amount>0).flatMap(d=>this.around(d).filter(p=>!this.blocked(p.x,p.y)).slice(0,1))];
  if(targets.some(p=>!this.path(p,this.around(home)))||!this.around(b).some(p=>!this.blocked(p.x,p.y)&&this.path(p,this.around(home)))||this.s.buildings.filter(isStore).some(store=>!this.around(store).some(p=>!this.blocked(p.x,p.y)&&this.path(p,this.around(home))))){this.s.buildings.pop();return {error:'Leave a route through the camp and to every store'};}
- this.s.nextId++;this.s.storage.reservations[b.id]=this.pay(b.cost,funding.storeId,'construction',b.id);for(const u of this.s.units)if(u.path.length){if(u.transfer&&u.phase==='transfer')this.transferHome(u);else if(u.cargo)this.home(u);else this.start(u);}this.command(ids,{kind:'build',target:b.id});return {id:b.id};}
+ this.s.nextId++;this.s.storage.reservations[b.id]=this.pay(b.cost,funding.storeId,'construction',b.id);for(const u of this.s.units)if(u.path.length){if(u.phase==='carryMove')this.moveCarry(u);else if(u.transfer&&u.phase==='transfer')this.transferHome(u);else if(u.cargo)this.home(u);else this.start(u);}this.command(ids,{kind:'build',target:b.id});return {id:b.id};}
  cancel(id){const b=this.s.buildings.find(v=>v.id===id&&!v.done);if(!b)return false;const reservation=this.s.storage.reservations[id];
   for(const p of reservation.sources){this.s.storage.stores[p.storeId][p.resource]+=p.amount;this.s.spent[p.resource]-=p.amount;}this.syncStock();
   delete this.s.storage.reservations[id];this.s.storage.payments=this.s.storage.payments.filter(p=>!(p.kind==='construction'&&p.target===id));
@@ -193,7 +204,14 @@ class Camp{
  beginKnapping(workshop,ids){const b=this.s.buildings.find(b=>b.id===workshop&&b.kind==='workshop'&&b.done);if(!b)return 'Finish a workshop first';if(!Array.isArray(ids)||!ids.length||ids.some(id=>!this.s.units.some(u=>u.id===id)))return 'Select villagers to craft the tools';if(ids.some(id=>!this.path(this.s.units.find(u=>u.id===id),this.around(b))))return 'Selected villagers need a reachable path to the workshop';if(this.s.tools)return 'Useful edges already crafted';if(this.s.knapping&&this.s.knapping.workshop!==workshop)return 'Resume the project at its original workshop';if(!this.s.knapping){const q=this.knappingFunding(workshop);if(q.error||!this.canPay(COST.knapping,q.storeId))return this.shortage(q);this.s.storage.reservations.knapping=this.pay(COST.knapping,q.storeId,'knapping',workshop);this.s.knapping={workshop,work:0,done:false};}this.command(ids,{kind:'craft',target:workshop});return null;}
  train(){if(this.s.units.length>=8)return 'All eight villagers have joined';const home=this.s.buildings.find(b=>b.kind==='hearth'),spot=this.around(home).find(p=>!this.blocked(p.x,p.y)&&!this.s.units.some(u=>Math.hypot(u.x-p.x,u.y-p.y)<.8)&&this.s.units.some(u=>this.path(u,[p])));if(!spot)return 'Clear reachable space beside the hearth first';if(!this.pay(COST.worker,home.id,'recruitment'))return this.shortage(this.funding('worker',home.x,home.y));const i=this.s.units.length;this.s.units.push(unit(i,spot.x,spot.y));return null;}
  tick(dt=.1){if(!Number.isFinite(dt)||dt<=0||dt>1)throw Error('Tick must be in (0,1]');this.s.time+=dt;
- for(const u of this.s.units){if(u.phase==='idle')continue;if(u.path.length){const p=u.path[0],dx=p.x-u.x,dy=p.y-u.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*3);if(d){u.x+=dx/d*step;u.y+=dy/d*step;}if(d<=step+.00001)u.path.shift();continue;}
+ for(const u of this.s.units){if(u.phase==='idle')continue;
+ if(u.phase==='carryMove'){
+  if(this.blocked(u.order.x,u.order.y)||u.path.some(p=>this.blocked(p.x,p.y)))this.moveCarry(u);if(u.phase==='idle')continue;
+  if(!u.path.length){u.order={kind:'idle'};u.phase='idle';u.reason='Holding '+u.cargo+' '+u.resource+' — choose Move or Stop and Return';continue;}
+  const p=u.path[0],dx=p.x-u.x,dy=p.y-u.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*3);
+  if(d<=step){u.x=p.x;u.y=p.y;u.path.shift();}else{u.x+=dx/d*step;u.y+=dy/d*step;}continue;
+ }
+ if(u.path.length){const p=u.path[0],dx=p.x-u.x,dy=p.y-u.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*3);if(d){u.x+=dx/d*step;u.y+=dy/d*step;}if(d<=step+.00001)u.path.shift();continue;}
  if(u.phase==='walk'){u.order={kind:'idle'};this.start(u);continue;}
  if(u.phase==='return'||u.phase==='transfer'){this.receive(u);continue;}
  if(u.phase==='pickup'){

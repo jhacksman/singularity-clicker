@@ -1,0 +1,817 @@
+{
+  "schema_version": 1,
+  "job": "singularity-20261004-rts-input-024",
+  "reviewed_at": "2026-10-04T03:54:06.123282+00:00",
+  "verdict": "verified_scoped_pass",
+  "blockers": [],
+  "review_method": "Read-only Git/file/JSON/tar/hash comparison of immutable source and returned Spark evidence. No repository execution, rerun, import, build or source edits on M6.",
+  "source": {
+    "commit": "b3c8fbad63881008657f376dcce9e9b5f770afcb",
+    "predecessor_commit": "3b15d6081f5396fcc579140c09d86e532674e2dd",
+    "repo_path": "/Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts",
+    "archive": {
+      "path": "archives/singularity-20261004-rts-input-024.tar",
+      "bytes": 1280000,
+      "sha256": "2f29d0254b05b5bdcd748f0275a8e4f5f626b4ae43aa280ba5c719deeae97368"
+    },
+    "archive_byte_equal_to_exact_git_archive": true,
+    "application_src_tree": "c596e8e5c9e7b05a7bb09a4623828fec09f0cf0f",
+    "predecessor_src_tree": "c596e8e5c9e7b05a7bb09a4623828fec09f0cf0f",
+    "all_twenty_build_inputs_byte_identical": true,
+    "build_inputs": [
+      {
+        "path": "build.mjs",
+        "sha256": "ef28a0c7b01dbbb593b7472a4bd9337302a4a4b8923e7a45cad78076bb525ed5",
+        "equal_input023": true
+      },
+      {
+        "path": "assets/cave.svg",
+        "sha256": "4440a9705356cffd91e08619757588c133a3c02745fb3fad68db2388cbe61303",
+        "equal_input023": true
+      },
+      {
+        "path": "assets/objects.svg",
+        "sha256": "00221dbf6e225394caef0422fa6917d5eb36c08adb607b89b5d195d6070739ca",
+        "equal_input023": true
+      },
+      {
+        "path": "assets/people.svg",
+        "sha256": "ea7e579b83aa5fd25526d795a432302e3e85f009285064f5973e813683366d06",
+        "equal_input023": true
+      },
+      {
+        "path": "src/shell.html",
+        "sha256": "f0a8841fafbf81faa8168e608f548417288079a747872a738a11be27ee02b464",
+        "equal_input023": true
+      },
+      {
+        "path": "src/styles.css",
+        "sha256": "303c646c27482723a62cec219630d85e525f58a9bb498770055d7cc376858579",
+        "equal_input023": true
+      },
+      {
+        "path": "src/engine.js",
+        "sha256": "5a0077277e594b124b9969b0dd7e703319e266db704c22eb1de488cf50652466",
+        "equal_input023": true
+      },
+      {
+        "path": "src/view.js",
+        "sha256": "cdac3745af75dc457c4f083cad8e9c8379d3842b013bfc8ed70f4c03675acb05",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth/shell.html",
+        "sha256": "7041c150b904b6c41ff0c2f6073c8374a626d955b55b2eb76a8afe1cb2c1898a",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth/styles.css",
+        "sha256": "c5f13761cead722a5d6382d3e81137048f993cd695db9c56c09d522c39d8640c",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth/engine.js",
+        "sha256": "c034f7446ca853caaf5b1389d96ff3e8ca339cf5ae48dc5c3d70e0073340bd93",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth/view.js",
+        "sha256": "417aa15a351d8eebae93896918cc3eb9df434ae459aa1ca3a87210820108b148",
+        "equal_input023": true
+      },
+      {
+        "path": "src/agriculture/shell.html",
+        "sha256": "b563146596ff0779776c0a62d20cad821249fb8516dd18e70a376af6556c1ded",
+        "equal_input023": true
+      },
+      {
+        "path": "src/agriculture/styles.css",
+        "sha256": "8bc8320485ece9247a01d24c21fc0ebf54d661a64c192d662ac9c23112846c47",
+        "equal_input023": true
+      },
+      {
+        "path": "src/agriculture/engine.js",
+        "sha256": "d6704fdb623fb3462fb9b750a5636f4650942d1365433440a5364efa6da1cd69",
+        "equal_input023": true
+      },
+      {
+        "path": "src/agriculture/view.js",
+        "sha256": "2fbf78cb98d37a456c5faee4a75f7b5912f2ba160cfec7e482aca8b9cf9c57cd",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth-rts/shell.html",
+        "sha256": "0746bf951f68598bd61d8a2873c5913fed5e8fac9768f683c42b3f1638fe63d1",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth-rts/styles.css",
+        "sha256": "022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth-rts/engine.js",
+        "sha256": "3b22d81b32f01f44fc033c488e68a91c027889780f82db380ea899f837f20be4",
+        "equal_input023": true
+      },
+      {
+        "path": "src/hearth-rts/view.js",
+        "sha256": "64b53907c9ab2448c1087a8f5d732f66eee7888b8340a6ee47ecbe6db946995a",
+        "equal_input023": true
+      }
+    ],
+    "application_assets_scripts_package_dist_website_unchanged": true,
+    "changed_paths": [
+      "docs/evidence/rts-input-023/README.txt",
+      "docs/evidence/rts-input-023/failure-skeptic-one.txt",
+      "docs/evidence/rts-input-023/oracle-static-verification.txt",
+      "docs/evidence/rts-input-023/result.json",
+      "docs/evidence/rts-input-023/spark.log",
+      "docs/evidence/rts-input-023/summary.json",
+      "docs/hearth-input-recovery-increment.txt",
+      "tests/browser/hearth-rts.cjs"
+    ]
+  },
+  "execution": {
+    "result": {
+      "id": "singularity-20261004-rts-input-024",
+      "commit": "b3c8fbad63881008657f376dcce9e9b5f770afcb",
+      "host": "gb10-02",
+      "exit_code": 0,
+      "reason": "completed",
+      "started": 1791085618.309617,
+      "finished": 1791085744.413999,
+      "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+      "execution_exit_code": 0,
+      "execution_reason": "completed",
+      "executor_error": null,
+      "cleanup_verified": true,
+      "cleanup_state": "absent",
+      "cleanup_errors": []
+    },
+    "container_id": "4d261df6a7daf593219a07a64d2316025a3b284ce981bb6ee5955d78b21438e3",
+    "container_state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-04T03:46:58.406641022Z",
+      "FinishedAt": "2026-10-04T03:49:03.777494411Z"
+    },
+    "actual_image_matches_manifest": true,
+    "actual_command_matches_manifest": true,
+    "actual_network": "none",
+    "actual_cpus": 2.0,
+    "actual_memory_bytes": 4294967296,
+    "actual_memory_swap_bytes": 4294967296,
+    "actual_privileged": false,
+    "actual_gpu_device_requests": null,
+    "actual_user": "1001:1001",
+    "actual_dropped_capabilities": [
+      "ALL"
+    ],
+    "runner_elapsed_wall_seconds": 126.10438203811646,
+    "cleanup_evidence_scope": "Runner final cleanup_verified=true, cleanup_state=absent, no cleanup errors; saved pre-removal container state exited with PID0, exit0, no OOM."
+  },
+  "gates": {
+    "syntax_files_passed": 27,
+    "node_test_counts": {
+      "tests": 83,
+      "suites": 0,
+      "pass": 83,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "node_reported_duration_ms": 5585.378376,
+    "successful_build_log_lines": [
+      "Built self-contained cave: 0.10 MB",
+      "Built self-contained hearth: 82 KB",
+      "Built self-contained Agriculture slice: 51 KB",
+      "Built self-contained Hearth RTS core: 77 KB"
+    ],
+    "browser_scripts_reached_and_passed": [
+      "tests/browser/hearth-rts.cjs",
+      "tests/browser/hearth-rts-recovery.cjs",
+      "tests/browser/hearth-rts-roundtrip.cjs",
+      "tests/browser/hearth-rts-bootstrap.cjs"
+    ],
+    "browser_pass_log_lines": [
+      "PASS fresh RTS: drag selection, ordinary clicks/right-click gathering, visible cargo, finite depletion, construction debit, ford scouting, eastern outpost/workshop and refresh; paid/interrupted/resumed workshop knapping completes once; 180 simulated seconds; no page errors",
+      "PASS explicit v1 compatibility fixture: byte-exact raw backup, unchanged world/cargo and v3 local storage",
+      "PASS explicit v2 compatibility fixture: byte-exact raw backup, unchanged world/cargo and v3 local storage",
+      "PASS same-viewport focus regression: old focus scrolls and misses the site; fixed focus preserves coordinates; colliding-ID import clears stale Cancel and retains incoming paid project",
+      "PASS persistence fault fixtures: boot backup/main write failures retain raw legacy save; import backup/main failures retain prior disk+memory and truthful recovery; successful import preserves exact raw bytes and stays paused",
+      "PASS earned-tool extraction: old-subtraction control generates a rejected negative-work save; corrected per-tick saves conserve resources and survive exact paused reload",
+      "PASS startup/read-denial and raw retention: absent versus invalid input; exact old-residue backup/repair; failed boot/import writes preserve originals"
+    ],
+    "evidence_basis": "The approved && command chain, successful container exit and each script completion marker confirm all four browser gates ran."
+  },
+  "main_journey": {
+    "initial_state_injected": false,
+    "earned_tools": true,
+    "earned_knapping": {
+      "workshop": "b2",
+      "work": 12,
+      "done": true
+    },
+    "units": 5,
+    "simulation_time_saved": 179.89999999999407,
+    "log_rounded_simulated_seconds": 180,
+    "clock_controlled": true,
+    "evidence": "Main browser uses ordinary page selection/context clicks, construction/crafting/custody controls and save/reload. Compatibility v1/v2 subcases deliberately seed controlled legacy states. Simulated duration is not human pacing or enjoyment evidence."
+  },
+  "rejected_move": {
+    "byte_identical_live_exports": true,
+    "bytes": 2769,
+    "sha256": "2988ef35541714dfec2fc8c6e4d05596a3c1c71d7080bf77a770b09cfb6e0dde",
+    "simulation_time": 0.5,
+    "worker_phases": [
+      "idle",
+      "idle",
+      "idle",
+      "idle"
+    ],
+    "worker_cargo": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scope": "Actual UI pause then contextual water right-click for four selected idle zero-cargo workers; exact current rejection toast and continued paused state asserted. Exporter serializes live game state. Does not cover loaded or nonidle rejected moves.",
+    "evidence_paths": [
+      "artifacts/hearth-rts-invalid-move-before.json",
+      "artifacts/hearth-rts-invalid-move-after.json",
+      "artifacts/hearth-rts-invalid-move.png"
+    ]
+  },
+  "focus_and_stale_inspector": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "old_focus_scroll_y": [
+      0,
+      71
+    ],
+    "old_focus_mapped_y": [
+      16.5,
+      19.263289920437845
+    ],
+    "old_focus_cancel_buttons": 0,
+    "fixed_focus_scroll_y": [
+      0,
+      0
+    ],
+    "fixed_focus_cancel_buttons": 1,
+    "page_errors": {
+      "old": [],
+      "fixed": []
+    },
+    "incoming_project": {
+      "id": "b2",
+      "kind": "outpost",
+      "x": 26,
+      "y": 16,
+      "done": false,
+      "work": 1,
+      "cost": {
+        "wood": 60,
+        "stone": 20
+      }
+    },
+    "claim": "Paired same-viewport controlled focus call reproduces old scrolling/missed inspector and corrected stable coordinates; successful colliding-ID import removes stale Cancel UI and retains incoming paid project. No stale-button click is reported after its removal."
+  },
+  "earned_tools_paired_control": {
+    "seed": "artifacts/hearth-rts-earned-camp.json",
+    "seed_totals": {
+      "wood": 416,
+      "stone": 220,
+      "food": 225
+    },
+    "negative_samples": 46,
+    "positive_samples": 46,
+    "first_45_trace_samples_identical": true,
+    "negative_final_sample": {
+      "step": 46,
+      "time": 184.3999999999938,
+      "work": -5.551115123125783e-17,
+      "cargo": 2,
+      "phase": "extract",
+      "pathLength": 0,
+      "valid": false
+    },
+    "positive_final_sample": {
+      "step": 46,
+      "time": 184.3999999999938,
+      "work": 0,
+      "cargo": 2,
+      "phase": "extract",
+      "pathLength": 0,
+      "valid": true
+    },
+    "checkpoint_differing_paths": [
+      "units[0].work"
+    ],
+    "positive_all_samples_report_valid": true,
+    "negative_endpoint_totals": {
+      "wood": 416,
+      "stone": 220,
+      "food": 225
+    },
+    "positive_endpoint_totals": {
+      "wood": 416,
+      "stone": 220,
+      "food": 225
+    },
+    "page_errors": {
+      "negative": [],
+      "positive": []
+    },
+    "negative_control_scope": "Reverts only one successful-extraction work clamp in delivered HTML to old subtraction; controlled contexts seed the same genuinely earned-tools state. It demonstrates invalid save generation, not failure of the current explicit recovery path.",
+    "passing_harness_assertions": "Corrected each-tick checkpoints conserve resources; exact paused checkpoint survives reload and 2500ms clock advance; 8000ms resumed progress remains valid/conserved.",
+    "artifact_limit": "JSON checkpoints are written before reload; post-reload/resumed states are asserted by passing source+log and not separately retained."
+  },
+  "recovery_bootstrap": {
+    "bootstrap_case_count": 16,
+    "bootstrap_report": [
+      {
+        "case": "read-denied-method",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "read-denied-getter",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "present-invalid-null",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "present-invalid-false",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "present-invalid-0",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "present-invalid-json-empty-string",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "present-invalid-empty-bytes",
+        "bytesPreserved": true,
+        "errors": []
+      },
+      {
+        "case": "absent-starts-fresh",
+        "valid": true,
+        "errors": []
+      },
+      {
+        "case": "roundoff-boot-backup",
+        "errors": []
+      },
+      {
+        "case": "roundoff-boot-main",
+        "errors": []
+      },
+      {
+        "case": "roundoff-boot-saved",
+        "errors": []
+      },
+      {
+        "case": "roundoff-import-backup",
+        "errors": []
+      },
+      {
+        "case": "roundoff-import-main",
+        "errors": []
+      },
+      {
+        "case": "roundoff-import-saved",
+        "errors": []
+      },
+      {
+        "case": "invalid-imports-rejected-before-confirmation",
+        "errors": []
+      },
+      {
+        "case": "native-link-space-keeps-pause-state",
+        "events": 12,
+        "errors": []
+      }
+    ],
+    "all_page_error_arrays_empty": true,
+    "failed_import_exports_equal_earned_camp": {
+      "failed-import-backup": true,
+      "failed-import-main": true,
+      "roundoff-import-backup": true,
+      "roundoff-import-main": true
+    },
+    "scope": "Two read-denial cases, five present-invalid raw forms, absent fresh startup, three boot residue-repair cases, three import residue-repair cases, invalid uploads rejected before confirmation, native links. Recovery also exercises controlled legacy backup/main write faults, successful migration, immutable raw backup retention and duplicate/distinct imports. Faults are injected storage exceptions, not real disk/quota exhaustion."
+  },
+  "native_keyboard": {
+    "selectors": [
+      "a.brand",
+      "footer a"
+    ],
+    "pause_states": [
+      "paused",
+      "running"
+    ],
+    "matrix_size": 4,
+    "space_events": 12,
+    "event_types": [
+      "keydown",
+      "keydown",
+      "keyup",
+      "keydown",
+      "keydown",
+      "keyup",
+      "keydown",
+      "keydown",
+      "keyup",
+      "keydown",
+      "keydown",
+      "keyup"
+    ],
+    "repeat_keydown_events": 4,
+    "all_anchor_default_behavior_unprevented_and_space_unowned": true,
+    "page_errors": [],
+    "space_claim": "Actual Tab navigation; initial/repeated Space keydown and keyup preserve pause state and URL in all four cases.",
+    "enter_claim": "One actual Enter navigation after the matrix, on the footer link in running state, reaches hearth.html. Not a both-links Enter matrix."
+  },
+  "artifact_integrity": {
+    "archive": {
+      "path": "results/singularity-20261004-rts-input-024-artifacts.tar",
+      "bytes": 14243840,
+      "sha256": "e4706c3772ea0c20d527606d34fec0a7f31607c7dae584f79b10145aea0f59de"
+    },
+    "regular_file_count": 53,
+    "all_extracted_files_match_tar": true,
+    "inventory": [
+      {
+        "path": "artifacts/hearth-rts-roundoff-import-main.json",
+        "bytes": 5886,
+        "sha256": "7c55c0bed43f546ecc758b1bb6f128c13b37c53693bd6d89a4313987033aee55",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-native-space-footer-paused.png",
+        "bytes": 225097,
+        "sha256": "b6f01fd0e47f245e0d2bbb060272dc07c1e4cc445e3e1af211d677de7cf56912",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-earned-camp.json",
+        "bytes": 12333,
+        "sha256": "560ab43233a05f0454c6355450342035d75e6200ea6deb9fe80fdcb7d128d9b7",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-imported.json",
+        "bytes": 12557,
+        "sha256": "08c6d9c3fa200a4338a2e17225811ff1d85cf4e38a847d3c9980503fcb85519d",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-move-before.json",
+        "bytes": 2769,
+        "sha256": "2988ef35541714dfec2fc8c6e4d05596a3c1c71d7080bf77a770b09cfb6e0dde",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-fixed-focus.png",
+        "bytes": 217266,
+        "sha256": "6bc412edff29200d45902b6da15153194eb76a44a61b0cf3853987a2723112b5",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-0.json",
+        "bytes": 1,
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-delivered.png",
+        "bytes": 261537,
+        "sha256": "8c2487bb46840fe5a76bdc493cd26966c09c5b329f1c9339b238a78a5c03d2ad",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-false.json",
+        "bytes": 5,
+        "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-bootstrap-report.json",
+        "bytes": 1279,
+        "sha256": "87d0dafc255581faab322816660f6e68998eae892e285b06d8630dbc02f78f84",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundoff-import-backup.json",
+        "bytes": 5886,
+        "sha256": "7c55c0bed43f546ecc758b1bb6f128c13b37c53693bd6d89a4313987033aee55",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundtrip-old-subtraction.png",
+        "bytes": 253795,
+        "sha256": "9b989b5db5132e5c4d5e4674dcad575fd25e2f481fe8839e998c6b6764215b65",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-native-link-space.json",
+        "bytes": 2088,
+        "sha256": "1c9c0620dd0f182ab8d1de7ad736f60bdcc2935c6849df4bb77ce5f81e59f2b3",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-expansion.png",
+        "bytes": 266482,
+        "sha256": "2a7d08a6211a66bc02b0f72e3d3198f1559f9dacda8bf0ee589fbc1f80fb1a07",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-native-space-brand-running.png",
+        "bytes": 222636,
+        "sha256": "57199089db89b021a06310395aa90d170eda7dc0886d50cc0cbb7f18e1c060c4",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-tools-complete.png",
+        "bytes": 269739,
+        "sha256": "c692f75b3ccae75e8fcb68fe9f318ee62bf0ad155d905afcb550ae66e1653235",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-carried.png",
+        "bytes": 268171,
+        "sha256": "efb049b507a96635b1d624561503e492d1aa36f027b19215cc312be5e435c09e",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-old-focus.png",
+        "bytes": 217682,
+        "sha256": "d98cc1674e7b28d1532af08e4bee23fcb564bd1b794f578a70385656e03ed32a",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-hauling.png",
+        "bytes": 182506,
+        "sha256": "3b42a8eb1c42fabc9956f7e009ad415d5cae4e4697f89782c0978ec5d16b64f0",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-delivered.json",
+        "bytes": 11337,
+        "sha256": "dbf630d887469f25ae2dcd222619751048ace02b4d0b638e86e05f012c259fe7",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-depletion.png",
+        "bytes": 184365,
+        "sha256": "fcb9f92a1b611c692f9dea4ef2db2e86a7dc92ce131045c8fb1d3213af06a733",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-local-shortage.png",
+        "bytes": 268345,
+        "sha256": "26678b5892142cccccbabb79047319698c06ed0a8324397457dc8612b566b27e",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-recovery-backup-failure.json",
+        "bytes": 10651,
+        "sha256": "4ed4ad74e69fe17bf7f5189583af192e2d1f3dfe62127741fb1789336cc2719a",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-import-saved.png",
+        "bytes": 216547,
+        "sha256": "40c75c31fea105f537d7fef707e74b675d5f5391842fb0ca53792f973c43b592",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-read-denied-getter.png",
+        "bytes": 162479,
+        "sha256": "ff061fb996a67fab4ac11945e79580df01d2e8d4003dd3c28d415d6aac9bf955",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-native-space-brand-paused.png",
+        "bytes": 222857,
+        "sha256": "41f36b49b6a5b332011da9eacf9f9d74c12c99af1714aa2d4edbd82534889178",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-empty-bytes.json",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-move-after.json",
+        "bytes": 2769,
+        "sha256": "2988ef35541714dfec2fc8c6e4d05596a3c1c71d7080bf77a770b09cfb6e0dde",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-import-write-failed.png",
+        "bytes": 228296,
+        "sha256": "63e0dbf281c572b9c34aeaedb4253acba40bcb2db35abbe8a7ee27a82be020bc",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-fixed-focus.json",
+        "bytes": 17826,
+        "sha256": "353e950c9445ca3e683d9366235bdfcd651d69389b6c99095c014fc38a5a4998",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/rts-video/page@1ea793406fdfb1e71c3f70fa6461cf54.webm",
+        "bytes": 8008572,
+        "sha256": "488a0f53d12d1f8a4abc07deef1351d7d9c10da0822399786b08bb91d5ece3fd",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-failed-import-main.json",
+        "bytes": 5886,
+        "sha256": "7c55c0bed43f546ecc758b1bb6f128c13b37c53693bd6d89a4313987033aee55",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-move.png",
+        "bytes": 168300,
+        "sha256": "7ded648d337489efb697022ee9b113496aa69b6b70341e86a307eb8484b83fc4",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-construction.png",
+        "bytes": 238446,
+        "sha256": "664f44afa59dab59bdba31d5fe202f3d2e7e131c7261a6044058491287160b4c",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-null.json",
+        "bytes": 4,
+        "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-import-backup-failed.png",
+        "bytes": 228296,
+        "sha256": "63e0dbf281c572b9c34aeaedb4253acba40bcb2db35abbe8a7ee27a82be020bc",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-local-recruitment.png",
+        "bytes": 266788,
+        "sha256": "d0d7bb4b40baae8080029bfa7f5bd6d39d1c7337bf710c8f40cd6c5728311343",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundtrip-clamped.json",
+        "bytes": 22749,
+        "sha256": "2f784ca3b1baa45a1a1bc7ed56e8a5951a1df7ded0a496ac0376c49c44f042cc",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-native-space-footer-running.png",
+        "bytes": 223815,
+        "sha256": "61a7ac005546788315892f8faa9b13b0c4aaf7c0d793322dfb6743fca6ac4602",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundoff-main-failure.json",
+        "bytes": 5987,
+        "sha256": "e32b1606e1eb4dabcbf635771bdc184cc1f402b8de2fb00b9c0f240c0bdbb6fd",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-failed-import-backup.json",
+        "bytes": 5886,
+        "sha256": "7c55c0bed43f546ecc758b1bb6f128c13b37c53693bd6d89a4313987033aee55",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-carried.json",
+        "bytes": 14412,
+        "sha256": "ee886f13ccb6acd1e8d05e8a1c8d8c5d6e0039fa98c4de618e926f2196124769",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-recovery-save-failure.json",
+        "bytes": 5291,
+        "sha256": "ef3e528fddd4491114ff79b481c144287aca5b287e04c4d8f2fa6883d2c6eb0e",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-read-denied-method.png",
+        "bytes": 162479,
+        "sha256": "ff061fb996a67fab4ac11945e79580df01d2e8d4003dd3c28d415d6aac9bf955",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-reserved.json",
+        "bytes": 15825,
+        "sha256": "15b68736f90130db707be55906710c601629e3e765316cc7c0009bc07b0b3378",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-transfer-reserved.png",
+        "bytes": 269698,
+        "sha256": "6cad015b11f68c70c358073d8bfee539755e8c30871133536849fe865c091bbe",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-knapping-paused.png",
+        "bytes": 272626,
+        "sha256": "2fda4a341576616376444d8f7f3e1d991c66d06434ce294613e5d03ad2c5aa21",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundtrip-clamped.png",
+        "bytes": 253795,
+        "sha256": "9b989b5db5132e5c4d5e4674dcad575fd25e2f481fe8839e998c6b6764215b65",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundoff-backup-failure.json",
+        "bytes": 12571,
+        "sha256": "e2276123998ff987272c47b24dbe7910212cc64d60c1dabd3c5506bd1fea9658",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-old-focus.json",
+        "bytes": 17864,
+        "sha256": "55949e048635e1d9f35e504f3f011e8b051193087cc50e11b8b3013250afced5",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-invalid-json-empty-string.json",
+        "bytes": 2,
+        "sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-collision-imported.png",
+        "bytes": 216902,
+        "sha256": "d483e18b5d8a5696c95d00b8e425311aec9e85ca46484cf144919a60dba63edf",
+        "extracted_bytes_equal": true
+      },
+      {
+        "path": "artifacts/hearth-rts-roundtrip-old-subtraction.json",
+        "bytes": 22791,
+        "sha256": "5907061c69cfdc0d3689c2aa7ed5b64d9811c22a5b8474fc20a95bdcc50237ed",
+        "extracted_bytes_equal": true
+      }
+    ]
+  },
+  "evidence_files": [
+    {
+      "path": "approved/singularity-20261004-rts-input-024.json",
+      "bytes": 3623,
+      "sha256": "3503b517245a7e39fae36a581549e13b78eca8ad9a32e1e4eeb051a863a47ab7"
+    },
+    {
+      "path": "results/singularity-20261004-rts-input-024.json",
+      "bytes": 489,
+      "sha256": "f629df621a59ef391ff2119f9af857fdc67cf9387f5e61fd22d4dbf285ffb82e"
+    },
+    {
+      "path": "logs/singularity-20261004-rts-input-024.log",
+      "bytes": 10206,
+      "sha256": "31aaa3f81a6716f9433c9386cf0a4d8e9d90fede4217f16b605595f75ebff873"
+    },
+    {
+      "path": "logs/singularity-20261004-rts-input-024.container.json",
+      "bytes": 19718,
+      "sha256": "b491c5075277af84a2e0719cf924f2f80c5d3551e84b56b388649f92c17892d9"
+    }
+  ],
+  "limitations": [
+    "Headless Chromium and controlled fixtures only; no physical touch, native macOS/iOS or accessibility/full-Hearth acceptance.",
+    "Main progression uses simulated time and controlled advancement; no inference of ordinary human pacing or enjoyment.",
+    "The independent UX harness is a separate scope and remains unresolved; this run does not close its explicit Move/Gather, repeated-Space or emulated-touch findings.",
+    "Loaded Move retains disclosed return-first behavior; IC02 immediate-cargo Move is not closed.",
+    "No navigation/exporter/IndexedDB integration acceptance or publication follows from this review.",
+    "Exact built dist retrieval/provenance is owned separately by the coordinator and is not claimed by this report."
+  ]
+}

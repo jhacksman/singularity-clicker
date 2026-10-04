@@ -1,0 +1,176 @@
+IC02 immediate Move: independent custody and accounting planning review
+Source: /task-3/hearth-rts-ic02
+Commit: 3b15d6081f5396fcc579140c09d86e532674e2dd
+Date: 2026-10-04
+
+Planning verdict: feasible, but not a one-branch change to command(). The
+transition, validator, save compatibility, duplicate detection and incoming
+display must agree. The hazards below are review inputs before implementation,
+not findings against an implemented IC02 patch. No app edits or M6 runtime,
+parser, tests, builds or browser execution. The frozen /hearth-rts was untouched.
+
+The approved contract (COMMAND-CONTRACT.md:13,64) requires loaded Move to start
+toward its destination on the next running tick, keep the load, and hold it idle
+on arrival. Stop remains physical return/deposit then idle (:11). A destination
+beside a store is still a Move destination, not implicit delivery permission.
+The same IC02 case also specifies cache/delivery behavior for work-switch; a
+Move-only increment must not claim that entire acceptance case is complete.
+
+1. Invariants to preserve at every accepted command and saved tick
+
+- For each resource r, physical total is stored[r] + carried[r] + deposits[r] +
+  spent[r]. Reservations are subsets of stock, not additional matter. s.stock
+  must remain the exact aggregate of storage.stores (engine.js:33,73).
+- Each transfer j satisfies amount = remaining + delivered + recovered +
+  cancelled + sum(cargo held by actors with transfer===j.id). remaining equals
+  sum(pending[actor]); those pending allocations cannot exceed source stock
+  (engine.js:39-47). A loaded transfer actor has pending[actor]===0 and no other
+  job ownership. Moving never changes those held amounts or resource types.
+- u.transfer is the provenance of the held load, independent of the current
+  manual order. It is not a resumable Move destination or a pending pickup.
+  Preserve it through Move, arrival, Save/Load, Stop and the eventual receipt.
+- Transfer receipts increment transfer delivered/recovered counters, never new
+  gathered output. Gather-origin cargo has no transfer marker and increments
+  s.delivered only on its first physical receipt (engine.js:132-138).
+- Move/arrival cannot debit or credit stores, spent, deposits, delivered or
+  transferred counters. Releasing an unpicked reservation may increase source
+  availability, but does not refund physical stock or previously spent inputs.
+- Paid building/knapping progress and material reservations belong to the job;
+  moving its worker away does not cancel/refund/reset that job.
+
+2. Required transition cases
+
+Gathered cargo, including return in progress:
+  Preserve cargo/resource. Cancel any queued pickup allocation using the old
+  order/next before replacing them. Install Move now, clear next and dropoff,
+  replace the route, and reset only worker extraction progress. No home detour,
+  receipt, production credit or old gather restart. Arrival holds the same load.
+
+Loaded transfer cargo (u.transfer set, pending share zero):
+  Preserve the marker, cargo, resource and owning job. Replace the movement
+  instruction, not custody. Keep the job alive even after old transfer order is
+  replaced; current pruneTransfers already retains jobs referenced by u.transfer
+  (line 131). Do not add held cargo to cancelled or remaining. Those counters
+  represent different portions of the original finite transfer.
+
+Gathered cargo with a queued transfer (u.next=transfer, no u.transfer):
+  Release exactly this actor's pending share, decrement remaining and increment
+  cancelled once. Keep the gathered load and its original resource. Clear the
+  queued transfer before arrival so it cannot start after the new Move. Other
+  workers' pending/held shares remain unchanged. Prune only if no obligations or
+  actor references remain. Existing releaseTransfer reads BOTH old order and
+  old next (line 129); calling it after clearing those fields leaks reservation.
+
+Empty actor approaching a transfer pickup:
+  Cancel only its unpicked allocation, then Move. No pickup or remote credit.
+  If the pickup already committed on the prior tick, use the loaded-transfer
+  case instead. The synchronous command/tick boundary decides which case applies.
+
+Arrival and Stop:
+  Arrival becomes a stable held idle state, with no queued former job, no
+  dropoff, and unchanged provenance. Continue ticking without autonomous travel
+  or receipt. Stop from this held idle state must still call the safe home path,
+  preserve load until receipt, then become empty idle. If no store is reachable,
+  retain the load and explain the wait. Stop at the original destination credits
+  j.delivered; receipt at another eligible store credits j.recovered. Neither is
+  gathered production. Repeated Stop cannot refund or deliver more than once.
+
+3. Concrete dangers in the present implementation
+
+- command():173 deduplicates against u.next||u.order. A migrated v3 actor may
+  already be returning with next=Move(X). Reissuing Move(X) must interrupt that
+  old return now; treating the queued order as an active identical Move silently
+  retains the prohibited detour. Active Move duplicates should preserve the
+  exact path/progress and accounting, not restart it. Define same-destination
+  behavior after arrival separately; do not globally deduplicate idle orders,
+  since Stop on an idle actor holding cargo must start a return.
+- stores():77 counts incoming solely from u.dropoff. Delete the stale dropoff
+  when Move replaces return/transfer travel, even if Move targets a store edge.
+  No store should advertise that diverted or held load as incoming. A failed
+  subsequent return must not resurrect an obsolete incoming destination.
+- start():153-154 can install walk without unloading, and tick():197 can idle a
+  walker without unloading. These support the mechanic, but the arrival reason
+  must say Held with cargo rather than Ready for orders, and next must be clear.
+- tick():196 removes the last path segment and continues; walk with path=[]
+  exists until the following tick. A loaded-Move validator must admit that
+  reached-target boundary or arrival must become atomic in that movement tick.
+  Also cover a Move to the actor's current tile. Rejecting every empty walk path
+  would create another ordinary save/reload failure.
+- activeTransfer():106 identifies a job as active while a diverted actor still
+  owns its load. Repeating Send for the same job currently returns the existing
+  ID without movement. It must not misleadingly claim a held carrier has resumed
+  delivery. Explain held custody or keep explicit settlement as the next action;
+  never delete the marker merely to make the carrier eligible for another job.
+- The UI currently says every loaded order returns first (view.js:40,62-66).
+  Move requires its own immediate-carry/arrival-hold explanation. Work-switch
+  behavior remains a separate contract decision; do not silently promise cache
+  behavior from this Move change.
+
+4. Validator and old-reader boundary, including the prior F6 regression
+
+Current v3 explicitly restricts transfer cargo to return/transfer/idle
+(engine.js:47). tests/hearth-rts-storage.test.cjs:217-230 intentionally rejects
+transfer cargo in extract/construct/craft/walk/pickup. It caught resource
+conversion and invalid custody; that guard must not be removed wholesale.
+
+If walk is reused, admit a narrow new-version transfer-walk shape: matching
+existing job/resource/worker, pending zero, one job owner, actual Move order,
+no stale next/dropoff, nonnegative/reset worker progress and coherent target/path.
+Keep transfer cargo in extraction, construction, crafting or pickup invalid.
+Exercise malformed Move order/path/destination combinations independently of
+valid generated walking and arrival states. Keep the old v3 invalid-walk test;
+add an explicitly valid new-version Move case instead of deleting F6 coverage.
+
+Recommendation: make this changed save-state contract explicit as outer v4,
+while retaining storage schema 1. The old v3 reader then rejects every new save
+consistently and preserves its raw recovery route. Without a version change, an
+in-flight transfer Move would be rejected by the old reader while a held idle
+transfer may be accepted; this is state-dependent compatibility, not proven
+backward compatibility. Do not label it compatible without dedicated evidence.
+
+For a v4 migration, do not change the legacy-storage condition from version<3
+to version<4: that would rebuild v3 local custody at the hearth and erase its
+live transfer/reservation structure. Preserve v3 storage, units, cargo, queued
+orders, paths and payments; only change the outer version at migration. A new
+explicit Move can replace a legacy queued return-then-Move afterward. Review
+all exact version===3 guards, constructor post-validation, raw migration/import
+backups and residue-repair version handling deliberately. Retain exact v3 source
+bytes before replacement/adoption and keep backup failures blocked. Unknown
+future formats remain rejected. This is a proposal, not an authorized edit.
+
+5. Admission and commit boundary
+
+Prepare all actor targets/routes and cancellation shares without mutation.
+Validate the entire selected formation before releasing any reservation or
+replacing any order. A mixed group's invalid/unreachable target must preserve
+the complete pre-command serialization, including every actor's pending share.
+Then release only selected unpicked shares, install all Move states, and prune
+finished jobs after ownership has been updated. Current same-order command()
+preflights all changing actors (:173); the UI's separate formation-order loop
+also preflights before its first mutation (view.js:60-64). Preserve that boundary
+or move it into one engine admission/commit API; do not introduce a new per-actor
+failure after earlier actors have already changed.
+
+6. Spark acceptance evidence required after implementation
+
+- Earn gathered cargo naturally; Move nearby/across the ford/mid-return, then
+  assert unchanged goods/counters until explicit Stop and physical receipt.
+- Loaded transfer Move: exact job equation and resource type before command,
+  first movement tick, last path segment, held arrival, paused reload, Stop and
+  receipt. Test source/original destination/another store as eventual receiver.
+- Queue a stone transfer behind held gathered wood, then Move; only queued
+  stone reservation releases and wood remains held. Other workers still finish.
+- Uneven 5+1 group allocations: Move either worker before pickup, and one loaded
+  worker while the other is still pending. Cancel only the actual selected share.
+- Repeat active Move every tick and compare exact state to one-command control;
+  include legacy next=Move(same destination), same-tile Move, and repeated Stop.
+- Move to a store perimeter and wait: no unsolicited receipt and zero stale
+  incoming. Reload while moving and held; no route restart or new job resumes.
+- Reject a mixed formation with one unreachable actor/destination and compare
+  exact full serialization, not just aggregate resources or returned error.
+- Keep all F6 invalid transfer-work imports rejected, plus simultaneous held
+  cargo/pending allocation rejection. Test v3 pending/held/queued migration
+  unchanged and new-format rejection by the immutable old reader.
+- Actual browser commands must show immediate carried movement, held arrival,
+  truthful incoming/cargo/next-action text and physical Stop return. Engine-only
+  assertions cannot close the approved IC02 input evidence requirement.

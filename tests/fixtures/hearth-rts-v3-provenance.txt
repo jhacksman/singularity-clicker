@@ -1,0 +1,29 @@
+Pinned RTS v3 controls — test fixtures only
+
+Application source: 3b15d6081f5396fcc579140c09d86e532674e2dd.
+hearth-rts-engine-v3.txt is the byte-exact Git src/hearth-rts/engine.js blob.
+SHA256 3b22d81b32f01f44fc033c488e68a91c027889780f82db380ea899f837f20be4.
+This text fixture is read only by explicit Spark test controls, not the application.
+
+hearth-rts-input023-v3.html is the exact retained Spark-built page from job
+singularity-20261004-rts-input-023, source3b15d608, hostgb10-02, pinned image
+sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e.
+SHA256 4fa74911ae0a0650885355e5e20b4cd2b532c83e4b8bed496a50866a09a63b0a.
+Size78912bytes. The job passed83tests and4builds but failed a stale first-browser
+message expectation; it did not pass full browser acceptance. This fixture is not
+a released artifact or evidence that all Input023 behavior passed.
+
+Both fixtures retain old v3 return-first loaded Move and corrected extraction
+clamping. Controls that intentionally restore old subtraction must assert exactly
+one matching clamp expression and report that mutation separately from the pinned
+source. Current-v4 subtraction controls are distinct and must remain unrepaired.
+
+An earned current camp projected to version3 for use in the pinned page is a
+controlled compatibility seed, explicitly labeled; it is not an untouched historical
+save. Subsequent actual browser/engine actions may generate a genuine v3 negative
+checkpoint. Record seed provenance and source mutation with that checkpoint.
+Normal legacy repair/migration must retain original bytes before adoption and must
+not broaden repair admission to current-v4 negatives.
+
+No application/runtime/parser/tests/builds/browser executed on M6 to create these
+fixtures. They were copied from immutable Git and coordinator-retained output.

@@ -1,0 +1,94 @@
+Immediate loaded Move — bounded IC02 candidate
+
+Base: b3c8fbad63881008657f376dcce9e9b5f770afcb, separately verified by Input024
+on Spark:83tests,4builds,4browser scripts. That pass does not cover this increment.
+Current source has bounded independent static review; immutable Spark execution
+remains required. The review is not a runtime acceptance result.
+
+Player-facing change
+Move carries a worker's existing load directly along the accepted route and holds
+it on arrival. A paused order starts on Resume. Stop and Return physically settles
+the load at reachable storage, then idles. Other work reassignment still returns
+cargo first and says so. This implements only the Move portion of canonical IC02,
+not its work-switch/cache behavior or general Hold/automation/capacity systems.
+No art is replaced, no images are generated and no production publication occurs.
+
+Custody and routing
+A dedicated carryMove phase has no production, pickup or receipt operation. Cargo
+amount/type, worker remainder and existing transfer identity survive acceptance,
+movement, hold and reload. Only the selected actor's unpicked future reservation
+is released, before its old order fields are cleared. Stale dropoff is removed.
+Arrival holds indefinitely; only a later physical receipt credits one store.
+Repeated active Move does not reset progress. A new Move overrides an old queued
+return-then-Move plan, while migration alone preserves that saved plan. Stop from
+held idle cargo is meaningful and cannot restart the replaced Move after receipt.
+Construction replans manual cargo to its named target or holds it safely; canceling
+an obstruction does not silently restart the held Move.
+
+The new phase validates integer clear route nodes, cardinal adjacency, rounded
+current-cell/first-node continuity and the exact accepted endpoint. The final node
+is reached within the actual movement budget, not popped early by a tolerance.
+The prior F6 ban on transfer cargo in ordinary work/walk/pickup phases remains.
+These are scoped grid-route checks, not a general movement/collision rewrite.
+
+Save boundary
+Outer schema becomes4; storage schema stays1. Valid v3 custody, paid projects and
+queues are preserved; only v1/v2 use the old pooled-storage adoption. Exact legacy
+raw bytes are retained under .before-v4/.import-before-v4 plus existing migration
+and work-roundoff families before replacement/adoption. Old v3 readers reject4;
+new readers reject5. Explicit residue repair stays limited to known versions1/2/3.
+An invalid v4 negative remainder stays rejected and exportable.
+
+Review and regressions
+One critic and three fresh independent skeptics reviewed the transition before
+implementation. They resolved a test dependency: a current-v4 old-subtraction
+control cannot masquerade as a legacy repair fixture. Tests now use pinned v3
+source separately, with any version-only seed projection explicitly labeled.
+Exact source/hash provenance is in tests/fixtures/hearth-rts-v3-provenance.txt.
+
+Concrete source review then identified IC02-E1: Stop a short fractional distance
+from a store edge could select an empty rounded return route but fail physical
+receipt forever. Two fresh skeptics confirmed the ordinary earned-transfer witness.
+Cargo remained conserved/reloadable; this was a recoverable settlement softlock.
+The correction supplies the physical final approach after an empty grid route,
+without changing receiver ranking, receipt tolerance or movement budget. Separate
+source verification statically closed E1. The exact regression checks interruption,
+repeat, every-tick validity/reload and single physical receipt; an isolated old-home
+control preserves the same failure. An equivalent near-receiver transfer reroute
+is covered. Actual Spark verification remains the gate.
+
+Browser oracle review found three Medium evidence gaps, not engine defect claims:
+marked-carrier acceptance could hide teleportation; aggregate settlement could hide
+wrong-store/remote credit; accepted-path-derived expectations could hide a home
+waypoint. Two fresh skeptics confirmed each before root strengthened the harness.
+The independent verifier now finds those exact counterexamples statically rejected.
+Actual Spark execution is still required.
+
+Authored evidence uses ordinary earned gathered loads and the main journey's real
+transfer pickup checkpoint. Actual M/button/emulated touch/context commands have
+trusted input traces, live Journey exports, first-tick screenshots, held reload,
+repeat/rejection checks and physical Stop receipt. A checked open-region shortest
+route witness rules out a hidden home detour for that fixture. Transfer peers settle
+before per-store attribution; the held carrier then returns in observed single
+simulation ticks to the named source edge and credits only that store. A pinned
+unchanged v3 page demonstrates old return-first behavior from the same earned load.
+
+Deterministic coverage also includes partial/full loads, pending/loaded peers,
+queued transfers, fractional/same-tile/final-node boundaries, paid project progress,
+rerouting/blocked hold, exact repeated actions, malformed phases/routes, and legacy
+local custody migration. A labeled disconnected-component fixture also checks
+atomic group rejection with one reachable actor, one unreachable actor and a live
+pending allocation. There are 106 authored reducer cases, including 22 new Move
+cases and one new current-v4 residue rejection case. Authored tests are not reported
+as runtime passes. The five browser scripts include the new loaded-Move flow.
+
+Remaining integration
+Final navigation package444d252 is next: include scoped styles, mount/dispose in
+the real Cave completion modal, correct its introduction, recognize v4 and raw
+retention families, and verify the assembled source on Spark. It transfers no
+people/resources and grants no campaign proof. Task11 owns the separate native
+custody exporter; missing capacity/receiving-hold/floor/amount/receipt capabilities
+remain explicit gaps. Task12's transactional save adapter remains unintegrated.
+Independent native-blur/UX evidence is separately maintained by task10. No physical
+touch, native platform, accessibility, human pacing/enjoyment or full-age acceptance
+is implied by browser emulation. The accepted Library preview remains unchanged.

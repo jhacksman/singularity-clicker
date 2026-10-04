@@ -1,0 +1,226 @@
+IC02 loaded Move — engine transition proposal
+2026-10-04. PLAN ONLY; no application/source edits or execution.
+
+Reviewed source
+Isolated worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts-ic02
+Branch codex/hearth-rts-ic02, base 3b15d6081f5396fcc579140c09d86e532674e2dd.
+The frozen /task-3/hearth-rts worktree is not an edit target.
+Authority: frozen singularity-all14-spec-v3/COMMAND-CONTRACT.md section 1,
+Move row and the Move portion of IC02. Section 1 requires next-tick movement
+with existing cargo, arrival holding/idle, queue replacement, and preservation
+of paid job progress. Invalid targets retain the old job. This increment does
+not implement work-switch caches, general Hold/Resume, Shift queues, controller
+generations, capacity, or the remaining IC02 work-switch cases.
+
+Recommended representation
+Use save version 4 and a dedicated phase named carryMove. Keep the public command
+shape {kind:'move',x,y}. Do not make ordinary walk an allowed transfer-cargo phase,
+and do not relax F6's prohibitions on extract/construct/craft/pickup with transfer
+cargo. A dedicated phase makes the new permitted path explicit and gives its
+tick branch exactly two abilities: advance existing cargo toward the target,
+then hold it. It has no receipt, extraction, pickup or work-production branch.
+No second quantity field and no new custody flag are needed.
+
+While carryMove is active:
+- order is the explicit move target; next is null; dropoff is absent.
+- cargo, resource, extraction remainder work, and physical position are unchanged
+  by command acceptance. Movement begins on the next running tick.
+- A previously loaded transfer keeps u.transfer. That marker refers to the same
+  transfer job and resource; its per-actor pending allocation is already zero.
+  It is custody attribution, not authorization to resume the old transfer route.
+- A gathered load continues to have no transfer marker. It is still undelivered
+  production and is credited only by a later actual receipt.
+- The route ends at the exact accepted target. Reason: "Moving with 5 wood".
+
+At arrival, set order idle, phase idle, path [], next null, no dropoff. Retain
+cargo/resource/work and any transfer marker. Reason: "Holding 5 wood — choose
+Move or Stop and Return". No implicit receipt occurs even beside a store.
+The original transfer job remains alive while its load is held by this actor.
+
+Atomic admission and immediate transition
+Keep the accepted all-or-nothing selected-group admission used by this slice.
+First resolve every actor and validate every changing actor's target and route,
+without touching reservations, queues, reasons, paths, IDs or inventory. Invalid
+actor IDs, blocked/off-map/noninteger ground, or an unreachable selected actor
+return rejection with byte-for-byte identical serialized state. Do not introduce
+the broader canonical admitted/excluded actor registry in this bounded change.
+
+Prepare each accepted route once, then commit it together with the state change.
+No world tick occurs between these synchronous phases. On each changing actor:
+1. Release only that actor's unpicked transfer allocation referenced by order or
+   next, using the existing releaseTransfer accounting. Another actor's share
+   and any already carried load remain untouched.
+2. Replace old order with Move and clear next. Delete dropoff immediately so a
+   former store no longer counts this manually redirected load as incoming.
+3. If carrying, install carryMove and the prepared route directly. Do not call
+   home, transferHome, or the generic start path that resets work.
+4. If empty, retain the ordinary Move/walk behavior and its existing semantics.
+5. Prune only transfer jobs whose references and physical obligations are gone.
+
+Reissuing the same active Move is a no-op. Preserve its exact path, fractional
+position, work and cargo; do not restart routing or release anything again.
+A genuinely different Move supersedes it atomically from the current position.
+Reissuing Move after arrival may accept a zero-distance route and hold next tick;
+it must not deposit or generate another load.
+Deduplication must inspect the currently executing Move state, not u.next ||
+u.order. In particular, a v3-migrated actor returning with next = the same Move
+must accept a newly issued Move and redirect immediately. A queued eventual
+destination is not an already executing manual Move. Idle-with-cargo must never
+cause Stop to be skipped merely because its order is already idle; Stop still
+needs to request a physical return. Repeated Stop during the same active return
+may remain idempotent without a second refund or route restart.
+
+Origin-specific transitions
+A. Gathered cargo while extracting or returning: stop further extraction, retain
+   the complete already extracted load and nonnegative work remainder, redirect
+   directly to Move. The gather order is replaced, so arrival cannot restart it.
+   Stop later physically returns the gathered load and increments delivered once.
+B. Loaded transfer cargo: retain original job marker, typed amount and job totals;
+   cancel its route, not its matter. No transfer, recovered or production counter
+   changes at Move acceptance or arrival. Stop later chooses the nearest reachable
+   eligible store. Actual receipt at the original job destination increments that
+   job's delivered and the transferred counter; receipt elsewhere increments its
+   recovered field. Neither kind of transfer receipt increments production.
+C. Empty actor awaiting transfer pickup: release exactly its pending allocation,
+   increment job.cancelled/decrement remaining by that same amount, then ordinary
+   Move. Source physical stock is unchanged and becomes available immediately.
+D. Gathered cargo with next = transfer: cancel only the queued pending allocation,
+   retain gathered cargo as gathered cargo, clear next, then carryMove. Do not mark
+   the existing gathered material as the not-yet-picked-up transfer lot.
+E. A multi-actor job: moving one actor away changes only its allocation/route. Any
+   loaded marker keeps the job alive; other actors continue their authorized loads.
+
+Stop and other subsequent orders
+Stop and Return stays the public {kind:'idle'} command. After a manual loaded Move,
+clear that Move order before installing the existing return-and-idle settlement
+plan. This prevents a reroute or receipt from recognizing a stale Move as active.
+Keep cargo and original transfer attribution until receive clears them once.
+If no store is reachable, hold safely with cargo, an empty path and an explanatory
+reason. No automatic continuation of Move/gather/transfer follows Stop.
+
+Other accepted work commands remain the existing slice's disclosed return-first
+behavior for now. When replacing a carryMove, clear its Move identity before
+setting next = new work and returning. Do not advertise that this implements the
+canonical target-bound work/cache portion of IC02. A rejected replacement leaves
+the currently running Move and all custody exactly intact.
+
+Rerouting and arrival — required call-site audit
+command/start/tick/build currently contain separate paths that can route a loaded
+actor home. Changing only command would therefore be incomplete.
+- Introduce one dedicated Move-route helper, shared by acceptance and later replan,
+  whose result is target-directed movement or safe hold. It never calls home.
+- In build's existing reroute loop, recognize carryMove before the generic
+  "if cargo then home" branch. Replan the Move to its same explicit target.
+- If a new building covers that target or eliminates its route, retain cargo,
+  target, and work; phase becomes idle with path [] and a blocked-Move reason.
+  No home detour. A new explicit Move or Stop resolves the held load.
+- Arrival handling must not call receive. The existing generic walk completion
+  calls start and resets work; carryMove needs its own hold transition.
+- A carried transfer must not enter transferHome merely because u.transfer exists.
+  That function remains appropriate only for an actively authorized transfer phase.
+- If the next route node becomes invalid, the same helper replans or holds. New
+  geometry must never silently convert manual Move to return/transfer settlement.
+- Do not automatically restart a blocked Move when later construction is canceled.
+
+Existing path() rounds the actor's current location. The Move route helper must
+handle a target equal to that rounded cell but different from the actor's actual
+fractional position: it still needs a final segment to the exact target, not an
+empty path followed by an early arrival claim. If path() yields [] but actual
+coordinates differ from the target, use [target] as that final connector. For
+carryMove, pop the final node only when its actual distance is within this tick's
+movement budget, then set coordinates exactly to that already reached node; do
+not use the generic early-pop epsilon to leave a path-empty actor short of its
+target. This keeps the empty-path arrival invariant exact without teleporting
+or increasing the 3-cells/second movement budget. Preserve the existing movement
+speed and pathfinding model; this increment is not a wholesale movement rewrite.
+Mid-segment tests must inspect actual position/path on the next tick, prove no
+teleport and no hidden store route, and distinguish obstacle-required direction
+changes from Euclidean "closer to target" assumptions.
+
+Narrow validation proof
+For version 4, carryMove implies ALL of:
+- positive finite cargo <= 5 and a known resource;
+- order.kind === move with an integer in-bounds destination;
+- next === null and no dropoff;
+- existing valid bounded path data, with its final point equal to the Move target;
+  an empty path is legal only when the actor is already exactly at that target
+  awaiting the arrival tick;
+- a nonnegative work remainder;
+- if u.transfer exists, its original matching resource/job/worker/pending-zero
+  constraints and exact job quantity accounting continue to hold.
+Ordinary walk does not gain permission for loaded transfer cargo. All working
+and pickup phase exclusions from F6 remain. Loaded ordinary walk should not be a
+new v4 generated state; arrival/blocked holding uses idle, with empty path.
+No Move-specific field may waive general store sum, reservation or typed-resource
+checks. Unknown phases, carryMove with a gather/work order, an incompatible next
+order, false incoming dropoff, empty cargo, unmatched transfer or unpicked share
+must fail closed before adoption.
+
+This is a local transition proof: command preserves quantity/type, movement only
+changes position/path, arrival only changes control status. Only receive moves
+the quantity from actor to one store. Existing transfer-marker restrictions still
+prevent the F6 witness (wood cargo entering stone extraction). Every departure
+and pending cancellation remains accounted for by the original job equation.
+
+Schema and migration
+Top-level version 4 is required. Old version 3 readers reject it before mutation.
+Keeping version 3 and merely broadening walk or adding a flag is unsafe: the old
+reader may accept gathered-cargo walking, reset work/intent on arrival, or reroute
+it home when building. A nested flag cannot force that old reader to fail closed.
+
+Continue reading legitimate v1/v2/v3 saves with their existing format rules. Migrate
+v1/v2 through the current exact custody adoption; migrate v3 by retaining existing
+storage/cargo/reservations/orders and changing only the top-level schema version.
+Do not reinterpret an already saved legacy return followed by next Move as a new
+immediate Move: preserve the old saved physical plan until it finishes or the user
+issues a new command. New Move semantics apply to newly accepted explicit orders.
+Retain exact raw prior-version saves before durable v4 adoption, for both bootstrap
+and import, using the established append/deduplicate retention policy. On backup
+or main-save failure, preserve the existing recovery behavior and accurate status.
+Update future-format rejection tests to version 5. Add a frozen v3-reader negative
+control proving that every v4 save fails before processing cargo.
+
+Keep explicit extraction-residue recovery narrow. The known defective generations
+are v1/v2/v3; repairWorkResidue should not broaden to arbitrary new v4 negatives as
+part of this change. A damaged old save is repaired through the existing explicit
+raw-retention flow and only then migrated to v4. Constructors remain strict.
+
+Observable APIs and UI agreement
+Public command(ids,{kind:'move',x,y}) remains; no new user command enum is needed.
+The inspector reads carryMove/idle and the retained cargo. It must say immediate
+movement with the actual resource, then holding on arrival. Source/destination
+store incoming totals stop promising the canceled delivery once dropoff is cleared.
+economy().inTransit currently sums all actor-held loads, including held loads;
+its caption should remain truthful about carried quantity rather than promising
+continued travel. Production and transfer counters do not change merely on Move.
+Repeating an old transfer request must not silently reclaim a manually moving or
+held carrier. Existing cargo ownership may yield an unchanged-job response, but
+that response cannot resume its old route or reserve/pick up another load.
+
+Evidence required after critic/skeptic gates — Spark only
+1. Earn gathered partial/full loads and actual inter-store transfer loads. Issue
+   genuine Move input. On the very next running tick position advances along the
+   accepted target route, cargo/type stay identical, stocks/counters do not change.
+2. Arrive at target, including a tile next to a store. Wait and pause/reload: cargo
+   remains held, old work never restarts, and no automatic deposit occurs.
+3. Stop during Move and after arrival. Follow actual return through receipt; assert
+   per-resource conservation and the correct production-versus-transfer counters.
+4. Move an empty actor with an unpicked reservation, and a gathered-load actor with
+   queued transfer; assert exact individual release and other group shares intact.
+5. Repeated same Move on every tick is identical to one Move. Different Move redirects
+   from the current fractional position without a home leg or a second reservation.
+6. Invalid mixed actor/target/path requests are serialized-state-identical. Test
+   pending, carried, returning, manually moving and holding starting states.
+7. Place a legitimate funded building across the route; replan to the same target.
+   Block the target; hold safely. Keep inspecting typed custody and actual paths.
+8. Save/restore before Move, immediately accepted, mid-route, final-node/arrival,
+   holding, Stop-return and receipt. Assert strict valid and exact continued state.
+9. Reject forged carryMove states for each failed predicate, especially a transfer
+   marker paired with extract/construct/craft/pickup or an extra pending share.
+10. Preserve paid job progress and old v1/v2/v3 world fields on migration; preserve
+    raw originals under normal and faulted persistence; old v3 reader rejects v4.
+11. Update only the old tests that explicitly assert the superseded loaded Move
+    home-first behavior. Keep Stop and work-switch return-first coverage separate.
+
+No source implementation, parser/build/test, browser or simulation was run for
+this proposal. Parent owns integration and the independent critic/skeptic gates.

@@ -1,0 +1,146 @@
+IC02 migration browser changes — authored scope and static verification
+Recorded 2026-10-04 by /root/skeptic_one.
+
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts-ic02
+Base HEAD: b3c8fbad63881008657f376dcce9e9b5f770afcb
+This record describes uncommitted browser-test changes against that base. It is
+not a Spark result, parser result, build result or full IC02 acceptance claim.
+
+Exact final file SHA256 values, measured by read-only shasum:
+56e701d90243ba361487b4cfce2238ed7c7a194874cc317dfb1670b04ac266eb  tests/browser/hearth-rts.cjs
+aacdafeec0b7408024abf59a6880df3aa6cd2c59517959374174e908054bcf4a  tests/browser/hearth-rts-recovery.cjs
+ee48a08c7606b7ecb1d00c78d9fdf2bdb4edd683fdc7d0d134077a0be53b410f  tests/browser/hearth-rts-roundtrip.cjs
+1a3f1d4f3876a0ed514184362f264425f3c4b560b697427a7fbe1fffa507239f  tests/browser/hearth-rts-bootstrap.cjs
+
+Pinned read-only fixture SHA256 values:
+4fa74911ae0a0650885355e5e20b4cd2b532c83e4b8bed496a50866a09a63b0a  tests/fixtures/hearth-rts-input023-v3.html
+3b22d81b32f01f44fc033c488e68a91c027889780f82db380ea899f837f20be4  tests/fixtures/hearth-rts-engine-v3.txt
+Provenance: tests/fixtures/hearth-rts-v3-provenance.txt. The pinned HTML was built
+by Input023 from 3b15d6081f5396fcc579140c09d86e532674e2dd. That job's first browser
+test failed a stale water-message oracle after 83 tests and four builds passed;
+the pinned page is not evidence of a complete successful browser acceptance run.
+
+Authored changes and case counts
+
+1. hearth-rts.cjs — three migration-success cases, versions 1, 2 and 3 -> 4.
+The ordinary fresh journey and b3c8 corrected water rejection oracle are unchanged.
+Every migration retains exact original bytes in .before-v4; v1/v2 also retain
+.before-v3, and v1 retains .before-v2. Assertions independently preserve world
+fields. v3 preserves the complete local-storage structure and changes only the
+outer version. v1/v2 deliberately omit storage and require pooled stock to be
+adopted at the hearth once, with empty outpost stocks and the expected clean
+storage metadata. v1 also omits its historically absent tools/knapping fields.
+
+2. hearth-rts-recovery.cjs — seven startup and seven import cases.
+Startup: v2 .before-v3 failure, .before-v4 failure, main-write failure, success;
+v3 .before-v4 failure, main-write failure, success. Thus five startup write-fault
+cases and two successes. Import repeats the equivalent seven cases using the
+.import-before-v3/.import-before-v4 families: five write-fault cases and two
+successes. Assertions verify earlier successful backup families remain exact,
+later families are absent when an earlier write fails, and v3 does not enter the
+older pooled-storage backup family. Startup backup failures export original bytes;
+startup main failure retains legacy disk bytes while exporting the adopted v4
+memory and showing the Saving stopped warning. Import failures keep the prior
+disk and live memory, remain paused after Close and a controlled wait, and retain
+truthful failure text. Success requires the independently expected v4 world.
+
+Two additional retention sequences, one each for projected v2 and v3, issue
+A / identical A / distinct B / distinct C with a failed C main write. Each sequence
+has three successful imports and one failed replacement. Identical A reuses its
+backup; B and C occupy suffix .1 and .2 without overwriting earlier bytes; .3
+remains absent. All applicable families are checked, and failed C preserves B in
+both storage and actual UI downloads before and after the controlled wait.
+Recovery therefore authors twelve write-fault attempts in total: five boot,
+five ordinary import, and two failed-C retention attempts.
+
+The paired focus/colliding-ID regression is unchanged from b3c8. Its shared open
+helper still uses the original 1280x720 viewport, ordinary visible canvas click,
+and old-focus versus preventScroll control. The focus block, coordinate/scroll
+telemetry, Cancel control checks and post-import reservation checks were not
+rewritten or weakened. The diff changes only the migration portion and final
+migration summary around that existing block.
+
+3. hearth-rts-roundtrip.cjs — three explicitly distinct extraction arms.
+(a) Current v4 with exactly one extraction clamp reverted to old subtraction:
+the generated negative-work state must fail valid() and repairWorkResidue must
+return null. (b) Current clamped v4: every sampled checkpoint must remain valid,
+conserve typed resources and survive exact paused reload before continuation.
+(c) Pinned v3 HTML, SHA-checked and with exactly one identical clamp reversion:
+real UI gathering produces the separate legacy-v3 negative checkpoint. The full
+loaded initial world and version are checked before gathering. Both negative arms
+observe the actual second-extraction residue and two carried items; the legacy
+repair remains version 3 until explicit constructor adoption.
+
+Each arm uses Journey/Export, waits for the download event registered before the
+click, saves the actual file and compares its JSON to the exact paused checkpoint.
+The legacy artifact is hearth-rts-roundtrip-legacy-v3-old-subtraction.json; its
+download companion is hearth-rts-roundtrip-legacy-v3-old-subtraction-download.json.
+The metadata records seed projection, pinned source hash and one-clamp mutation.
+
+4. hearth-rts-bootstrap.cjs — legacy repair and current rejection stay separate.
+Bootstrap consumes the separate legacy-v3 checkpoint and its actual downloaded
+bytes, not the current-v4 subtraction artifact. It independently copies that
+checkpoint and changes only the observed worker's residue to zero, then compares
+repairWorkResidue's result to that copy. It compares browser adoption against
+new Camp(repaired).s and independently requires only the outer version change to
+4, retaining local custody and all other world fields. This avoids an expected
+state based solely on the candidate constructor's output.
+
+Legacy bootstrap matrix: four startup cases and four import cases. Each side has
+roundoff-backup failure, v4-backup failure, main-write failure, and success: six
+write-fault cases and two successes total. Both backup families retain the exact
+downloaded source bytes; prior .before-v3/import-before-v3 remain absent for v3.
+The test distinguishes original-byte exports before adoption from migrated-memory
+exports after a failed startup main write, checks live/disk preservation after a
+failed import, and checks paused success/reload/controlled-wait behavior.
+
+Two separate current-v4 negative cases exercise startup rejection with exact raw
+recovery download, and import rejection before confirmation with unchanged prior
+disk and identical before/after live exports. They assert no legacy-repair/version
+backup is created. The existing two storage-read fault cases, five present-invalid
+startup payloads, absent-save case, four falsy-JSON import attempts, and native-link
+Space controls remain in the suite.
+
+Synchronization and evidence limits
+
+Recovery's import helper closes any old dialog, reopens Journey, asserts the fresh
+normal status, uploads, then waits for that attempt's hidden-dialog success or new
+failure text. Bootstrap preserves the existing Close/reopen synchronization for
+each invalid-import attempt and adds a fresh nonmatching status check for current
+v4 rejection. Real downloads register their event before clicking Export; failed
+imports compare live exports, not only the last saved storage snapshot. Conditional
+Journey opening avoids attempting to open an already-open modal during recovery.
+
+The v3 seeds are CONTROLLED COMPATIBILITY PROJECTIONS of the current camp earned
+through ordinary UI: only outer version changes from 4 to 3. They are not untouched
+historical saves. Main/recovery compatibility seeds have idle, empty workers and
+earned stock outside the hearth, so those cases do not establish active-transfer
+migration. The pinned v3 page subsequently performs real UI gathering to generate
+the separate loaded negative checkpoint; that is distinct from merely relabeling
+a current negative checkpoint. These suites do not prove full IC02 behavior or
+uncovered cargo/transfer migration states. The new artifacts and PASS messages
+are authored expectations pending execution, not outputs produced on M6.
+
+Actual child static-review outcomes
+
+/root/skeptic_one/migration_browser authored only the main test's migration tail
+and, in a separate bounded task, the recovery file's migration portion. Its final
+self-review reported the seven/seven/two case counts, fresh Journey synchronization,
+conditional export opening, and unchanged paired 1280x720 focus block. It explicitly
+reported no execution and the idle/empty-seed active-cargo coverage limitation.
+This is author self-review, not an independent acceptance verdict.
+
+/root/skeptic_one/roundtrip_scan independently read the modified roundtrip and
+bootstrap files against current source and fixture provenance without edits. Its
+final verdict was: "Static review clear: no concrete test/oracle mistake found"
+in those two files. It specifically verified separate current-v4 unrepaired and
+pinned-v3 controls, the version-only seed projection, actual legacy exported-byte
+consumption, independent work-only repair and version-only adoption expectations,
+backup/main-write behavior, and both pinned fixture hashes. It explicitly stated
+that Spark execution remains necessary to establish runtime passage.
+
+The owning agent inspected all four final diffs statically. No new concrete issue
+was identified in this bounded implementation/review. No node/application runtime,
+parser, tests, lint, builds, browser or simulation was executed on M6. No commit
+was made by this agent or its children. Runtime validation remains pending on the
+final immutable Spark candidate.

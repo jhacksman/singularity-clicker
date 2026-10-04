@@ -1,0 +1,257 @@
+IC02 immediate loaded Move: UI plan and later navigation integration map
+2026-10-04. Planning only. No application edits or execution.
+
+Scope and evidence
+Reviewed isolated worktree hearth-rts-ic02 at
+3b15d6081f5396fcc579140c09d86e532674e2dd, the engine owner's transition proposal,
+COMMAND-CONTRACT section 1 and the Move portion of IC02. Frozen hearth-rts was
+not changed. This increment is immediate Move with cargo, arrival holding, and
+explicit Stop and Return. Full IC02 work-switch/cache behavior, a general Hold
+command, Resume plan, automation authority, queue systems and campaign transfers
+remain deferred. Do not call this full IC02 or full specification completion.
+
+The proposed engine contract is the source of movement/custody truth, pending
+critic/skeptic review: schema v4, dedicated carryMove phase, existing Move command,
+unchanged cargo/resource, next cleared, stale dropoff removed. Transfer cargo
+keeps its original job marker as custody. Arrival is idle holding the same load.
+Only actual later receipt credits storage/production/transfer counters. UI must
+never modify these fields to make a status or action appear successful.
+
+IC02 UI changes proposed for the later authorized implementation
+
+1. Command help and dispatch feedback
+
+Current view.js:40 applies returnNote(workers) to every dispatch, and :62-66
+therefore promises a store detour even for Move. Replace this with verb-aware
+feedback. Capture the relevant pre-command cargo/intent, but report acceptance
+only after command succeeds. Reuse one derived description for mouse, M, touch
+Move and unambiguous contextual ground Move. Keep Gather/Build/Craft contextual
+targets and the current all-selected formation preflight.
+
+Suggested visible copy (quantities/resources come from actual selected actors):
+- Move mode: "Move: choose clear, reachable ground. Carried goods move with the
+  villager and stay with them on arrival." Retain blocked deposit/building help.
+- Running gathered load: "Move with 3 wood · hold the load on arrival."
+- Paused gathered load: "Move planned with 3 wood · starts on Resume."
+- Running transfer load: "Move with 5 wood · this carrier's delivery is paused."
+  The pause concerns this actor's old delivery route, not the entire transfer job
+  or the simulation. If paused, use "Move planned … starts on Resume" first.
+- Mixed selection: "Move assigned · N villagers · carried loads stay with their
+  carriers." Do not fabricate one combined resource or say every actor has cargo.
+- Same active destination: "Already moving to this destination" (or "This Move
+  is already planned" while paused). No new acceptance, path reset or cargo action.
+- Invalid group target: retain the specific rejection reason and add "Previous
+  orders kept." Every selected actor, queued share, cargo and paid job must remain
+  unchanged; no success flash after a partial application.
+
+Move on a live deposit/building remains invalid; exhausted clear ground can be
+accepted when the engine admits it. Formation targets must all be validated
+before commands. Newly issuing the same destination as an old saved next=Move
+must redirect immediately; a legacy queued Move is not an active duplicate.
+After arrival, same-tile Move must never imply deposit or resume old work.
+
+2. Visible actions and persistent explanation
+
+Keep the existing #move, #stop and armed targeting controls. Prefer the visible
+Stop label "Stop and Return", retaining S and "return cargo". Empty Stop still
+stops the current order; loaded Stop explicitly returns goods to a reachable
+eligible store and then idles. Preserve Stop's existing enabled-when-unblocked
+readiness behavior. No new general Hold button or Resume transfer is implied.
+
+Replace shell.html's universal #cargo-command-note with a short truthful rule:
+"Move carries goods and holds them on arrival. Stop returns goods. New work
+orders still return carried goods first."
+This last sentence deliberately discloses the deferred work-switch behavior.
+Existing placement/knapping return-first copy should remain accurate. Loaded
+Gather/Build/Craft dispatch continues to disclose its return-first sequence.
+
+Stop feedback must not promise the original transfer receiver or instant credit:
+- accepted return: "Stop and Return · carrying 5 wood to reachable storage";
+- paused: "Return planned · starts on Resume";
+- no route: "Holding 5 wood · no reachable store. Move to another location or
+  try Stop and Return when a route opens."
+Use the actual engine result/status; do not show the accepted-return sentence
+when home() failed. Repeated active Stop must not reset/recredit; Stop on an idle
+actor holding cargo must still request a physical return.
+
+3. Portraits, inspector and economy
+
+Current view.js:229 hides the action of a loaded non-idle actor behind a bare
+quantity. Derive a compact next-action label from state, with the engine's reason
+available in the inspector/title:
+- carryMove: "Moving · 5 wood"; paused presentation: "Move planned · 5 wood";
+- arrival idle with cargo: "Holding · 5 wood";
+- return: "Returning · 5 wood"; distinguish an active transfer delivery if useful;
+- blocked manual Move: "Move blocked · holding 5 wood".
+Do not mislabel an extractor with cargo as returning; use its actual phase.
+The inspector should avoid repeating "carrying" when the reason already includes
+the amount. Arrival copy: "Holding 5 wood. Choose Move or Stop and Return."
+The persistent action tray supplies those actual controls, including touch.
+
+For a loaded transfer actor, add concise custody context when inspected:
+"This load belongs to the transfer from [source] to [assigned receiver]. Its
+delivery is paused for this villager. Stop and Return uses reachable storage."
+Resolve names by stable IDs; do not imply that another actor's delivery stopped.
+Source-to-receiver context is provenance, not a guarantee that Stop selects that
+receiver. A receipt elsewhere is recovery, not new gathered production.
+
+Keep economy().inTransit labelled "Carried": it includes motionless held cargo.
+Keep held villagers in the idle count unless a separately reviewed change says
+otherwise; a tooltip/helper may clarify "Idle includes villagers holding goods."
+Do not classify them as empty/free. Clearing dropoff in the engine must remove
+their old store incoming promise immediately; no UI-side stock adjustment.
+
+4. Existing transfer button edge case
+
+activeTransfer/quoteTransfer can return the original job ID while a manually
+moved/held carrier still owns its load. Current storeUI (:210-212) reports
+"Transfer assigned" even when that repeated request does not change movement.
+The new UI must not claim this resumes delivery. Prefer an explicit unchanged
+result from the engine, or derive the existing job/actor status without mutation:
+"Transfer already exists · selected carrier is holding its load. Use Move or
+Stop and Return." Keep other active carriers accurately described. It is safe
+to disable that duplicate action with this explanation; do not clear ownership,
+reserve another lot, or add an unimplemented Resume action. A repeated old Send
+must not silently reclaim a manually moving/held carrier.
+
+5. UI evidence required on Spark after implementation
+
+Use real earned gathered and transfer loads, then actual M/button/touch target
+input. Observe the first running displacement, actual route, exact held amount,
+arrival and continued idle holding. While paused, confirm planning copy and no
+movement until Resume. A store-edge Move must not deposit. Show visible status
+and actions in portrait/inspector/tray, not just internal engine assertions.
+Repeat Move, redirect mid-segment, Stop during/after Move, Stop with no reachable
+store, mixed-group rejection, and a building-induced blocked/replanned route.
+Check no stale incoming; physical receipt alone changes the appropriate counter.
+Exercise duplicate Send while moving/holding, preserving custody and other
+carriers. Roundtrip moving/held/blocked/returning states with exact raw backups.
+Preserve UX023 keyboard ownership, touch confirmation, map pan/hit testing and
+preventScroll focus behavior; avoid unrelated changes to those input systems.
+Use an immutable old-behavior negative control showing the former home detour
+from the same earned load. No physical-touch/human-prediction claim from headless
+input. Engine proof plus browser proof are both required for this Move slice.
+
+Navigation integration: later, after the IC02 candidate is stable
+
+Read-only package reviewed:
+/task-13/navigation-presentation-444d252/DELIVERY.md and INTEGRATION.md;
+source /task-13/campaign-navigation at
+444d252c09b205e1f431ee870d2e328f1803214c.
+Seven-file navigation-artifact.tar SHA-256:
+10d15728f45a8b58b5df28e852c3bea5a9d4b3f8c240f38c75dc7e64f2f1ef07.
+Its reported Spark003 pass covers an opt-in fixture at base d3116663, not this
+worktree, future v4, or native production mounting. Preserve that evidence as
+package provenance, not a combined integration pass.
+
+Exact additive files to import once authorized:
+  src/campaign-navigation/adapter.cjs
+  src/campaign-navigation/browser.js
+  src/campaign-navigation/styles.css
+  tests/campaign-navigation.test.cjs
+  tests/browser/campaign-navigation.cjs
+  docs/campaign-navigation-integration.md
+  docs/evidence/campaign-navigation-review.json
+The supplied complete patch modifies no existing app/build files. Apply the
+whole artifact only once; do not mix it with already-applied constituent commits.
+
+Exact host integration map (paths relative to hearth-rts-ic02):
+- build.mjs:7-10: append the scoped navigation stylesheet to Cave CSS and inline
+  the RTS pure engine, policy adapter and browser helper in the Cave build. Keep
+  all asset replacement/self-contained output behavior. Do not include RTS view.
+- src/shell.html:63: add unique script insertion markers. Order is Cave engine,
+  RTS engine, navigation policy, navigation browser helper, then Cave view.
+- src/view.js:143 completion(): replace the old primary hearth.html anchor with
+  a dedicated navigation section and mount after openModal creates its DOM.
+  Preserve completed-Cave statistics, baseline-preservation text and Stay/Replay.
+- src/view.js:128 openModal(): dispose the previous helper before innerHTML
+  replacement. Keep one controller reference and clear it after disposal.
+- src/view.js:129-130 closeModal/native cancel/backdrop: dispose for every close
+  path. A native dialog close listener covers direct close callers. Stay and
+  Replay must dispose, as must replacement by settings/reset/import/error modals.
+- src/view.js:145 pagehide: add disposal without disturbing the existing save.
+- dist/index.html and other generated outputs: regenerate only on Spark through
+  root's build process; no manual generated-file editing or M6 execution.
+- src/shell.html:14 ordinary legacy Hearth header link: package does not own a
+  blanket route replacement. Preserve unrelated legacy routes unless separately
+  authorized; the explicit completed-Cave helper targets hearth-rts.html.
+
+Mount API:
+SingularityNavigationBrowser.mount({container, readSource?, listSourceKeys?,
+  validateCave?, validateRTS?, developmentPreview?, navigate?, exportSource?}).
+Controller exposes ready, refresh(), activate(action), snapshot and dispose().
+Same-container remount disposes its predecessor, but modal replacement creates
+a different container, so explicit host disposal remains necessary. It must
+invalidate asynchronous reads/actions as well as storage listeners. Custom read
+and key enumeration must address the same user profile. No startup navigation,
+save adoption or campaign grant; navigation remains explicit user activation.
+
+Use scoped [data-campaign-navigation] CSS, including the real modal's focus,
+wrapping and scrolling behavior. Retain native anchor semantics and UX023's
+control ownership. A possible introduction:
+"Next: the Hearth opening. Gather finite supplies, build an eastern outpost,
+and establish a workshop. This is the opening preview of the next age."
+Remove surrounding promises about the old ember/cooking destination when
+integrating. Do not call the RTS opening full Hearth completion, Agriculture
+first surplus full Agriculture completion, or navigation a committed transfer.
+
+Compatibility changes needed before mounting
+
+A. Destination admission must match the current loader. Adapter source() calls
+validateRTS on a clone, but its browser default is merely HearthRTS.valid. The
+destination first applies repairWorkResidue, then constructs Camp, including
+legacy migration and strict postvalidation (RTS view.js:16; engine.js:49-64).
+Unchanged helper can reject a recoverable old roundoff save, and legacy valid()
+alone does not establish a successful post-migration destination state.
+Provide a pure admission helper or explicit mount validator that mirrors those
+steps on a clone without storage writes. Preserve raw bytes and hashes; actual
+retention/repair/adoption stays destination-owned. If the helper represents
+repair eligibility, disclose recovery rather than claiming the raw source was
+already repaired. Unknown formats and failed migration still block entry.
+
+B. Extend exact backup-family recognition. Existing KEYS/SCHEMAS/KIND_SOURCE and
+backupKind() cover .before-v2, .before-v3, .import-before-v3, each with positive
+numbered suffixes. Current main additionally creates .before-work-roundoff and
+.import-before-work-roundoff. Add their base and .1/.2/etc names, preservation
+rows, identities, labels and exact export coverage. They are preserved originals,
+including malformed residue; export must not depend on them being valid worlds.
+Do not broaden enumeration to arbitrary localStorage data or adopt a backup.
+
+C. Coordinate schema v4 explicitly. The package rejects payload v4 before its
+validator because SCHEMAS.rts is [1,2,3]; its tests deliberately assert that
+rejection. After the engine/persistence contract is stable, extend the row and
+matching validator, move unknown-future fixtures to v5, and cover proposed
+.before-v4/.import-before-v4 families plus numbered collisions. Their accepted
+preservation versions must match actual raw migration/import sources. Retain
+existing roundoff families and narrow v1/v2/v3 repair rules. A payload version
+bump does not itself require renaming the existing .hearth-rts.v1 storage key;
+use the parent-approved key decision and preserve all old source namespaces.
+Navigation's own adapterVersion is distinct from the RTS payload schema.
+
+D. Keep campaign metadata fail-closed. The standalone helper intentionally
+rejects campaign/content identity metadata and creates no durable root, grants,
+people/material transfer or completion proof. v4 support does not expand that
+authority. Current Cave and legacy Hearth/archive/Agriculture keys remain intact.
+
+Combined verification gate for the later integration
+
+The delivered tests/browser/campaign-navigation.cjs:18 injects scripts/styles;
+its assembled flow at :230-235 also replaces the old paragraph and link itself.
+Adapt that flow to load the actual built index.html and native mount. Otherwise
+obsolete selectors will fail, or test-side integration will hide host defects.
+Keep standalone fixture tests separately for adapter-specific behavior.
+
+On the final combined immutable source, Spark must check: syntax/unit/build;
+actual Cave completion -> explicit RTS opening; real modal focus, Stay/Replay,
+Escape/backdrop/native-close/replacement/pagehide disposal; async stale callback
+rejection; repeated mount; refresh/back/return; zero mount-only save writes or
+automatic navigation. Include roundoff-recoverable source, post-migration
+rejection, unreadable/falsy/malformed raw source, exact every-backup download,
+numbered collisions, v1/v2/v3 migration, v4 carryMove/held resume and v5 blocking.
+Check scoped CSS at narrow width/doubled text and available controls without
+claiming native zoom, physical touch or screen-reader usability from automation.
+Parent's independent critic/skeptic/verifier gates remain prerequisites for edits
+and closure; package approval alone cannot approve this combined integration.
+
+Only this planning deliverable was written. No app files, frozen worktree,
+runtime, parser, tests, builds, browser sessions, commits or publication changed.

@@ -7,7 +7,7 @@ test('finite deposits conserve stock, cargo and spent resources through depletio
 });
 test('repeated gather commands cannot accelerate extraction or teleport carried loads',()=>{
  const a=new Camp(),b=new Camp();for(const g of [a,b])g.command(['u0'],{kind:'gather',target:'d0'});for(let i=0;i<600;i++){a.tick(.1);b.command(['u0'],{kind:'gather',target:'d0'});b.tick(.1);}assert.deepEqual(b.s,a.s);
- const g=new Camp();g.command(['u0'],{kind:'gather',target:'d0'});while(!g.s.units[0].cargo)g.tick(.1);const stock=g.s.stock.wood;g.command(['u0'],{kind:'move',x:25,y:13});assert.equal(g.s.stock.wood,stock);assert.ok(g.s.units[0].cargo>0);steps(g,30);assert.ok(g.s.stock.wood>stock);assert.equal(g.s.units[0].cargo,0);assert.equal(g.s.units[0].x,25);
+ const g=new Camp();g.command(['u0'],{kind:'gather',target:'d0'});while(!g.s.units[0].cargo)g.tick(.1);const stock=g.s.stock.wood;g.command(['u0'],{kind:'move',x:25,y:13});assert.equal(g.s.stock.wood,stock);assert.ok(g.s.units[0].cargo>0);steps(g,30);assert.equal(g.s.stock.wood,stock);assert.ok(g.s.units[0].cargo>0);assert.equal(g.s.units[0].x,25);g.command(['u0'],{kind:'idle'});steps(g,30);assert.ok(g.s.stock.wood>stock);assert.equal(g.s.units[0].cargo,0);
 });
 test('construction consumes its displayed cost exactly once and cancellation refunds once',()=>{
  const g=new Camp();g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});steps(g,100);g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d2'});steps(g,110);const before={...g.s.stock},total=totals(g),result=g.build('outpost',11,15,['u0']);assert.ok(result.id);assert.equal(g.s.stock.wood,before.wood-60);assert.equal(g.s.stock.stone,before.stone-20);assert.deepEqual(totals(g),total);assert.ok(g.cancel(result.id));assert.deepEqual(g.s.stock,before);assert.equal(g.cancel(result.id),false);assert.deepEqual(totals(g),total);
@@ -17,7 +17,7 @@ test('workers path through the ford and an eastern outpost shortens return trips
  const g=new Camp(),u=g.s.units[0],path=g.path(u,[{x:26,y:13}]);assert.ok(path.length>0);assert.ok(path.every(p=>!g.water(p.x,p.y)));assert.ok(path.some(p=>p.x===18&&p.y>=11&&p.y<=14));g.command(['u0'],{kind:'move',x:26,y:13});steps(g,30);assert.equal(u.x,26);assert.ok(g.visible(29,15));u.cargo=1;u.resource='wood';g.home(u);const original=u.path.length;g.s.buildings.push({id:'fixture-outpost',kind:'outpost',x:23,y:11,done:true,work:24,cost:{wood:60,stone:20}});g.home(u);assert.ok(u.path.length<original/2);
 });
 test('invalid/future saves fail closed; unknown orders and unreachable sites cannot corrupt saves',()=>{
- const g=new Camp();for(const change of [s=>s.version=4,s=>s.stock.wood=-1,s=>s.units[0].cargo=9,s=>s.deposits[0].amount=Infinity,s=>s.units[0].order={kind:'made-up'}]){const s=JSON.parse(g.serialize());change(s);assert.throws(()=>new Camp(s));}const before=g.serialize();assert.ok(g.build('outpost',18,2,['u0']).error);assert.equal(g.serialize(),before);assert.ok(valid(g.s));
+ const g=new Camp();for(const change of [s=>s.version=5,s=>s.stock.wood=-1,s=>s.units[0].cargo=9,s=>s.deposits[0].amount=Infinity,s=>s.units[0].order={kind:'made-up'}]){const s=JSON.parse(g.serialize());change(s);assert.throws(()=>new Camp(s));}const before=g.serialize();assert.ok(g.build('outpost',18,2,['u0']).error);assert.equal(g.serialize(),before);assert.ok(valid(g.s));
 });
 test('a selected group reserves distinct gathering positions around a deposit',()=>{
  const g=new Camp();g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});
@@ -41,7 +41,7 @@ test('crafted tools improve extraction without creating resources or increasing 
  const before=totals(g);steps(plain,2);steps(g,2);assert.ok(g.s.units[0].cargo>plain.s.units[0].cargo);assert.ok(g.s.units[0].cargo<=5);assert.deepEqual(totals(g),before);
 });
 test('RTS v1 migrates without changing world, cargo or orders and future formats are rejected',()=>{
- const g=new Camp();g.command(['u0'],{kind:'gather',target:'d0'});while(!g.s.units[0].cargo)g.tick(.1);const old=JSON.parse(g.serialize());old.version=1;delete old.tools;delete old.knapping;delete old.storage;const raw=JSON.stringify(old),migrated=new Camp(old);assert.equal(JSON.stringify(old),raw);assert.equal(migrated.s.version,3);assert.equal(migrated.s.tools,false);assert.equal(migrated.s.knapping,null);for(const field of ['stock','spent','deposits','buildings','units','seen'])assert.deepEqual(migrated.s[field],old[field]);assert.ok(valid(migrated.s));const future={...migrated.s,version:4};assert.throws(()=>new Camp(future));
+ const g=new Camp();g.command(['u0'],{kind:'gather',target:'d0'});while(!g.s.units[0].cargo)g.tick(.1);const old=JSON.parse(g.serialize());old.version=1;delete old.tools;delete old.knapping;delete old.storage;const raw=JSON.stringify(old),migrated=new Camp(old);assert.equal(JSON.stringify(old),raw);assert.equal(migrated.s.version,4);assert.equal(migrated.s.tools,false);assert.equal(migrated.s.knapping,null);for(const field of ['stock','spent','deposits','buildings','units','seen'])assert.deepEqual(migrated.s[field],old[field]);assert.ok(valid(migrated.s));const future={...migrated.s,version:5};assert.throws(()=>new Camp(future));
 });
 
 const earnedToolGatherer=(CampType=Camp)=>{const {g,id}=earnedWorkshop(CampType);assert.equal(g.beginKnapping(id,g.s.units.map(u=>u.id)),null);steps(g,25);assert.equal(g.s.tools,true);assert.equal(g.s.knapping.done,true);assert.equal(g.command(['u0'],{kind:'gather',target:'d1'}),1);return g;};
@@ -58,42 +58,47 @@ test('earned tools remain strictly saveable through every extraction tick, carri
  const paused=g.serialize();for(let i=0;i<50;i++){assert.equal(g.serialize(),paused);assert.equal(new Camp(JSON.parse(paused)).serialize(),paused);}assert.deepEqual(totals(g),before);
 });
 
-let generatedResidue;
-const naturalResidue=()=>{
- if(generatedResidue)return structuredClone(generatedResidue);
+const generatedResidue={};
+const naturalResidue=(legacy=false)=>{
+ const generation=legacy?'v3':'v4';if(generatedResidue[generation])return structuredClone(generatedResidue[generation]);
  // Negative control differs only in the extraction remainder assignment; all other source and inputs match.
- const fs=require('node:fs'),vm=require('node:vm'),source=fs.readFileSync(require.resolve('../src/hearth-rts/engine.js'),'utf8'),clamp='u.work=Math.max(0,u.work-interval)';
+ const fs=require('node:fs'),vm=require('node:vm'),source=fs.readFileSync(legacy?require('node:path').join(__dirname,'fixtures/hearth-rts-engine-v3.txt'):require.resolve('../src/hearth-rts/engine.js'),'utf8'),clamp='u.work=Math.max(0,u.work-interval)';
  assert.equal(source.split(clamp).length,2,'The old-behavior control must replace exactly one assignment');
  const context={module:{exports:{}},structuredClone};vm.runInNewContext(source.replace(clamp,'u.work-=interval'),context,{filename:'hearth-rts-old-remainder-control.js'});
- const old=earnedToolGatherer(context.module.exports.Camp),fixed=earnedToolGatherer(),before=totals(old);assert.deepEqual(JSON.parse(old.serialize()),JSON.parse(fixed.serialize()));
+ const fixedContext={module:{exports:{}},structuredClone};vm.runInNewContext(source,fixedContext,{filename:'hearth-rts-fixed-remainder-control.js'});
+ const old=earnedToolGatherer(context.module.exports.Camp),fixed=earnedToolGatherer(fixedContext.module.exports.Camp),before=totals(old);assert.equal(old.s.version,legacy?3:4);assert.deepEqual(JSON.parse(old.serialize()),JSON.parse(fixed.serialize()));
  for(let i=0;i<600;i++){
   old.tick(.1);fixed.tick(.1);const raw=JSON.parse(old.serialize()),u=raw.units[0];assert.deepEqual(totals(old),before);assert.deepEqual(totals(fixed),before);
   if(u.work<0){
    assert.ok(u.work>=-1e-12);assert.equal(u.phase,'extract');assert.equal(u.cargo,2);assert.equal(u.resource,'wood');assert.equal(valid(raw),false);assert.ok(valid(fixed.s));
    const expected=structuredClone(raw);expected.units[0].work=0;assert.deepEqual(JSON.parse(fixed.serialize()),expected,'The entire natural trace differs only in the repaired remainder');
    old.command(['u0'],{kind:'idle'});const returning=JSON.parse(old.serialize());assert.equal(returning.units[0].phase,'return');assert.equal(returning.units[0].work,u.work);
-   generatedResidue={extract:raw,returning};return structuredClone(generatedResidue);
+   generatedResidue[generation]={extract:raw,returning};return structuredClone(generatedResidue[generation]);
   }
   assert.deepEqual(raw,JSON.parse(fixed.serialize()));
  }
  assert.fail('The old subtraction must naturally reproduce a negative extraction remainder');
 };
-test('old subtraction naturally produces an invalid earned-tools save and explicit repair changes only its residue',()=>{
- const examples=naturalResidue();for(const original of [examples.extract,examples.returning]){const raw=JSON.stringify(original),before=totals({s:original});assert.equal(valid(original),false);assert.throws(()=>new Camp(original));
+test('current v4 subtraction negative control remains invalid and explicitly unrepaired',()=>{
+ const examples=naturalResidue();for(const original of [examples.extract,examples.returning]){const raw=JSON.stringify(original);assert.equal(original.version,4);assert.equal(valid(original),false);assert.equal(repairWorkResidue(original),null);assert.throws(()=>new Camp(original));assert.equal(JSON.stringify(original),raw);}
+});
+test('pinned v3 subtraction naturally produces an invalid earned-tools save and repair changes only its residue',()=>{
+ const examples=naturalResidue(true);for(const original of [examples.extract,examples.returning]){const raw=JSON.stringify(original),before=totals({s:original});assert.equal(valid(original),false);assert.throws(()=>new Camp(original));
   const repaired=repairWorkResidue(original),expected=structuredClone(original);expected.units[0].work=0;assert.notEqual(repaired,original);assert.deepEqual(repaired,expected);assert.equal(JSON.stringify(original),raw);assert.equal(valid(repaired),true);assert.equal(repairWorkResidue(repaired),null);
   const restored=new Camp(repaired);steps(restored,30);assert.ok(valid(restored.s));assert.deepEqual(totals(restored),before);assert.equal(JSON.stringify(original),raw);
  }
 });
 
 test('explicit work-residue recovery preserves v1/v2/v3 world state before normal migration',()=>{
- const {extract}=naturalResidue();for(const version of [1,2,3]){const original=structuredClone(extract);original.version=version;if(version<3)delete original.storage;if(version===1){delete original.tools;delete original.knapping;}const raw=JSON.stringify(original),before=totals({s:original});
+ // v1/v2 compatibility inputs are explicitly projected from the generated pinned-v3 checkpoint.
+ const {extract}=naturalResidue(true);for(const version of [1,2,3]){const original=structuredClone(extract);original.version=version;if(version<3)delete original.storage;if(version===1){delete original.tools;delete original.knapping;}const raw=JSON.stringify(original),before=totals({s:original});
   const repaired=repairWorkResidue(original);assert.ok(repaired);assert.equal(repaired.version,version);assert.equal(JSON.stringify(original),raw);assert.equal(valid(original),false);assert.equal(valid(repaired),true);
-  const migrated=new Camp(repaired);assert.equal(migrated.s.version,3);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(migrated.s[field],repaired[field]);assert.deepEqual(totals(migrated),before);assert.equal(JSON.stringify(original),raw);
+  const migrated=new Camp(repaired);assert.equal(migrated.s.version,4);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(migrated.s[field],repaired[field]);assert.deepEqual(totals(migrated),before);assert.equal(JSON.stringify(original),raw);
  }
 });
 
 test('work-residue repair rejects material negatives, unrelated work, transfer cargo and otherwise malformed saves',()=>{
- const {extract}=naturalResidue();const mutations=[
+ const {extract}=naturalResidue(true);const mutations=[
   s=>s.version=4,s=>s.units[0].work=-1.0001e-12,s=>s.units[0].work=-.1,s=>s.units[0].work=-Infinity,
   s=>s.units[0].work=NaN,s=>s.units[0].cargo=0,s=>s.units[0].cargo=6,s=>s.units[0].resource='stone',
   s=>s.units[0].order.target='missing',s=>s.units[0].order={kind:'build',target:s.buildings[1].id},

@@ -1,0 +1,103 @@
+IC02 released view/shell candidate: static verification record
+2026-10-04
+
+Candidate identity and scope
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts-ic02
+Base HEAD: b3c8fbad63881008657f376dcce9e9b5f770afcb
+Application base: 3b15d6081f5396fcc579140c09d86e532674e2dd
+UI owner: /root/skeptic_two
+Independent static reviewer: /root/skeptic_two/ui_static
+
+Released source SHA-256, rechecked when recording this report:
+  src/hearth-rts/view.js
+  ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c
+  src/hearth-rts/shell.html
+  124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd
+
+The owner's application changes are only these two files: view +53/-9 lines;
+shell +2/-2 lines. No styles, authored art, input ownership, selector contracts
+or navigation files were changed by this owner. Engine/reducer/browser work
+belongs to other owners and was concurrent, not part of this release verdict.
+The frozen hearth-rts worktree was not an edit target.
+
+Released behavior
+- Move feedback distinguishes running carrying from paused planning, says that
+  carried goods remain with their carriers on arrival, and does not append the
+  old return-first note. Other work orders still disclose return-first behavior.
+- Portrait and inspector distinguish carryMove, arrival holding, blocked Move
+  holding, physical return and transfer delivery. Transfer provenance belongs to
+  this carrier; the wording does not claim the whole multi-carrier job stopped.
+- Stop is visibly named Stop and Return. Feedback reads post-command actor phase
+  to distinguish an actual return route from blocked/crowded cargo holding.
+- Duplicate quote/action detects quote.id before transfer(). It labels the old
+  amount as the original allocation and says custody and delivery are unchanged.
+  The existing-job button becomes Check existing transfer; it does not promise
+  a resumed delivery or create a new resume command.
+- Startup state.version<4 retains exact original bytes in .before-v4 after the
+  existing work-roundoff/v1/v2 backup families and before game adoption/save.
+- Import state.version<4 retains .import-before-v4 after the existing import
+  backup families, before the main setItem and before adopting the new game.
+  Existing retainRaw collision/dedup policy and failure recovery are unchanged.
+  The view does not broaden repair eligibility; the engine's repair helper stays
+  legacy-only for v1/v2/v3 and current invalid-v4 input remains rejected/exportable.
+
+Independent reviewer provenance and actual verdict
+The child reviewed the final view/shell diff against b3c8, relevant engine phase
+and return fields, implementation-decisions.txt, critic-plan.md and the three
+skeptic reports. It was instructed to make no edits and perform no execution.
+It supplied its result in collaboration messages; it did not write a separate
+report file. The following is its actual final verdict, copied without adding
+runtime claims:
+
+"No blocker found in the view/shell diff against `b3c8`.
+
+- Move, paused, held, blocked and return descriptions match the stated engine contract.
+- Duplicate transfer feedback distinguishes the existing allocation and promises no resumed delivery.
+- Exact v4 backups precede main-save replacement; imports adopt only after persistence succeeds.
+- No manual syntax or control-flow defect found.
+
+No edits or execution. Verdict is limited to this UI/persistence diff; engine changes remain concurrent and Spark validation is outstanding."
+
+The reviewer also specifically reported that startup retention preceded game
+adoption/save, import retention preceded main setItem and game adoption, and the
+original raw source plus existing legacy families remained intact. The UI owner
+manually read the diff and relevant state transitions separately. These are
+static assessments, not parser, browser, reducer or persistence-fault results.
+
+Visible QA contract
+All existing IDs remain:
+- #stop: "Stop and Return"; S remains the same action.
+- #cargo-command-note: "Move carries goods and holds them on arrival. Stop returns
+  goods. New work orders still return carried goods first."
+- [data-unit] small: e.g. "Moving · 5 wood", paused "Move planned · 5 wood",
+  "Holding · 5 wood", "Move blocked · holding · 5 wood", "Returning · 5 wood".
+- #inspect: state-specific loaded Move/arrival/blocked/return detail, with
+  original transfer source/receiver context for a marked load.
+- #store-quote for duplicate: "Existing transfer · original allocation N resource
+  · custody and delivery unchanged."
+- #store-transfer for duplicate: "Check existing transfer"; its action toast:
+  "Transfer already exists · custody and delivery unchanged. Use Move or Stop
+  and Return for carried goods."
+- #idle still includes loaded idle actors; its title now explains that inclusion.
+
+Remaining verification and scope limits
+Spark must inspect the final combined immutable source, not infer a pass from
+these individual file hashes or the approved design. Required evidence includes
+actual Move/Stop/duplicate-transfer inputs, running/paused/held/blocked states,
+typed custody and receipt counters, invalid-group state preservation, legacy/raw
+backup collisions and write failures, v4 rejection/reload and exact continuation.
+
+Browser layout/actionability is unverified here: longer Stop/helper/inspector
+copy may wrap, portrait labels may truncate with full detail available on inspect,
+and the fixed tray must leave intended map/control targets actionable at tested
+viewports. Verify those facts with actual built DOM geometry and input, including
+the inherited keyboard ownership, touch-confirmation and preventScroll contracts.
+No claim of physical touch, native browser zoom, screen-reader usability,
+macOS/iOS platform behavior or human task comprehension follows from this review
+or from later headless synthetic-input coverage alone.
+
+This is the immediate loaded-Move subset. Full IC02 work-switch/cache behavior,
+general Hold/Resume, automation authority and navigation integration remain
+deferred. No M6 runtime, parser, tests, build, lint or browser was run; no commit
+or publication was performed by the UI owner or this child reviewer. This record
+adds evidence only and makes no application changes.

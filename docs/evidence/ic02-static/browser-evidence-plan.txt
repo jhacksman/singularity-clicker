@@ -1,0 +1,39 @@
+IC02 Move subset — browser acceptance plan
+
+Root owns new tests/browser/hearth-rts-move.cjs after the skeptic gate. Spark only.
+No completion claim until immutable candidate execution and separate review.
+
+1. Earn a partial wood load through the normal fresh page's actual portrait select,
+   contextual gather and running ticks. Pause and export the full live camp. This
+   is the provenance seed, not a fabricated cargo or boosted-resource fixture.
+2. Reuse those exact earned bytes as an explicitly controlled starting checkpoint
+   for actual M+primary, Move button+primary, touch tray Move+tap and contextual
+   ground right-click. The current constructor may perform normal v3->v4 migration.
+3. While paused, acceptance preserves physical position/load/stock; visible text
+   names Move with cargo and starts on Resume. Inspect actual exported order/route.
+   Resume one .1 tick and pause: movement follows the accepted first route segment
+   within its distance budget, keeps cargo, makes no home detour or receipt.
+4. Reach the clear target, hold for multiple seconds, export, refresh paused and
+   compare exact state. No automatic deposit, gather restart or latent old command.
+   Stop and Return physically delivers later; follow beyond receipt to ensure idle.
+5. Repeat the same Move while active and compare exact paused exports. Reject live
+   deposit/water/mixed invalid target without changing current load/order/path.
+6. Derive a carried transfer seed from the ordinary main-browser physical transfer
+   artifact; preserve job marker, amount partition and resource through Move/hold/
+   reload. Incoming becomes zero for that carrier. Duplicate Send reports existing
+   custody, never new/resumed delivery, with exact state unchanged. Stop settles
+   physically without increasing gathered production.
+7. Previous-behavior control uses pinned original v3 source or exact retained v3
+   Spark-built page, source/hash explicitly recorded. Apply the same earned seed,
+   actor selection and ground Move action; show old return-first route versus new
+   immediate route. A controlled schema projection is labeled if needed. Do not
+   call new UI plus old reducer a historical whole-page run.
+8. Save events/traces, visible screenshots, before/after exported states and failure
+   snapshots. Native touch is not proven by browser emulation; no human prediction
+   or full IC02 work-switch/cache claim.
+
+Existing main/recovery/roundtrip/bootstrap browser files need deliberate version
+updates and raw-before-v4 coverage, not a blanket version-number replacement.
+Current v4 subtraction negative control stays rejected and unrepaired. Legacy
+recovery fixture has explicit v3 provenance/projection and compares adopted world
+after normal v4 migration; exact raw backups remain independently asserted.

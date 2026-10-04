@@ -1,0 +1,20 @@
+{
+  "id": "singularity-20261004-rts-input-024",
+  "repo": "singularity-clicker",
+  "commit": "b3c8fbad63881008657f376dcce9e9b5f770afcb",
+  "status": "pass",
+  "exit_code": 0,
+  "tests_passed": 83,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "builds_passed": 4,
+  "main_browser": "pass,180 simulated seconds, no page errors",
+  "recovery_browser": "pass",
+  "roundtrip_browser": "pass",
+  "bootstrap_browser": "pass",
+  "cleanup_verified": true,
+  "open_limitation": "Independent UX023 retains recorded temporal assertion and native-blur incomplete; IC02 loaded return-first unchanged",
+  "updated_utc": "2026-10-04T03:52:30.363596+00:00",
+  "dist_provenance": "results/singularity-20261004-rts-input-024-dist-provenance.json",
+  "scope": "Same application bytes as Input023; test-only correction. No publication or Library replacement."
+}

@@ -19,7 +19,7 @@ function expanded(){
 }
 
 test('fresh local custody preserves the accepted uncapped opening and item totals',()=>{
- const g=new Camp();assert.equal(g.s.version,3);assert.deepEqual(g.s.stock,{wood:20,stone:10,food:0});assert.deepEqual(g.store('b0').stock,g.s.stock);assert.deepEqual(g.economy().available,g.s.stock);
+ const g=new Camp();assert.equal(g.s.version,4);assert.deepEqual(g.s.stock,{wood:20,stone:10,food:0});assert.deepEqual(g.store('b0').stock,g.s.stock);assert.deepEqual(g.economy().available,g.s.stock);
  const before=totals(g);g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});until(g,()=>g.s.units.every(u=>u.phase==='idle'));
  assert.equal(g.store('b0').stock.wood,68);assert.equal(g.economy().produced.wood,48);assert.deepEqual(totals(g),before);custody(g);
 });
@@ -107,7 +107,7 @@ test('opening construction may combine stores, while later construction names a 
 test('v1 and v2 migration preserves every legacy world field and the exact uncapped aggregate once',()=>{
  const base=new Camp();base.command(['u0'],{kind:'gather',target:'d0'});until(base,()=>base.s.units[0].cargo>0);
  for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
-  assert.equal(JSON.stringify(legacy),raw);assert.equal(g.s.version,3);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(g.s[field],legacy[field]);assert.deepEqual(g.store('b0').stock,legacy.stock);
+  assert.equal(JSON.stringify(legacy),raw);assert.equal(g.s.version,4);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(g.s[field],legacy[field]);assert.deepEqual(g.store('b0').stock,legacy.stock);
   const copy=new Camp(JSON.parse(g.serialize()));assert.deepEqual(copy.s,g.s);assert.deepEqual(totals(copy),totals(base));custody(copy);
  }
 });
@@ -118,9 +118,9 @@ test('save/reload at reservation, pickup and receipt preserves exact obligations
  const received=new Camp(JSON.parse(g.serialize()));steps(received,5);steps(g,5);assert.deepEqual(received.s,g.s);custody(received);
 });
 
-test('malformed v3 ownership, reservations and transfer obligations fail closed',()=>{
+test('malformed current ownership, reservations and transfer obligations fail closed',()=>{
  const {g,outpost}=expanded();g.transfer(['u0'],'b0',outpost,'wood');
- for(const change of [s=>s.version=4,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
+ for(const change of [s=>s.version=5,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
   const bad=JSON.parse(g.serialize());change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));
  }
  const fresh=new Camp();fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d0'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d2'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));const site=fresh.build('workshop',11,15,[]);assert.ok(site.id);
@@ -230,9 +230,9 @@ test('transfer cargo cannot import into a working, walking or pickup phase and c
  until(g,()=>!g.s.storage.transfers.length);assert.equal(g.store(outpost).stock.wood,5);assert.deepEqual(totals(g),before);custody(g);
 });
 
-test('valid transfer cargo survives Stop, Move and Gather reassignment with typed conservation after reload',()=>{
+test('valid transfer cargo survives Stop and Gather return-first reassignment with typed conservation after reload',()=>{
  const {g:base,outpost}=expanded();base.transfer(['u0'],'b0',outpost,'wood');until(base,()=>!!base.s.units[0].transfer);const saved=base.serialize(),before=totals(base);
- for(const order of [{kind:'idle'},{kind:'move',x:25,y:14},{kind:'gather',target:'d6'}]){const g=new Camp(JSON.parse(saved)),u=g.s.units[0];assert.equal(g.command(['u0'],order),1);assert.equal(u.phase,'return');assert.equal(u.cargo,5);assert.equal(u.resource,'wood');assert.deepEqual(u.next,order);custody(g);
+ for(const order of [{kind:'idle'},{kind:'gather',target:'d6'}]){const g=new Camp(JSON.parse(saved)),u=g.s.units[0];assert.equal(g.command(['u0'],order),1);assert.equal(u.phase,'return');assert.equal(u.cargo,5);assert.equal(u.resource,'wood');assert.deepEqual(u.next,order);custody(g);
   const copy=new Camp(JSON.parse(g.serialize()));assert.deepEqual(copy.s,g.s);for(let i=0;i<500;i++){g.tick(.1);copy.tick(.1);}assert.deepEqual(copy.s,g.s);assert.deepEqual(totals(g),before);custody(g);
  }
 });

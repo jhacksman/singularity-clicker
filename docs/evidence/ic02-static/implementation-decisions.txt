@@ -1,0 +1,47 @@
+IC02 Move subset — implementation decisions after independent design scrutiny
+
+Application base: 3b15d6081f5396fcc579140c09d86e532674e2dd.
+Isolated worktree was then fast-forwarded to b3c8fbad63881008657f376dcce9e9b5f770afcb,
+which changes only the Input024 browser oracle and evidence/documentation. Application
+source is unchanged. Frozen hearth-rts candidate remains untouched for Spark.
+
+Critic: critic-plan.md. Fresh independent skeptics: skeptic-one.md,
+skeptic-three.md and skeptic-fresh.md. No supported unaddressed High conservation
+failure found in this proposed design; no execution is implied by those reviews.
+The Medium residue-fixture coupling is accepted as a required test integration
+correction, not a current production defect. Preserve strict legacy-only repair.
+
+Selected representation: outer save v4, storage schema remains1, dedicated carryMove.
+Keep v3 custody migration cutoff at<3. Preserve all v3 local custody/queues/payments;
+outer-version migration does not immediately reinterpret saved legacy Move queues.
+New explicit Move interrupts old return-first queues. Active identical Move repeats
+are exact no-ops; held idle cargo still accepts Stop and Return.
+
+Selected worker-work policy: preserve exact nonnegative remainder through Move and
+hold. Subsequent ordinary work start keeps its existing reset. Paid progress stays
+owned by its job. This supersedes the reset sentence in the custody planning memo.
+
+Selected route guard for active v4 carryMove only: integer clear nodes and target,
+cardinal adjacent consecutive nodes; first node equals rounded current cell or its
+cardinal neighbor; exact target tail; empty only at exact reached target. The new
+movement branch only pops/snaps a node within the actual tick movement budget.
+Blocked replan becomes idle/orderMove/path[] holding; it does not need a clear target
+and must not restart automatically after obstacle cancellation. No pathfinder rewrite.
+
+Selected legacy-test strategy: retain exact immutable v3 engine source as a test
+fixture with its source commit/hash. Use it for old-reader/old-Move control and, where
+needed, genuine legacy generation. A deliberately projected compatibility fixture is
+also acceptable only if explicitly labeled. Never silently label a current-v4
+subtraction-control checkpoint as historical v3. v4 negativework remains unrepaired.
+Recovered legacy state is compared after expected normal v4 migration, while original
+bytes stay exact. Existing future-format rejection moves to5 where applicable.
+
+Ownership: storage_engine is sole engine/reducer fixer; skeptic_two is sole view/shell
+fixer including v4 raw-retention wiring. Root owns fixture provenance, browser tests,
+documentation/assembly and later navigation integration. Reviewers do not edit code.
+No M6 parser/runtime/tests/build/lint/browser; final immutable source goes to parent
+for Spark queue dispatch and separate source/evidence verification before delivery.
+
+Scope is immediate loaded Move, held arrival, typed custody and physical Stop return.
+Full IC02 work-switch/cache, capacity/floor/durable receipt, new design and deployment
+remain outside this increment. Work-switch still discloses legacy return-first.

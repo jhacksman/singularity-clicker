@@ -1,0 +1,141 @@
+IC02 immediate loaded Move — proposed transition contract, no implementation yet
+
+Authorized parent instruction: implement immediate explicit Move with cargo,
+preserving custody/reservations; critic and skeptical review before code changes.
+Isolated candidate branch codex/hearth-rts-ic02 at3b15d6081f5396fcc579140c09d86e532674e2dd
+in task-3/hearth-rts-ic02. Frozen task-3/hearth-rts remains untouched for Input023
+and task10 independent UX verification. No M6 execution or publication.
+
+Scope
+Complete the Move-with-cargo component of COMMAND-CONTRACT section1/IC02.
+Valid ground Move begins target-bound travel on the next running tick carrying
+the existing load, and arrives holding it. No automatic store detour/deposit.
+Same semantic Move applies to M+primary click, Move button/touch and unambiguous
+contextual ground Move. Invalid targets preserve every actor's prior state.
+S remains Stop and Return. No new Hold button, ground cache, work-switch settlement,
+support/capacity rules, authority-generation layer or campaign grants in this step.
+Full IC02's other work-switch/cache cases remain separate; do not label allIC02 done.
+
+Proposed saved representation (pending design critique)
+Bump top-level RTS save version to4 so older readers fail closed. Versions1/2/3
+remain accepted and migrate once without changing stock, cargo, jobs or paid work.
+Version4 introduces dedicated phase carryMove for loaded manual Move. In that
+phase: cargo>0 with existing resource; order.kind=move; next=null; no dropoff;
+ordinary legal path; any u.transfer retains its original job as custody provenance.
+The special phase performs movement/arrival only, never extraction/pickup/receipt.
+Existing F6 rejection of transfer cargo in ordinary walk/extract/construct/craft/
+pickup remains. Permit a zero-length path at an arrived or same-tile boundary;
+the exact arrival/connector rule for fractional positions needs engine review.
+Held arrival is idle with empty path, cargo/resource/provenance retained, no
+dropoff and no resumed gather/transfer automation. Label the held load explicitly.
+
+Transition table
+1. Empty actor -> Move: existing path/formation behavior, no economic change.
+2. Gathered loaded actor in extract/return/held -> Move: preflight target/path,
+   then replace old order/next with Move, route from current physical position,
+   clear stale dropoff, keep exact cargo/resource and production/store balances.
+3. Loaded transfer carrier -> Move: as2, but retain u.transfer and original job,
+   including j.amount, delivered/recovered/cancelled, resource and receiver identity.
+   Do not cancel/reclassify picked-up cargo or count it as new gathered production.
+4. Pending transfer without pickup -> Move: release only that actor's unpicked
+   pending allocation once, keep those goods physically in its source store,
+   retain peers' pending/carried obligations, then Move. Prune only terminal jobs.
+5. Gathered cargo with queued future transfer -> Move: release its unpicked future
+   allocation; keep gathered load provenance and move immediately. No source debit.
+6. Move arrival: hold exact load in place indefinitely; no automatic receive,
+   free stock, produced/transferred counter, repeated gather, or latent next order.
+7. Stop from moving/held cargo: explicitly replace order with idle and clear queued
+   Move before physical return. Retain transfer provenance until actual receipt.
+   The old Move must not restart after return. Same store receipt accounting applies.
+8. Gather/Build/Craft from moving/held load: existing declared return-first work
+   reassignment remains; settle cargo physically before work. Future local-cache
+   contract is not silently claimed. Unpicked transfer reservations release once.
+9. Invalid/blocked/out-of-bounds/mixed-group target: exact state unchanged, including
+   path, next order, cargo, dropoff, job shares and paid progress. No partial group
+   admission; UI formation preflights all actor destinations before committing.
+
+Repeat and legacy behavior
+Deduplicate actual current Move intent, not a latent queued Move. An older save
+returning with next=Move(same target) must respond to the newly issued immediate
+Move instead of continuing home. Repeated in-flight same-target Move should keep
+its path/cargo/work/obligations unchanged. Stop on a held idle actor with cargo
+must still initiate return; blindly deduplicating idle would strand the load.
+Do not silently rewrite legacy queued plans during migration; explicit new orders
+take the new semantics, while old snapshots retain their prior saved obligations.
+
+Rerouting and accounting
+build() currently reroutes all loaded paths home. A manual carryMove must instead
+replan to its named Move target first; blocked replanning safely holds the load
+with a clear reason. Route changes must never create a hidden return or receipt.
+Clearing dropoff on manual Move removes stale store incoming counts immediately.
+Only a later actual return/transfer receipt can credit a store; total material and
+transfer amount partition remain constant through moving, holding and reload.
+Paid construction/knapping progress is stored at its job and remains untouched.
+Unit fractional extraction work policy must be explicit; it is not inventory.
+
+Resolved worker-work policy: preserve the exact nonnegative remainder on Move
+acceptance, movement and arrival holding. A later ordinary work start retains
+its existing reset behavior. This supersedes the custody proposal's reset sentence.
+Paid job progress always stays with its existing project.
+
+Resolved active-route admission: new v4 carryMove requires integer, unblocked,
+in-bounds nodes; consecutive nodes are cardinal neighbors; the first is the rounded
+current cell or its cardinal neighbor; the tail equals the accepted integer target.
+The fractional same-rounded-cell connector remains valid. An empty route requires
+exact physical arrival. These checks apply only to active carryMove; blocked replan
+is idle/order Move/path[] holding and need not satisfy a now-unreachable target.
+This preserves existing grid routing, not a general collision-geometry rewrite.
+
+Migration, raw retention and navigation coordination
+Candidate v4 requires updating version guards/constructor, repair helper supported
+versions, old-future-version test fixtures, and exact raw retention before overwrite.
+Add .before-v4/.import-before-v4 families (with existing distinct suffix policy)
+while preserving older migration and work-roundoff backups. Failure before backup
+or main commit follows Input023's already-reviewed recovery behavior.
+No valid v1/v2/v3 save loses holdings/progress or gains a grant. v5 remains rejected.
+Verified navigation444d252 will need v4 and new backup-family recognition during
+the later assembled integration; its old immutable test pass cannot cover these
+new semantics. Preserve original invalid-roundoff bytes as exportable archives.
+
+Required evidence proposal
+- Deterministic tests genuinely gather/transfer first, then Move with a load near
+  its current position and away from home: first running displacement follows the
+  accepted route with unchanged load; arrival holds; no receiver/production credit.
+- Ordinary and transfer cargo, pickup pending, queued transfer behind gathered
+  cargo, mixed selected actors, same-target repeats, same/fractional tile, invalid
+  targets, paused planning, Stop after partial travel/arrival, work-switch, and
+  paid construction rerouting while moving. Preserve typed totals every tick.
+- Roundtrip at accepted order, first movement, last segment, held arrival, blocked
+  reroute and Stop return; exact replay continuation and job identity retained.
+- Old v3 queued Move explicit override; strict F6 malformed-state rejection;
+  v1/v2/v3 migration and v4 exact reload/rawbackup failures; future-v5 rejection.
+- Spark browser actual M/button/touch plus target, visible carried next-action
+  disclosure, export checkpoints, screenshot/trace and exact paused refresh. An
+  old-behavior control must show the former home detour using the same earned load.
+- Independent source verifier and exact-commit Spark logs/artifacts before closure.
+
+Review gates
+One independent critic reviews this plan plus engine-owner/economy proposals.
+Three fresh read-only skeptics then attempt to disprove proposed findings and
+challenge the safety of the transitions before any implementation begins. Record
+agreements and disagreements rather than assuming a majority proves correctness.
+One engine owner implements the reviewed state machine; root owns UI/persistence/
+browser integration; separate verifier checks the concrete result and Spark evidence.
+
+Later exporter correction acknowledged
+Use task11 CUSTODY-TRACE-V1.md, schema sc14-custody-trace-v1, not the older broad
+envelope. Real observations only; unsupported capacity/floor/durable receipt cases
+stay explicit failures/missing capabilities. Parent assigned the exporter to task11
+in tests/custody-adapter/{export-storage-custody.cjs,storage-custody.test.cjs,README.md}
+on its own worktree based exactly on f93798b. Main owner integrates later; do not
+duplicate that implementation. Current native gaps also include no transfer amount
+argument, no receiving-hold ledger and pruned terminal jobs with no receipt IDs.
+
+Critic migration-evidence correction accepted
+Keep bounded residue recovery limited to defective legacy versions 1/2/3. A v4
+old-subtraction negative control will naturally emit v4 and must remain rejected;
+do not widen the production repair helper to satisfy this test. Legacy recovery
+fixtures must come from pinned legacy-v3 source or an explicitly labeled schema
+projection. Compare repaired imports after normal v4 migration rather than directly
+to the pre-migration object. Preserve the production version<3 storage-migration
+cutoff so v3 local custody is not rebuilt or erased when bumping the outer version.

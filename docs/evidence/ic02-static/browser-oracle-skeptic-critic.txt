@@ -1,0 +1,109 @@
+Independent fresh skepticism: IC02 Move browser oracles T1/T2/T3
+2026-10-04. Read-only; no source edits, runtime, parser, tests or builds.
+
+Inspected tests/browser/hearth-rts-move.cjs in hearth-rts-ic02, SHA-256
+a512c0a15c121d436731bad9d8a8e64d6ab8db5272dc89d170beaf0d10a5feb3.
+Worktree HEAD was b3c8fbad63881008657f376dcce9e9b5f770afcb, with that test
+untracked and implementation changes in progress. This verdict identifies the
+test bytes by hash, not as a committed or executed candidate. I inspected the
+seed writer in hearth-rts.cjs and current validator only to test rebuttals. I did
+not read another review report. Candidate descriptions were supplied by root.
+
+Verdict: all three gaps confirmed. These are Medium acceptance-evidence gaps
+for the bounded Move feature, not findings that the engine actually performs
+the bad transitions. Existing checks provide useful conservation/loadability
+coverage but cannot establish these missing transition facts.
+
+T1 — Loaded-transfer acceptance/first tick can hide teleportation or work reset
+
+The loaded-transfer block at lines 122–127 verifies phase, marker, cargo, type,
+absent dropoff and unchanged storage at acceptance. Its first-tick assertions
+check only cargo/marker plus custody(). It never compares accepted x/y/work
+against the pre-command carrier or checks its first movement displacement.
+
+Attempted rebuttal: custody() invokes valid(), whose current carryMove rules
+require Move, next=null, a legal target and a coherent path. Thus the claim that
+there is literally no order/path validation is too broad: some properties are
+checked indirectly. However, validCarryMove explicitly permits an empty path
+when x/y already equal the Move target. It has no prior-state position or work
+comparison and cannot distinguish legitimate arrival from command teleportation.
+A faulty transfer-only acceptance that places the carrier at target with order
+Move, carryMove, path[], unchanged cargo/resource/job/storage and nonnegative work
+passes those checks. First tick may hold idle; until() then succeeds immediately.
+The gathered-load cases exercise another origin and do not disprove this branch.
+
+Minimal correction: assert pre-command carrier is not already at the target;
+compare x, y, work, cargo and resource exactly at acceptance; assert exact Move
+target, next=null, absent dropoff and a nonempty target-bound route; compare the
+next .1-second displacement to the allowed .3-cell segment budget. Keep the
+transfer marker and accounting checks. A target-directed route oracle must be
+independent enough to address T3, not only copied from the accepted route.
+
+T2 — Aggregate settlement cannot prove actual recipient or physical return
+
+At line 132 Stop is followed immediately by until(job pruned && all cargo empty).
+There is no exported/asserted state between the Stop command and resumed travel.
+Lines 133–134 assert unchanged gathered output, typed total conservation and a
+transferred counter excluding the diverted carrier. They do not assert each
+store's balance or the actor's location at its receipt.
+
+Attempted rebuttal: custody() checks the job quantity partition and aggregate
+stock equals summed store stock. Neither check links a recovered quantity to a
+particular receiver. After job pruning the job itself is absent. A transition
+crediting the eastern destination while classifying the diverted load as recovery
+can retain all asserted totals and the expected transferred count. A remote
+credit to the source at the paused Stop command can also satisfy the final checks;
+until() does not require that the diverted actor spend time physically returning.
+This is not a claim that current receive() does either thing.
+
+Minimal correction: export immediately after Stop while paused; assert the
+carrier remains at its held coordinates with its exact load and original marker,
+phase return, idle settlement intent, a route to job.from, and no store/counter
+credit yet. Assert the first return step, then observe its actual cargo-to-store
+transition at an eligible source perimeter, rather than only the all-actors final
+predicate. A .1-tick observation around receipt can establish the adjacency
+boundary without guessing from a later pruned state. Save these checkpoints.
+
+For final balances, derive expectations from the original seed and explicitly
+assert fixture preconditions. The main-browser writer permits some shares to
+remain pending at its first-pickup checkpoint; do not assume every lot was picked
+up. In the single-job fixture with no unrelated productive/spending activity:
+  source[resource] final = source before - job.remaining + diverted cargo;
+  destination[resource] final = destination before + job.amount
+    - job.delivered - job.recovered - job.cancelled - diverted cargo.
+Other resources and other stores must remain unchanged. This distinguishes the
+source recovery from an incorrectly credited destination while retaining the
+existing gathered-output/transfer-counter assertions. Comparing against the
+immediate pre-Stop snapshot can simplify the source-only receipt observation if
+peer delivery completion is also explicitly established.
+
+T3 — Gathered next-step oracle follows the implementation's own chosen path
+
+Lines 90 and 93–95 require the final path node to equal target, then calculate
+expected next displacement from u.path[0] in the accepted candidate state. The
+new validator checks legal adjacent route nodes but does not require a shortest
+route. These are useful speed and path-following checks, not independent proof
+that the route avoids the old store detour.
+
+Attempted rebuttal: a detour that performs a receipt would be caught by cargo and
+store assertions. A different counterexample remains: carryMove follows a legal
+route through a hearth-side waypoint and then continues carrying to target. It
+neither deposits nor changes any accounting; the path tail and each next-step
+calculation still pass, and the generous arrival timeout admits the extra travel.
+An old-page negative control proves the historical return phase, but it does not
+make the new candidate's self-derived route oracle independent.
+
+Minimal correction: use an independently justified route/first-leg expectation
+for this specific fresh western gathering fixture. Assert the earned coordinate
+and local obstacle preconditions; target (2,3) has a monotone shortest path from
+the ordinary d0 working edges, avoiding the live d0 tile. A fixture-specific
+shortest-route length plus legal nodes and endpoint, or an independently specified
+full route, rejects a hearth-waypoint detour. An expected first leg alone rejects
+the immediate homeward leg but does not exclude a detour later in the route, so
+do not overclaim it. Do not impose universal Euclidean-distance decrease: valid
+routes around obstacles can initially move away from their final destination.
+
+Recommended reporting limit after fixes: state exactly which positions, route,
+physical receipt boundary and individual stores were observed. Runtime closure
+requires the corrected immutable test/source and actual Spark evidence. No local
+execution or source fix was performed for this review.

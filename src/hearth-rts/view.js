@@ -17,6 +17,7 @@ try{
   if(repaired)retainRaw('.before-work-roundoff',originalRaw);
   if(state.version===1)retainRaw('.before-v2',originalRaw);
   if(state.version<3)retainRaw('.before-v3',originalRaw);
+  if(state.version<4)retainRaw('.before-v4',originalRaw);
   game=incoming;paused=true;recoveredWork=!!repaired;
  }
 }catch(e){rejected=originalRaw;unreadableSave=!readCompleted;game=new Camp();blocked=true;paused=true;}
@@ -38,6 +39,23 @@ function cancelInput(clearMode=true,clearContacts=false){
 }
 function reject(text){tell(text+' Previous orders kept.');ui();return false;}
 function returnNote(workers){return workers.some(u=>u.cargo)?' · carried loads return home before the new order':'';}
+function cargoLabel(u){return u.cargo+' '+u.resource;}
+function moveFeedback(workers,changed){
+ if(!changed)return paused?'This Move is already planned · starts on Resume':'Already moving to this destination';
+ const loaded=workers.filter(u=>u.cargo),transfers=loaded.filter(u=>u.transfer);
+ let label=workers.length===1&&loaded.length?(paused?'Move planned with ':'Move with ')+cargoLabel(loaded[0]):(paused?'Move planned':'Move assigned')+' · '+workers.length+' villagers';
+ if(paused)label+=' · starts on Resume';
+ if(loaded.length)label+=' · carried goods stay with their carriers on arrival';
+ if(transfers.length)label+=transfers.length===1?' · this carrier\'s delivery is paused':' · these carriers\' deliveries are paused';
+ return label;
+}
+function stopFeedback(workers,changed){
+ const loaded=workers.filter(u=>u.cargo),waiting=loaded.filter(u=>u.phase!=='return');
+ if(!loaded.length)return changed?'Stopped · ready for orders':'Already stopped';
+ if(waiting.length===loaded.length)return 'Holding '+(loaded.length===1?cargoLabel(loaded[0]):'carried goods')+' · no reachable store or drop-off space. Move elsewhere or try Stop and Return when a route opens.';
+ const label=paused?'Return planned · starts on Resume':'Stop and Return · carrying goods to reachable storage';
+ return label+(waiting.length?' · '+waiting.length+' villagers still holding goods; no reachable drop-off':'');
+}
 function dispatch(p,verb){
  if(!ready())return false;
  const workers=actors(),ids=workers.map(u=>u.id),target=hit(p);let orders,label,inspectId=null;
@@ -59,11 +77,11 @@ function dispatch(p,verb){
  }else return false;
  // Validate the entire formation before changing any actor's accepted order.
  if(workers.some((u,i)=>!game.accepts(u,orders[i])))return reject('Every selected villager needs a reachable target.');
- const note=returnNote(workers);let changed=0;
+ const note=verb==='move'?'':returnNote(workers);let changed=0;
  if(verb==='move')for(let i=0;i<workers.length;i++)changed+=game.command([workers[i].id],orders[i]);
  else changed=game.command(ids,orders[0]);
  clearCommand();if(inspectId)inspect=inspectId;
- feedback(p,(changed?label:'This order is already assigned')+note);return true;
+ feedback(p,verb==='move'?moveFeedback(workers,changed):(changed?label:'This order is already assigned')+note);return true;
 }
 function contextualOrder(p){const {d,b}=hit(p);return dispatch(p,d&&d.amount?'gather':b&&!b.done?'build':b&&b.kind==='workshop'&&game.s.knapping?.workshop===b.id&&!game.s.knapping.done?'craft':'move');}
 function commitPlacement(p){
@@ -143,7 +161,7 @@ $('stores').onclick=()=>{inspect=game.stores()[0].id;ui();};
 $('move').onclick=()=>arm('move');$('gather').onclick=()=>arm('gather');$('assign-build').onclick=()=>arm('build');
 $('command-cancel').onclick=()=>{cancelInput();tell('Command cancelled');ui();};
 $('placement-confirm').onclick=()=>{if(placement&&isPlacement()&&placement.kind===mode)commitPlacement(placement);};
-$('stop').onclick=()=>{if(!ready())return;cancelInput();game.command(actors().map(u=>u.id),{kind:'idle'});feedback(hover,'Stop · carried resources return home first');};
+$('stop').onclick=()=>{if(!ready())return;cancelInput();const workers=actors(),changed=game.command(workers.map(u=>u.id),{kind:'idle'});feedback(hover,stopFeedback(workers,changed));};
 for(const b of document.querySelectorAll('[data-build]'))b.onclick=()=>arm(b.dataset.build);
 $('train').onclick=()=>{if(blocked)return;const err=game.train();tell(err||'A new villager joins the camp');save();ui();};
 $('idle').onclick=()=>{selected=new Set(game.s.units.filter(u=>u.phase==='idle').map(u=>u.id));tell(selected.size+' idle villagers selected');ui();};
@@ -189,7 +207,7 @@ function goods(map){return resources.filter(r=>map?.[r]>0).map(r=>Math.round(map
 function fundingText(f){if(!f)return '';const label=f.mode==='opening-pool'?'all opening stores':f.name||game.stores().find(s=>s.id===f.storeId)?.name||'no reachable store';return 'Funding source: '+label+'.'+(resources.some(r=>f.missing?.[r]>0)?' Missing here: '+goods(f.missing)+'. Bring supplies to this store.':'');}
 function commandUI(){
  let help='Select villagers, then choose a command. Unarmed taps inspect; right-click gives a contextual order.';
- if(mode==='move')help='Move: choose clear, reachable ground. Deposits and buildings are blocked targets.';
+ if(mode==='move')help='Move: choose clear, reachable ground. Carried goods move with the villager and stay with them on arrival. Deposits and buildings are blocked targets.';
  else if(mode==='gather')help='Gather: choose a visible deposit that still has resources.';
  else if(mode==='build')help='Build site: choose an unfinished site. Its reserved materials are already paid.';
  else if(isPlacement()){
@@ -207,9 +225,9 @@ function commandUI(){
  observeInput();
 }
 function storeUI(box,b){
- if(box.dataset.store!==b.id){box.replaceChildren();box.dataset.craft='';box.dataset.site='';box.dataset.store=b.id;const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent='LOCAL SUPPLIES';const title=document.createElement('h3');title.id='store-title';const table=document.createElement('table');table.className='store-table';table.innerHTML='<thead><tr><th>Goods</th><th>Here</th><th>Free</th><th>Reserved</th></tr></thead><tbody>'+resources.map(r=>'<tr><th>'+r+'</th><td id="local-'+r+'"></td><td id="free-'+r+'"></td><td id="reserved-'+r+'"></td></tr>').join('')+'</tbody>';const incoming=document.createElement('p');incoming.id='store-incoming';const note=document.createElement('p');note.className='small-note';note.textContent='Free stock can fund work here. A transfer reserves goods now; a carrier must collect and deliver them.';const labels=document.createElement('div');labels.className='transfer-fields';labels.innerHTML='<label>Send to<select id="store-destination"></select></label><label>Goods<select id="store-resource">'+resources.map(r=>'<option value="'+r+'">'+r+'</option>').join('')+'</select></label>';const quote=document.createElement('p');quote.id='store-quote';quote.setAttribute('role','status');const button=document.createElement('button');button.id='store-transfer';button.textContent='Send selected carriers';button.onclick=()=>{if(blocked)return;const result=game.transfer([...selected],b.id,$('store-destination').value,$('store-resource').value);if(result.error)tell(result.error);else tell('Transfer assigned · '+result.amount+' '+$('store-resource').value+' · one load per carrier');save();ui();};box.append(eyebrow,title,table,incoming,note,labels,quote,button);$('store-destination').onchange=ui;$('store-resource').onchange=ui;}
+ if(box.dataset.store!==b.id){box.replaceChildren();box.dataset.craft='';box.dataset.site='';box.dataset.store=b.id;const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent='LOCAL SUPPLIES';const title=document.createElement('h3');title.id='store-title';const table=document.createElement('table');table.className='store-table';table.innerHTML='<thead><tr><th>Goods</th><th>Here</th><th>Free</th><th>Reserved</th></tr></thead><tbody>'+resources.map(r=>'<tr><th>'+r+'</th><td id="local-'+r+'"></td><td id="free-'+r+'"></td><td id="reserved-'+r+'"></td></tr>').join('')+'</tbody>';const incoming=document.createElement('p');incoming.id='store-incoming';const note=document.createElement('p');note.className='small-note';note.textContent='Free stock can fund work here. A transfer reserves goods now; a carrier must collect and deliver them.';const labels=document.createElement('div');labels.className='transfer-fields';labels.innerHTML='<label>Send to<select id="store-destination"></select></label><label>Goods<select id="store-resource">'+resources.map(r=>'<option value="'+r+'">'+r+'</option>').join('')+'</select></label>';const quote=document.createElement('p');quote.id='store-quote';quote.setAttribute('role','status');const button=document.createElement('button');button.id='store-transfer';button.textContent='Send selected carriers';button.onclick=()=>{if(blocked)return;const ids=[...selected],destination=$('store-destination').value,resource=$('store-resource').value,q=game.quoteTransfer(ids,b.id,destination,resource),result=game.transfer(ids,b.id,destination,resource);if(result.error)tell(result.error);else tell(q.id?'Transfer already exists · custody and delivery unchanged. Use Move or Stop and Return for carried goods.':'Transfer assigned · '+result.amount+' '+resource+' · one load per carrier');save();ui();};box.append(eyebrow,title,table,incoming,note,labels,quote,button);$('store-destination').onchange=ui;$('store-resource').onchange=ui;}
  const stores=game.stores(),row=stores.find(s=>s.id===b.id);$('store-title').textContent=row.name;for(const r of resources){$('local-'+r).textContent=row.stock[r];$('free-'+r).textContent=row.available[r];$('reserved-'+r).textContent=row.reserved[r];}$('store-incoming').textContent='Incoming: '+goods(row.incoming);const destinations=stores.filter(s=>s.id!==b.id),key=destinations.map(s=>s.id).join(',');if($('store-destination').dataset.options!==key){const current=$('store-destination').value;$('store-destination').replaceChildren(...destinations.map(s=>{const option=document.createElement('option');option.value=s.id;option.textContent=s.name;return option;}));if(destinations.some(s=>s.id===current))$('store-destination').value=current;$('store-destination').dataset.options=key;}
- const quote=game.quoteTransfer([...selected],b.id,$('store-destination').value,$('store-resource').value);$('store-quote').textContent=quote.error||quote.amount+' '+quote.resource+' · '+quote.workers.length+' carriers · up to 5 each';$('store-transfer').disabled=blocked||!!quote.error;
+ const quote=game.quoteTransfer([...selected],b.id,$('store-destination').value,$('store-resource').value);$('store-quote').textContent=quote.error||(quote.id?'Existing transfer · original allocation '+quote.amount+' '+quote.resource+' · custody and delivery unchanged.':quote.amount+' '+quote.resource+' · '+quote.workers.length+' carriers · up to 5 each');$('store-transfer').textContent=quote.id?'Check existing transfer':'Send selected carriers';$('store-transfer').disabled=blocked||!!quote.error;
 }
 function workshopUI(box,b){
  if(box.dataset.craft!==b.id){box.replaceChildren();box.dataset.site='';box.dataset.craft=b.id;const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent='CRAFT WORKSHOP';const title=document.createElement('h3');title.textContent='Useful edges';const text=document.createElement('p');text.textContent='Knapped tools use 25% less extraction time per item (33.3% higher extraction rate). Hauling and five-item loads are unchanged, so total delivery gains depend on travel.';const funding=document.createElement('p');funding.id='craft-funding';const status=document.createElement('p');status.id='craft-status';const progress=document.createElement('progress');progress.id='craft-progress';progress.max=12;const button=document.createElement('button');button.id='craft-knapping';button.onclick=()=>{if(blocked)return;const err=game.beginKnapping(b.id,[...selected]);tell(err||'Knapping assigned · workers bring home any carried load first');save();ui();};box.append(eyebrow,title,text,funding,status,progress,button);}
@@ -218,15 +236,41 @@ function workshopUI(box,b){
  $('craft-funding').textContent=local||finished?'This project’s materials are already reserved.':fundingText(game.knappingFunding(b.id));
  $('craft-knapping').textContent=finished?'Useful edges crafted':local?'Assign selected villagers':'Reserve materials & assign';$('craft-knapping').disabled=blocked||finished;
 }
+function unitStatus(u){
+ if(!u.cargo)return u.reason;
+ const load=cargoLabel(u);
+ if(u.phase==='carryMove')return (paused?'Move planned':'Moving')+' · '+load;
+ if(u.phase==='idle')return (u.order.kind==='move'?'Move blocked · holding':'Holding')+' · '+load;
+ if(u.phase==='return')return (paused?'Return planned':'Returning')+' · '+load;
+ if(u.phase==='transfer')return (paused?'Delivery planned':'Delivering')+' · '+load;
+ return u.reason+' · '+load;
+}
+function unitDetail(u){
+ if(!u.cargo)return u.reason;
+ const load=cargoLabel(u),stores=game.stores(),destination=stores.find(b=>b.id===u.dropoff);let detail;
+ if(u.phase==='carryMove')detail=(paused?'Move planned with '+load+'. Starts on Resume.':'Moving with '+load+'.')+' The load stays with this villager on arrival.';
+ else if(u.phase==='idle'&&u.order.kind==='move')detail='Move blocked. Holding '+load+'. Choose another Move or Stop and Return.';
+ else if(u.phase==='idle'){
+  detail=u.reason.startsWith('Holding ')?u.reason:'Holding '+load+'. '+u.reason;
+  if(!detail.includes('Stop and Return'))detail+=' · choose Move or Stop and Return';
+ }else if(u.phase==='return'||u.phase==='transfer'){
+  detail=(u.phase==='return'?(paused?'Return planned':'Returning'):(paused?'Delivery planned':'Delivering'))+' with '+load+(destination?' to '+destination.name:'')+'.';
+  if(paused)detail+=' Starts on Resume.';
+  if(u.next&&u.next.kind!=='idle')detail+=' The next order starts after delivery.';
+ }else detail=u.reason+' · carrying '+load;
+ const job=u.transfer&&game.s.storage.transfers.find(j=>j.id===u.transfer);
+ if(job){const source=stores.find(b=>b.id===job.from),receiver=stores.find(b=>b.id===job.to);detail+=' Transfer load: '+(source?.name||'source store')+' → '+(receiver?.name||'assigned store')+'.';if(u.phase==='carryMove'||u.phase==='idle')detail+=' This carrier\'s delivery is paused. Stop and Return uses reachable storage.';}
+ return detail;
+}
 function inspectUI(){const box=$('inspect'),u=game.s.units.find(v=>v.id===inspect),d=game.s.deposits.find(v=>v.id===inspect),b=game.s.buildings.find(v=>v.id===inspect);if(!u&&!d&&!b){box.innerHTML='<span class="eyebrow">FIELD NOTES</span><h3>Select a villager, store or deposit</h3><p>Resources enter a store when a worker delivers them.</p>';box.dataset.store='';box.dataset.craft='';box.dataset.site='';return;}if(b&&b.done&&['hearth','outpost'].includes(b.kind)){storeUI(box,b);return;}box.dataset.store='';if(b&&b.done&&b.kind==='workshop'){workshopUI(box,b);return;}box.dataset.craft='';if(b&&!b.done&&box.dataset.site===b.id){const progress=box.querySelector('progress');if(progress)progress.value=b.work;return;}box.dataset.site=b&&!b.done?b.id:'';box.replaceChildren();const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent=d?'FINITE RESOURCE':u?'VILLAGER':'CAMP STRUCTURE';box.append(eyebrow);const title=document.createElement('h3');title.textContent=d?names[d.kind]:u?u.name:b.kind==='hearth'?'The hearth':b.kind==='outpost'?'Outpost':'Workshop';box.append(title);const text=document.createElement('p');
  if(d){const amount=document.createElement('div');amount.className='amount';amount.textContent=d.amount+' / '+d.initial;box.append(amount);text.textContent=d.amount?'Does not regenerate. Right-click to gather; workers carry 5 per trip.':'Exhausted. Select these workers and send them to another deposit.';}
- if(u)text.textContent=u.reason+(u.cargo?' · carrying '+u.cargo+' '+u.resource:'');if(b){text.textContent=b.done?(b.kind==='workshop'?'Select villagers to craft useful tools here.':'Workers return loads to the nearest reachable hearth or outpost.'):'Reserved materials · '+Object.entries(b.cost).map(([r,n])=>n+' '+r).join(' · ');if(!b.done){const progress=document.createElement('progress');progress.max=WORK[b.kind];progress.value=b.work;box.append(progress);const cancel=document.createElement('button');cancel.textContent='Cancel site · full refund';cancel.onclick=()=>{if(blocked)return;clearCommand();const removed=game.cancel(b.id);tell(removed?'Site cancelled · materials returned':'This site is no longer available');save();ui();};box.append(cancel);}}box.append(text);}
+ if(u)text.textContent=unitDetail(u);if(b){text.textContent=b.done?(b.kind==='workshop'?'Select villagers to craft useful tools here.':'Workers return loads to the nearest reachable hearth or outpost.'):'Reserved materials · '+Object.entries(b.cost).map(([r,n])=>n+' '+r).join(' · ');if(!b.done){const progress=document.createElement('progress');progress.max=WORK[b.kind];progress.value=b.work;box.append(progress);const cancel=document.createElement('button');cancel.textContent='Cancel site · full refund';cancel.onclick=()=>{if(blocked)return;clearCommand();const removed=game.cancel(b.id);tell(removed?'Site cancelled · materials returned':'This site is no longer available');save();ui();};box.append(cancel);}}box.append(text);}
 function ui(){const s=game.s,economy=game.economy();for(const id of selected)if(!s.units.some(u=>u.id===id))selected.delete(id);$('economy').innerHTML=resources.map(r=>'<div class="resource" title="Available across all stores; jobs use their named source"><small>'+r.toUpperCase()+' FREE</small><i>'+icons[r]+'</i>'+Math.floor(economy.available[r])+'</div>').join('');$('economy-flow').textContent='In stores: '+goods(economy.stored)+' | Reserved to transfer: '+goods(economy.reserved)+' | Carried: '+goods(economy.inTransit)+' | Gathered: '+goods(economy.produced)+' | Moved between stores: '+goods(economy.transferred);$('idle').innerHTML='Idle <b>'+s.units.filter(u=>u.phase==='idle').length+'</b>';$('pause').textContent=paused?'Resume':'Pause';$('paused').hidden=!paused;$('time').textContent=String(Math.floor(s.time/60)).padStart(2,'0')+':'+String(Math.floor(s.time%60)).padStart(2,'0');
  const goals=[[s.depleted>0,'Exhaust a nearby deposit'],[s.buildings.some(b=>b.kind==='outpost'&&b.done&&b.x>20),'Build an outpost east of the river'],[s.buildings.some(b=>b.kind==='workshop'&&b.done),'Finish a workshop']];$('goals').innerHTML=goals.map(([done,text])=>'<li class="'+(done?'done':'')+'">'+text+'</li>').join('');
  if(!$('selection-title')){const label=document.createElement('div');label.className='selection-title';const count=document.createElement('span');count.id='selection-title';label.append(count);const all=document.createElement('button');all.textContent='Select all';all.id='select-all';all.onclick=()=>{selected=new Set(game.s.units.map(u=>u.id));ui();};label.append(all);$('selection').append(label);}
  $('selection-title').textContent=selected.size+' SELECTED / '+s.units.length+' VILLAGERS';
  for(const old of $('selection').querySelectorAll('[data-unit]'))if(!s.units.some(u=>u.id===old.dataset.unit))old.remove();
- for(const u of s.units){let b=$('selection').querySelector('[data-unit="'+u.id+'"]');if(!b){b=document.createElement('button');b.dataset.unit=u.id;const portrait=document.createElement('span');portrait.className='portrait';portrait.textContent='♟';const name=document.createElement('span');name.className='unit-name';const status=document.createElement('small');b.append(portrait,name,status);b.onclick=e=>{if(!e.shiftKey)selected.clear();selected.has(u.id)&&e.shiftKey?selected.delete(u.id):selected.add(u.id);inspect=u.id;ui();};$('selection').append(b);}b.className='unit-card '+(u.phase==='idle'?'idle':'');b.setAttribute('aria-pressed',String(selected.has(u.id)));b.querySelector('.unit-name').textContent=u.name;b.querySelector('small').textContent=u.phase==='idle'?u.reason:u.cargo?u.cargo+' '+u.resource:u.reason;b.title=u.reason;}
+ for(const u of s.units){let b=$('selection').querySelector('[data-unit="'+u.id+'"]');if(!b){b=document.createElement('button');b.dataset.unit=u.id;const portrait=document.createElement('span');portrait.className='portrait';portrait.textContent='♟';const name=document.createElement('span');name.className='unit-name';const status=document.createElement('small');b.append(portrait,name,status);b.onclick=e=>{if(!e.shiftKey)selected.clear();selected.has(u.id)&&e.shiftKey?selected.delete(u.id):selected.add(u.id);inspect=u.id;ui();};$('selection').append(b);}b.className='unit-card '+(u.phase==='idle'?'idle':'');b.setAttribute('aria-pressed',String(selected.has(u.id)));b.querySelector('.unit-name').textContent=u.name;b.querySelector('small').textContent=unitStatus(u);b.title=unitDetail(u);}
  $('stop').disabled=blocked;$('train').disabled=blocked||s.units.length>=8;$('export').disabled=unreadableSave;inspectUI();commandUI();}
 // All map art is drawn here: layered terrain, finite deposit clusters, buildings and villagers.
 const noise=(x,y)=>{const v=Math.sin(x*127.1+y*311.7)*43758.5453;return v-Math.floor(v);};
@@ -254,7 +298,7 @@ $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{
  try{if(f.size>2e6)throw Error();raw=await f.text();state=parseCamp(raw);repaired=repairWorkResidue(state);incoming=new Camp(repaired||state);}catch(e){$('save-status').textContent='This is not a compatible RTS camp. No save was changed.';return;}
  if(!confirm('Replace only this RTS camp? Previous Hearth saves stay unchanged.'))return;
  const serialized=incoming.serialize();
- try{if(repaired)retainRaw('.import-before-work-roundoff',raw);if(state.version<3)retainRaw('.import-before-v3',raw);localStorage.setItem(KEY,serialized);}catch(e){blocked=true;paused=true;$('save-status').textContent=unreadableSave?'Import could not be saved. The original saved camp is still unavailable. Reload when storage access is restored; keep the import file to retry.':'Import could not be saved. Your previous camp remains open and its saved copy is unchanged. Export it before closing; keep the import file to retry.';tell('Import failed to save. Previous camp kept.');ui();return;}
+ try{if(repaired)retainRaw('.import-before-work-roundoff',raw);if(state.version<3)retainRaw('.import-before-v3',raw);if(state.version<4)retainRaw('.import-before-v4',raw);localStorage.setItem(KEY,serialized);}catch(e){blocked=true;paused=true;$('save-status').textContent=unreadableSave?'Import could not be saved. The original saved camp is still unavailable. Reload when storage access is restored; keep the import file to retry.':'Import could not be saved. Your previous camp remains open and its saved copy is unchanged. Export it before closing; keep the import file to retry.';tell('Import failed to save. Previous camp kept.');ui();return;}
  cancelInput(true,true);game=incoming;lastSave=serialized;blocked=false;rejected=null;unreadableSave=false;selected.clear();inspect=null;paused=true;$('dialog').close();ui();tell(repaired?'RTS camp restored and saved · work-rounding residue repaired; exact original kept':'RTS camp restored and saved');
 };
 window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue!==lastSave){blocked=true;paused=true;tell('Another tab changed this camp. Reload to continue safely.');ui();}});document.addEventListener('visibilitychange',()=>{last=performance.now();acc=0;if(document.hidden)save();});window.addEventListener('pagehide',save);

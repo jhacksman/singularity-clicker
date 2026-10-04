@@ -3,20 +3,107 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),{spawn}=require('node:child_process'),{once}=require('node:events');
 const playwright=require(process.env.PLAYWRIGHT_MODULE||'playwright'),{KEY,valid}=require('../../src/hearth-rts/engine.js');
 const earned=JSON.parse(fs.readFileSync('artifacts/hearth-rts-earned-camp.json','utf8'));
-const legacy={...structuredClone(earned),version:2};delete legacy.storage;
-const raw=JSON.stringify(legacy,null,2)+'\n',current=JSON.stringify(earned),url='http://127.0.0.1:8080/hearth-rts.html';
+assert.equal(earned.version,4,'Use the current browser-earned v4 camp');
+// Controlled compatibility projections: v3 changes ONLY the outer version;
+// v2 additionally omits the local-storage fields absent from its pooled schema.
+const fixtures=[2,3].map(version=>{const legacy=structuredClone(earned);legacy.version=version;if(version===2)delete legacy.storage;return{version,legacy,raw:JSON.stringify(legacy,null,2)+'\n',families:version===2?[3,4]:[4]};});
+const current=JSON.stringify(earned),url='http://127.0.0.1:8080/hearth-rts.html';
 (async()=>{const server=spawn(process.execPath,['scripts/serve.cjs'],{stdio:['ignore','pipe','inherit']});let browser;
 try{await once(server.stdout,'data');browser=await playwright.chromium.launch({headless:true,chromiumSandbox:true});
 const open=async(seed,fault)=>{const context=await browser.newContext({viewport:{width:1280,height:720}});await context.addInitScript(({key,seed,fault})=>{const set=Storage.prototype.setItem;if(!localStorage.getItem(key))set.call(localStorage,key,seed);if(fault)Storage.prototype.setItem=function(k,v){if(k===fault)throw new DOMException('Fixture quota failure','QuotaExceededError');return set.call(this,k,v);};},{key:KEY,seed,fault});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});await page.goto(url);await page.locator('[data-unit="u0"]').waitFor();await page.clock.pauseAt(new Date('2026-01-01T01:00:00Z'));return{context,page,errors};};
-const exported=async(page,name)=>{await page.locator('#journey').click();const event=page.waitForEvent('download');await page.locator('#export').click();const download=await event,path='artifacts/'+name+'.json';await download.saveAs(path);return fs.readFileSync(path,'utf8');};
-for(const suffix of ['.before-v3','']){const {context,page,errors}=await open(raw,KEY+suffix);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),raw,'Failed migration write must retain legacy save');assert.equal(await page.locator('#pause').innerText(),'Resume');assert.equal(await page.locator('#stop').isDisabled(),true);await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),raw);const backup=await exported(page,'hearth-rts-recovery-'+(suffix?'backup-failure':'save-failure'));if(suffix)assert.equal(backup,raw,'Rejected migration exports exact original bytes');else{assert.deepEqual(JSON.parse(backup).stock,legacy.stock);assert.match(await page.locator('#toast').innerText(),/Saving stopped/);assert.doesNotMatch(await page.locator('#toast').innerText(),/original|could not be loaded/);}assert.deepEqual(errors,[]);await context.close();}
-for(const faultSuffix of ['.import-before-v3','',null]){const {context,page,errors}=await open(current,null);await page.locator('#stores').click();if(faultSuffix!==null)await page.locator('#pause').click();if(faultSuffix!==null)await page.evaluate(fault=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===fault)throw new DOMException('Fixture write failure','QuotaExceededError');return set.call(this,k,v);};},KEY+faultSuffix);await page.locator('#journey').click();page.once('dialog',d=>d.accept());await page.locator('#file').setInputFiles({name:'legacy-v2.json',mimeType:'application/json',buffer:Buffer.from(raw)});
-if(faultSuffix!==null){await page.locator('#save-status').filter({hasText:'Import could not be saved'}).waitFor();assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),current);assert.equal(await page.locator('#dialog').evaluate(d=>d.open),true);assert.equal(await page.locator('#pause').innerText(),'Resume');assert.match(await page.locator('#toast').innerText(),/Import failed/);assert.doesNotMatch(await page.locator('#toast').innerText(),/restored/);const event=page.waitForEvent('download');await page.locator('#export').click();const download=await event,path='artifacts/hearth-rts-failed-import-'+(faultSuffix?'backup':'main')+'.json';await download.saveAs(path);assert.deepEqual(JSON.parse(fs.readFileSync(path,'utf8')),earned,'Failed import must keep the prior camp in memory as well');await page.locator('#close').click();await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),current,'Closing the failed import must not resume or overwrite the previous camp');assert.equal(await page.locator('#pause').innerText(),'Resume');}
-else{await page.locator('#dialog').waitFor({state:'hidden'});assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3'),KEY),raw);const migrated=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);assert.equal(migrated.version,3);assert.equal(await page.locator('#store-title').count(),0,'Successful import must clear old store inspector controls');assert.deepEqual(migrated.stock,legacy.stock);assert.deepEqual(migrated.units,legacy.units);assert.equal(await page.locator('#pause').innerText(),'Resume');await page.clock.runFor(2500);assert.deepEqual(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY),migrated);}
-assert.deepEqual(errors,[]);await page.screenshot({path:'artifacts/hearth-rts-import-'+(faultSuffix===null?'saved':faultSuffix?'backup-failed':'write-failed')+'.png',fullPage:true});await context.close();}
-// Existing raw snapshots remain immutable across distinct imports and failed replacement.
-{const {context,page,errors}=await open(current,null);const importRaw=async(text,success=true)=>{await page.locator('#journey').click();page.once('dialog',d=>d.accept());await page.locator('#file').setInputFiles({name:'retained.json',mimeType:'application/json',buffer:Buffer.from(text)});if(success)await page.locator('#dialog').waitFor({state:'hidden'});else await page.locator('#save-status').filter({hasText:'Import could not be saved'}).waitFor();};
-await importRaw(raw);await importRaw(raw);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3.1'),KEY),null,'Identical raw imports reuse their backup');const second=JSON.stringify({...legacy,time:legacy.time+1},null,1)+'\n';await importRaw(second);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3'),KEY),raw);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3.1'),KEY),second);const prior=await page.evaluate(k=>localStorage.getItem(k),KEY);await page.evaluate(key=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Fixture main-write failure','QuotaExceededError');return set.call(this,k,v);};},KEY);const third=JSON.stringify({...legacy,time:legacy.time+2});await importRaw(third,false);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),prior);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3'),KEY),raw);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3.1'),KEY),second);assert.equal(await page.evaluate(k=>localStorage.getItem(k+'.import-before-v3.2'),KEY),third);assert.deepEqual(errors,[]);await context.close();}
+const downloadRaw=async(page,name)=>{const event=page.waitForEvent('download');await page.locator('#export').click();const download=await event,path='artifacts/'+name+'.json';await download.saveAs(path);return fs.readFileSync(path,'utf8');};
+const exported=async(page,name)=>{if(!await page.locator('#dialog').evaluate(d=>d.open))await page.locator('#journey').click();return downloadRaw(page,name);};
+const assertMigrated=(migrated,legacy)=>{
+ assert.equal(migrated.version,4);
+ for(const field of ['stock','spent','delivered','deposits','buildings','units','seen','time','nextId','depleted','complete','tools','knapping'])assert.deepEqual(migrated[field],legacy[field],'Migration preserves '+field);
+ if(legacy.version===3){
+  assert.notDeepEqual(legacy.storage.stores.b0,legacy.stock,'The v3 fixture must contain earned local stock outside the hearth');
+  assert.deepEqual(migrated.storage,legacy.storage,'v3 local custody must remain unchanged');
+  assert.deepEqual(migrated,{...legacy,version:4},'v3 migration changes only the outer version');
+ }else{
+  const stores=Object.fromEntries(legacy.buildings.filter(b=>b.done&&['hearth','outpost'].includes(b.kind)).map(b=>[b.id,b.kind==='hearth'?{...legacy.stock}:{wood:0,stone:0,food:0}]));
+  assert.deepEqual(migrated,{...legacy,version:4,storage:{version:1,stores,transfers:[],nextId:1,transferred:{wood:0,stone:0,food:0},reservations:{},payments:[]}},'v2 pooled stock is adopted at the hearth exactly once');
+ }
+};
+const assertRawBackups=async(page,fixture,prefix,count)=>{
+ for(const family of [3,4])assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+prefix+family),fixture.families.slice(0,count).includes(family)?fixture.raw:null,'Exact raw retention for '+prefix+family);
+};
+const importRaw=async(page,text,name,success=true)=>{
+ if(await page.locator('#dialog').evaluate(d=>d.open))await page.locator('#close').click();
+ await page.locator('#journey').click();assert.match(await page.locator('#save-status').innerText(),/This RTS camp has a separate save slot/,'Await this import from a fresh Journey status');
+ page.once('dialog',d=>d.accept());await page.locator('#file').setInputFiles({name,mimeType:'application/json',buffer:Buffer.from(text)});
+ if(success)await page.locator('#dialog').waitFor({state:'hidden'});else await page.locator('#save-status').filter({hasText:'Import could not be saved'}).waitFor();
+};
+for(const fixture of fixtures){
+ const {version,legacy,raw,families}=fixture,suffixes=families.map(v=>'.before-v'+v);
+ for(const faultSuffix of [...suffixes,'',null]){
+  const label='hearth-rts-recovery-v'+version+'-'+(faultSuffix===null?'saved':faultSuffix?faultSuffix.slice(1)+'-failure':'save-failure');
+  const {context,page,errors}=await open(raw,faultSuffix===null?null:KEY+faultSuffix),disk=await page.evaluate(k=>localStorage.getItem(k),KEY);
+  await assertRawBackups(page,fixture,'.before-v',faultSuffix?suffixes.indexOf(faultSuffix):families.length);
+  if(faultSuffix!==null)assert.equal(disk,raw,'Failed migration write must retain exact legacy bytes');else assertMigrated(JSON.parse(disk),legacy);
+  assert.equal(await page.locator('#pause').innerText(),'Resume');assert.equal(await page.locator('#stop').isDisabled(),faultSuffix!==null);
+  await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),disk);
+  const memory=await exported(page,label);
+  if(faultSuffix)assert.equal(memory,raw,'Failed migration backup must export exact original bytes');
+  else{
+   assertMigrated(JSON.parse(memory),legacy);
+   if(faultSuffix===''){assert.match(await page.locator('#toast').innerText(),/Saving stopped/);assert.doesNotMatch(await page.locator('#toast').innerText(),/original|could not be loaded/);}
+   else assert.equal(memory,disk,'Successful startup adopts the same v4 camp in memory and on disk');
+  }
+  assert.deepEqual(errors,[]);await context.close();
+ }
+}
+for(const fixture of fixtures){
+ const {version,legacy,raw,families}=fixture,suffixes=families.map(v=>'.import-before-v'+v);
+ for(const faultSuffix of [...suffixes,'',null]){
+  const label='hearth-rts-import-v'+version+'-'+(faultSuffix===null?'saved':faultSuffix?faultSuffix.slice(1)+'-failure':'write-failure');
+  const {context,page,errors}=await open(current,null);await page.locator('#stores').click();
+  const before=await exported(page,label+'-before');assert.deepEqual(JSON.parse(before),earned);await page.locator('#close').click();
+  if(faultSuffix!==null){
+   await page.locator('#pause').click();assert.equal(await page.locator('#pause').innerText(),'Pause');
+   await page.evaluate(fault=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===fault)throw new DOMException('Fixture write failure','QuotaExceededError');return set.call(this,k,v);};},KEY+faultSuffix);
+  }
+  await importRaw(page,raw,'projected-v'+version+'.json',faultSuffix===null);
+  await assertRawBackups(page,fixture,'.import-before-v',faultSuffix?suffixes.indexOf(faultSuffix):families.length);
+  assert.equal(await page.locator('#pause').innerText(),'Resume');
+  if(faultSuffix!==null){
+   assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),current);assert.equal(await page.locator('#dialog').evaluate(d=>d.open),true);
+   assert.match(await page.locator('#toast').innerText(),/Import failed/);assert.doesNotMatch(await page.locator('#toast').innerText(),/restored/);
+   assert.equal(await downloadRaw(page,label+'-after'),before,'Failed import must keep the complete previous live camp byte-for-byte');
+   await page.locator('#close').click();await page.clock.runFor(2500);
+   assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),current,'Closing the failed import must not overwrite the previous save');assert.equal(await page.locator('#pause').innerText(),'Resume');
+   assert.equal(await exported(page,label+'-after-wait'),before,'Closing the failed import must leave its previous live camp paused');await page.locator('#close').click();
+  }else{
+   const migrated=await page.evaluate(k=>localStorage.getItem(k),KEY);assertMigrated(JSON.parse(migrated),legacy);
+   assert.equal(await page.locator('#store-title').count(),0,'Successful import must clear old store inspector controls');
+   await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),migrated);
+   assert.equal(await exported(page,label+'-after'),migrated,'Successful import adopts the same paused v4 camp in memory and on disk');await page.locator('#close').click();
+  }
+  assert.deepEqual(errors,[]);await page.screenshot({path:'artifacts/'+label+'.png',fullPage:true});await context.close();
+ }
+}
+// Identical raw bytes reuse each applicable family; distinct A/B/C bytes stay immutable.
+for(const fixture of fixtures){
+ const {version,legacy,raw,families}=fixture,{context,page,errors}=await open(current,null),label='hearth-rts-retained-v'+version;
+ await importRaw(page,raw,'retained-a.json');await importRaw(page,raw,'retained-a-again.json');await assertRawBackups(page,fixture,'.import-before-v',families.length);
+ for(const family of families)assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family+'.1'),null,'Identical raw imports reuse their backup');
+ const secondState={...legacy,time:legacy.time+1},second=JSON.stringify(secondState,null,1)+'\n';await importRaw(page,second,'retained-b.json');
+ const prior=await page.evaluate(k=>localStorage.getItem(k),KEY);assertMigrated(JSON.parse(prior),secondState);
+ const priorMemory=await exported(page,label+'-before-c');assert.equal(priorMemory,prior);await page.locator('#close').click();
+ for(const family of families){assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family),raw);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family+'.1'),second);}
+ await page.evaluate(key=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Fixture main-write failure','QuotaExceededError');return set.call(this,k,v);};},KEY);
+ const third=JSON.stringify({...legacy,time:legacy.time+2});await importRaw(page,third,'retained-c.json',false);
+ assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),prior);await assertRawBackups(page,fixture,'.import-before-v',families.length);
+ for(const family of families){
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family+'.1'),second);
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family+'.2'),third);
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.import-before-v'+family+'.3'),null);
+ }
+ assert.equal(await downloadRaw(page,label+'-failed-c'),priorMemory,'Failed C replacement keeps B in live memory as well as on disk');
+ assert.equal(await page.locator('#pause').innerText(),'Resume');assert.match(await page.locator('#toast').innerText(),/Import failed/);assert.doesNotMatch(await page.locator('#toast').innerText(),/restored/);
+ await page.locator('#close').click();await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),prior);assert.equal(await page.locator('#pause').innerText(),'Resume');
+ assert.equal(await exported(page,label+'-failed-c-after-wait'),priorMemory);assert.deepEqual(errors,[]);await context.close();
+}
 // Isolated collision fixture: a prior site's Cancel closure must never survive import.
 // Keep the original 1280x720 viewport and ordinary visible click. The negative
 // control drops only preventScroll, reproducing the previous focus() call.
@@ -81,5 +168,5 @@ await importRaw(raw);await importRaw(raw);assert.equal(await page.evaluate(k=>lo
  }
  console.log('PASS same-viewport focus regression: old focus scrolls and misses the site; fixed focus preserves coordinates; colliding-ID import clears stale Cancel and retains incoming paid project');
 }
-console.log('PASS persistence fault fixtures: boot backup/main write failures retain raw legacy save; import backup/main failures retain prior disk+memory and truthful recovery; successful import preserves exact raw bytes and stays paused');
+console.log('PASS projected v2/v3 persistence fixtures: each applicable v3/v4 backup and main-write fault preserves raw bytes; startup main failure exports migrated v4; failed imports retain prior disk and downloaded memory; successful migration preserves the expected v4 world; identical imports reuse backups and distinct A/B/C bytes survive failed replacement');
 }finally{if(browser)await browser.close();server.kill();}})().catch(e=>{console.error(e);process.exitCode=1;});
