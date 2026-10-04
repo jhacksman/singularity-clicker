@@ -1,0 +1,296 @@
+Outpost reclaim v1 — consolidated implementation contract
+2026-10-04. Planning contract, not implemented or runtime verified.
+
+This is the controlling consolidated contract. It supersedes the alternatives
+in next-hearth-implementation-plan.txt, reclaim-spec-contract.txt and
+reclaim-legacy-contract-draft.txt. Those files remain historical review inputs.
+In particular there is no separate demolition timer, whole-vector site-pile
+release, sticky opening flag, widened numeric profile, mandatory history digest
+or mandatory second executable page in this increment.
+
+Pinned basis
+Game: b365ae01e4315bfd183a14438175c19c6396b11d; clean branch
+codex/hearth-native-dialog-focus. Historical canonical profiles checked against
+RTS016 69eaba9d3cb031fefc0c1fcfd090b67d96dd36bc and
+Tools018 f4e2d237125c0025606868b64fc9f0957c855826.
+Frozen spec: task-8/singularity-all14-spec-v3, SHA256SUMS identity
+1a1d987bd4efefdeb4b5f6a9356784ad9973dc726e6ec3e6943e87498f1ebbbc.
+Normative basis: Rules R2.1-R2.3; EM01:45,49; Technical:73-87 and content
+validation; Command:19; Hearth L01-C/D/E/F and accepted opening rates.
+
+1. Supported physical recovery row
+Profile row: accepted-opening.outpost-reclaim.v1.
+Recover a certified, completed, empty and settled optional outpost. The hearth
+and workshop are excluded. Its structural vector is exactly 60 wood + 20 stone,
+returned once at 100%. Stored goods, other cargo and spent work are separate.
+Do not refund construction labor, recruit food, paid tool inputs or consumables.
+
+This is a finite 'Recover this outpost until finished or interrupted' assignment,
+not the existing store-transfer button's single wave. Explicitly selected
+existing villagers perform real adjacent pickup, path travel and receipt using
+the accepted cadence and movement rate of 3 cells/second. Each carries up to
+five units of one resource. There is no new speed, support cost or separately
+timed demolition phase. Duration is the actual handling/travel of those workers;
+it is not a fixed completion-time promise or an authored zero-second demolition
+recipe. This is the minimal physical-job interpretation reviewed against the
+specification, which does not require a second timed stage.
+
+At each ordinary pickup transition, revalidate current assignment, empty hands,
+exact claim/site identity, real adjacency, a usable receiving route, and spent
+backing. Choose wood before stone and fill min(5, that resource's unreserved
+remaining amount); update each actor atomically in stable actor-ID order. Do not
+split otherwise full tranches across workers. Starting from 60W/20S this requires
+twelve wood loads and four stone loads. Reservations do not release materials.
+Pickup never occurs in quote or command handlers; repeat input cannot add another
+pickup/receipt transition within the actor's ordinary simulation boundary.
+Legal shared pickup/receipt edges may have zero-length travel. Keep separate
+physical pickup and receipt transitions; invent no minimum walk or extra delay.
+
+For the picked-up vector L, atomically:
+  spent -= L; claim.unreleased -= L; named actor's tagged cargo += L.
+There is no instantaneous whole-structure release and no separate site pile.
+At an actual eligible store receipt:
+  tagged cargo -= L; reached store += L; claim.receipted += L.
+Only received stock is spendable. Reclaimed cargo does not increment gathered,
+transferred-from-a-store or depleted counters. Show recovered receipts separately.
+
+Per claim: 60W20S = unreleased + its tagged cargo + cumulative receipted.
+Per certified world: T = remaining wild + real stores + ALL actor cargo + spent.
+Receipted and other cumulative metrics are attribution, not extra inventory.
+The remaining paid material includes unreleased capital and all other paid
+obligations; do not add claims/reservations a second time. New construction paid
+with received salvage creates its own claim; it never reinstates the old one.
+
+2. Admission, service and input ownership
+Quote is read-only. Commit validates the complete selected group before changing
+any worker order, allocation or site service: existing stable IDs, empty hands,
+no incompatible live obligation and a path through one actual pickup edge to an
+eligible non-retiring receiver. Two unrelated reachable edges do not prove that
+route. A rejected group/order preserves the existing serialized economic state.
+Only after validation may a valid replacement release an actor's old assignment.
+
+The outpost must have zero actual stock and no unsettled incoming, unpicked,
+queued, transfer or refundable-source obligation. Inspect durable transfer
+markers/job endpoints even after manual Move removed dropoff. Historical
+completed-payment references alone do not block recovery. Explain the exact
+live blocker and its ordinary settlement action.
+
+At successful commitment, mark the site retiring and exclude it from every new
+home/dropoff, funding/pay/nearestStore, transfer/receipt and queued admission.
+Revalidate at commitment and share this eligibility rule across all entry paths.
+A store that was empty at quote time must not gain new promises during recovery.
+The original 2x2 footprint stays occupied until settlement; its finite unreleased
+claim accepts no unrelated deposits and is not a general storage/cache feature.
+
+Keep every unsettled recovery site in placement/topology protection even after
+it stops being isStore(). Construction must not seal its last usable pickup edge.
+Check actual pickup-edge-to-receiver continuity again before pickup. Retiring
+another receiving store must account for these dependencies or prove a usable
+alternative. If a route disappears, preserve unreleased capital or held cargo
+and show the blocker; never issue a remote refund or silently destroy a load.
+
+Assignment and custody are distinct. Stop, Move, Gather, Build, Craft, Transfer
+or assignment elsewhere revoke future recovery pickup authority when the new
+command is valid. A carried reclaim marker/load remains attached to its actual
+worker until delivery. Stop physically returns the load once and then idles;
+Move keeps it with the worker, with the existing immediate loaded-Move semantics.
+Preserve the current disclosed return-first behavior for other existing loaded
+work-switch commands. Receipt may settle the claim but never recaptures that
+worker for the abandoned assignment. Empty departing actors release any unpicked
+private reservation. Repeated same-job confirmation does not restart or duplicate
+the job or its allocations. A paused camp performs no physical transition.
+
+When unreleased reaches zero, empty assigned workers release future-assignment
+references rather than making another source trip. Loaded workers may finish
+their authorized return. The last receipt clears its marker/membership before
+finalization checks. Remove the footprint/job only when unreleased and tagged
+cargo are zero and no live reference remains. A manually held final load keeps
+the job unsettled intentionally; cleanup cannot force its delivery or recreate
+the outpost. The finite job can be explicitly resumed with eligible workers.
+
+3. Preserve progression within the bounded scope
+Reject recovery of the last required eastern outpost with a visible reason.
+At atomic commitment count only OTHER completed, usable, non-retiring outposts
+with the current exact x>20 predicate. A retiring peer cannot justify a second
+retirement, including paused sequential commands and reload. Use the same
+operational eligibility when evaluating the opening goal. This preserves the
+current completion/funding behavior without introducing a sticky completion
+field. It is a disclosed restriction on required infrastructure; optional western
+outposts remain recoverable. It does not claim unrestricted capital relocation.
+
+4. Legacy certificate and eligibility
+Keep three questions separate: existing source is playable; its old structural
+capital is certified; a particular outpost is currently ready for recovery.
+Missing payment history does not disqualify canonical older worlds. An already
+exhausted, genuinely earned b365ae0 camp must qualify; new-build-only eligibility
+does not fix that dead end. Certificate failure must preserve previously accepted
+play/export and exact source bytes, with a precise optional-feature explanation.
+Unknown/future/originally invalid saves retain their existing safe handling.
+
+Certify the declared state under a named canonical source profile. This is not
+authentication, observed chronology or anti-cheat: a balanced edited snapshot
+can pass. Do not infer the original budget from mutable imported initial/cost.
+Pin sources by ID, kind, position and initial quantity:
+ d0 wood(5,6)48; d1 wood(10,5)48; d2 stone(12,10)60; d3 food(5,18)75;
+ d4 wood(26,6)180; d5 wood(30,9)120; d6 stone(29,15)150; d7 food(24,19)150.
+Pin one original b0 hearth at(7,11), zero structural bill, starter20W10S0F.
+Total material T=(416wood,220stone,225food). Require exactly these sources,
+bounded integer remaining quantities, canonical integral material fields and
+4..8 workers. Preserve movement/work/time under the existing profile; do not
+round them or require completed work24/32 to fabricate historical proof.
+
+Each extant non-hearth building, complete OR unfinished, must have its semantic
+canonical paid cost: outpost60W20S, workshop40W30S. Absent zero fields/key order
+are immaterial; wrong nonzero ingredients, fractional quantities or inflated/
+deflated bills fail optional certification. Never repair cost into authority.
+Require stable generated bN identities, an integer nonreused nextId greater than
+every existing suffix, and existing supported-reader validity. ID gaps are allowed.
+
+Establish both exact resource equations:
+ I. T = wildRemaining + stored + ALL actorCargo + spent.
+ II. spent = extant outpost bills + extant workshop bills
+             + one4W8S bill if a paid knapping project exists
+             +25food*(workerCount-4).
+For v1 use its existing effective no-knapping adapter; later versions preserve
+the actual unfinished/finished project and paid global0.45 tools. Count unfinished
+paid sites/craft too. Canceled sites have already returned their material. Pending
+transfer goods remain in stores until pickup; construction/craft reservations
+are already in spent. Held transfer cargo counts once even without dropoff.
+Retain v3/v4 store-aggregate and transfer-custody equations. Do not use cumulative
+delivered/transferred/depleted metrics as owned matter or balancing grants.
+
+Present payments are supplementary assertions: validate their canonical kind,
+target, typed sum and original source consistency; reject duplicate/conflicting
+asserted construction/project payments and excessive recruitment assertions.
+Construction names an extant paid building, knapping the recorded workshop,
+recruitment null; accepted generated rows are unrefunded. Missing/partial rows
+are allowed because the old storage migration begins with payments=[]. Never
+require sum(payments)==spent or invent witnessed hearth payments. Report missing
+origin as legacy-state-consistency/payment-origin-unrecorded. Preserve raw rows
+in the source even if normalized candidate provenance aggregates equivalent entries.
+
+Allocate all old claims together from existing spent after both equations pass.
+Record source identity, fixed canonical recipe, object ID and certificate rule;
+the allocation itself issues no stock or cargo. Issue once on old-schema adoption,
+never again on claim-bearing v5 reload. The legacy full-bill equation is NOT a
+v5 reload rule for partially recovered structures: v5 validates remaining claims,
+other paid obligations and actual cargo/receipt partition instead. Reimporting an
+old world replaces the selected world; it never adds its claims to current stock.
+
+5. Compatibility, durable adoption and navigation
+Use a new explicit reclaim schema/profile (v5) and a candidate-only, paused
+adoption. Do not interpret unknown legacy fields as new claims/retirement/cargo
+authority; construct new authoritative fields from the certified adapter. Keep
+the exact raw source with its identity. v1/v2 use the existing disclosed aggregate
+storage assignment; its hearth location is a compatibility assignment, not an
+observed payment origin. v3/v4 preserve actual stores, queues, reservations,
+transfer markers, work and existing loaded-Move/held behavior.
+
+An optional-certification failure retains a tested legacy compatibility path in
+the same bundle, with its existing operator/serialization semantics and recovery
+exports. It does not force a guessed certified v5 state. No separate complete
+HTML/runtime is inherently required; any claimed exact compatibility still needs
+its retained operator/content behavior and fixtures. Do not claim certification
+or exact playable support for profiles that have not passed those gates.
+
+Before import replaces the live world, explicitly retain the outgoing verified
+live camp, which may be newer than its autosave, separately from the incoming raw
+source backup. This preservation is NEW work: current view296-302 only backs up
+applicable incoming legacy raw bytes before overwriting KEY. Preserve exact prior
+durable source bytes where needed as well. Candidate construction/backup success
+is not adoption. Only after required preservation and main durable write succeed
+may the incoming candidate become the active playable/export world. On any backup
+or main-write failure, retain the prior active camp/KEY and recovery/export choices;
+a partial successful backup may remain, clearly not a committed import.
+
+Controller-owned source families use the current KEY as prefix:
+ .before-v5 — exact old source inspected before startup reclaim adoption;
+ .import-before-v5 — exact supported incoming import text before adoption;
+ .outgoing-before-import-v5 — verified outgoing LIVE camp serialization;
+ .stored-before-import-v5 — exact prior durable KEY text when it differs.
+The import-source label means before adoption by the v5 destination; it may
+contain a supported incoming v1-v5 source. Preserve and label actual source
+versions. Reuse only a byte-identical existing record; otherwise choose the next
+free numbered suffix. Never overwrite an earlier distinct backup. Keep these
+records separate from active KEY and grant no simulation/claim authority to them.
+Resolve required reads/serialization first, retain distinct sources/outgoing
+state, then commit incoming KEY, then install the active candidate. Failure at
+any required preservation/write boundary stops that sequence before adoption.
+
+Apply the same discipline to startup migration. Current view16-21 installs the
+candidate before save306, and a failed save can leave candidate Journey export.
+Do not inherit that ordering as proof of the new contract. Preserve original
+recovery/export state until durable v5 adoption succeeds. No fresh overwrite
+after unreadable storage. Test backup read/write, collision/dedup, main-write
+failure and exact original export in both startup and import paths.
+
+Enumerate new startup/import/outgoing backup families and v5 compatibility in
+campaign-navigation, its bundled validator and the actual RTS destination. The
+adapter's separate profile/content-metadata rejection must be updated for exactly
+the supported new row if such fields are emitted, not broadly weakened. Extend
+carryMove admission intentionally. Navigation remains read-only: the actual
+destination owns migration and claim issuance. Continue/export must work for
+legacy playable-but-uncertified worlds, certified v5 worlds and original backups.
+
+6. Bounded history and numbers
+Separate historical source identity/location from live spendable-store membership.
+Keep actual live refund origins and unsettled claims/cargo; they block retirement
+where necessary. Historical completed origins may attach as bounded snapshots to
+still-live claims, including explicit unknown legacy origin. They do not receive,
+fund, reveal or collide. Do not rewrite them into fictitious hearth payments.
+
+After a claim and every cargo/reference settle, fold its completed accounting into
+fixed-size checked summaries and remove obsolete detailed rows. Nonreused IDs and
+live-claim validation reject stale recovery commands. Keep physical sites within
+the existing30 structure capacity and detailed current obligations within40 payment
+rows; active retirement occupies its original slot until settlement. Compact only
+closed detail, never an active refund or cargo origin. Repeated cycles must not
+make an ordinary subsequent save unloadable. No per-cycle cryptographic digest
+or authenticated full-journal/replay claim is required for this inventory slice.
+
+Retain actual existing numeric limits, notably nextId<10000000, rather than widening
+to MAX_SAFE_INTEGER. Preflight the post-command increment and cumulative counters;
+reserve sufficient remaining IDs/counter range for admitted settlement and the
+still-required eastern outpost/workshop. Optional admission must fail before
+spending when that headroom is unavailable. Existing-goods settlement requires
+no new building ID and cannot be denied after its job was admitted. Fixed summaries
+are diagnostics/provenance, not extra material authority or an infinite-history promise.
+
+7. Falsifiable acceptance and ownership
+Root is sole future game-code fixer on a new isolated branch from b365ae0, owning
+engine, UI, compatibility/save/import/navigation and build integration. Separate
+QA author and source/artifact verifier remain independent. Parent routes immutable
+source and commands to the shared Spark coordinator. No tests/build/parser/browser
+on M6 or GitHub-hosted runners; no merge, push or deployment is implied.
+
+Mandatory old-world witness: earn/export six western outposts plus workshop under
+the pinned b365ae0 executable BEFORE reclaim code is installed. Proposed coordinates
+are only source-plausible until actual controls prove them. Gather all wood/stone
+first, no recruits/tools: stores16W70S, spent400W150S, untouched225wild food, no cargo.
+Both equations pass; those already-built old outposts MUST qualify even with a
+naturally absent/partial old payment history. A synthetic/schema-downgraded fixture
+is supplementary, not evidence of an observed old executable or ordinary sequence.
+
+After one outpost's physical recovery, stores76W90S and spent340W130S. Paying the
+eastern60W20S outpost restores stores16W70S/spent400W150S; complete its actual24build
+work. No grant, deposit refill, changed tool entitlement or work refund is allowed.
+Observe every real pickup/receipt and separate gathered/recovered metrics. Keep a
+compatible old-source negative control. Add a normal useful reposition session;
+the adversarial six-outpost sequence alone does not establish everyday usefulness.
+
+Test old v1-v4 profile inputs, unfinished paid sites/knapping, recruited workers,
+missing/partial/conflicting payments, altered budget/cost fields and held transfers.
+Test duplicate confirmation, invalid groups, every manual override, pause/reload at
+pickup/carry/receipt, abandoned-assignment non-recapture, final-reference cleanup,
+source-edge sealing, disconnected edges, receiver retirement and competing eastern
+retirements. Test bounded history across40 old payment events/30 retired structures,
+numeric headroom, startup/import preservation failures and actual built-page
+navigation/backup export. Use independent vector oracles, not implementation mirrors.
+
+All of those are future Spark gates; no reclaimed old-world witness has run here.
+A separate real-time human session judges choice, clarity, waiting and maintenance.
+This recovery increment does not finish L01-C, H2 equipment/fiber/support, First
+Furrow, the full human-age campaign, physical-device/a11y or enjoyment acceptance.
+Keep original drawn art. No new image generation, timer tuning or user decision
+is required by this scoped contract; any later added demolition phase is separate
+versioned content work.

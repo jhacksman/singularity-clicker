@@ -9,6 +9,10 @@
     rtsImportBackupV3: 'singularity-clicker.hearth-rts.v1.import-before-v3',
     rtsBackupV4: 'singularity-clicker.hearth-rts.v1.before-v4',
     rtsImportBackupV4: 'singularity-clicker.hearth-rts.v1.import-before-v4',
+    rtsBackupV5: 'singularity-clicker.hearth-rts.v1.before-v5',
+    rtsImportBackupV5: 'singularity-clicker.hearth-rts.v1.import-before-v5',
+    rtsOutgoingBackupV5: 'singularity-clicker.hearth-rts.v1.outgoing-before-import-v5',
+    rtsStoredBackupV5: 'singularity-clicker.hearth-rts.v1.stored-before-import-v5',
     rtsWorkRoundoffBackup: 'singularity-clicker.hearth-rts.v1.before-work-roundoff',
     rtsImportWorkRoundoffBackup: 'singularity-clicker.hearth-rts.v1.import-before-work-roundoff',
     hearth: 'singularity-clicker.hearth.v1',
@@ -20,11 +24,11 @@
   const BASE_COMMIT = '4e391c2e2ebf255e1cf0fb5b57bed6d123b51558';
   const MAX_BYTES = 6 * 1024 * 1024;
   const KINDS = Object.freeze(Object.keys(KEYS));
-  const SCHEMAS = Object.freeze({cave: [1], rts: [1, 2, 3, 4], rtsBackup: [1], rtsBackupV3: [1, 2], rtsImportBackupV3: [1, 2], rtsBackupV4: [1, 2, 3], rtsImportBackupV4: [1, 2, 3], rtsWorkRoundoffBackup: [1, 2, 3], rtsImportWorkRoundoffBackup: [1, 2, 3], hearth: [1], hearthCompleted: [1], agriculture: [1]});
-  const KIND_SOURCE = Object.freeze({cave: 'cave-v1', rts: 'hearth-rts', rtsBackup: 'hearth-rts', rtsBackupV3: 'hearth-rts', rtsImportBackupV3: 'hearth-rts', rtsBackupV4: 'hearth-rts', rtsImportBackupV4: 'hearth-rts', rtsWorkRoundoffBackup: 'hearth-rts', rtsImportWorkRoundoffBackup: 'hearth-rts', hearth: 'hearth-v1', hearthCompleted: 'hearth-archive-v1', agriculture: 'agriculture-v1'});
-  const BACKUP_KINDS = Object.freeze({'before-v2': 'rtsBackup', 'before-v3': 'rtsBackupV3', 'import-before-v3': 'rtsImportBackupV3', 'before-v4': 'rtsBackupV4', 'import-before-v4': 'rtsImportBackupV4', 'before-work-roundoff': 'rtsWorkRoundoffBackup', 'import-before-work-roundoff': 'rtsImportWorkRoundoffBackup'});
+  const SCHEMAS = Object.freeze({cave: [1], rts: [1, 2, 3, 4, 5], rtsBackup: [1], rtsBackupV3: [1, 2], rtsImportBackupV3: [1, 2], rtsBackupV4: [1, 2, 3], rtsImportBackupV4: [1, 2, 3], rtsBackupV5: [1, 2, 3, 4], rtsImportBackupV5: [1, 2, 3, 4, 5], rtsOutgoingBackupV5: [1, 2, 3, 4, 5], rtsStoredBackupV5: [1, 2, 3, 4, 5], rtsWorkRoundoffBackup: [1, 2, 3], rtsImportWorkRoundoffBackup: [1, 2, 3], hearth: [1], hearthCompleted: [1], agriculture: [1]});
+  const KIND_SOURCE = Object.freeze({cave: 'cave-v1', rts: 'hearth-rts', rtsBackup: 'hearth-rts', rtsBackupV3: 'hearth-rts', rtsImportBackupV3: 'hearth-rts', rtsBackupV4: 'hearth-rts', rtsImportBackupV4: 'hearth-rts', rtsBackupV5: 'hearth-rts', rtsImportBackupV5: 'hearth-rts', rtsOutgoingBackupV5: 'hearth-rts', rtsStoredBackupV5: 'hearth-rts', rtsWorkRoundoffBackup: 'hearth-rts', rtsImportWorkRoundoffBackup: 'hearth-rts', hearth: 'hearth-v1', hearthCompleted: 'hearth-archive-v1', agriculture: 'agriculture-v1'});
+  const BACKUP_KINDS = Object.freeze({'before-v2': 'rtsBackup', 'before-v3': 'rtsBackupV3', 'import-before-v3': 'rtsImportBackupV3', 'before-v4': 'rtsBackupV4', 'import-before-v4': 'rtsImportBackupV4', 'before-v5': 'rtsBackupV5', 'import-before-v5': 'rtsImportBackupV5', 'outgoing-before-import-v5': 'rtsOutgoingBackupV5', 'stored-before-import-v5': 'rtsStoredBackupV5', 'before-work-roundoff': 'rtsWorkRoundoffBackup', 'import-before-work-roundoff': 'rtsImportWorkRoundoffBackup'});
   function backupKind(key) {
-    const match = /^singularity-clicker\.hearth-rts\.v1\.(before-v2|before-v3|import-before-v3|before-v4|import-before-v4|before-work-roundoff|import-before-work-roundoff)(?:\.[1-9][0-9]*)?$/.exec(key);
+    const match = /^singularity-clicker\.hearth-rts\.v1\.(before-v2|before-v3|import-before-v3|before-v4|import-before-v4|before-v5|import-before-v5|outgoing-before-import-v5|stored-before-import-v5|before-work-roundoff|import-before-work-roundoff)(?:\.[1-9][0-9]*)?$/.exec(key);
     return match && match[0] === key ? BACKUP_KINDS[match[1]] : null;
   }
   const HANDOFF = Object.freeze({state: 'unavailable', committed: false, destinationWorldId: null, reason: 'Campaign handoff is not integrated. Opening the RTS preview transfers no people, supplies, grants or completion proofs.'});
