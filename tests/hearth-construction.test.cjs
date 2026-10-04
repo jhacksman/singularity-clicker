@@ -466,7 +466,7 @@ test('construction admission rejects a group containing a trapped hearth-edge wo
   assert.equal(trapped.x, 6); assert.equal(trapped.y, 11); assert.deepEqual(g.path(trapped, g.around(building(g, 'b0'))), []);
   assert.equal(g.path(trapped, g.around(proposed)), null); assert.ok(g.path(g.s.units[1], g.around(proposed)));
   assert.equal(g.placement('outpost', 11, 15), null, 'The mixed group is the only admission failure');
-  const raw = g.serialize(); assert.ok(g.build('outpost', 11, 15, ['u0', 'u1']).error); assert.equal(g.serialize(), raw); roundtrip(g);
+  const raw = g.serialize(); assert.ok(g.build('outpost', 11, 15, ['u0', 'u1']).error, 'C01_UNREACHABLE_BUILD_MUST_REJECT'); assert.equal(g.serialize(), raw); roundtrip(g);
 });
 
 test('externally blocked return holds active and cancelled cargo until reachable storage is restored', () => {
@@ -546,7 +546,8 @@ test('source and planned-pickup identities reject coercible or inherited keys wi
     'use strict';
     const assert = require('node:assert/strict');
     const { Camp, valid } = require(${JSON.stringify(require.resolve('../src/hearth-rts/engine.js'))});
-    const bad = JSON.parse(require('node:fs').readFileSync(0, 'utf8')), raw = JSON.stringify(bad);
+    const payload = JSON.parse(require('node:fs').readFileSync(0, 'utf8')), bad = payload.state, raw = JSON.stringify(bad);
+    const rejectionMarker = payload.field === 'source' ? 'C02_SOURCE_ID_MUST_REJECT' : 'C02_PICKUP_ID_MUST_REJECT';
     const intrinsics = [Object.prototype, Object, Object.prototype.toString, Object.prototype.valueOf, Function.prototype, Function,
       Array.prototype, Array, String.prototype, String, Number.prototype, Number, Boolean.prototype, Boolean,
       RegExp.prototype, RegExp, Date.prototype, Date, Error.prototype, Error, Map.prototype, Map, Set.prototype, Set, Promise.prototype, Promise];
@@ -554,14 +555,14 @@ test('source and planned-pickup identities reject coercible or inherited keys wi
     const untouched = () => intrinsics.forEach((value, i) => assert.deepEqual(Object.getOwnPropertyDescriptors(value), prior[i], 'Intrinsic object ' + i + ' was mutated'));
     let accepted, failure;
     try { accepted = valid(bad); } catch (error) { failure = error; }
-    untouched(); assert.equal(failure, undefined, 'Validation must return false for malformed identity'); assert.equal(accepted, false);
+    untouched(); assert.equal(failure, undefined, 'Validation must return false for malformed identity'); assert.equal(accepted, false, rejectionMarker);
     assert.throws(() => new Camp(bad), /compatible RTS Hearth save/); untouched(); assert.equal(JSON.stringify(bad), raw);
   `;
   for (const field of ['source', 'pickup']) for (const identity of [['b0'], 'toString', '__proto__', 'constructor', null, 0, 17]) {
     const bad = copy(field === 'source' ? carried : unpicked);
     if (field === 'source') bad.construction.sites[0].sources[0].storeId = identity;
     else bad.units[0].supplyPickup.storeId = identity;
-    const result = spawnSync(process.execPath, ['-e', script], { input: JSON.stringify(bad), encoding: 'utf8', timeout: 10000 });
+    const result = spawnSync(process.execPath, ['-e', script], { input: JSON.stringify({ field, state: bad }), encoding: 'utf8', timeout: 10000 });
     assert.equal(result.error, undefined); assert.equal(result.signal, null);
     assert.equal(result.status, 0, `${field} identity ${JSON.stringify(identity)}: ${result.stderr || result.stdout}`);
   }

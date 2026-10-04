@@ -32,6 +32,8 @@ node build.mjs
 
 `tests/hearth-construction.test.cjs` covers fixed-inventory arithmetic, source reservations, pickup races, manual overrides, cancellation, source retirement and exact save continuation. Its pinned version-5 engine fixture is checked by SHA-256 and executed only on Spark. Those API-earned migration cases are distinct from an ordinary browser witness.
 
+`node scripts/check-construction-negative.cjs` is a separate Spark gate. It runs the identical C01 and C02 regression assertions against the preserved pre-review construction engine in an owned temporary tree. Each must fail at its named assertion, while the candidate engine stays unchanged. It preserves both full logs and a source-bound result; setup failures and unexpected passes fail the gate.
+
 `tests/browser/hearth-construction.cjs` requires an ordinary fresh journey through eastward construction, a workshop, paid tools and useful subsequent gathering. It records Journey exports, material transitions, trusted inputs and screenshots. Supplementary comparisons and cancellation replays use exact previously earned exports through the import control. Full acceptance also requires a separately earned unfinished paid-site witness from the immutable version-5 source; absence is reported as pending, not passed. Existing startup, recovery, movement, storage, outpost recovery and native navigation browser suites remain regression gates.
 
 No publication, deployment, main merge or GitHub-hosted execution is part of this change.
