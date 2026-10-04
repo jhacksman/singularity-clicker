@@ -1,0 +1,87 @@
+Spark022 economic evidence review
+
+Source commit: f93798b3cd5b3f38697e1696a058e55e449b676d
+Job: singularity-20261004-rts-storage-022; execution host gb10-02.
+Verdict: economic scope PASS. Input/output archive provenance independently
+reconciled; no remaining blocker within this report's bounded scope.
+
+Evidence read
+Result and evidence-summary JSON in task-2/spark-ci/results, matching job prefix;
+task-2/spark-ci/logs/singularity-20261004-rts-storage-022.log;
+task-2/spark-ci/results/singularity-20261004-rts-storage-022-evidence/artifacts/
+hearth-rts-transfer-{reserved,carried,delivered}.json and hearth-rts-earned-camp.json.
+Browser assertions were read from the exact source commit, not executed locally.
+
+Recorded execution
+Result binds the exact commit, exit_code 0, completed, cleanup_verified true.
+Log reports 79 tests passed, 0 failed/skipped/cancelled; four self-contained
+builds; fresh RTS browser progression passed at 179 rounded simulated seconds
+(earned snapshot time 178.69999999999413); no page errors.
+The source contains 30 storage regression cases, all named as passing in the log.
+These include uneven cancellation, typed transfer cargo, interrupted/reloaded
+custody, local funding, paid legacy project migration and protected store access.
+
+Actual stone custody (quantities, not inferred from a success label)
+Snapshot       Sim time   Hearth  Outpost  Carried  Unpicked reserved  Transferred
+reserved       113.9      20      0        0        20                 0
+carried        121.2      0       0        20       0                  0
+delivered      127.4      0       20       0        0                  20
+The carried state has four named workers, each holding five stone for t1 with
+destination b1; each pending allocation is zero. The receiver is still empty.
+The delivered state has no carried goods, no transfer jobs, and four idle workers.
+Gathered counters remain wood 116 / stone 60 / food 0 across all three snapshots.
+Therefore the transfer neither credits its receiver early nor counts moved stone
+as newly gathered production. Browser assertions also confirm repeated activation
+does not reserve twice and the carried state stays exact through paused reload
+and a 2.5-second wait before explicit Resume.
+
+Conservation and useful local consumption
+For each of the four snapshots, stores + cargo + remaining finite deposits +
+legacy spent totals reconcile to wood 416 / stone 220 / food 225. Every aggregate
+stock value also equals the sum of its local stores. Reservations are subsets of
+owned goods or legacy paid-project records, not additional material in that sum.
+The final camp holds wood 32 / stone 12 / food 10; spent is 104 / 58 / 25; remaining
+deposits are 280 / 150 / 190, with no carried cargo or live reservations.
+Its payment records charge workshop b2 exactly four wood and eight stone from
+outpost b1, and recruitment exactly 25 food from hearth b0. Knapping is complete
+at 12 worker-seconds; population rose from four to five. Transfer totals are
+20 stone and 25 food; gathered totals are 116 wood, 60 stone and 35 food.
+The matching successful browser trace checks that crafting rejects atomically
+when stone exists only at the remote hearth, then works after delivery. Recruitment
+rejects with 25 food missing at the hearth, still rejects after only 20 arrive,
+and succeeds after the final five. The earned artifact corroborates the resulting
+local debits, population, depletion and remaining stores.
+
+Migration/recovery evidence and limits
+The run log records successful explicit v1 and v2 compatibility fixtures with
+byte-exact raw backups, unchanged world/cargo and v3 local storage. They are
+controlled fixtures derived from the earned camp, not exhaustive historical-save
+coverage. The same log reports boot/import backup and main-write failure recovery
+and successful paused import. Detailed recovery/focus verification belongs to the
+separate implementation reviewer; this report does not replace that review.
+This closes the bounded local-storage/transfer economic scope. It does not prove
+full Hearth completion, drying/provisions, support, capacity rules, campaign
+ownership, native/mobile behavior, performance targets or human enjoyment.
+Older Hearth drying tests in the combined log do not establish RTS drying.
+Only artifact inspection, JSON arithmetic and hashing occurred locally; no app,
+test, build or browser runtime was executed on M6 and no application file changed.
+
+Integrity
+Input source archive: task-2/spark-ci/archives/
+singularity-20261004-rts-storage-022.tar
+Independently read SHA256:
+5bb0e1bccf0796c2a34adf43c1d38201f1fc5e02b03596afe1a7d59b2b2b9fa0
+This is the archive identified by evidence-summary archive_sha256, whose commit
+field matches f93798b3cd5b3f38697e1696a058e55e449b676d.
+Output evidence archive: task-2/spark-ci/results/
+singularity-20261004-rts-storage-022-artifacts.tar
+Independently read SHA256:
+e33a3be4e8a7f945e33bba2660ff98b669281a620b56d923e0554b022b0b7222
+All four reviewed extracted JSON files byte-match their members in the output tar:
+reserved  5e6ac501cc203355f81f4d3be87295cff456e17d85bdee0de480378f54e0637d
+carried   85557e5eb688b977d0d40c8f8ec9ab8e0885276c027a08c114fbd41117c6590f
+delivered 21e8403012a529783dbab9d52bbc1bf8dcd24764dadca75fac1780c19d1c209c
+earned    ca08423178b08c43ae787924ac15792816d71c8b790ac51726e5d3aa0a0053e0
+The initial checksum ambiguity is closed: the two hashes identify distinct input
+and output archives, not conflicting copies of one archive. Both were independently
+hashed for this review. No coordinator file was edited.

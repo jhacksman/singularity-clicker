@@ -1,0 +1,16 @@
+{
+  "id": "singularity-20261004-rts-storage-022",
+  "commit": "f93798b3cd5b3f38697e1696a058e55e449b676d",
+  "host": "gb10-02",
+  "exit_code": 0,
+  "reason": "completed",
+  "started": 1791081044.4677176,
+  "finished": 1791081139.573178,
+  "image": "sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e",
+  "execution_exit_code": 0,
+  "execution_reason": "completed",
+  "executor_error": null,
+  "cleanup_verified": true,
+  "cleanup_state": "absent",
+  "cleanup_errors": []
+}

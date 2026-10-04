@@ -1,4 +1,38 @@
-Current checkpoint — Spark Tools018
+Current verified checkpoint — Spark Storage022
+Tested source f93798b3cd5b3f38697e1696a058e55e449b676d, gb10-02, exit 0.
+79 tests, zero skipped, four builds, both browser suites passed. The ordinary
+mouse/keyboard flow earned expansion, local transfers, crafting and recruitment
+in 178.7 simulated seconds. This is automation evidence, not human playtime.
+Exact command: node scripts/check-syntax.cjs && node --test tests/*.test.cjs && node build.mjs && node tests/browser/hearth-rts.cjs && node tests/browser/hearth-rts-recovery.cjs
+Two independent reviewers closed the named storage findings against actual logs,
+custody snapshots, recovery exports and focus traces. Evidence: rts-storage-022.
+The existing Library hearth-rts-core-preview.html is now version 2 (63,776 bytes),
+retrieved from the completed Spark build; it was not built or executed on M6.
+HTML SHA256 bb5c62302407b17c76c3c5b545a256d324f27101ee61d7fcc119773e3b7355b8.
+
+Storage guide
+1. Inspect the hearth or completed outpost to see goods Here, Free and Reserved.
+2. Select carriers, choose a destination and resource, then Send selected carriers.
+   Each carries at most five. Reserved goods remain at the source until pickup;
+   the receiver gets them only on arrival. Transfers do not count as gathering.
+3. Opening construction retains pooled funding. After the first expansion,
+   construction and knapping draw from the named nearby store; recruitment
+   requires food at the hearth. Move supplies when that source has a shortage.
+4. Reload/import opens paused. v1/v2 RTS camps migrate to v3, preserving holdings,
+   paid work and exact original raw bytes. Failed writes retain recovery options.
+5. A canvas focus correction prevents an ordinary click from shifting to another
+   map cell when the partially visible canvas receives keyboard focus.
+
+Boundaries: paid construction/knapping remain instant reservation abstractions;
+drying, provisions, support/caps and full Hearth/campaign integration are deferred.
+Separate UX022 findings (explicit Move, Space ownership, touch command flow and
+stale canceled-site funding guidance) are confirmed and queued for correction.
+Storage022 does not close them, physical touch, accessibility or human enjoyment.
+Original art and earlier game entrypoints/saves remain preserved. Earlier Library
+screenshot/video items still show RTS016, not this increment. No push/main merge
+or production deployment. Subsequent source edits require their own Spark evidence.
+
+Historical checkpoint — Spark Tools018
 Tested source f4e2d237125c0025606868b64fc9f0957c855826, gb10-02, exit 0.
 49 tests, four builds, actual fresh expansion/crafting/browser migration passed.
 Exact command: node --test tests/*.test.cjs && node build.mjs && node tests/browser/hearth-rts.cjs

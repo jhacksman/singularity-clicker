@@ -1,4 +1,19 @@
-Storage increment: adversarial review ledger (runtime verification pending)
+Storage increment: adversarial review ledger (named scope closed by Spark022)
+
+Final bounded closure: source f93798b3cd5b3f38697e1696a058e55e449b676d,
+job singularity-20261004-rts-storage-022, gb10-02, exit0, cleanup verified.
+Syntax gate25files,79tests0skipped,4builds, ordinary browser flow178.7simseconds,
+v1/v2 migration and complete recovery suite passed. Independent actual-evidence
+reviews are in docs/evidence/rts-storage-022/independent-closure.md and
+economy-closure.txt. Earlier pending/failure entries below are historical records.
+The same1280x720 paired test measured oldfocus scroll0->71 and row16.5->19.2633;
+preventScroll kept the intended row16.5, exposed Cancel, then imported the distinct
+paid b2 site without stale controls or lost60wood/20stone reservation.
+Input source archive SHA2565bb0e1bccf0796c2a34adf43c1d38201f1fc5e02b03596afe1a7d59b2b2b9fa0;
+output evidence archive SHA256e33a3be4e8a7f945e33bba2660ff98b669281a620b56d923e0554b022b0b7222.
+They are distinct artifacts; independently reconciled, no coordinator record edited.
+Library preview replaced in place at version2 after separate closure. Other UX022
+findings and newly discovered candidates remain outside this named closure.
 
 Workflow source supplied by parent:
 https://www.youtube.com/watch?v=2zLuYU_Ub_0&t=358s (screen349s).

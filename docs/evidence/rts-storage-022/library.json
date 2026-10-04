@@ -1,0 +1,22 @@
+{
+  "operation": "replace_library_file",
+  "status": "succeeded",
+  "path": "/hearth-rts-core-preview.html",
+  "file_id": "file_0000000045688230b3d70988f6c04ebb",
+  "library_file_id": "libfile_c5a729d019c48191861239287487a120",
+  "file_name": "hearth-rts-core-preview.html",
+  "current_version_number": 2,
+  "restored_from_version_number": null,
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "2"
+    }
+  ],
+  "directory_id": "libdir_cad02bccbf288191bfb77ae89c4eaa8c",
+  "mime_type": "text/html",
+  "library_artifact_type": "other",
+  "file_size_bytes": 63776,
+  "external_connectors_accessed": false
+}
+

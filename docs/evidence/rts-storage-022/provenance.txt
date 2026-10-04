@@ -1,0 +1,24 @@
+Storage022 immutable source and artifact provenance
+
+Source f93798b3cd5b3f38697e1696a058e55e449b676d; branch codex/hearth-rts-core.
+Spark gb10-02, image sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e.
+Input source archive SHA256:
+5bb0e1bccf0796c2a34adf43c1d38201f1fc5e02b03596afe1a7d59b2b2b9fa0
+Output evidence archive SHA256:
+e33a3be4e8a7f945e33bba2660ff98b669281a620b56d923e0554b022b0b7222
+The coordinator summary's archive_sha256 means the input source archive.
+Both hashes were independently reconciled. Full output archive, PNGs and WebM
+remain in task-2/spark-ci/results/singularity-20261004-rts-storage-022-artifacts.tar.
+
+Spark-built dist/hearth-rts.html SHA256, also verified after pinned SSH retrieval:
+bb5c62302407b17c76c3c5b545a256d324f27101ee61d7fcc119773e3b7355b8
+Source engine.js SHA256, matches local and completed Spark source:
+9fd4d28df3a11cd00b3f3870ed4b9350f62dab5ba0c6526f78f84d8787d60036
+Source view.js SHA256, matches local and completed Spark source:
+46f8a39eaa2cda55a34f60720698cce3b506f7766a4e34b605c72d20ca2f4098
+
+Library replacement metadata is library.json. Existing item identity preserved,
+version1 ->2; helper applied the complete returned xattrs to its local working copy.
+No application runtime, parser, build, test or browser automation executed on M6.
+The delivery commit contains documentation/evidence and the Spark-built HTML;
+the tested source remains the exact f93798b3 hash above.
