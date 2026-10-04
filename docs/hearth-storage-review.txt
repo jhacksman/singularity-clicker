@@ -111,3 +111,17 @@ Storage019 was withdrawn before coordinator approval/execution. The corrected
 immutable candidate must use a new queue ID; no failed or passed runtime is claimed.
 Recovery tests now install the main-key fault only after successful Resume and
 freeze the browser clock between actions, so import itself must pause the camp.
+
+Spark020 execution: FAILED at source05d132c097dd0c562c1f4fff30cc67cdf61daad0.
+Node reported41entries:39passed,2failed test-file loads. Both RTS test files
+failed parsing engine.js:29 due to one excess closing parenthesis. Their test
+bodies did not run; the command's build and browser stages did not run.
+Evidence: docs/evidence/rts-storage-020/{result.json,run.log}; Sparkgb10-02,
+exit1, cleanup verified. Earlier static closure did not establish parse validity.
+Allthree independent skeptics confirmed the exact one-character correction:
+u.reason.length<200)))return false -> u.reason.length<200))return false.
+Engine owner applies only that syntax correction. Add scripts/check-syntax.cjs
+as the first Spark command: Node --check every source/script/test file without
+importing application code, and fail clearly before the broader suite.
+No syntax check, test, build, lint or browser execution ran on M6.
+The next full candidate uses a new immutable commit and Storage021 job.

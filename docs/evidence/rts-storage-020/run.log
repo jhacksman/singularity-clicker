@@ -1,0 +1,96 @@
+Agriculture first surplus: 374 simulated seconds
+✔ Agriculture allocations and repeated crop orders cannot invent workers or reset growth (0.924434ms)
+✔ crop choices trade food yield for soil recovery and apply after the current harvest (0.722689ms)
+✔ zero grain, seed and water recover through assigned work with no resets (0.270336ms)
+✔ invalid saves and future schemas are rejected; completed Hearth handoff is non-destructive (46.98032ms)
+✔ crop and construction state resume identically; ten seconds equals ten one-second ticks (0.311713ms)
+✔ ordinary farm decisions reach dependable surplus across refreshes without boosted resources (2.008114ms)
+✔ self-contained builds work in encoded paths and retain stage navigation (37.612595ms)
+Actual-engine median actions / seconds at 1 action per second: [ 764, 493, 530 ]
+✔ A depleted camp recovers without resets or emergency experience (0.777969ms)
+✔ Unaffordable searches are atomic, reserve the worst case, and do not reroll RNG (0.442369ms)
+✔ Stone tools reduce gathering costs, wear exactly once, and hand over to the next tool (0.146784ms)
+✔ Food origins use FIFO and output caps reflect supply expenditure (0.700769ms)
+✔ Bedding and responsive signals multiply learning; innovation is never spent (0.211505ms)
+✔ Routines run at boundaries, check full output, and never create manual experience (0.153056ms)
+✔ Prestige grants each milestone once, resets the camp, and retains first-journey time (0.130256ms)
+✔ Fire depends on innovation alone, survives saves, is free, and preserves the completed baseline (0.218512ms)
+✔ Saving preserves exact random sequence and full camp state (0.380497ms)
+✔ The actual game completes ordinary, efficient, and optional-prestige playthroughs (38.469924ms)
+✔ completed drying racks conserve camp food without changing water or creating food (39.782998ms)
+✔ drying reduces actual mountain and gathering-party food provisions, not free migration (1.57741ms)
+✔ exhausted side fences open a cardinal enclosure; a missing corner alone does not (7.323146ms)
+✔ repair cannot seal a worker inside an enclosure without a gate (18.316296ms)
+✔ knapping practice improves tool work beyond the initial discovery (12.17624ms)
+/work/src/hearth-rts/engine.js:29
+ if(!s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct',...(s.version>=2?['craft']:[]),...(s.version===3?['pickup','transfer']:[])].includes(u.phase)&&(!u.resource||RESOURCES.includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200)))return false;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
+
+SyntaxError: Unexpected token ')'
+    at wrapSafe (node:internal/modules/cjs/loader:1861:18)
+    at Module._compile (node:internal/modules/cjs/loader:1903:20)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at Object.<anonymous> (/work/tests/hearth-rts-storage.test.cjs:2:20)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+
+Node.js v24.20.0
+✖ tests/hearth-rts-storage.test.cjs (21.512525ms)
+/work/src/hearth-rts/engine.js:29
+ if(!s.units.every(u=>typeof u.name==='string'&&u.name.length<30&&n(u.cargo)&&u.cargo<=5&&n(u.work)&&order(u.order)&&(!u.next||order(u.next))&&['idle','walk','extract','return','construct',...(s.version>=2?['craft']:[]),...(s.version===3?['pickup','transfer']:[])].includes(u.phase)&&(!u.resource||RESOURCES.includes(u.resource))&&(!u.cargo||!!u.resource)&&Array.isArray(u.path)&&u.path.length<W*H&&u.path.every(point)&&typeof u.reason==='string'&&u.reason.length<200)))return false;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
+
+SyntaxError: Unexpected token ')'
+    at wrapSafe (node:internal/modules/cjs/loader:1861:18)
+    at Module._compile (node:internal/modules/cjs/loader:1903:20)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at Object.<anonymous> (/work/tests/hearth-rts.test.cjs:2:20)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+
+Node.js v24.20.0
+✖ tests/hearth-rts.test.cjs (30.387497ms)
+✔ autonomous workers return loads and serialized progress round trips (51.58303ms)
+✔ empty supplies preserve people and always permit a normal neighboring migration (5.964408ms)
+✔ ordinary recovery gathering still works without food or water (4.420966ms)
+✔ protected trees remain untouched and clearing slows regrowth (25.000978ms)
+✔ high elevation sees two away and another ridge blocks the middle (0.725281ms)
+✔ outlines reserve no materials; assigned builders complete and migration preserves them (2.958356ms)
+✔ gathering routes debit provisions, deliver actual resources, and recall safely (17.724376ms)
+✔ a plow needs a prepared field and trained team; prestige preserves completed state (16.333654ms)
+✔ malformed saves are rejected before replacing the running journey (23.355552ms)
+Command-only Hearth completion with periodic save restoration: 5195 simulated seconds
+✔ repeated assignments preserve deterministic work across refreshes (103.035755ms)
+✔ changing jobs or resting carries an existing load home before depositing (24.626306ms)
+✔ fractional payment tolerance never writes a negative balance or invalid save (19.12265ms)
+✔ locked practices and unaffordable payments are atomic (8.456763ms)
+✔ v1 saves preserve both stages; unknown versions are rejected without migration guesses (33.723086ms)
+✔ Cave rejects contradictory completion flags that strand the fire encounter (0.356305ms)
+✔ herders explain missing animal provisions instead of claiming the herd is settled (2.817059ms)
+✔ an ordinary Hearth policy completes with recurring save restoration and no boosted state (742.355374ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 39
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1585.991108
+
+✖ failing tests:
+
+test at tests/hearth-rts-storage.test.cjs:1:1
+✖ tests/hearth-rts-storage.test.cjs (21.512525ms)
+  'test failed'
+
+test at tests/hearth-rts.test.cjs:1:1
+✖ tests/hearth-rts.test.cjs (30.387497ms)
+  'test failed'
