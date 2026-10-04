@@ -46,6 +46,20 @@ function valid(s){
  if(storeIds.some(id=>RESOURCES.some(r=>held[id][r]>a.stores[id][r])))return false;
  return s.units.every(u=>a.transfers.filter(j=>j.pending[u.id]>0||u.transfer===j.id).length<=1&&(!u.dropoff||storeIds.includes(u.dropoff))&&(!u.transfer||u.cargo>0&&['return','transfer','idle'].includes(u.phase)&&(u.phase!=='idle'||u.path.length===0)&&a.transfers.some(j=>j.id===u.transfer&&j.workers.includes(u.id)&&j.resource===u.resource&&j.pending[u.id]===0))&&[u.order,u.next].filter(Boolean).every(o=>o.kind!=='transfer'||a.transfers.some(j=>j.id===o.target&&j.workers.includes(u.id)))&&(u.phase!=='pickup'||u.order.kind==='transfer'&&u.cargo===0)&&(u.phase!=='transfer'||!!u.transfer));
 }
+// Explicit recovery only: callers retain the original bytes before adopting this copy.
+// No stock, construction/crafting progress, transfer cargo or ordinary negative work is repaired.
+function repairWorkResidue(state){
+ if(!state||![1,2,3].includes(state.version)||!Array.isArray(state.units)||!Array.isArray(state.deposits))return null;
+ try{
+  const candidate=structuredClone(state);let changed=false;
+  for(const u of candidate.units){
+   if(!u||!Number.isFinite(u.work)||u.work>=0)continue;
+   if(u.work< -1e-12||!u.order||u.order.kind!=='gather'||u.transfer||!Number.isFinite(u.cargo)||u.cargo<=0||u.cargo>5||!['extract','return','idle'].includes(u.phase)||!Array.isArray(u.path)||u.phase==='idle'&&u.path.length||!candidate.deposits.some(d=>d&&d.id===u.order.target&&d.kind===u.resource))return null;
+   u.work=0;changed=true;
+  }
+  return changed&&valid(candidate)?candidate:null;
+ }catch(e){return null;}
+}
 class Camp{
  constructor(state){if(state&&!valid(state))throw Error('Not a compatible RTS Hearth save.');this.s=state?structuredClone(state):fresh();if(this.s.version===1){this.s.tools=false;this.s.knapping=null;}if(this.s.version<3||!this.s.storage)this.migrateStorage();this.s.version=3;this.reveal();if(!valid(this.s))throw Error('Not a compatible RTS Hearth save.');}
  migrateStorage(){
@@ -189,7 +203,7 @@ class Camp{
   if(!source||!this.around(source).some(p=>Math.abs(p.x-u.x)<.001&&Math.abs(p.y-u.y)<.001)){this.start(u);continue;}
   this.s.storage.stores[j.from][j.resource]-=amount;this.syncStock();j.pending[u.id]=0;j.remaining-=amount;u.cargo=amount;u.resource=j.resource;u.transfer=j.id;this.transferHome(u);continue;
  }
- if(u.phase==='extract'){const d=this.s.deposits.find(d=>d.id===u.order.target);if(!d||!d.amount){if(u.cargo)this.home(u);else{u.phase='idle';u.reason='Deposit exhausted — choose another';}continue;}u.work+=dt;const interval=this.s.tools?.45:.6;if(u.work+.00001>=interval){u.work-=interval;d.amount--;u.cargo++;u.resource=d.kind;if(d.amount===0)this.s.depleted++;if(u.cargo>=5||d.amount===0)this.home(u);}continue;}
+ if(u.phase==='extract'){const d=this.s.deposits.find(d=>d.id===u.order.target);if(!d||!d.amount){if(u.cargo)this.home(u);else{u.phase='idle';u.reason='Deposit exhausted — choose another';}continue;}u.work+=dt;const interval=this.s.tools?.45:.6;if(u.work+.00001>=interval){u.work=Math.max(0,u.work-interval);d.amount--;u.cargo++;u.resource=d.kind;if(d.amount===0)this.s.depleted++;if(u.cargo>=5||d.amount===0)this.home(u);}continue;}
  if(u.phase==='craft'){const project=this.s.knapping;if(!project||project.done||project.workshop!==u.order.target){u.order={kind:'idle'};this.start(u);continue;}project.work=Math.min(12,project.work+dt);if(project.work+.00001>=12){project.work=12;project.done=true;this.s.tools=true;delete this.s.storage.reservations.knapping;for(const artisan of this.s.units)if(artisan.order.kind==='craft'){artisan.order={kind:'idle'};this.start(artisan);artisan.reason='Useful edges crafted';}}continue;}
  if(u.phase==='construct'){const b=this.s.buildings.find(b=>b.id===u.order.target);if(!b||b.done){u.order={kind:'idle'};this.start(u);continue;}b.work+=dt;if(b.work+.00001>=WORK[b.kind]){b.work=WORK[b.kind];b.done=true;delete this.s.storage.reservations[b.id];this.syncStores();u.order={kind:'idle'};this.start(u);}}
  }
@@ -197,5 +211,5 @@ class Camp{
  }
  serialize(){return JSON.stringify(this.s);}
 }
-const API={Camp,W,H,KEY,COST,WORK,valid};if(typeof module!=='undefined'&&module.exports)module.exports=API;else root.HearthRTS=API;
+const API={Camp,W,H,KEY,COST,WORK,valid,repairWorkResidue};if(typeof module!=='undefined'&&module.exports)module.exports=API;else root.HearthRTS=API;
 })(globalThis);

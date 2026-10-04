@@ -1,0 +1,126 @@
+UX023 UI input candidate — implementation contract, pending Spark verification
+
+Edited scope: hearth-rts/src/hearth-rts/view.js, shell.html, styles.css only.
+No engine/economy/cargo changes, helper module, build integration, application
+execution, parser, test, lint, browser, or commit was performed by the UI fixer.
+The existing bootstrap and persistence code is untouched; root owns its separate
+adjudicated persistence work. Journey now cancels transient input before opening.
+
+F1 — Explicit and contextual verbs
+The persistent #move button and M arm Move-only dispatch. A live deposit cell,
+building cell, water or out-of-bounds destination rejects and retains all actors'
+existing orders/cargo. A depleted, clear deposit cell can be a Move destination.
+All selected actors' formation orders are preflighted with engine accepts() before
+the first command is submitted. Blocked formation offsets fall back to the valid
+clicked ground, as before; every resulting actor/target pair must be reachable.
+Ordinary contextual right-click continues choosing Gather / Build / active Craft
+or clear-ground Move. It does not route an explicitly armed Move into Gather.
+Repeated accepted orders report that they are already assigned.
+Loaded actors retain the engine's legacy return-load-first semantics. Positive
+new-order feedback discloses this, and #cargo-command-note states it persistently.
+This does not claim full v3 immediate loaded Move / IC02 behavior.
+
+F2 — Space and camera
+A map/body Space keydown owns a cycle and prevents page scrolling; it never
+toggles Pause. Repeats and additional keydowns during that cycle do nothing.
+One owned, valid, unconsumed keyup toggles once. An orphan keyup does nothing.
+With Space held, primary pointer movement of at least 4 CSS pixels (Euclidean
+distance from down, threshold inclusive) latches actual camera pan and consumes
+that cycle permanently, even if the pointer returns to its start. Movement below
+4 pixels leaves the Space cycle a tap; its pointerup never dispatches a command.
+Releasing Space during the pointer gesture ends it without a later pointerup
+becoming an order. Blur, hidden, pointercancel, unexpected lost capture, modal,
+control focus and resize invalidate the relevant transient cycle/gesture.
+Controls keep native first Space/Enter activation; repeated keydowns are prevented
+from activating a button again. Cancelled native cycles suppress the stale keyup.
+Text/select/contenteditable controls do not receive game shortcuts.
+Focused a[href] links, including the brand and footer links outside the dialog,
+also retain native keyboard ownership. Link Space keydown/keyup are not prevented
+or converted into Pause/button activation; native Space scroll/no-op and Enter
+navigation remain available. A Space keyup landing on a link clears any prior
+map-owned cycle without toggling. Existing button-focused M/S shortcuts remain.
+
+Camera is view-only {x,y,scale}, in intrinsic canvas pixels. Scale remains 1; no
+zoom or pinch is implemented or claimed. Pan uses pointer CSS delta multiplied
+by canvas.width/rect.width and canvas.height/rect.height. Each axis is clamped
+to +/-0.75 times the corresponding intrinsic canvas dimension, retaining part
+of the world at the bounds. It resets on page reload, never enters game state,
+and causes no debit, order, tick, autosave, or selection on its own. Existing
+periodic autosave remains unchanged. Authored art is unchanged inside one
+save/translate/scale/restore wrapper; background fills uncovered viewport areas.
+
+Shared pointer conversion:
+worldX = ((clientX - rect.x) * canvas.width / rect.width - camera.x)
+         / (32 * camera.scale)
+worldY = ((clientY - rect.y) * canvas.height / rect.height - camera.y)
+         / (32 * camera.scale)
+For QA aiming, invert it:
+clientX = rect.x + (worldX * 32 * camera.scale + camera.x)
+          * rect.width / canvas.width
+clientY = rect.y + (worldY * 32 * camera.scale + camera.y)
+          * rect.height / canvas.height
+All selection, contextual orders, explicit targets, hover and placement use cell().
+The existing focus({preventScroll:true}) behavior remains in pointerdown.
+
+Observable #world datasets (strings):
+data-camera-x, data-camera-y, data-camera-scale
+data-command: none | move | gather | build | outpost | workshop
+data-gesture: none | select | touch | space | pan | multiple-touch
+data-space-owned, data-space-consumed: true | false
+data-touch-contacts: count of tracked document touch contacts
+data-placement-x, data-placement-y: ghost tile coordinates, or empty strings
+Datasets are observations, not writable game interfaces. Pan must also be checked
+visually and through correct post-pan pointer hit behavior, not datasets alone.
+
+F3 — Touch / tray / confirmation
+#action-tray is fixed to the viewport bottom and remains visible while the page
+scrolls. It contains #move, #gather, #assign-build, #stop and #command-cancel.
+The existing [data-build] controls arm new Outpost/Workshop placement separately.
+#gather arms Gather only; #assign-build arms work on an existing unfinished site.
+An unarmed touch tap only selects or inspects. Selecting a worker is not arming.
+An armed ordinary target tap commits its matching verb once; successful dispatch
+clears the arm. Invalid targets explain rejection without changing old work.
+Touch placement target tap sets a ghost and shows #placement-status plus the
+separate #placement-confirm button. That preview neither spends nor creates a
+site. Confirm rechecks current placement/stock and then calls engine build once.
+Further touch target taps reposition the ghost; they do not confirm it. Mouse
+placement deliberately retains the accepted one-click-to-place desktop flow.
+
+Long press is 550 ms without a 4-pixel drag; it clears armed targeting/placement
+and inspects only, leaving selected IDs unchanged. A touch drag without Space
+cancels targeting and does not issue an order. No one-finger map pan is claimed.
+A second document touch contact cancels the pending pointer, arm and ghost, and
+owns the sequence until every contact is released. Releases and compatibility
+clicks/context menus from a cancelled touch sequence cannot dispatch commands.
+There is no pinch implementation. Escape/Cancel, blur/hidden, pointercancel,
+unexpected lost capture and resize clear pending gestures and command ghosts.
+Selection is a set of stable unit IDs, pruned only when an ID no longer exists.
+
+At <=520 CSS px the tray uses three columns / two button rows; at desktop it is
+a horizontal five-button row with guidance alongside. Placement confirmation adds
+a separate full-width row. Document bottom padding permits scrolling all content
+above the fixed tray. A target behind the tray must first be brought into view;
+the test driver must not bypass or click through the visible tray. This is an
+emulation-oriented candidate, not a physical-touch or accessibility acceptance.
+
+F4 — Current helper, not historical quote
+commandUI derives #command-help every time ui runs: neutral, Move, Gather,
+Build site, or current placement target/funding. Live funding is displayed only
+while Outpost/Workshop placement is armed. Successful placement clears the mode
+before feedback refreshes the UI. Escape/Cancel and site refund clear the mode;
+therefore a prior missing-stock quote cannot survive as neutral guidance.
+Ghost funding and validity are recomputed from current engine state; Confirm is
+disabled on a currently invalid quote. Engine build still makes the final check.
+
+Verification still required
+Independent static review and exact-source Spark parser/tests/build/browser work.
+Exercise native Enter/Space buttons, complete Space interruptions and threshold
+cases, actual visible pan plus inverse hits, touch second-finger/long-press/cancel
+sequences, touch preview/confirm, explicit Move on all target types and mixed
+group paths, loaded return-first disclosure, and neutral helper after refund.
+The semantic-link gate must additionally test the actual brand/footer anchors:
+already-focused Space down/repeat/up never toggles or arms map Space, Enter keeps
+native navigation, and map Space down followed by link focus and release toggles
+zero times. Confirm button M/S and native button Space/Enter remain unchanged.
+No runtime outcome, physical-device support, accessibility, novice understanding,
+or full-Hearth completion is claimed by this implementation contract.

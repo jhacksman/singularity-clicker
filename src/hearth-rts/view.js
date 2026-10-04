@@ -1,38 +1,211 @@
 (function(){
 'use strict';
-const {Camp,W,H,KEY,COST,WORK}=HearthRTS,$=id=>document.getElementById(id),canvas=$('world'),ctx=canvas.getContext('2d'),T=32;
+const {Camp,W,H,KEY,COST,WORK,repairWorkResidue}=HearthRTS,$=id=>document.getElementById(id),canvas=$('world'),ctx=canvas.getContext('2d'),T=32;
 let game,paused=false,blocked=false,rejected=null,selected=new Set(),inspect=null,mode=null,pointer=null,hover={x:0,y:0},rings=[],messages=[],lastSave=null,elapsed=0,last=performance.now(),acc=0,frameNo=0;
+const camera={x:0,y:0,scale:1},touchContacts=new Set(),nativeKeys=new Map(),cancelledNativeKeys=new Set();
+let placement=null,spaceCycle=null,multiTouch=false,suppressTouchClick=false;
+const DRAG_PX=4,LONG_PRESS_MS=550;
+let originalRaw=null,readCompleted=false,unreadableSave=false,recoveredWork=false;
+const readWarning='Saved camp could not be read. No save was changed. Reload when browser storage is available.';
 function retainRaw(suffix,raw){for(let i=0;;i++){const key=KEY+suffix+(i?'.'+i:''),prior=localStorage.getItem(key);if(prior===raw)return;if(prior===null){localStorage.setItem(key,raw);return;}}}
-try{const raw=localStorage.getItem(KEY),state=raw?JSON.parse(raw):null;game=state?new Camp(state):new Camp();paused=!!state;if(state?.version===1)retainRaw('.before-v2',raw);if(state&&state.version<3)retainRaw('.before-v3',raw);}catch(e){rejected=localStorage.getItem(KEY);game=new Camp();blocked=true;paused=true;}
+function parseCamp(raw){const state=JSON.parse(raw);if(!state||typeof state!=='object'||Array.isArray(state))throw Error('Not a compatible RTS camp');return state;}
+try{
+ originalRaw=localStorage.getItem(KEY);readCompleted=true;
+ if(originalRaw===null)game=new Camp();
+ else{
+  const state=parseCamp(originalRaw),repaired=repairWorkResidue(state),incoming=new Camp(repaired||state);
+  if(repaired)retainRaw('.before-work-roundoff',originalRaw);
+  if(state.version===1)retainRaw('.before-v2',originalRaw);
+  if(state.version<3)retainRaw('.before-v3',originalRaw);
+  game=incoming;paused=true;recoveredWork=!!repaired;
+ }
+}catch(e){rejected=originalRaw;unreadableSave=!readCompleted;game=new Camp();blocked=true;paused=true;}
 const resources=['wood','stone','food'];
 const icons={wood:'♧',stone:'◆',food:'✦'},names={wood:'Timber stand',stone:'Stone deposit',food:'Foraging patch'};
 function tell(text){$('toast').textContent=text;messages.unshift(text);messages=messages.slice(0,3);$('log').replaceChildren(...messages.map(v=>{const p=document.createElement('div');p.textContent='› '+v;return p;}));}
 function save(){if(blocked)return false;try{const raw=game.serialize();localStorage.setItem(KEY,raw);lastSave=raw;return true;}catch(e){blocked=true;paused=true;tell('Saving stopped. Export this camp before closing.');ui();return false;}}
-function cell(e){const b=canvas.getBoundingClientRect();return{x:(e.clientX-b.x)/b.width*W,y:(e.clientY-b.y)/b.height*H};}
+function cell(e){const b=canvas.getBoundingClientRect();return{x:((e.clientX-b.x)*canvas.width/b.width-camera.x)/(T*camera.scale),y:((e.clientY-b.y)*canvas.height/b.height-camera.y)/(T*camera.scale)};}
 function hit(p){const u=[...game.s.units].reverse().find(u=>Math.hypot(u.x+.5-p.x,u.y+.5-p.y)<.7);const d=game.s.deposits.find(d=>Math.hypot(d.x+.5-p.x,d.y+.5-p.y)<.85&&game.visible(d.x,d.y));const b=game.s.buildings.find(b=>p.x>=b.x&&p.x<b.x+game.size(b)&&p.y>=b.y&&p.y<b.y+game.size(b));return {u,d,b};}
 function feedback(p,label){rings.push({x:p.x,y:p.y,at:performance.now(),label});tell(label);save();ui();}
-function order(p){if(blocked)return tell('Reload or export before giving new orders.');if(!selected.size)return tell('Select villagers first — drag a box or click a portrait.');const {d,b}=hit(p);if(d&&d.amount){game.command([...selected],{kind:'gather',target:d.id});inspect=d.id;feedback(p,'Gather '+d.kind+' · workers return each load');}
- else if(b&&b.done&&b.kind==='workshop'&&game.s.knapping?.workshop===b.id&&!game.s.knapping.done){const error=game.beginKnapping(b.id,[...selected]);if(error)return tell(error);inspect=b.id;feedback(p,'Resume knapping · reserved materials kept');}
- else if(b&&!b.done){game.command([...selected],{kind:'build',target:b.id});feedback(p,'Builders assigned · '+b.kind);}
- else{const x=Math.floor(p.x),y=Math.floor(p.y);if(game.blocked(x,y))return tell('That ground is blocked. Choose a clear destination.');const offsets=[[0,0],[1,0],[0,1],[1,1],[-1,0],[0,-1],[-1,-1],[1,-1]];let i=0;for(const id of selected){const [dx,dy]=offsets[i++%8],q={x:x+dx,y:y+dy};game.command([id],{kind:'move',...(game.blocked(q.x,q.y)?{x,y}:q)});}feedback(p,'Move · '+selected.size+' villagers');}mode=null;}
-function place(p){if(blocked)return;const result=game.build(mode,Math.floor(p.x),Math.floor(p.y),[...selected]);if(result.error)return tell(result.error);inspect=result.id;feedback(p,'Site reserved · builders will construct '+mode);mode=null;ui();}
-canvas.addEventListener('contextmenu',e=>{e.preventDefault();order(cell(e));});
-canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.focus({preventScroll:true});const p=cell(e);pointer={start:p,now:p,shift:e.shiftKey};canvas.setPointerCapture(e.pointerId);});
-canvas.addEventListener('pointermove',e=>{hover=cell(e);if(pointer)pointer.now=hover;});
-canvas.addEventListener('pointerup',e=>{if(e.button!==0||!pointer)return;const p=cell(e),drag=pointer;pointer=null;const length=Math.hypot(p.x-drag.start.x,p.y-drag.start.y);if(mode&&mode!=='move'){place(p);return;}if(mode==='move'){order(p);return;}
- if(length>.5){if(!drag.shift)selected.clear();for(const u of game.s.units)if(u.x+.5>=Math.min(p.x,drag.start.x)&&u.x+.5<=Math.max(p.x,drag.start.x)&&u.y+.5>=Math.min(p.y,drag.start.y)&&u.y+.5<=Math.max(p.y,drag.start.y))selected.add(u.id);tell(selected.size+' villagers selected');}
- else{const {u,d,b}=hit(p);if(u){if(!drag.shift)selected.clear();selected.has(u.id)&&drag.shift?selected.delete(u.id):selected.add(u.id);inspect=u.id;}else if(d){inspect=d.id;if(e.pointerType==='touch'&&selected.size)order(p);}else if(b){inspect=b.id;if(e.pointerType==='touch'&&!b.done&&selected.size)order(p);}else if(!drag.shift)selected.clear();}ui();});
-canvas.addEventListener('pointercancel',()=>pointer=null);
+function isPlacement(){return mode==='outpost'||mode==='workshop';}
+function actors(){return game.s.units.filter(u=>selected.has(u.id));}
+function ready(){if(blocked){tell('Reload or export before giving new orders.');return false;}if(!actors().length){tell('Select villagers first — tap a portrait or select them on the map.');return false;}return true;}
+function clearCommand(){mode=null;placement=null;}
+function releasePointer(){const old=pointer;pointer=null;if(old){clearTimeout(old.timer);if(canvas.hasPointerCapture(old.id))canvas.releasePointerCapture(old.id);}}
+function cancelInput(clearMode=true,clearContacts=false){
+ spaceCycle=null;for(const code of nativeKeys.keys())cancelledNativeKeys.add(code);nativeKeys.clear();releasePointer();
+ if(clearMode)clearCommand();if(clearContacts){touchContacts.clear();multiTouch=false;suppressTouchClick=true;}
+}
+function reject(text){tell(text+' Previous orders kept.');ui();return false;}
+function returnNote(workers){return workers.some(u=>u.cargo)?' · carried loads return home before the new order':'';}
+function dispatch(p,verb){
+ if(!ready())return false;
+ const workers=actors(),ids=workers.map(u=>u.id),target=hit(p);let orders,label,inspectId=null;
+ if(verb==='move'){
+  const x=Math.floor(p.x),y=Math.floor(p.y);
+  if(game.blocked(x,y))return reject('Move needs clear ground.');
+  const offsets=[[0,0],[1,0],[0,1],[1,1],[-1,0],[0,-1],[-1,-1],[1,-1]];
+  orders=workers.map((u,i)=>{const [dx,dy]=offsets[i%offsets.length],q={x:x+dx,y:y+dy};return{kind:'move',...(game.blocked(q.x,q.y)?{x,y}:q)};});
+  label='Move assigned · '+workers.length+' villagers';
+ }else if(verb==='gather'){
+  if(!target.d||!target.d.amount)return reject('Gather needs a visible deposit with resources.');
+  orders=workers.map(()=>({kind:'gather',target:target.d.id}));label='Gather '+target.d.kind;inspectId=target.d.id;
+ }else if(verb==='build'){
+  if(!target.b||target.b.done)return reject('Build site needs an unfinished site.');
+  orders=workers.map(()=>({kind:'build',target:target.b.id}));label='Build site assigned · '+target.b.kind;inspectId=target.b.id;
+ }else if(verb==='craft'){
+  if(!target.b||!game.s.knapping||game.s.knapping.done||game.s.knapping.workshop!==target.b.id)return reject('There is no active project here.');
+  orders=workers.map(()=>({kind:'craft',target:target.b.id}));label='Resume knapping · reserved materials kept';inspectId=target.b.id;
+ }else return false;
+ // Validate the entire formation before changing any actor's accepted order.
+ if(workers.some((u,i)=>!game.accepts(u,orders[i])))return reject('Every selected villager needs a reachable target.');
+ const note=returnNote(workers);let changed=0;
+ if(verb==='move')for(let i=0;i<workers.length;i++)changed+=game.command([workers[i].id],orders[i]);
+ else changed=game.command(ids,orders[0]);
+ clearCommand();if(inspectId)inspect=inspectId;
+ feedback(p,(changed?label:'This order is already assigned')+note);return true;
+}
+function contextualOrder(p){const {d,b}=hit(p);return dispatch(p,d&&d.amount?'gather':b&&!b.done?'build':b&&b.kind==='workshop'&&game.s.knapping?.workshop===b.id&&!game.s.knapping.done?'craft':'move');}
+function commitPlacement(p){
+ if(!isPlacement()||!ready())return;
+ const kind=mode,result=game.build(kind,Math.floor(p.x),Math.floor(p.y),actors().map(u=>u.id));
+ if(result.error){tell(result.error);ui();return;}
+ inspect=result.id;clearCommand();feedback(p,'Site reserved · builders will construct '+kind+' · carried loads return first');
+}
+function inspectPoint(p,shift=false,onlyInspect=false){
+ const {u,d,b}=hit(p);
+ if(u){if(!onlyInspect){if(!shift)selected.clear();selected.has(u.id)&&shift?selected.delete(u.id):selected.add(u.id);}inspect=u.id;}
+ else if(d)inspect=d.id;else if(b)inspect=b.id;else if(!onlyInspect&&!shift)selected.clear();
+ ui();
+}
+function arm(verb){if(!ready())return;cancelInput();mode=verb;tell(verb==='build'?'Build site · choose an unfinished site':verb==='gather'?'Gather · choose a deposit':verb==='move'?'Move · choose clear ground':'Place '+verb+' · touch previews a site; Confirm site reserves its materials');ui();}
+function togglePause(){if(blocked)return;paused=!paused;save();ui();}
+function observeInput(){
+ canvas.dataset.cameraX=String(camera.x);canvas.dataset.cameraY=String(camera.y);canvas.dataset.cameraScale=String(camera.scale);
+ canvas.dataset.command=mode||'none';canvas.dataset.gesture=multiTouch?'multiple-touch':pointer?(pointer.pan?'pan':pointer.kind):'none';canvas.dataset.spaceOwned=String(!!spaceCycle);canvas.dataset.spaceConsumed=String(!!spaceCycle?.consumed);canvas.dataset.touchContacts=String(touchContacts.size);
+ canvas.dataset.placementX=placement?String(placement.x):'';canvas.dataset.placementY=placement?String(placement.y):'';
+ canvas.classList.toggle('pan-ready',!!spaceCycle);canvas.classList.toggle('panning',!!pointer?.pan);
+}
+// Track all touch contacts, including a second finger on controls outside the map.
+document.addEventListener('pointerdown',e=>{
+ if(e.pointerType!=='touch'){if(!touchContacts.size&&!multiTouch)suppressTouchClick=false;return;}
+ if(!touchContacts.size&&!multiTouch)suppressTouchClick=false;touchContacts.add(e.pointerId);
+ if(touchContacts.size>1||multiTouch){multiTouch=true;suppressTouchClick=true;cancelInput();e.preventDefault();e.stopPropagation();ui();}
+},{capture:true,passive:false});
+function endTouch(e){
+ if(e.pointerType!=='touch')return;
+ touchContacts.delete(e.pointerId);
+ if(multiTouch){e.preventDefault();e.stopPropagation();if(!touchContacts.size)multiTouch=false;observeInput();}
+}
+document.addEventListener('pointerup',endTouch,{capture:true,passive:false});
+document.addEventListener('pointercancel',e=>{endTouch(e);if(e.pointerType==='touch'){suppressTouchClick=true;cancelInput();ui();}},{capture:true,passive:false});
+document.addEventListener('click',e=>{if(multiTouch||suppressTouchClick&&(e.pointerType==='touch'||e.sourceCapabilities?.firesTouchEvents)){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
+canvas.addEventListener('contextmenu',e=>{
+ e.preventDefault();if(e.pointerType==='touch'||e.sourceCapabilities?.firesTouchEvents||suppressTouchClick||touchContacts.size||multiTouch||pointer?.touch||spaceCycle)return;
+ contextualOrder(cell(e));
+});
+canvas.addEventListener('pointerdown',e=>{
+ if(e.button!==0||multiTouch||pointer)return;
+ canvas.focus({preventScroll:true});const p=cell(e),rect=canvas.getBoundingClientRect(),touch=e.pointerType==='touch';
+ pointer={id:e.pointerId,touch,kind:spaceCycle?'space':touch?'touch':'select',start:p,now:p,clientX:e.clientX,clientY:e.clientY,shift:e.shiftKey,moved:false,pan:false,long:false,cameraX:camera.x,cameraY:camera.y,ratioX:canvas.width/rect.width,ratioY:canvas.height/rect.height,timer:null};
+ canvas.setPointerCapture(e.pointerId);
+ if(touch&&!spaceCycle){const id=e.pointerId;pointer.timer=setTimeout(()=>{if(!pointer||pointer.id!==id||pointer.moved||multiTouch)return;pointer.long=true;suppressTouchClick=true;clearCommand();inspectPoint(pointer.start,false,true);tell('Inspection only · choose a command to give orders');},LONG_PRESS_MS);}
+ observeInput();
+});
+function movePointer(e){
+ hover=cell(e);if(!pointer||pointer.id!==e.pointerId)return;
+ const dx=e.clientX-pointer.clientX,dy=e.clientY-pointer.clientY;
+ if(Math.hypot(dx,dy)>=DRAG_PX){pointer.moved=true;clearTimeout(pointer.timer);}
+ if(pointer.kind==='space'&&pointer.moved){
+  pointer.pan=true;if(spaceCycle)spaceCycle.consumed=true;
+  camera.x=Math.max(-canvas.width*.75,Math.min(canvas.width*.75,pointer.cameraX+dx*pointer.ratioX));
+  camera.y=Math.max(-canvas.height*.75,Math.min(canvas.height*.75,pointer.cameraY+dy*pointer.ratioY));hover=cell(e);
+ }else if(pointer.touch&&pointer.moved){suppressTouchClick=true;clearCommand();}
+ pointer.now=hover;observeInput();
+}
+canvas.addEventListener('pointermove',movePointer);
+canvas.addEventListener('pointerup',e=>{
+ if(e.button!==0||!pointer||pointer.id!==e.pointerId)return;
+ movePointer(e);const drag=pointer,p=cell(e);releasePointer();
+ if(drag.kind==='space'||drag.pan||drag.long||multiTouch||(drag.touch&&drag.moved)){ui();return;}
+ if(drag.moved&&mode){clearCommand();tell('Command cancelled by drag');ui();return;}
+ if(isPlacement()){
+  if(drag.touch){placement={kind:mode,x:Math.floor(p.x),y:Math.floor(p.y)};hover=p;tell('Site preview · review the cost, then Confirm site');ui();}
+  else commitPlacement(p);return;
+ }
+ if(mode){dispatch(p,mode);return;}
+ if(drag.moved){if(!drag.shift)selected.clear();for(const u of game.s.units)if(u.x+.5>=Math.min(p.x,drag.start.x)&&u.x+.5<=Math.max(p.x,drag.start.x)&&u.y+.5>=Math.min(p.y,drag.start.y)&&u.y+.5<=Math.max(p.y,drag.start.y))selected.add(u.id);tell(selected.size+' villagers selected');ui();}
+ else inspectPoint(p,drag.shift);
+});
+canvas.addEventListener('pointercancel',()=>{cancelInput();ui();});
+canvas.addEventListener('lostpointercapture',e=>{if(pointer?.id===e.pointerId){cancelInput();ui();}});
 $('stores').onclick=()=>{inspect=game.stores()[0].id;ui();};
-$('move').onclick=()=>{mode='move';tell('Move command · click a destination');ui();};
-$('stop').onclick=()=>{game.command([...selected],{kind:'idle'});mode=null;feedback(hover,'Stop · carried resources return home first');};
-for(const b of document.querySelectorAll('[data-build]'))b.onclick=()=>{if(!selected.size)return tell('Select at least one builder first.');mode=b.dataset.build;tell('Place '+mode+' · click clear, explored ground · Esc cancels');ui();};
+$('move').onclick=()=>arm('move');$('gather').onclick=()=>arm('gather');$('assign-build').onclick=()=>arm('build');
+$('command-cancel').onclick=()=>{cancelInput();tell('Command cancelled');ui();};
+$('placement-confirm').onclick=()=>{if(placement&&isPlacement()&&placement.kind===mode)commitPlacement(placement);};
+$('stop').onclick=()=>{if(!ready())return;cancelInput();game.command(actors().map(u=>u.id),{kind:'idle'});feedback(hover,'Stop · carried resources return home first');};
+for(const b of document.querySelectorAll('[data-build]'))b.onclick=()=>arm(b.dataset.build);
 $('train').onclick=()=>{if(blocked)return;const err=game.train();tell(err||'A new villager joins the camp');save();ui();};
 $('idle').onclick=()=>{selected=new Set(game.s.units.filter(u=>u.phase==='idle').map(u=>u.id));tell(selected.size+' idle villagers selected');ui();};
-$('pause').onclick=()=>{if(!blocked)paused=!paused;save();ui();};
-document.addEventListener('keydown',e=>{if($('dialog').open||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;if(e.key==='Escape'){mode=null;pointer=null;tell('Command cancelled');ui();}if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();$('pause').click();}if(e.key.toLowerCase()==='m')$('move').click();if(e.key.toLowerCase()==='s')$('stop').click();});
+$('pause').onclick=togglePause;
+function textControl(target){return target instanceof Element&&!!target.closest('input,select,textarea,[contenteditable="true"]');}
+function buttonControl(target){return target instanceof Element?target.closest('button'):null;}
+function linkControl(target){return target instanceof Element?target.closest('a[href]'):null;}
+document.addEventListener('keydown',e=>{
+ if(!e.repeat)cancelledNativeKeys.delete(e.code);
+ const button=buttonControl(e.target);
+ if(button&&(e.code==='Space'||e.code==='Enter')){
+  if(e.repeat||nativeKeys.has(e.code)){e.preventDefault();return;}
+  nativeKeys.set(e.code,{target:button,cancelled:false});return;
+ }
+ if($('dialog').open||textControl(e.target)||linkControl(e.target))return;
+ if(e.key==='Escape'){e.preventDefault();cancelInput();tell('Command cancelled');ui();return;}
+ if(e.code==='Space'){
+  e.preventDefault();if(e.repeat||spaceCycle)return;
+  if(pointer||multiTouch||touchContacts.size){cancelInput();ui();return;}
+  spaceCycle={consumed:false};observeInput();return;
+ }
+ if(e.repeat)return;
+ if(e.key.toLowerCase()==='m')$('move').click();if(e.key.toLowerCase()==='s')$('stop').click();
+},{capture:true});
+document.addEventListener('keyup',e=>{
+ if(linkControl(e.target)){
+  nativeKeys.delete(e.code);cancelledNativeKeys.delete(e.code);
+  if(e.code==='Space'){spaceCycle=null;if(pointer?.kind==='space')releasePointer();observeInput();}
+  return;
+ }
+ if(cancelledNativeKeys.has(e.code)){cancelledNativeKeys.delete(e.code);e.preventDefault();return;}
+ if(nativeKeys.has(e.code)){const entry=nativeKeys.get(e.code);nativeKeys.delete(e.code);if(entry.cancelled||buttonControl(e.target)!==entry.target)e.preventDefault();return;}
+ if(e.code!=='Space')return;
+ const cycle=spaceCycle;spaceCycle=null;
+ if(!cycle)return;e.preventDefault();if(pointer?.kind==='space')releasePointer();
+ if(!cycle.consumed&&!document.hidden&&!$('dialog').open&&!textControl(e.target)&&!buttonControl(e.target))togglePause();else ui();observeInput();
+},{capture:true});
+document.addEventListener('focusin',e=>{if(e.target!==canvas){const hadPointer=!!pointer;spaceCycle=null;releasePointer();for(const [code,entry] of nativeKeys)if(entry.target!==buttonControl(e.target)){cancelledNativeKeys.add(code);nativeKeys.delete(code);}if(hadPointer||$('dialog').open)clearCommand();observeInput();}});
+window.addEventListener('blur',()=>{cancelInput(true,true);ui();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelInput(true,true);ui();}});
+window.addEventListener('resize',()=>{cancelInput(true,true);ui();});
 function goods(map){return resources.filter(r=>map?.[r]>0).map(r=>Math.round(map[r]*100)/100+' '+r).join(' · ')||'none';}
 function fundingText(f){if(!f)return '';const label=f.mode==='opening-pool'?'all opening stores':f.name||game.stores().find(s=>s.id===f.storeId)?.name||'no reachable store';return 'Funding source: '+label+'.'+(resources.some(r=>f.missing?.[r]>0)?' Missing here: '+goods(f.missing)+'. Bring supplies to this store.':'');}
+function commandUI(){
+ let help='Select villagers, then choose a command. Unarmed taps inspect; right-click gives a contextual order.';
+ if(mode==='move')help='Move: choose clear, reachable ground. Deposits and buildings are blocked targets.';
+ else if(mode==='gather')help='Gather: choose a visible deposit that still has resources.';
+ else if(mode==='build')help='Build site: choose an unfinished site. Its reserved materials are already paid.';
+ else if(isPlacement()){
+  const target=placement||hover,x=Math.floor(target.x),y=Math.floor(target.y);
+  help='Place '+mode+' at '+x+', '+y+'. '+fundingText(game.funding(mode,x,y));
+ }
+ $('command-help').textContent=help;
+ const preview=!!placement&&isPlacement()&&placement.kind===mode;
+ $('placement-controls').hidden=!preview;
+ if(preview){const error=game.placement(mode,placement.x,placement.y);$('placement-status').textContent=mode+' at '+placement.x+', '+placement.y+' · '+goods(COST[mode])+'. '+(error||'Ready to reserve materials.');$('placement-confirm').disabled=blocked||!actors().length||!!error;}
+ else{$('placement-status').textContent='';$('placement-confirm').disabled=true;}
+ for(const [id,verb] of [['move','move'],['gather','gather'],['assign-build','build']]){const button=$(id);button.classList.toggle('active',mode===verb);button.setAttribute('aria-pressed',String(mode===verb));button.disabled=blocked||!actors().length;}
+ $('command-cancel').disabled=!mode&&!placement&&!pointer&&!spaceCycle;
+ for(const button of document.querySelectorAll('[data-build]')){button.classList.toggle('active',mode===button.dataset.build);button.setAttribute('aria-pressed',String(mode===button.dataset.build));button.disabled=blocked;}
+ observeInput();
+}
 function storeUI(box,b){
  if(box.dataset.store!==b.id){box.replaceChildren();box.dataset.craft='';box.dataset.site='';box.dataset.store=b.id;const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent='LOCAL SUPPLIES';const title=document.createElement('h3');title.id='store-title';const table=document.createElement('table');table.className='store-table';table.innerHTML='<thead><tr><th>Goods</th><th>Here</th><th>Free</th><th>Reserved</th></tr></thead><tbody>'+resources.map(r=>'<tr><th>'+r+'</th><td id="local-'+r+'"></td><td id="free-'+r+'"></td><td id="reserved-'+r+'"></td></tr>').join('')+'</tbody>';const incoming=document.createElement('p');incoming.id='store-incoming';const note=document.createElement('p');note.className='small-note';note.textContent='Free stock can fund work here. A transfer reserves goods now; a carrier must collect and deliver them.';const labels=document.createElement('div');labels.className='transfer-fields';labels.innerHTML='<label>Send to<select id="store-destination"></select></label><label>Goods<select id="store-resource">'+resources.map(r=>'<option value="'+r+'">'+r+'</option>').join('')+'</select></label>';const quote=document.createElement('p');quote.id='store-quote';quote.setAttribute('role','status');const button=document.createElement('button');button.id='store-transfer';button.textContent='Send selected carriers';button.onclick=()=>{if(blocked)return;const result=game.transfer([...selected],b.id,$('store-destination').value,$('store-resource').value);if(result.error)tell(result.error);else tell('Transfer assigned · '+result.amount+' '+$('store-resource').value+' · one load per carrier');save();ui();};box.append(eyebrow,title,table,incoming,note,labels,quote,button);$('store-destination').onchange=ui;$('store-resource').onchange=ui;}
  const stores=game.stores(),row=stores.find(s=>s.id===b.id);$('store-title').textContent=row.name;for(const r of resources){$('local-'+r).textContent=row.stock[r];$('free-'+r).textContent=row.available[r];$('reserved-'+r).textContent=row.reserved[r];}$('store-incoming').textContent='Incoming: '+goods(row.incoming);const destinations=stores.filter(s=>s.id!==b.id),key=destinations.map(s=>s.id).join(',');if($('store-destination').dataset.options!==key){const current=$('store-destination').value;$('store-destination').replaceChildren(...destinations.map(s=>{const option=document.createElement('option');option.value=s.id;option.textContent=s.name;return option;}));if(destinations.some(s=>s.id===current))$('store-destination').value=current;$('store-destination').dataset.options=key;}
@@ -47,19 +220,19 @@ function workshopUI(box,b){
 }
 function inspectUI(){const box=$('inspect'),u=game.s.units.find(v=>v.id===inspect),d=game.s.deposits.find(v=>v.id===inspect),b=game.s.buildings.find(v=>v.id===inspect);if(!u&&!d&&!b){box.innerHTML='<span class="eyebrow">FIELD NOTES</span><h3>Select a villager, store or deposit</h3><p>Resources enter a store when a worker delivers them.</p>';box.dataset.store='';box.dataset.craft='';box.dataset.site='';return;}if(b&&b.done&&['hearth','outpost'].includes(b.kind)){storeUI(box,b);return;}box.dataset.store='';if(b&&b.done&&b.kind==='workshop'){workshopUI(box,b);return;}box.dataset.craft='';if(b&&!b.done&&box.dataset.site===b.id){const progress=box.querySelector('progress');if(progress)progress.value=b.work;return;}box.dataset.site=b&&!b.done?b.id:'';box.replaceChildren();const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent=d?'FINITE RESOURCE':u?'VILLAGER':'CAMP STRUCTURE';box.append(eyebrow);const title=document.createElement('h3');title.textContent=d?names[d.kind]:u?u.name:b.kind==='hearth'?'The hearth':b.kind==='outpost'?'Outpost':'Workshop';box.append(title);const text=document.createElement('p');
  if(d){const amount=document.createElement('div');amount.className='amount';amount.textContent=d.amount+' / '+d.initial;box.append(amount);text.textContent=d.amount?'Does not regenerate. Right-click to gather; workers carry 5 per trip.':'Exhausted. Select these workers and send them to another deposit.';}
- if(u)text.textContent=u.reason+(u.cargo?' · carrying '+u.cargo+' '+u.resource:'');if(b){text.textContent=b.done?(b.kind==='workshop'?'Select villagers to craft useful tools here.':'Workers return loads to the nearest reachable hearth or outpost.'):'Reserved materials · '+Object.entries(b.cost).map(([r,n])=>n+' '+r).join(' · ');if(!b.done){const progress=document.createElement('progress');progress.max=WORK[b.kind];progress.value=b.work;box.append(progress);const cancel=document.createElement('button');cancel.textContent='Cancel site · full refund';cancel.onclick=()=>{if(blocked)return;game.cancel(b.id);tell('Site cancelled · materials returned');save();ui();};box.append(cancel);}}box.append(text);}
-function ui(){const s=game.s,economy=game.economy();$('economy').innerHTML=resources.map(r=>'<div class="resource" title="Available across all stores; jobs use their named source"><small>'+r.toUpperCase()+' FREE</small><i>'+icons[r]+'</i>'+Math.floor(economy.available[r])+'</div>').join('');$('economy-flow').textContent='In stores: '+goods(economy.stored)+' | Reserved to transfer: '+goods(economy.reserved)+' | Carried: '+goods(economy.inTransit)+' | Gathered: '+goods(economy.produced)+' | Moved between stores: '+goods(economy.transferred);$('idle').innerHTML='Idle <b>'+s.units.filter(u=>u.phase==='idle').length+'</b>';$('pause').textContent=paused?'Resume':'Pause';$('paused').hidden=!paused;$('time').textContent=String(Math.floor(s.time/60)).padStart(2,'0')+':'+String(Math.floor(s.time%60)).padStart(2,'0');
- const goals=[[s.depleted>0,'Exhaust a nearby deposit'],[s.buildings.some(b=>b.kind==='outpost'&&b.done&&b.x>20),'Build an outpost east of the river'],[s.buildings.some(b=>b.kind==='workshop'&&b.done),'Finish a workshop']];$('goals').innerHTML=goals.map(([done,text])=>'<li class="'+(done?'done':'')+'">'+text+'</li>').join('');if(mode&&mode!=='move')$('command-help').textContent=fundingText(game.funding(mode,Math.floor(hover.x),Math.floor(hover.y)));else if(s.complete)$('command-help').textContent='Stock is local. Transfer supplies between stores to fund nearby projects; recruitment draws from the hearth.';
+ if(u)text.textContent=u.reason+(u.cargo?' · carrying '+u.cargo+' '+u.resource:'');if(b){text.textContent=b.done?(b.kind==='workshop'?'Select villagers to craft useful tools here.':'Workers return loads to the nearest reachable hearth or outpost.'):'Reserved materials · '+Object.entries(b.cost).map(([r,n])=>n+' '+r).join(' · ');if(!b.done){const progress=document.createElement('progress');progress.max=WORK[b.kind];progress.value=b.work;box.append(progress);const cancel=document.createElement('button');cancel.textContent='Cancel site · full refund';cancel.onclick=()=>{if(blocked)return;clearCommand();const removed=game.cancel(b.id);tell(removed?'Site cancelled · materials returned':'This site is no longer available');save();ui();};box.append(cancel);}}box.append(text);}
+function ui(){const s=game.s,economy=game.economy();for(const id of selected)if(!s.units.some(u=>u.id===id))selected.delete(id);$('economy').innerHTML=resources.map(r=>'<div class="resource" title="Available across all stores; jobs use their named source"><small>'+r.toUpperCase()+' FREE</small><i>'+icons[r]+'</i>'+Math.floor(economy.available[r])+'</div>').join('');$('economy-flow').textContent='In stores: '+goods(economy.stored)+' | Reserved to transfer: '+goods(economy.reserved)+' | Carried: '+goods(economy.inTransit)+' | Gathered: '+goods(economy.produced)+' | Moved between stores: '+goods(economy.transferred);$('idle').innerHTML='Idle <b>'+s.units.filter(u=>u.phase==='idle').length+'</b>';$('pause').textContent=paused?'Resume':'Pause';$('paused').hidden=!paused;$('time').textContent=String(Math.floor(s.time/60)).padStart(2,'0')+':'+String(Math.floor(s.time%60)).padStart(2,'0');
+ const goals=[[s.depleted>0,'Exhaust a nearby deposit'],[s.buildings.some(b=>b.kind==='outpost'&&b.done&&b.x>20),'Build an outpost east of the river'],[s.buildings.some(b=>b.kind==='workshop'&&b.done),'Finish a workshop']];$('goals').innerHTML=goals.map(([done,text])=>'<li class="'+(done?'done':'')+'">'+text+'</li>').join('');
  if(!$('selection-title')){const label=document.createElement('div');label.className='selection-title';const count=document.createElement('span');count.id='selection-title';label.append(count);const all=document.createElement('button');all.textContent='Select all';all.id='select-all';all.onclick=()=>{selected=new Set(game.s.units.map(u=>u.id));ui();};label.append(all);$('selection').append(label);}
  $('selection-title').textContent=selected.size+' SELECTED / '+s.units.length+' VILLAGERS';
  for(const old of $('selection').querySelectorAll('[data-unit]'))if(!s.units.some(u=>u.id===old.dataset.unit))old.remove();
  for(const u of s.units){let b=$('selection').querySelector('[data-unit="'+u.id+'"]');if(!b){b=document.createElement('button');b.dataset.unit=u.id;const portrait=document.createElement('span');portrait.className='portrait';portrait.textContent='♟';const name=document.createElement('span');name.className='unit-name';const status=document.createElement('small');b.append(portrait,name,status);b.onclick=e=>{if(!e.shiftKey)selected.clear();selected.has(u.id)&&e.shiftKey?selected.delete(u.id):selected.add(u.id);inspect=u.id;ui();};$('selection').append(b);}b.className='unit-card '+(u.phase==='idle'?'idle':'');b.setAttribute('aria-pressed',String(selected.has(u.id)));b.querySelector('.unit-name').textContent=u.name;b.querySelector('small').textContent=u.phase==='idle'?u.reason:u.cargo?u.cargo+' '+u.resource:u.reason;b.title=u.reason;}
- for(const b of document.querySelectorAll('[data-build]')){b.classList.toggle('active',mode===b.dataset.build);b.disabled=blocked;}$('move').classList.toggle('active',mode==='move');$('stop').disabled=blocked;$('train').disabled=blocked||s.units.length>=8;inspectUI();}
+ $('stop').disabled=blocked;$('train').disabled=blocked||s.units.length>=8;$('export').disabled=unreadableSave;inspectUI();commandUI();}
 // All map art is drawn here: layered terrain, finite deposit clusters, buildings and villagers.
 const noise=(x,y)=>{const v=Math.sin(x*127.1+y*311.7)*43758.5453;return v-Math.floor(v);};
 function poly(points,color,stroke){ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();}}
 function circle(x,y,r,color){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();}
-function draw(now){ctx.clearRect(0,0,canvas.width,canvas.height);const seen=new Set(game.s.seen);
+function draw(now){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#101b1b';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();ctx.translate(camera.x,camera.y);ctx.scale(camera.scale,camera.scale);const seen=new Set(game.s.seen);
  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const visible=seen.has(y*W+x);ctx.fillStyle=visible?(game.water(x,y)?'#527d79':noise(x,y)>.5?'#58694b':'#536548'):'#1d302b';ctx.fillRect(x*T,y*T,T+1,T+1);if(visible&&!game.water(x,y)){ctx.fillStyle='#b5bc7540';for(let i=0;i<3;i++)ctx.fillRect((x+noise(x+i,y))*T,(y+noise(y+i,x))*T,2,3);}if(visible&&game.water(x,y)){ctx.strokeStyle='#a0bdb340';ctx.beginPath();ctx.moveTo(x*T+6,y*T+14);ctx.lineTo(x*T+24,y*T+12);ctx.stroke();}}
  // Authored trail through the ford; landmarks remain clear of deposits.
  ctx.strokeStyle='#b6a67b55';ctx.lineWidth=21;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(10*T,13*T);ctx.bezierCurveTo(15*T,15*T,18*T,12*T,26*T,13*T);ctx.stroke();
@@ -69,21 +242,22 @@ function draw(now){ctx.clearRect(0,0,canvas.width,canvas.height);const seen=new 
  // Selection paths make hauling and command destinations legible.
  for(const u of game.s.units){if(selected.has(u.id)&&u.path.length){ctx.strokeStyle='#d3dda778';ctx.lineWidth=1;ctx.setLineDash([3,5]);ctx.beginPath();ctx.moveTo((u.x+.5)*T,(u.y+.5)*T);for(const p of u.path)ctx.lineTo((p.x+.5)*T,(p.y+.5)*T);ctx.stroke();ctx.setLineDash([]);}}
  for(const u of game.s.units){const x=(u.x+.5)*T,y=(u.y+.5)*T;circle(x+2,y+5,9,'#21372977');if(selected.has(u.id)){ctx.strokeStyle='#d5e8ab';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y+4,12,7,0,0,Math.PI*2);ctx.stroke();}ctx.fillStyle=u.phase==='idle'?'#c2b392':'#d7bc8a';ctx.fillRect(x-6,y-7,12,14);circle(x,y-11,5,'#d5ae85');ctx.fillStyle='#4b4833';ctx.fillRect(x-6,y+6,4,6);ctx.fillRect(x+2,y+6,4,6);if(u.cargo){ctx.fillStyle={wood:'#b28651',stone:'#bdc8b8',food:'#d6a273'}[u.resource];ctx.fillRect(x+5,y-6,8,8);ctx.font='bold 10px system-ui';ctx.fillStyle='#fff0c4';ctx.textAlign='center';ctx.fillText(u.cargo,x+12,y-9);}if(u.phase==='idle'){circle(x,y-23,3,'#e2c384');}if(selected.has(u.id)&&selected.size===1){ctx.fillStyle='#edf0d9';ctx.font='10px system-ui';ctx.textAlign='center';ctx.fillText(u.name,x,y+26);}}
- if(mode&&mode!=='move'){const x=Math.floor(hover.x),y=Math.floor(hover.y),err=game.placement(mode,x,y);ctx.fillStyle=err?'#db665866':'#b5daa366';ctx.fillRect(x*T,y*T,2*T,2*T);ctx.strokeStyle=err?'#ec9a81':'#d8eeb6';ctx.lineWidth=2;ctx.strokeRect(x*T,y*T,2*T,2*T);}
- if(pointer&&Math.hypot(pointer.now.x-pointer.start.x,pointer.now.y-pointer.start.y)>.3){ctx.fillStyle='#b6e09b25';ctx.strokeStyle='#c8e0a4';ctx.lineWidth=1;const x=pointer.start.x*T,y=pointer.start.y*T,w=(pointer.now.x-pointer.start.x)*T,h=(pointer.now.y-pointer.start.y)*T;ctx.fillRect(x,y,w,h);ctx.strokeRect(x,y,w,h);}
+ if(isPlacement()){const target=placement||hover,x=Math.floor(target.x),y=Math.floor(target.y),err=game.placement(mode,x,y);ctx.fillStyle=err?'#db665866':'#b5daa366';ctx.fillRect(x*T,y*T,2*T,2*T);ctx.strokeStyle=err?'#ec9a81':'#d8eeb6';ctx.lineWidth=2;ctx.strokeRect(x*T,y*T,2*T,2*T);}
+ if(pointer&&pointer.kind==='select'&&pointer.moved&&!mode){ctx.fillStyle='#b6e09b25';ctx.strokeStyle='#c8e0a4';ctx.lineWidth=1;const x=pointer.start.x*T,y=pointer.start.y*T,w=(pointer.now.x-pointer.start.x)*T,h=(pointer.now.y-pointer.start.y)*T;ctx.fillRect(x,y,w,h);ctx.strokeRect(x,y,w,h);}
  rings=rings.filter(r=>now-r.at<900);for(const r of rings){ctx.strokeStyle='#e0eab2';ctx.lineWidth=2;ctx.beginPath();ctx.arc(r.x*T,r.y*T,8+(now-r.at)/60,0,Math.PI*2);ctx.stroke();}
+ ctx.restore();
 }
-$('journey').onclick=()=>{$('dialog').showModal();$('save-status').textContent=blocked?'Saving is blocked. Export your current camp or reload to recover.':'This RTS camp has a separate save slot. Your previous Hearth remains intact.';};$('close').onclick=()=>$('dialog').close();
-$('export').onclick=()=>{const blob=new Blob([rejected||game.serialize()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hearth-rts-camp.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('journey').onclick=()=>{cancelInput();$('dialog').showModal();$('save-status').textContent=unreadableSave?readWarning:blocked?'Saving is blocked. Export your current camp or reload to recover.':'This RTS camp has a separate save slot. Your previous Hearth remains intact.';ui();};$('close').onclick=()=>$('dialog').close();
+$('export').onclick=()=>{if(unreadableSave)return;const blob=new Blob([rejected!==null?rejected:game.serialize()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hearth-rts-camp.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{
- const f=e.target.files[0];e.target.value='';if(!f)return;let raw,state,incoming;
- try{if(f.size>2e6)throw Error();raw=await f.text();state=JSON.parse(raw);incoming=new Camp(state);}catch(e){$('save-status').textContent='This is not a compatible RTS camp. No save was changed.';return;}
+ const f=e.target.files[0];e.target.value='';if(!f)return;let raw,state,incoming,repaired;
+ try{if(f.size>2e6)throw Error();raw=await f.text();state=parseCamp(raw);repaired=repairWorkResidue(state);incoming=new Camp(repaired||state);}catch(e){$('save-status').textContent='This is not a compatible RTS camp. No save was changed.';return;}
  if(!confirm('Replace only this RTS camp? Previous Hearth saves stay unchanged.'))return;
  const serialized=incoming.serialize();
- try{if(state.version<3)retainRaw('.import-before-v3',raw);localStorage.setItem(KEY,serialized);}catch(e){blocked=true;paused=true;$('save-status').textContent='Import could not be saved. Your previous camp remains open and its saved copy is unchanged. Export it before closing; keep the import file to retry.';tell('Import failed to save. Previous camp kept.');ui();return;}
- game=incoming;lastSave=serialized;blocked=false;rejected=null;selected.clear();inspect=null;mode=null;paused=true;$('dialog').close();ui();tell('RTS camp restored and saved');
+ try{if(repaired)retainRaw('.import-before-work-roundoff',raw);if(state.version<3)retainRaw('.import-before-v3',raw);localStorage.setItem(KEY,serialized);}catch(e){blocked=true;paused=true;$('save-status').textContent=unreadableSave?'Import could not be saved. The original saved camp is still unavailable. Reload when storage access is restored; keep the import file to retry.':'Import could not be saved. Your previous camp remains open and its saved copy is unchanged. Export it before closing; keep the import file to retry.';tell('Import failed to save. Previous camp kept.');ui();return;}
+ cancelInput(true,true);game=incoming;lastSave=serialized;blocked=false;rejected=null;unreadableSave=false;selected.clear();inspect=null;paused=true;$('dialog').close();ui();tell(repaired?'RTS camp restored and saved · work-rounding residue repaired; exact original kept':'RTS camp restored and saved');
 };
 window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue!==lastSave){blocked=true;paused=true;tell('Another tab changed this camp. Reload to continue safely.');ui();}});document.addEventListener('visibilitychange',()=>{last=performance.now();acc=0;if(document.hidden)save();});window.addEventListener('pagehide',save);
 function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!paused&&!blocked&&!document.hidden&&!$('dialog').open){acc+=dt;while(acc>=.1){game.tick(.1);acc-=.1;}}elapsed+=dt;if(elapsed>=2){save();elapsed=0;}if(frameNo++%6===0)ui();draw(now);requestAnimationFrame(frame);}
-ui();save();if(blocked&&rejected!==null)tell('Saved camp could not be loaded. Journey can export the original for recovery.');else if(!blocked&&paused)tell('Camp restored and paused. Resume when you are ready.');requestAnimationFrame(frame);
+ui();save();if(unreadableSave)tell(readWarning);else if(blocked&&rejected!==null)tell('Saved camp could not be loaded. Journey can export the original for recovery.');else if(!blocked&&paused)tell(recoveredWork?'Camp recovered and paused · work-rounding residue repaired; exact original kept.':'Camp restored and paused. Resume when you are ready.');requestAnimationFrame(frame);
 })();

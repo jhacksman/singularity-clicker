@@ -1,0 +1,85 @@
+Independent disproof review: extraction roundoff and save rejection
+Reviewed immutable commit: f93798b3cd5b3f38697e1696a058e55e449b676d
+Date: 2026-10-04
+
+VERDICT: Attempts to disprove failed. The candidate is statically confirmed:
+ordinary tool-assisted gathering can generate a negative unit.work residue,
+persist it successfully, and then reject that save on reload. High release
+priority / release blocker. This is a save-load softlock, not a demonstrated
+irreversible loss of the underlying saved bytes. No runtime reproduction was
+performed by this reviewer; Spark must provide execution evidence.
+
+Method and boundaries
+- Read immutable engine, view, and relevant tests using git show; inspected
+  existing Spark022 evidence. No other skeptic reports were read.
+- No M6 application runtime, parser, test, build, or browser execution; no app
+  edits. Only this assigned review report was written.
+
+Attempted disproof: the alleged arithmetic cannot occur in ordinary play
+- engine.js:139 resets work to zero when starting a new gathering order.
+  engine.js:193 enables tools on completed ordinary knapping. No synthetic
+  save edits are necessary to reach tools=true followed by work=0 gathering.
+- view.js:87 advances the simulation with game.tick(.1), so the proposed .1
+  step is the actual browser simulation step, not merely a test-only choice.
+- Manual binary64 reasoning for active extraction ticks starting at zero:
+  ticks 1..5: .1, .2, .30000000000000004, .4, .5 before subtraction;
+  tick 5: .5 - .45 = .04999999999999999, cargo becomes 1;
+  ticks 6..9: .15, .25, .35, .44999999999999996 before subtraction;
+  tick 9: epsilon comparison passes, then subtracting .45 yields
+  -2^-54 = -5.551115123125783e-17, cargo becomes 2.
+- engine.js:192 uses an epsilon for eligibility but subtracts the full interval
+  without a clamp. The result is a negative finite number, not negative zero.
+  Cargo 2 is below capacity 5; a deposit with more than two remaining items
+  avoids the depletion branch. Movement delays extraction but does not change
+  this sequence of active extraction ticks (engine.js:182).
+
+Attempted disproof: normalization or save timing prevents persistence
+- A further extraction tick can make work positive, but no reset occurs at the
+  second extraction or end of tick. engine.js:196 only reveals/checks completion.
+- More strongly, Stop/reassignment while carrying sets the queued order and
+  calls home without resetting work (engine.js:138,159-160). The negative value
+  survives the return journey until receipt calls start (engine.js:118-124).
+  Stop then immediately invokes feedback/save (view.js:13,28).
+- Pause saves immediately (view.js:32); hidden/pagehide saves (view.js:86);
+  autosave writes approximately every two seconds (view.js:87). None validates
+  or normalizes work. Autosave need not always align with the vulnerable tick:
+  the Pause/Stop/pagehide paths independently establish reachable persistence.
+- serialize is plain JSON.stringify (engine.js:198); save writes that string
+  directly (view.js:10). This small finite negative value survives JSON.
+
+Attempted disproof: the validator ignores or repairs this field on reload
+- engine.js:18 defines n as finite and >=0; line 29 requires n(u.work) for every
+  unit, including extract, return, or blocked idle. There is no tolerance.
+- This check precedes the legacy-version early return (line 30). Constructor
+  validation precedes cloning/migration (line 50), preventing migration repair.
+- Startup catches the rejection, shows a fresh placeholder, and blocks saving
+  and play (view.js:6,88). Import rejects the same state (view.js:80). Export
+  retains the rejected original bytes (line 77); therefore raw recovery remains
+  possible, but ordinary Resume/reimport cannot resume the affected camp.
+
+Attempted disproof: passing Spark coverage establishes this state is safe
+- Spark022's 79 passing tests and four builds remain evidence for their actual
+  assertions; they do not establish validity at every extraction tick.
+- tests/hearth-rts.test.cjs:37-42 checks tool throughput/capacity/conservation
+  after two seconds, without intermediate validity or reload assertions.
+- tests/browser/hearth-rts.cjs:21 reloads carried transfer before crafting.
+  Lines 24-25 gather with tools, then wait for all cargo returned and all workers
+  idle. The later reload at line 28 uses that settled state, where receipt reset
+  work. Legacy fixtures at line 29 also derive from the settled camp.
+- The selected Spark022 JSON snapshots contain no captured negative-work
+  boundary. Earlier bounded custody/conservation checkpoint PASS therefore does
+  not disprove this newly examined save-availability defect.
+
+Severity and proposed correction boundary
+- High priority is justified by ordinary controls producing a save the same
+  implementation refuses, without malformed imports or hostile actions.
+  Failure depends on save timing; it is not inevitable on every playthrough.
+- No objection to the parent's proposed successful-extraction residual clamp,
+  Math.max(0, work - interval), while retaining the strict validator.
+- A separate explicit recovery helper may repair only unit.work in the proposed
+  [-1e-12,0) bound and narrowly matching known gather/cargo states in supported
+  versions. It must clone, preserve the exact original bytes before replacement
+  or adoption, and pass full unchanged validation/constructor checks afterward.
+  Backup failure must leave recovery blocked. Unknown versions or unrelated
+  negative/custody inconsistencies must remain rejected. This is agreement with
+  the proposed scope, not verification of an implementation not yet reviewed.

@@ -37,6 +37,7 @@ await importRaw(raw);await importRaw(raw);assert.equal(await page.evaluate(k=>lo
    assert.equal(await page.locator('#stop').isDisabled(),false,'Fixture must load as a usable paused camp');
    const bounds=await page.locator('#world').boundingBox(),point={x:bounds.x+(site.x+.5)/36*bounds.width,y:bounds.y+(site.y+.5)/24*bounds.height};
    assert.ok(point.x>0&&point.x<1280&&point.y>0&&point.y<720,'Intended site click is inside the viewport');
+   assert.equal(await page.evaluate(p=>document.elementFromPoint(p.x,p.y)?.id,point),'world','The ordinary paired click must reach the visible map, not the persistent command tray');
    assert.ok(bounds.y+bounds.height>720,'This regression requires a partially visible canvas');
    await page.evaluate(({oldFocus,point})=>{
     const canvas=document.getElementById('world'),nativeFocus=canvas.focus.bind(canvas);

@@ -1,0 +1,95 @@
+Input and persistence readiness increment — candidate, Spark execution pending
+
+Base source: f93798b3cd5b3f38697e1696a058e55e449b676d (Storage022 passed).
+Base delivery: 0e13ba4b42096a0aa91354f5769984ebe013eeec.
+The existing Library preview remains the separately verified Storage022 version2.
+No candidate source or new artifact has been published, deployed or merged.
+
+Confirmed UX022 findings (parent's independent critic and two fresh-context
+skeptics each) authorize this input area: F1 explicit M/Move plus primary click
+must not dispatch Gather; F2 Space owns a keyup/pan/cancellation cycle; F3 unarmed
+touch inspects, visible tray verbs issue work, touch placement has separate Confirm;
+F4 completed/cancelled placement must not retain an obsolete shortage helper.
+The P2/P3 severity disagreement for the demonstrated Space case remains recorded
+in task-10/HEARTH-UX022-DECISION-LEDGER-20261004.json. No high UX finding was alleged.
+
+One UI fixer owns view/shell/styles, root owns persistence wiring and browser
+regressions, one engine fixer owns arithmetic/repair and reducer regressions.
+Separate reviewers inspect engine, input, persistence and test oracles. No runtime,
+parser, tests, build, lint or browser automation executes on M6.
+
+Input boundary
+Explicit primary Move dispatch is separate from contextual right-click. Invalid
+targets retain prior work/cargo; formations preflight every target before command.
+Space keydown/repeats never toggle. An owned uncancelled keyup toggles once;
+>=4 CSS-pixel primary movement latches actual camera pan and consumes the cycle.
+Interruption/focus/modal handling prevents stale releases from becoming commands.
+Touch ordinary verbs are visible in the persistent tray; placement previews first
+and spends only through Confirm site. Current helper text is derived from mode.
+Loaded orders deliberately retain legacy return-first cargo behavior, visibly
+disclosed. This does not implement IC02 immediate cargo Move. Pinch, physical touch,
+full accessibility and human comprehension/pacing remain unverified or unimplemented.
+Authored art is preserved inside the camera transform wrapper; no generated images.
+
+The separate input verifier found a further active-surface IC05 gap: a new Space
+press on the already-focused brand/footer link was treated as map input. Two fresh
+skeptics confirmed it before the UI owner added explicit native-link ownership.
+Link keydown/keyup retain browser handling, clear stale map cycles, and do not
+synthesize activation. A Tab-driven brand/footer regression covers Space/repeat/up
+in both paused/running label states and actual Enter navigation. Its frozen clock
+proves input ownership, not running simulation timing; task10 owns broader IC05 QA.
+
+New persistence findings, discovered independently after Storage022
+P01: ordinary upgraded extraction can subtract .45 from .44999999999999996 and
+retain -5.551115123125783e-17 work. Pause/save can persist it; strict validation
+rejects refresh. Three fresh read-only skeptics confirmed High persistence priority,
+with exported original bytes recoverable and incidence depending on the save tick.
+This predates the storage increment and was missed by stable-checkpoint tests.
+Fix: clamp the successful extraction remainder to zero. Keep valid() strict.
+An explicit repairWorkResidue helper returns only a copied, fully valid supported
+v1/v2/v3 candidate or null. Only gather-owned matching resource/cargo work in
+[-1e-12,0) in extraction/return/blocked idle is eligible; no transfer, stock, paid
+project or ordinary negative amount is repaired. Constructors do not silently repair.
+Startup/import retain exact original bytes under .before-work-roundoff or
+.import-before-work-roundoff, with distinct numeric suffixes, before replacing or
+adopting the repair. Failed backups block adoption; failed main writes retain disk
+originals and truthful recovery state. Incoming import is adopted only after save.
+
+P02: persistent localStorage access denial throws again inside startup catch and
+prevents handler initialization. Two fresh skeptics confirmed Medium availability,
+not destruction of existing bytes. The fix never rereads in catch, remains paused
+and blocked, presents an honest read warning, and disables Export when no original
+bytes were readable. Storage getter/method failures are explicit controlled fixtures.
+
+P03: present falsy JSON payloads were treated as absent and replaced by fresh state.
+Two fresh skeptics confirmed Low invalid-byte retention impact, not loss of a valid
+engine-generated camp. Absence alone starts fresh; present primitives/arrays reject
+before Camp construction. The same guard applies to file import. Empty raw bytes
+remain exportable through explicit null-presence checks instead of truthiness.
+
+Verification authored, not yet executed
+Four new reducer cases: actually earned workshop/tools; every .1-second gathering
+state roundtrips through strict validation for60 seconds with conservation/delivery;
+single-assignment old-subtraction negative control; explicit repair, migration and
+exclusion boundaries. Browser roundtrip begins with the ordinary journey's earned
+camp, uses actual gathering/Pause actions at every tick, captures old subtraction's
+negative second-item save, and checks corrected exact paused refresh and continuation.
+Bootstrap fixtures cover read denial, absent versus present invalid input, raw export,
+repair backup/main failures and import failure preservation. A repeated-import test
+oracle race was independently found, confirmed by two fresh skeptics, and corrected
+by actual Journey close/reopen plus nonmatching status before each awaited rejection.
+Existing focus negative control retains1280x720/original paid site; an explicit
+elementFromPoint check rejects a click obscured by the new tray instead of claiming
+focus evidence from an overlay miss. Independent task10 owns separate UX closure QA.
+
+Follow-on integration dependencies
+Task13 navigation adapter integration waits for this input candidate to stabilize
+and its presentation follow-up. Its backup-key recognizer must include both new
+roundoff-retention families and numeric suffixes without treating those originals
+as current playable saves. Surrounding Cave completion copy must describe the actual
+RTS opening; dispose navigation controller with modal removal. Combined source then
+requires its own exact Spark evidence. No durable campaign grant/handoff is implied.
+Task11 economy trace comparison follows agreement on its data-only schema. Current
+RTS stores are intentionally uncapped: capacity/floor/durable receipt capabilities
+must be reported unsupported where absent, never supplied from the reference model.
+Task12 IndexedDB adapter remains isolated and is not integrated by this increment.

@@ -1,0 +1,73 @@
+P01 extraction roundoff: independent engine static verification
+Date: 2026-10-04
+Working-tree HEAD at review: 0e13ba4b42096a0aa91354f5769984ebe013eeec
+Reviewed files were uncommitted; these SHA-256 hashes identify the reviewed bytes:
+src/hearth-rts/engine.js
+  3b22d81b32f01f44fc033c488e68a91c027889780f82db380ea899f837f20be4
+tests/hearth-rts.test.cjs
+  d4ba3b345c1c60b7039b82a596de2df571b0953adac01325eb0555d68ed17f95
+
+VERDICT: Engine fix and focused tests are statically CLEAR. No new blocking
+finding within this scope. This is not full-fix or release closure: UI raw-byte
+backup/adoption ordering is outside this review, and Spark execution is pending.
+No M6 runtime, parser, tests, builds, or browser were executed. No app edits.
+
+Generation fix and strict validation
+- engine.js:206 clamps only the successful extraction remainder with
+  Math.max(0,u.work-interval). The former -2^-54 remainder becomes zero before
+  any return/home path or subsequent save. Deposit debit and cargo credit remain
+  paired exactly as before; interval, eligibility epsilon, capacity and costs
+  are unchanged. Positive remainder is preserved.
+- valid() at lines 17-48 and constructor at line 64 remain unchanged. Negative
+  work still fails strict validation. Constructor does not silently repair
+  imported or restored states and still validates after legacy migration.
+
+Explicit recovery helper
+- repairWorkResidue (lines 51-62) accepts only supported versions 1/2/3 and
+  operates on structuredClone(state). It never mutates the caller's state.
+- Each repaired field must be finite unit.work in [-1e-12,0), attached to a
+  gather order whose target deposit matches the held resource, with cargo in
+  (0,5], no transfer-cargo marker, and extract/return/idle phase. Idle requires
+  an empty path. This identifies held gathering cargo, not transfer production.
+- It changes only work to zero. Any unsupported negative candidate aborts the
+  entire repair. It returns a clone only if at least one field changed and the
+  full existing valid(candidate) succeeds; malformed/unchanged inputs return
+  null. Nonfinite work remains invalid rather than being normalized.
+- For v1/v2, this is the complete validator for that input version. Subsequent
+  adoption must still call new Camp, which performs normal migration and v3
+  validation. The added legacy test does so. Helper performs no migration,
+  balance changes, stock transfers, or persistence itself.
+- Original raw-byte backup before any adoption/replacement remains an explicit
+  caller obligation. Engine clearance does not establish that UI obligation.
+
+Focused test assessment
+- Four new test() cases are present in the reviewed file, at lines 48, 81, 88,
+  and 95. The task mentioned five; this count discrepancy was sent to the parent.
+- Lines 47-59 earn wood/stone, build a workshop and complete knapping through
+  commands/ticks before ordering a real gatherer. They do not grant tools or
+  teleport the worker. Across 600 ticks they assert strict validity, conservation,
+  nonnegative work/capacity, and equality with a repeatedly serialized/reloaded
+  parallel camp. They explicitly reach the ninth extraction tick with cargo 2
+  and work 0, observe held return cargo, and require at least two delivered loads.
+- Lines 62-85 construct an old-behavior control by replacing exactly one clamp
+  assignment with the original subtraction. Both versions otherwise run the
+  same earned scenario. The test requires a naturally generated invalid negative
+  residue, checks full-state equality except work, and captures Stop preserving
+  that residue during return. Both extraction and return states must be rejected
+  by strict construction, repaired without mutating the original, and resume
+  with conserved resources. This directly targets the previous missed boundary.
+- Lines 88-93 cover repair followed by normal v1/v2/v3 migration and unchanged
+  world/cargo fields. These are version compatibility fixtures derived from the
+  natural v3 residue; they are not historical v1 gameplay reproductions.
+- Lines 95-108 reject below-bound/material/nonfinite negatives, empty/overfull or
+  mismatched cargo, unrelated orders/phases, transfer markers, malformed idle
+  paths, a second invalid worker and unrelated state corruption. The exact lower
+  bound and idle held-cargo shape are accepted; originals stay unchanged.
+
+Remaining closure requirements
+- Spark must execute these tests and report the old-behavior failure/fixed-state
+  success; static inspection alone does not establish passing execution.
+- Independently verify UI backup-before-adoption/replacement, backup/write
+  failures, supported legacy/raw import preservation, Pause/pagehide/reload, and
+  recovery messaging on the final immutable candidate. No full UI or full Hearth
+  completion claim follows from this engine review.
