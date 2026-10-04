@@ -1,0 +1,75 @@
+Physical-construction main browser QA source review
+Reviewer: /root/construction_browser_author/browser_compat
+Date: 2026-10-04
+
+Scope and frozen artifact
+Only tests/browser/hearth-construction.cjs was edited in this final QA task.
+SHA256: 1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Repository: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-physical-construction
+No runtime, parser, test, build, browser, CI, or network execution was performed.
+No production source was edited and no commit was made. Review used source reads,
+the scoped diff, and source-file hashing. Runtime acceptance remains for Spark.
+
+Clock pulse and preserved oracles
+The view's frame accumulator survives Pause; a requested 100ms run can include
+seven approximately 16ms callbacks, including elapsed time from before Resume.
+With a retained accumulator remainder, that can advance two 0.1-second ticks.
+The default pulse is now 80ms (line 18, consumed at line 112). This leaves normal
+controlled-RAF headroom; it is not assumed to prove a universal frame schedule.
+materialStep and tool-work checks still reject observed game deltas greater than
+.100001. Extraction sampling now explicitly checks that same strict bound.
+The material loop uses seconds*1000/80, preserving its virtual budget; crafting
+uses ceil(120000/80), retaining 120 seconds; extraction uses ceil(3500/80), keeping
+the previous 3.5-second budget to one pulse of rounding. Existing item-interval,
+cumulative extraction, material custody, movement, and worker-work oracles remain.
+
+Extraction eligibility correction
+Phase extract is assigned before a worker finishes walking, so the old predicate
+could begin its short measurement while u0 was still travelling. The start now
+requires the actual current Gather target to be a live deposit, extract phase,
+zero cargo, empty path, and cardinal adjacency (lines 343-345). Generic atEdge now
+uses hearth width 3, outpost/workshop width 2, and deposit width 1 (line 56).
+The probe waits through ordinary UI-driven play; it does not alter saved state.
+
+G01 same-worker DOM regression oracle
+waitingInstallers (line 157) identifies an already assigned, adjacent, empty,
+pathless construct worker whose prior reason is Waiting for site supplies.
+materialStep (line 276) requires positive elapsed time and positive installation
+work while the same site remains active and unfinished. It independently checks
+that the recipe was staged before that worker's sorted turn, allowing final
+receipts by earlier actor IDs in that same tick. Eligibility never depends on the
+after-state reason. The final carrier alone cannot satisfy this old-waiter gate.
+For every qualifying old waiter, the test asserts the same identity still has
+Build/site assignment, construct phase, no cargo/path/next order, and the exact
+reason Installing outpost or Installing workshop. It then asserts that actor's
+card small text, card title, and its named entry in the site's Selected text.
+These are selected-site and worker-card DOM assertions; the individual worker
+inspector paragraph is not separately asserted.
+
+Before a possible transition, the test captures a paused Waiting checkpoint only
+when the full bill is already onsite or the missing goods are at the site's edge
+in ready supply-delivery actors. A zero-tick sample does not duplicate it. If an
+earlier waiter does not work until the tick after the final carrier's receipt,
+the pending before capture is refreshed. The after capture requires that exact
+before game time and the same actor to have actually qualified for installation.
+Both captures produce ordinary Journey downloads and PNGs through the existing
+manifest-bound capture helper. report.installationStatusWitness links the pair;
+report.installationStatusTransitions records identities, times, and work. The
+final assertion requires at least one such paired same-actor transition.
+Selection changes are ordinary UI inputs and restored after checking; this oracle
+does not assign workers, alter cargo, or inject state.
+
+Comparison wording
+The one-versus-four comparison now describes parallel construction speed from the
+same earned start, with three idle peers in the one-worker case. Common gathering,
+scouting, and prepositioning precede the measured construction interval. Existing
+clock fields and earned-Journey provenance remain intact. The result expressly
+does not establish allocation opportunity cost, a depot-placement comparison, or
+human pacing. No broader comparison claim is made by this source review.
+
+Remaining verification
+No source-level blocker was found in this bounded edit. A separate source verifier
+should review the frozen hash above. Spark must still execute the test to establish
+actual RAF behavior, DOM visibility, capture pairing, ordinary-scenario coverage,
+and completion within the existing wall deadline. No passing runtime result or
+produced PNG/Journey evidence is claimed here.

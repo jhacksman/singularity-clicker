@@ -15,6 +15,7 @@ const KEY = 'singularity-clicker.hearth-rts.v1', PROFILE = 'accepted-opening.phy
 const RES = ['wood', 'stone', 'food'], TOTAL = {wood: 416, stone: 220, food: 225};
 const COST = {outpost: {wood: 60, stone: 20, food: 0}, workshop: {wood: 40, stone: 30, food: 0}};
 const WORK = {outpost: 24, workshop: 32}, sha = value => crypto.createHash('sha256').update(value).digest('hex');
+const SAMPLE_MS = 80;
 const LEGACY_BASE = '4c3ac2f6c16ce58563f0300f286040a7aae0a963';
 const LEGACY_HASHES = {
   'src/hearth-rts/engine.js': '416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5',
@@ -53,7 +54,7 @@ function matter(s) {
   for (const r of RES) assert.ok(s.stock[r] >= reserved(s, r), 'Source reservations are backed by actual stored goods');
 }
 function atEdge(u, b) {
-  const n = b.kind === 'hearth' ? 3 : 2, near = (a, v) => Math.abs(a - v) < .00001;
+  const n = b.kind === 'hearth' ? 3 : ['outpost', 'workshop'].includes(b.kind) ? 2 : 1, near = (a, v) => Math.abs(a - v) < .00001;
   for (let i = 0; i < n; i++) if (near(u.x, b.x - 1) && near(u.y, b.y + i)
     || near(u.x, b.x + n) && near(u.y, b.y + i) || near(u.y, b.y - 1) && near(u.x, b.x + i)
     || near(u.y, b.y + n) && near(u.x, b.x + i)) return true;
@@ -68,16 +69,16 @@ fs.mkdirSync(DIR, {recursive: true});
   manifest.build['dist/hearth-rts.html'] = sha(html);
   for (const file of ['src/hearth-rts/engine.js', 'src/hearth-rts/view.js']) assert.ok(html.includes(fs.readFileSync(path.join(ROOT, file), 'utf8')), 'Built page must contain exact candidate source: ' + file);
   const binding = sha(JSON.stringify(manifest));
-  const report = {status: 'running', manifest, binding, bounds: {wallSeconds: 875, maximumMaterialSampleSeconds: .100001},
+  const report = {status: 'running', manifest, binding, bounds: {wallSeconds: 875, requestedSampleMilliseconds: SAMPLE_MS, maximumMaterialSampleSeconds: .100001},
     method: 'Trusted ordinary UI, fresh earned main journey, exact Journey imports for labeled comparisons, controlled browser clock',
-    scenarios: [], checkpoints: [], transitions: [], workProgress: [], toolWorkProgress: [], events: [], legacyUnfinished: {status: 'pending',
+    scenarios: [], checkpoints: [], transitions: [], workProgress: [], toolWorkProgress: [], installationStatusTransitions: [], installationStatusWitness: null, events: [], legacyUnfinished: {status: 'pending',
       reason: 'Supply LEGACY_CONSTRUCTION_WITNESS, LEGACY_CONSTRUCTION_WITNESS_REPORT and OLD_BASE_DIR from a separate ordinary pinned-v5 Spark run'}, limits: [
       'No human pacing, enjoyment, physical device or full-campaign acceptance claim',
       'Detailed current/legacy fault fixtures live in bootstrap, recovery and navigation browser suites',
       'No historical v5 unfinished job is claimed without a separate pinned ordinary v5 witness'], errors: []};
   const write = (name, value) => fs.writeFileSync(path.join(DIR, name), JSON.stringify(value, null, 2) + '\n');
   const persist = () => write('report.json', report), guard = () => assert.ok(Date.now() < deadline, '875-second bounded browser job exceeded');
-  let browser, active, server, sequence = 0;
+  let browser, active, server, sequence = 0, pendingStatusWitness = null;
   const contexts = [];
   async function events(p) { report.events.push(...(await p.evaluate(() => window.__constructionInputs.splice(0))).map(e => ({binding, scenario: active.label, ...e}))); }
   async function exported(p, label = 'sample') {
@@ -108,7 +109,7 @@ fs.mkdirSync(DIR, {recursive: true});
     await events(p); persist(); return data;
   }
   const saved = p => p.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
-  async function tick(p, milliseconds = 100) {
+  async function tick(p, milliseconds = SAMPLE_MS) {
     guard(); assert.equal(await p.locator('#pause').innerText(), 'Resume');
     await p.locator('#pause').click(); await p.clock.runFor(milliseconds); await p.locator('#pause').click();
     const s = await saved(p); matter(s); return s;
@@ -126,6 +127,11 @@ fs.mkdirSync(DIR, {recursive: true});
     assert.equal(await p.evaluate(q => document.elementFromPoint(q.x, q.y)?.id, q), 'world'); await p.mouse.click(q.x, q.y, {button});
   }
   async function select(p, ids) { for (let i = 0; i < ids.length; i++) await p.locator('[data-unit="' + ids[i] + '"]').click({modifiers: i ? ['Shift'] : []}); }
+  const selectedIds = p => p.locator('.unit-card[aria-pressed="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.unit));
+  async function restoreSelection(p, ids) {
+    if (ids.length) await select(p, ids);
+    else for (const id of await selectedIds(p)) await p.locator('[data-unit="' + id + '"]').click({modifiers: ['Shift']});
+  }
   const all = p => p.locator('#select-all').click();
   async function move(p, x, y) { await p.locator('#move').click(); await clickMap(p, x + .5, y + .5); }
   async function moveAll(p, x, y) { await all(p); await move(p, x, y); return until(p, s => s.units.every(u => !u.cargo && u.phase === 'idle'), 'move-all'); }
@@ -148,6 +154,38 @@ fs.mkdirSync(DIR, {recursive: true});
     return detail;
   }
   async function assign(p, b, ids) { await select(p, ids); await clickMap(p, b.x + 1.1, b.y + 1.1, 'right'); }
+  function waitingInstallers(s, id) {
+    const b = building(s, id), c = site(s, id);
+    return !b || b.done || c?.state !== 'active' ? [] : s.units.filter(u => u.order.kind === 'build' && u.order.target === id
+      && !u.next && u.phase === 'construct' && !u.cargo && !u.path.length && atEdge(u, b) && u.reason === 'Waiting for site supplies');
+  }
+  function readySiteDeliveries(s, id) {
+    const b = building(s, id);
+    return s.units.filter(u => u.supply?.siteId === id && u.phase === 'supplyDeliver' && !u.path.length && atEdge(u, b));
+  }
+  async function installationStatusDOM(p, s, b, workers, expected) {
+    await select(p, workers.map(u => u.id)); await inspect(p, b);
+    const detail = await supplyText(p, s, b), selected = detail.split('Selected: ')[1];
+    for (const u of workers) {
+      const card = p.locator('[data-unit="' + u.id + '"]');
+      assert.equal(await card.locator('small').innerText(), expected, 'The same worker card reports its actual installation state');
+      assert.equal(await card.getAttribute('title'), expected, 'The same empty worker tooltip reports its actual installation state');
+      assert.ok(selected.includes(u.name + ' — ' + expected), 'The selected-site text names the same worker and installation state');
+    }
+  }
+  async function captureWaitingInstallation(p, s, id) {
+    if (report.installationStatusWitness) return;
+    const b = building(s, id), c = site(s, id), waiters = waitingInstallers(s, id);
+    if (!waiters.length) return;
+    const deliveries = readySiteDeliveries(s, id);
+    if (!RES.every(r => c.staged[r] + deliveries.filter(u => u.resource === r).reduce((n, u) => n + u.cargo, 0) === COST[b.kind][r])) return;
+    if (pendingStatusWitness?.scenario === active.label && pendingStatusWitness.site === id && pendingStatusWitness.time === s.time) return;
+    const selected = await selectedIds(p), u = waiters[0];
+    await installationStatusDOM(p, s, b, [u], 'Waiting for site supplies');
+    const checkpoint = await capture(p, 'waiting-before-installation', s);
+    pendingStatusWitness = {scenario: active.label, site: id, actor: u.id, time: s.time, checkpoint: checkpoint.file};
+    await restoreSelection(p, selected); await inspect(p, b);
+  }
   async function reload(p, label) {
     const before = await exported(p, label + '-before'); await events(p); await p.reload(); await p.locator('[data-unit="u0"]').waitFor();
     assert.equal(await p.locator('#pause').innerText(), 'Resume'); await p.clock.runFor(700);
@@ -235,6 +273,33 @@ fs.mkdirSync(DIR, {recursive: true});
     }
     if (!next && building(after, id)?.done && b.kind === 'outpost') expectedStores[id] = zero();
     assert.deepEqual(after.storage.stores, expectedStores, 'Each load changes only its named actual source or return store');
+    if (delta > 0 && prior.state === 'active' && next?.state === 'active' && afterBuilding && !afterBuilding.done && afterBuilding.work > b.work) {
+      const deliveries = readySiteDeliveries(before, id);
+      // Match the engine's sorted actor turns without trusting its reason string:
+      // an earlier final receipt may fund a later waiting worker in the same tick.
+      const installers = waitingInstallers(before, id).filter(u => RES.every(r => prior.staged[r]
+        + deliveries.filter(carrier => carrier.id.localeCompare(u.id) < 0 && carrier.resource === r).reduce((n, carrier) => n + carrier.cargo, 0) === COST[b.kind][r]));
+      if (installers.length) {
+        const expected = 'Installing ' + b.kind, selected = await selectedIds(p);
+        for (const old of installers) {
+          const u = actor(after, old.id); assert.equal(u.order.kind, 'build'); assert.equal(u.order.target, id);
+          assert.equal(u.phase, 'construct'); assert.equal(u.cargo, 0); assert.equal(u.path.length, 0); assert.equal(u.next, null);
+          assert.equal(u.reason, expected, 'G01: an earlier waiting worker reports the installation work it actually performs');
+        }
+        await installationStatusDOM(p, after, afterBuilding, installers.map(u => actor(after, u.id)), expected);
+        report.installationStatusTransitions.push({binding, scenario: active.label, site: id, actors: installers.map(u => u.id),
+          beforeTime: before.time, afterTime: after.time, beforeWork: b.work, afterWork: afterBuilding.work, expected});
+        if (!report.installationStatusWitness && pendingStatusWitness?.scenario === active.label && pendingStatusWitness.site === id
+          && installers.some(u => u.id === pendingStatusWitness.actor)) {
+          assert.equal(pendingStatusWitness.time, before.time, 'The PNG/Journey pair straddles this exact same-worker installation transition');
+          const checkpoint = await capture(p, 'previous-waiter-now-installing', after);
+          report.installationStatusWitness = {...pendingStatusWitness, binding, before: pendingStatusWitness.checkpoint, after: checkpoint.file,
+            afterTime: after.time, beforeWork: b.work, afterWork: afterBuilding.work, expected,
+            ui: ['worker card small', 'worker card title', 'site Selected text'], source: 'Same empty waiting worker; not the final carrier'};
+        }
+        await restoreSelection(p, selected); await inspect(p, afterBuilding);
+      }
+    }
     if (changes.length) {
       if (next) { await inspect(p, afterBuilding); await supplyText(p, after, afterBuilding); }
       const checkpoint = await capture(p, label + '-boundary', after);
@@ -244,7 +309,7 @@ fs.mkdirSync(DIR, {recursive: true});
   }
   async function physicalUntil(p, id, predicate, label, seconds = 450) {
     let s = (await exported(p, label + '-start')).s;
-    for (let i = 0; !predicate(s) && i < seconds * 10; i++) { const before = s; s = await tick(p); await materialStep(p, before, s, id, label); }
+    for (let i = 0; !predicate(s) && i < seconds * 1000 / SAMPLE_MS; i++) { const before = s; await captureWaitingInstallation(p, before, id); s = await tick(p); await materialStep(p, before, s, id, label); }
     assert.ok(predicate(s), 'Physical transition timeout: ' + label); return s;
   }
   async function complete(p, id, label) {
@@ -259,7 +324,7 @@ fs.mkdirSync(DIR, {recursive: true});
   }
   async function craftComplete(p, workshop) {
     let s = (await exported(p, 'tools-labor-before')).s;
-    for (let i = 0; !s.tools && i < 1200; i++) {
+    for (let i = 0; !s.tools && i < Math.ceil(120000 / SAMPLE_MS); i++) {
       const before = s; s = await tick(p); const dt = s.time - before.time;
       assert.ok(dt >= 0 && dt <= .100001);
       const eligible = before.units.filter(u => u.order.kind === 'craft' && u.order.target === workshop.id && u.phase === 'craft' && !u.cargo && !u.next && u.path.length === 0 && atEdge(u, workshop)).length;
@@ -276,10 +341,12 @@ fs.mkdirSync(DIR, {recursive: true});
     return until(p, s => s.units.every(u => !u.cargo && u.phase === 'idle'), label + '-returned');
   }
   async function extractionProbe(p, label, expectedInterval) {
-    let s = await until(p, v => actor(v, 'u0').phase === 'extract' && actor(v, 'u0').cargo === 0, label + '-start', 80, 100);
+    let s = await until(p, v => { const u = actor(v, 'u0'), deposit = v.deposits.find(d => u.order.kind === 'gather' && d.id === u.order.target);
+      return deposit && deposit.amount > 0 && u.phase === 'extract' && u.cargo === 0 && u.path.length === 0 && atEdge(u, deposit); }, label + '-start', 80, SAMPLE_MS);
     const samples = [{time: s.time, work: actor(s, 'u0').work, cargo: 0, phase: 'extract'}];
-    for (let i = 0; i < 35 && actor(s, 'u0').cargo < 4; i++) {
-      s = await tick(p); const u = actor(s, 'u0'); samples.push({time: s.time, work: u.work, cargo: u.cargo, phase: u.phase});
+    for (let i = 0; i < Math.ceil(3500 / SAMPLE_MS) && actor(s, 'u0').cargo < 4; i++) {
+      const before = s; s = await tick(p); assert.ok(s.time - before.time >= 0 && s.time - before.time <= .100001, 'Extraction samples observe at most one simulation tick');
+      const u = actor(s, 'u0'); samples.push({time: s.time, work: u.work, cargo: u.cargo, phase: u.phase});
     }
     const boundaries = samples.filter((row, i) => i && row.cargo > samples[i - 1].cargo);
     assert.ok(boundaries.length >= 4, label + ': observe four actual item extractions');
@@ -349,8 +416,9 @@ fs.mkdirSync(DIR, {recursive: true});
     report.tools.extraction = extraction; await all(p); await p.locator('#stop').click(); s = await until(p, v => v.units.every(u => !u.cargo && u.phase === 'idle'), 'final-cargo-return');
     await capture(p, 'main-complete-useful-supply-line', s); await reload(p, 'complete-main-reload'); await close(p);
 
-    // Same ordinary earned start, meaningful allocation comparison. All preposition,
-    // hauling and installation time remains inside each measured elapsed interval.
+    // Same ordinary earned start: measure one-versus-four parallel construction.
+    // The other three peers stay idle in the one-worker case. Common gathering,
+    // scouting and prepositioning are reported separately from construction elapsed.
     for (const count of [1, 4]) {
       const q = await open('earned-allocation-' + count, sameStart.raw), start = (await exported(q, 'comparison-start')).s;
       const placed = await place(q, 'outpost', 22, 11, start.units.slice(0, count).map(u => u.id), 'comparison-outpost');
@@ -364,7 +432,7 @@ fs.mkdirSync(DIR, {recursive: true});
     assert.ok(report.workProgress.some(row => row.eligible > 1 && row.fullyStaged));
     report.allocationComparison = {sameStartSHA256: sha(sameStart.raw), cases: allocations,
       singleMinusFourElapsedSeconds: allocations[0].elapsedIncludingPrepositionTravelSupplyAndWork - allocations[1].elapsedIncludingPrepositionTravelSupplyAndWork,
-      interpretation: 'Measured actual allocation choice with the same earned four-villager camp; common setup and each case\'s total clock retained. No human pacing claim.'};
+      interpretation: 'Parallel construction speed with one versus four workers from the same earned camp; the other three workers are idle in the one-worker case. Common gathering/scouting/prepositioning and total clocks are retained. This does not measure an allocation opportunity cost, an alternative depot placement, or human pacing.'};
 
     // Earned interruption/cancellation branches, exact input exported by fresh-main.
     for (const mode of ['reserved-only', 'carried', 'onsite', 'partial-work']) {
@@ -510,6 +578,7 @@ fs.mkdirSync(DIR, {recursive: true});
     }
     assert.ok(report.events.some(e => e.trusted && e.type === 'pointerdown' && e.target === 'world'));
     for (const id of ['gather', 'move', 'stop', 'pause', 'command-cancel']) assert.ok(report.events.some(e => e.trusted && e.target === id), 'Required real UI input: ' + id);
+    assert.ok(report.installationStatusTransitions.length > 0 && report.installationStatusWitness, 'Observe and capture at least one actual same-worker Waiting-to-Installing UI transition');
     assert.deepEqual(report.errors, []); report.earnedJourneyStatus = 'passed'; report.status = report.legacyUnfinished.status === 'passed' ? 'passed' : 'pending-legacy-witness';
     report.wallSeconds = (Date.now() - started) / 1000; guard(); persist();
     if (report.status !== 'passed') process.exitCode = 2;

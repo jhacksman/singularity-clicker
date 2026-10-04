@@ -1,0 +1,151 @@
+Construction main-browser follow-up — independent source verification
+2026-10-04; /root/construction_final_verifier
+
+Disposition
+No source blocker found in the frozen main-browser follow-up. The extraction
+arrival defect is corrected, shorter sampling retains the strict elapsed-time
+oracles and intended virtual budgets, comparison language is bounded to parallel
+speed, and G01 now requires a paired same-worker state/DOM/image witness.
+This is source verification only. No browser, parser, application, test, build or
+clock experiment ran on M6. Spark runtime and returned-artifact review remain
+necessary; no earlier failed run is superseded by this report.
+
+Exact scope and source identities
+Reviewed tests/browser/hearth-construction.cjs against immutable base
+bc12f3aa684ecd1092f665de11e80ed1dc147702. Author's frozen follow-up SHA-256,
+independently matched by read-only hashes:
+1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Base main-browser SHA-256:
+31bbf333b2cc49d8ea08a05d64d2aaa41480a31777eb115e77e04cdc4ccb23a5
+Associated current engine SHA-256:
+abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+Associated current view SHA-256:
+a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955
+
+I read the complete main-browser diff and the relevant full helper/caller paths,
+then cross-checked engine movement/receipt/work order and view status rendering.
+A separate read-only subreview examined the G01 pairing logic. I made no source
+or test changes and did not amend the historical prior verification. Only this
+new report was written. The separately reviewed allocation browser script is
+outside this scope and was not re-reviewed.
+
+Sampling and budgets
+SAMPLE_MS18 is80. Default tick112 and every sensitive construction, tool and
+extraction sampling loop use it. The requested pulse duration is recorded in
+the report alongside the unchanged maximumMaterialSampleSeconds=.100001.
+The script has not replaced observed elapsed simulation time with the requested
+pulse duration: materialStep224 and craftComplete329 still require actual
+after.time-before.time between0 and.100001, and extraction348 adds that check.
+Zero-tick observations remain legal. A pulse that advances two simulation ticks
+still fails the oracle rather than silently merging receipts or work changes.
+
+The shorter pulse provides margin below the view's.1-second fixed simulation
+step, including ordinary animation-frame phase carry. Source inspection does
+not certify the execution image's clock scheduling; actual delta assertions are
+the required runtime guard. The prior100ms pulse could straddle an extra frame
+with carried accumulation, which is why request duration alone was insufficient.
+
+physicalUntil312 converts its original seconds*10 limit to
+seconds*1000/SAMPLE_MS, preserving the450-second default requested virtual
+budget. Tools327 uses ceil(120000/SAMPLE_MS), preserving120 seconds. Extraction
+347 uses ceil(3500/SAMPLE_MS):44 pulses provide3.52 requested seconds instead of
+the old3.5, rather than accidentally shortening the window to2.8 seconds.
+The extraction arrival wait also uses SAMPLE_MS and until's existing inverse
+step calculation; its80-second budget is preserved. General until calls that
+intentionally use coarser steps are not material-transition sampling loops.
+The875-second wall bound is unchanged and still needs actual execution evidence;
+more observations and added screenshots can increase wall time.
+
+Extraction arrival and geometry
+extractionProbe344–345 now resolves u0's actual Gather target to a live deposit,
+requires extract phase, zero cargo, zero remaining path, and actual edge
+coordinates before sampling. This closes the confirmed false start: engine
+start assigns extract before walking, while a nonempty path consumes movement
+ticks before extraction. The old fresh-u0 trip to d0 therefore no longer consumes
+the intended four-item extraction observation window.
+
+atEdge56 now uses size3 for hearth,2 for outpost/workshop,1 otherwise, matching
+engine around377. This is necessary for one-cell deposits, whose right/bottom
+cardinal edges differ from a two-cell footprint. The geometric check is derived
+from coordinates, not from the engine's reason string. Existing four actual
+cargo-increase boundaries, per-item interval tolerance and cumulative interval
+check remain. They still distinguish extraction from approach/hauling and retain
+the.60/.45 contract quantities. No engine pacing change is made by this harness.
+
+G01 actor and eligibility oracle
+waitingInstallers155–159 requires an active unfinished physical site and an
+empty, unqueued Build actor already at its site edge with zero path, construct
+phase and the original Waiting reason. readySiteDeliveries160–163 identifies
+tagged carriers actually at the same site edge with zero remaining path.
+
+materialStep276–287 requires real positive simulation time and work gain on an
+active unfinished site. It determines which prior waiters should contribute by
+combining staged material with only ready receipts whose carrier IDs sort before
+that waiter. This matches the engine's stable sorted actor turns without using
+the new Installing string as proof of eligibility. Each qualifying SAME actor
+must retain Build(site), construct, empty hands, empty path, no successor and
+the new Installing reason. Earlier final receipts can therefore fund later
+workers in the same tick; lower-ID waiters before the final carrier are checked
+on their next work tick.
+
+The pre-existing exact fully-staged labor oracle remains at231–234. The G01
+status checks supplement it; they do not replace its independent work-rate
+arithmetic with the actor's status string.
+
+G01 DOM and paired artifact evidence
+installationStatusDOM164–173 selects the relevant worker IDs, inspects the site,
+and runs the existing state-derived supplyText assertions. For every tracked
+actor it requires the exact card small text, exact card title and the same named
+worker/status in the site's Selected text. This matches the view's empty-worker
+unitStatus/unitDetail behavior. It does NOT inspect the separate individual
+worker inspector, and the report's ui array correctly limits the claimed scope.
+
+captureWaitingInstallation174–188 captures a previous waiter only once the
+currently staged goods plus at-edge ready deliveries can fund the exact recipe.
+It records that actor's ID, site, scenario, time and before checkpoint after
+asserting its Waiting DOM. Selection is restored afterward. On a zero-tick
+sample, the same-time guard avoids duplicate before captures. If a final receipt
+occurs after that waiter in actor order, the next iteration can capture the still
+Waiting actor at the now fully staged boundary before its actual work tick.
+
+The after witness292–298 requires the same scenario/site and that the recorded
+actor is among the independently eligible installers. It also requires the
+recorded before time to equal the exact before state of this transition. Thus an
+old unrelated screenshot or the final carrier alone cannot satisfy the pair.
+Both capture calls use ordinary Journey downloads, require the exported full
+state to equal the observed state, take a full-page PNG and retain checkpoint
+hashes. The resulting report points to both checkpoint files and names the
+tracked actor. Those entries in turn bind raw JSON and PNG bytes.
+
+Selection/inspection clicks change UI state while paused; neither issues a work
+order. restoreSelection preserves the prior selected IDs, including the empty
+selection case, and the code re-inspects the current site afterward. Exact
+capture-state equality would detect an unexpected game-state change during
+observation. No new synthetic camp, direct engine call, state grant or storage
+seed is added to the ordinary journey.
+
+The final assertion581 requires both at least one actual status transition and
+a completed same-worker witness. Absent natural encounter or unmatched capture
+therefore fails instead of producing a vacuous G01 pass. Source review establishes
+the detector's logic, not that this particular earned journey will reach and
+capture a qualifying boundary within its wall limit. The images still require
+independent visual review; matching hashes alone do not prove legibility.
+
+Parallel-speed wording
+Comments419–421 and report interpretation435 now describe one-versus-four
+parallel construction, explicitly retaining the three idle peers in the
+one-worker branch. Both cases still import the exact same earned checkpoint and
+report common setup time, per-case elapsed time and total time since fresh.
+The text expressly excludes opportunity-cost allocation, alternative depot
+placement and human pacing claims. Existing comparison field names are retained;
+interpret them with this narrower description. The separate allocation artifact
+is needed for any broader allocation tradeoff conclusion.
+
+Remaining gates
+Bind this exact frozen browser hash and associated production bytes into the
+dispatched commit/build. Run on Spark, retain all failures, and verify observed
+sample deltas, the full earned material/work/tool sequence, the G01 actor/DOM
+pair and its raw PNG/Journey files, unchanged legacy provenance requirements,
+and completion within the wall bound. Review returned source/build/artifact
+correspondence and the actual rendered screenshots independently. This report
+does not certify those runtime outcomes or the separate allocation script.
