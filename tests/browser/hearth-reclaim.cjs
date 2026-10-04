@@ -55,13 +55,13 @@ function openingFacts(s) {
 function matter(s) {
   assert.deepEqual(vector(r => s.deposits.filter(d => d.kind === r).reduce((n, d) => n + d.amount, 0)
     + Object.values(s.storage.stores).reduce((n, store) => n + store[r], 0)
-    + sumCargo(s, r) + s.spent[r]), TOTAL, 'Finite matter = wild + actual stores + ALL cargo + spent');
+    + sumCargo(s, r) + (s.construction?.sites || []).reduce((n, c) => n + c.staged[r], 0) + s.spent[r]), TOTAL, 'Finite matter = wild + actual stores + ALL cargo + staged + spent');
   assert.deepEqual(vector(r => Object.values(s.storage.stores).reduce((n, store) => n + store[r], 0)), s.stock);
   for (const values of [s.stock, s.spent, s.delivered, ...Object.values(s.storage.stores)]) {
     for (const r of RES) assert.ok(Number.isInteger(values[r]) && values[r] >= 0 && values[r] < 10000000);
   }
   for (const u of s.units) assert.ok(Number.isInteger(u.cargo) && u.cargo >= 0 && u.cargo <= 5);
-  if (s.version !== 5) return;
+  if (s.version < 5) return;
   assert.equal(s.reclaim.profile, PROFILE);
   for (const c of s.reclaim.claims) {
     assert.deepEqual(vector(r => c.unreleased[r] + sumCargo(s, r, c.id) + c.receipted[r]), BILL,
@@ -71,10 +71,10 @@ function matter(s) {
   assert.deepEqual(vector(r => s.reclaim.settled[r] + s.reclaim.claims.reduce((n, c) => n + c.receipted[r], 0)),
     s.reclaim.recovered, 'Recovered summary is attribution, not extra inventory');
   const paid = vector(r => s.reclaim.claims.reduce((n, c) => n + c.unreleased[r], 0)
-    + s.buildings.filter(b => b.kind === 'workshop').length * ({wood: 40, stone: 30, food: 0}[r])
+    + s.buildings.filter(b => b.kind === 'workshop' && !(s.construction?.sites || []).some(c => c.buildingId === b.id)).length * ({wood: 40, stone: 30, food: 0}[r])
     + (s.knapping ? {wood: 4, stone: 8, food: 0}[r] : 0)
     + (r === 'food' ? 25 * (s.units.length - 4) : 0));
-  assert.deepEqual(s.spent, paid, 'Remaining paid obligations, including unfinished ones, back spent');
+  assert.deepEqual(s.spent, paid, 'Remaining paid obligations, including legacy-prepaid unfinished ones but excluding physical WIP, back spent');
 }
 
 function witness(raw, provenance) {
@@ -197,7 +197,7 @@ fs.mkdirSync(DIR, {recursive: true});
     const before = await exported(p, label + '-before'); await drain(p); await p.reload();
     await p.locator('[data-unit="u0"]').waitFor();
     assert.equal(await p.locator('#pause').innerText(), 'Resume'); await p.clock.runFor(300);
-    assert.equal(await exported(p, label + '-after'), before, 'Paused v5 reload must not reissue capital or change custody');
+    assert.equal(await exported(p, label + '-after'), before, 'Paused v6 reload must not reissue capital or change custody');
   }
   async function importText(p, raw, label, success = true) {
     if (!await p.locator('#dialog').evaluate(d => d.open)) await p.locator('#journey').click();
@@ -216,19 +216,19 @@ fs.mkdirSync(DIR, {recursive: true});
     assert.equal(builderCount, before.units.length, 'Select all supplies the actual existing builder group');
     await p.locator('[data-build="' + kind + '"]').click(); await mapClick(p, x + .5, y + .5);
     const placed = await read(p), added = placed.buildings.filter(b => !before.buildings.some(v => v.id === b.id));
-    assert.equal(added.length, 1, 'Ordinary placement must create exactly one paid site: ' + label);
+    assert.equal(added.length, 1, 'Ordinary placement must create exactly one physical site: ' + label);
     const b = added[0]; assert.equal(b.kind, kind); assert.equal(b.done, false); assert.equal(b.work, 0);
     assert.deepEqual({x: b.x, y: b.y}, {x, y}, 'Placement honors the ordinary requested map location');
     const cost = kind === 'outpost' ? BILL : {wood: 40, stone: 30, food: 0};
-    assert.deepEqual(placed.stock, vector(r => before.stock[r] - cost[r]));
-    assert.deepEqual(placed.spent, vector(r => before.spent[r] + cost[r]));
-    await checkpoint(p, label + '-paid', placed);
-    const done = await until(p, s => s.buildings.find(v => v.id === b.id)?.done, label + ' actual work');
+    assert.deepEqual(placed.stock, before.stock, 'Physical reservation leaves stock at its real source');
+    assert.deepEqual(placed.spent, before.spent); const supply = placed.construction.sites.find(c => c.buildingId === b.id); assert.ok(supply); assert.deepEqual(vector(r => supply.sources.filter(p => p.resource === r).reduce((n, p) => n + p.amount, 0)), cost);
+    await checkpoint(p, label + '-source-reserved', placed);
+    const done = await until(p, s => s.buildings.find(v => v.id === b.id)?.done, label + ' actual supply and work', 450);
     const requiredWork = kind === 'outpost' ? 24 : 32;
     assert.equal(done.buildings.find(v => v.id === b.id).work, requiredWork);
     assert.deepEqual({x: done.buildings.find(v => v.id === b.id).x, y: done.buildings.find(v => v.id === b.id).y}, {x, y});
     assert.ok(done.time - placed.time + .000001 >= requiredWork / builderCount,
-      'Actual paid-to-completed time includes at least canonical work / selected builder count');
+      'Actual reserved-to-completed time includes at least canonical work / selected builder count');
     await checkpoint(p, label + '-built', done); return b.id;
   }
 
@@ -430,11 +430,11 @@ fs.mkdirSync(DIR, {recursive: true});
     {
       const p = await open('genuine-old-world-rescue', origin);
       await importText(p, fixtureRaw, 'genuine-old-world');
-      let s = await read(p); assert.equal(s.version, 5); assert.equal(s.reclaim.claims.length, 6);
+      let s = await read(p); assert.equal(s.version, 6); assert.equal(s.reclaim.claims.length, 6);
       for (const field of ['stock', 'spent', 'delivered', 'deposits', 'units', 'time', 'tools', 'knapping']) {
         assert.deepEqual(s[field], legacy[field], 'Adoption does not invent play: ' + field);
       }
-      assert.equal((await storage(p))[KEY + '.import-before-v5'], fixtureRaw);
+      assert.equal((await storage(p))[KEY + '.import-before-v6'], fixtureRaw);
       await checkpoint(p, 'primary-imported-old-world', s);
       const site = s.buildings.find(b => b.kind === 'outpost' && b.x === 0 && b.y === 8);
       assert.ok(site, 'The actual witness must contain its ordinary-controls western recovery target');
@@ -510,7 +510,7 @@ fs.mkdirSync(DIR, {recursive: true});
     // Separate fresh, ordinary useful-relocation mechanics session; not the six-outpost stress witness.
     {
       const p = await open('fresh-useful-relocation', origin); let s = await read(p);
-      assert.equal(s.version, 5); assert.equal(s.buildings.length, 1);
+      assert.equal(s.version, 6); assert.equal(s.buildings.length, 1);
       for (const id of ['d0', 'd2', 'd1']) {
         const d = s.deposits.find(v => v.id === id); await p.locator('#select-all').click();
         await mapClick(p, d.x + .5, d.y + .5, 'right');
@@ -531,8 +531,8 @@ fs.mkdirSync(DIR, {recursive: true});
     }
 
     // SUPPLEMENTARY: explicit Storage failures. No result here is primary earned-play evidence.
-    for (const fault of [{method: 'getItem', key: KEY}, {method: 'getItem', key: KEY + '.before-v5'},
-      {method: 'setItem', key: KEY + '.before-v5'}, {method: 'setItem', key: KEY}]) {
+    for (const fault of [{method: 'getItem', key: KEY}, {method: 'getItem', key: KEY + '.before-v6'},
+      {method: 'setItem', key: KEY + '.before-v6'}, {method: 'setItem', key: KEY}]) {
       const label = 'startup-' + fault.method + '-' + (fault.key === KEY ? 'main' : 'backup');
       const p = await open(label, origin, {seed: {[KEY]: fixtureRaw}, fault, instrumentation: true});
       assert.ok(await p.evaluate(fault => window.__reclaimStorageProbe.calls.some(c =>
@@ -550,20 +550,20 @@ fs.mkdirSync(DIR, {recursive: true});
       await p.screenshot({path: path.join(DIR, label + '.png'), fullPage: true});
       await p.evaluate(() => window.__reclaimStorageProbe.clear()); await drain(p); await p.reload();
       await p.locator('[data-unit="u0"]').waitFor(); const recovered = await read(p, label + '-recovered');
-      assert.equal(recovered.version, 5); assert.equal(await p.locator('#stop').isDisabled(), false);
-      assert.equal((await storage(p))[KEY + '.before-v5'], fixtureRaw);
+      assert.equal(recovered.version, 6); assert.equal(await p.locator('#stop').isDisabled(), false);
+      assert.equal((await storage(p))[KEY + '.before-v6'], fixtureRaw);
       await close(p);
     }
     for (const dedup of [false, true]) {
-      const seed = {[KEY]: fixtureRaw, [KEY + '.before-v5']: fixtureRaw + ' '};
-      if (dedup) seed[KEY + '.before-v5.1'] = fixtureRaw;
+      const seed = {[KEY]: fixtureRaw, [KEY + '.before-v6']: fixtureRaw + ' '};
+      if (dedup) seed[KEY + '.before-v6.1'] = fixtureRaw;
       const p = await open('startup-collision-' + (dedup ? 'dedup' : 'append'), origin, {seed, instrumentation: true});
-      const saved = await storage(p); assert.equal(saved[KEY + '.before-v5'], fixtureRaw + ' ');
-      assert.equal(saved[KEY + '.before-v5.1'], fixtureRaw); assert.equal(saved[KEY + '.before-v5.2'], undefined);
-      assert.equal((await read(p)).version, 5); await close(p);
+      const saved = await storage(p); assert.equal(saved[KEY + '.before-v6'], fixtureRaw + ' ');
+      assert.equal(saved[KEY + '.before-v6.1'], fixtureRaw); assert.equal(saved[KEY + '.before-v6.2'], undefined);
+      assert.equal((await read(p)).version, 6); await close(p);
     }
     let retainedForNavigation;
-    const importFaults = ['.import-before-v5', '.outgoing-before-import-v5', '.stored-before-import-v5', '']
+    const importFaults = ['.import-before-v6', '.outgoing-before-import-v6', '.stored-before-import-v6', '']
       .flatMap(suffix => ['getItem', 'setItem'].map(method => ({method, key: KEY + suffix})));
     for (const fault of importFaults) {
       const label = 'import-' + fault.method + '-' + (fault.key === KEY ? 'main' : fault.key.slice(KEY.length + 1));
@@ -593,28 +593,28 @@ fs.mkdirSync(DIR, {recursive: true});
       assert.equal((await storage(p))[KEY], prior, 'Closing failure does not overwrite the prior durable source');
       await p.evaluate(() => window.__reclaimStorageProbe.clear());
       await importText(p, fixtureRaw, label + '-retry'); const s = await read(p);
-      assert.equal(s.version, 5); assert.deepEqual(s.stock, legacy.stock);
+      assert.equal(s.version, 6); assert.deepEqual(s.stock, legacy.stock);
       const kept = await storage(p);
-      assert.equal(kept[KEY + '.import-before-v5'], fixtureRaw);
-      assert.equal(kept[KEY + '.outgoing-before-import-v5'], outgoing);
-      assert.equal(kept[KEY + '.stored-before-import-v5'], prior);
+      assert.equal(kept[KEY + '.import-before-v6'], fixtureRaw);
+      assert.equal(kept[KEY + '.outgoing-before-import-v6'], outgoing);
+      assert.equal(kept[KEY + '.stored-before-import-v6'], prior);
       retainedForNavigation = kept; await close(p);
     }
     {
       const p = await open('import-collision-dedup', origin, {instrumentation: true});
       await importText(p, fixtureRaw, 'collision-a'); await importText(p, fixtureRaw, 'collision-a-again');
-      assert.equal((await storage(p))[KEY + '.import-before-v5.1'], undefined);
+      assert.equal((await storage(p))[KEY + '.import-before-v6.1'], undefined);
       const second = '\n' + fixtureRaw + ' ', third = ' \n' + fixtureRaw + '\n ';
       await importText(p, second, 'collision-b'); const before = await exported(p), prior = (await storage(p))[KEY];
       await p.evaluate(key => window.__reclaimStorageProbe.arm({method: 'setItem', key}), KEY);
       await importText(p, third, 'collision-c-fails-main', false);
       const saved = await storage(p); assert.equal(saved[KEY], prior);
-      assert.equal(saved[KEY + '.import-before-v5'], fixtureRaw);
-      assert.equal(saved[KEY + '.import-before-v5.1'], second); assert.equal(saved[KEY + '.import-before-v5.2'], third);
-      assert.equal(saved[KEY + '.import-before-v5.3'], undefined);
+      assert.equal(saved[KEY + '.import-before-v6'], fixtureRaw);
+      assert.equal(saved[KEY + '.import-before-v6.1'], second); assert.equal(saved[KEY + '.import-before-v6.2'], third);
+      assert.equal(saved[KEY + '.import-before-v6.3'], undefined);
       assert.equal(await exported(p, 'collision-c-retains-live'), before);
       await p.evaluate(() => window.__reclaimStorageProbe.clear()); await importText(p, third, 'collision-c-retry');
-      assert.equal((await storage(p))[KEY + '.import-before-v5.3'], undefined);
+      assert.equal((await storage(p))[KEY + '.import-before-v6.3'], undefined);
       retainedForNavigation = {...retainedForNavigation, ...await storage(p)}; await close(p);
     }
 
@@ -622,7 +622,7 @@ fs.mkdirSync(DIR, {recursive: true});
     // replaces/deletes durable KEY after startup has retained unsupported A in
     // its recovery exporter. Neither B nor deletion may discard that original A.
     for (const replacement of ['different-source', 'deleted-key']) {
-      const originalA = ' \n' + JSON.stringify({...legacy, version: 6}) + '\n';
+      const originalA = ' \n' + JSON.stringify({...legacy, version: 7}) + '\n';
       const durableB = replacement === 'different-source' ? '\n' + fixtureRaw + ' ' : null;
       const label = 'rejected-original-external-tab-' + replacement;
       const p = await open(label, origin, {seed: {[KEY]: originalA}, instrumentation: true});
@@ -637,14 +637,16 @@ fs.mkdirSync(DIR, {recursive: true});
       assert.equal(await exported(p, label + '-still-original-a'), originalA,
         'External durable change does not change the rejected source still offered for export');
       await importText(p, fixtureRaw, label + '-incoming-c');
-      const current = await read(p); assert.equal(current.version, 5); assert.deepEqual(current.stock, legacy.stock);
+      const current = await read(p); assert.equal(current.version, 6); assert.deepEqual(current.stock, legacy.stock);
       const saved = await storage(p), originals = Object.entries(saved)
-        .filter(([key]) => key === KEY + '.stored-before-import-v5' || key.startsWith(KEY + '.stored-before-import-v5.'));
+        .filter(([key]) => ['.stored-before-import-v6', '.rejected-before-import-v6'].some(suffix => key === KEY + suffix || key.startsWith(KEY + suffix + '.')));
+      assert.equal(saved[KEY + '.rejected-before-import-v6'], originalA, 'Rejected live source has its own durable backup family');
+      if (durableB !== null) assert.equal(saved[KEY + '.stored-before-import-v6'], durableB);
       assert.equal(originals.filter(([, raw]) => raw === originalA).length, 1,
         'Successful C import durably preserves exact previously rejected A before clearing recovery state');
       if (durableB !== null) assert.equal(originals.filter(([, raw]) => raw === durableB).length, 1,
         'Distinct current durable B is preserved separately from A');
-      assert.equal(saved[KEY + '.import-before-v5'], fixtureRaw);
+      assert.equal(saved[KEY + '.import-before-v6'], fixtureRaw);
       assert.deepEqual(JSON.parse(saved[KEY]), current);
       writeJSON(label + '-retained-originals.json', originals);
       await checkpoint(p, label + '-committed-c', current); await other.close(); await close(p);
@@ -658,7 +660,7 @@ fs.mkdirSync(DIR, {recursive: true});
       const p = await open('compatible-uncertified-legacy', origin,
         {seed: {[KEY]: uncertifiedRaw}, instrumentation: true});
       let s = await read(p); assert.equal(s.version, 4); assert.equal(s.reclaim, undefined);
-      assert.deepEqual(s.deposits, uncertified.deposits); assert.equal((await storage(p))[KEY + '.before-v5'], uncertifiedRaw);
+      assert.deepEqual(s.deposits, uncertified.deposits); assert.equal((await storage(p))[KEY + '.before-v6'], uncertifiedRaw);
       await select(p, ['u0']); await inspect(p, s.buildings.find(b => b.kind === 'outpost'));
       assert.equal(await p.locator('#outpost-reclaim').isDisabled(), true);
       assert.match(await p.locator('#reclaim-status').innerText(), /unavailable.*canonical|finite source|original/i);
@@ -675,10 +677,10 @@ fs.mkdirSync(DIR, {recursive: true});
         bedding: 0, route: false, signals: false, slots: 0,
         counts: {forage: 0, scavenge: 0, water: 0, stone: 0, fiber: 0, grunt: 0, gesture: 0},
         lastExpression: null, phase: 0, runMs: 0, actions: 0, event: 4, complete: true, routinesPaused: false}};
-    for (const [kind, incoming] of [['certified-v5', rescuedRaw], ['certified-carryMove-v5', carryMoveRaw],
+    for (const [kind, incoming] of [['certified-v6', rescuedRaw], ['certified-carryMove-v6', carryMoveRaw],
       ['uncertified-v4', uncertifiedRaw]]) {
-      const seed = {...retainedForNavigation, [KEY]: incoming, [KEY + '.before-v5']: fixtureRaw,
-        [KEY + '.before-v5.1']: uncertifiedRaw, 'singularity-clicker.cave.v1': JSON.stringify(cave)};
+      const seed = {...retainedForNavigation, [KEY]: incoming, [KEY + '.before-v6']: fixtureRaw,
+        [KEY + '.before-v6.1']: uncertifiedRaw, 'singularity-clicker.cave.v1': JSON.stringify(cave)};
       const p = await open('native-navigation-' + kind, origin, {seed, instrumentation: true, route: 'index.html'});
       const before = await storage(p);
       // Host startup and fixture seeding are complete. Bound the read-only native
@@ -688,13 +690,13 @@ fs.mkdirSync(DIR, {recursive: true});
       await p.locator('[data-navigation-action="open-hearth"]:enabled').waitFor();
       assert.match(await p.locator('[data-navigation-status]').innerText(), /Continue.*Hearth opening/);
       await p.locator('[data-navigation-backups] summary').click();
-      const families = {rtsBackupV5: '.before-v5', rtsImportBackupV5: '.import-before-v5',
-        rtsOutgoingBackupV5: '.outgoing-before-import-v5', rtsStoredBackupV5: '.stored-before-import-v5'};
+      const families = {rtsBackupV6: '.before-v6', rtsImportBackupV6: '.import-before-v6',
+        rtsOutgoingBackupV6: '.outgoing-before-import-v6', rtsStoredBackupV6: '.stored-before-import-v6'};
       for (const [family, suffix] of Object.entries(families)) {
         assert.equal(await download(p, '[data-navigation-action="export:' + family + '"]', kind + '-' + family), before[KEY + suffix]);
       }
       assert.equal(await download(p, '[data-navigation-action="export:rts"]', kind + '-current-navigation-original'), incoming);
-      for (const suffix of ['.before-v5.1', '.import-before-v5.1', '.import-before-v5.2']) {
+      for (const suffix of ['.before-v6.1', '.import-before-v6.1', '.import-before-v6.2']) {
         assert.equal(await download(p, '[data-navigation-action="export-backup:' + KEY + suffix + '"]', kind + '-extra-' + suffix.slice(1)), before[KEY + suffix]);
       }
       assert.deepEqual(await storage(p), before, 'Native navigation and original backup exports are read-only for all RTS sources');
@@ -706,11 +708,11 @@ fs.mkdirSync(DIR, {recursive: true});
       await p.screenshot({path: path.join(DIR, 'navigation-' + kind + '-backups.png'), fullPage: true});
       await drain(p); await p.locator('[data-navigation-action="open-hearth"]').click();
       await p.waitForURL('**/hearth-rts.html'); await p.locator('[data-unit="u0"]').waitFor();
-      const s = await read(p, kind + '-actual-destination'); assert.equal(s.version, kind === 'uncertified-v4' ? 4 : 5);
+      const s = await read(p, kind + '-actual-destination'); assert.equal(s.version, kind === 'uncertified-v4' ? 4 : 6);
       assert.equal(await p.locator('#pause').innerText(), 'Resume');
       if (kind !== 'uncertified-v4') {
         assert.equal(await exported(p), incoming);
-        if (kind === 'certified-carryMove-v5') {
+        if (kind === 'certified-carryMove-v6') {
           assert.equal(s.units[0].phase, 'carryMove'); assert.equal(s.units[0].cargo, 5);
           assert.equal(s.units[0].reclaim.claimId, JSON.parse(carryMoveRaw).units[0].reclaim.claimId);
         }

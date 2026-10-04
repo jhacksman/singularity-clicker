@@ -3,9 +3,9 @@ const {Camp,valid}=require('../src/hearth-rts/engine.js');
 const resources=['wood','stone','food'];
 const steps=(g,seconds)=>{for(let i=0;i<seconds*10;i++)g.tick(.1);};
 const until=(g,predicate,seconds=180)=>{for(let i=0;i<seconds*10&&!predicate();i++)g.tick(.1);assert.ok(predicate(),'Expected physical work to finish within the test bound');};
-const totals=g=>Object.fromEntries(resources.map(r=>[r,g.s.stock[r]+g.s.spent[r]+g.s.deposits.filter(d=>d.kind===r).reduce((sum,d)=>sum+d.amount,0)+g.s.units.filter(u=>u.resource===r).reduce((sum,u)=>sum+u.cargo,0)]));
+const totals=g=>Object.fromEntries(resources.map(r=>[r,g.s.stock[r]+g.s.spent[r]+g.s.deposits.filter(d=>d.kind===r).reduce((sum,d)=>sum+d.amount,0)+g.s.units.filter(u=>u.resource===r).reduce((sum,u)=>sum+u.cargo,0)+(g.s.construction?.sites||[]).reduce((sum,c)=>sum+c.staged[r],0)]));
 const custody=g=>{assert.ok(valid(g.s));for(const r of resources)assert.equal(g.stores().reduce((sum,b)=>sum+b.stock[r],0),g.s.stock[r]);};
-const legacyCertificate=(g,outpostIds=[])=>{assert.equal(g.s.version,5);const a=g.s.reclaim;assert.equal(a.profile,'accepted-opening.outpost-reclaim.v1');assert.equal(typeof a.sourceIdentity,'string');assert.deepEqual(a.recovered,{wood:0,stone:0,food:0});assert.deepEqual(a.settled,{wood:0,stone:0,food:0});assert.equal(a.settledSites,0);assert.equal(a.closedPayments,0);assert.deepEqual(a.claims.map(c=>c.id),outpostIds);for(const c of a.claims){assert.equal(c.buildingId,c.id);assert.deepEqual(c.unreleased,{wood:60,stone:20,food:0});assert.deepEqual(c.receipted,{wood:0,stone:0,food:0});assert.deepEqual(c.assigned,[]);assert.equal(c.basis.rule,'legacy-state-consistency');assert.equal(c.basis.origin,'payment-origin-unrecorded');assert.deepEqual(c.origin,[]);}};
+const legacyCertificate=(g,outpostIds=[])=>{assert.equal(g.s.version,6);assert.deepEqual(g.s.construction,{profile:'accepted-opening.physical-construction.v1',sites:[]});const a=g.s.reclaim;assert.equal(a.profile,'accepted-opening.outpost-reclaim.v1');assert.equal(typeof a.sourceIdentity,'string');assert.deepEqual(a.recovered,{wood:0,stone:0,food:0});assert.deepEqual(a.settled,{wood:0,stone:0,food:0});assert.equal(a.settledSites,0);assert.equal(a.closedPayments,0);assert.deepEqual(a.claims.map(c=>c.id),outpostIds);for(const c of a.claims){assert.equal(c.buildingId,c.id);assert.deepEqual(c.unreleased,{wood:60,stone:20,food:0});assert.deepEqual(c.receipted,{wood:0,stone:0,food:0});assert.deepEqual(c.assigned,[]);assert.equal(c.basis.rule,'legacy-state-consistency');assert.equal(c.basis.origin,'payment-origin-unrecorded');assert.deepEqual(c.origin,[]);}};
 // These preexisting geometry controls deliberately test playable, uncertified v4 maps.
 // Their fake zero-cost blockers are not evidence for canonical reclaim certification.
 const legacyTopology=g=>{g.s.version=4;delete g.s.reclaim;};
@@ -104,7 +104,7 @@ test('opening construction may combine stores, while later construction names a 
  const local=g.funding('workshop',26,13);assert.equal(local.mode,'local');assert.equal(local.storeId,outpost);assert.ok(local.missing.stone>0);
  // Imported pre-expansion state retains the accepted pooled funding contract.
  const legacy=JSON.parse(g.serialize());legacy.complete=false;const opening=new Camp(legacy);assert.equal(opening.funding('outpost',26,13).mode,'opening-pool');const before=opening.stores().map(b=>({id:b.id,stock:b.stock})),total=totals(opening);
- const site=opening.build('outpost',26,13,[]);assert.ok(site.id);assert.ok(opening.s.storage.reservations[site.id].sources.some(p=>p.storeId==='b0'));assert.ok(opening.s.storage.reservations[site.id].sources.some(p=>p.storeId===outpost));
+ const site=opening.build('outpost',26,13,[]);assert.ok(site.id);const supplies=opening.s.construction.sites.find(c=>c.buildingId===site.id);assert.ok(supplies.sources.some(p=>p.storeId==='b0'));assert.ok(supplies.sources.some(p=>p.storeId===outpost));assert.equal(opening.s.storage.reservations[site.id],undefined);
  assert.equal(opening.cancel(site.id),true);assert.equal(opening.cancel(site.id),false);assert.deepEqual(opening.stores().map(b=>({id:b.id,stock:b.stock})),before);assert.deepEqual(totals(opening),total);custody(opening);
 });
 
@@ -124,11 +124,11 @@ test('save/reload at reservation, pickup and receipt preserves exact obligations
 
 test('malformed current ownership, reservations and transfer obligations fail closed',()=>{
  const {g,outpost}=expanded();g.transfer(['u0'],'b0',outpost,'wood');
- for(const change of [s=>s.version=6,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
+ for(const change of [s=>s.version=7,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
   const bad=JSON.parse(g.serialize());change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));
  }
  const fresh=new Camp();fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d0'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d2'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));const site=fresh.build('workshop',11,15,[]);assert.ok(site.id);
- for(const change of [s=>delete s.storage.reservations[site.id],s=>s.storage.reservations[site.id].sources[0].amount++,s=>s.spent.wood=0]){const bad=JSON.parse(fresh.serialize());change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));}
+ for(const change of [s=>s.construction.sites=[],s=>s.construction.sites[0].sources[0].amount++,s=>s.spent.wood=40,s=>s.storage.reservations[site.id]={sources:structuredClone(s.construction.sites[0].sources)}]){const bad=JSON.parse(fresh.serialize());change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));}
 });
 
 test('a funded site with no reachable work edge is rejected without spending or advancing its ID',()=>{
@@ -190,12 +190,17 @@ test('recruitment selects a reachable hearth edge instead of an isolated empty p
 const fundedOpening=()=>{const g=new Camp(),ids=g.s.units.map(u=>u.id);for(const target of ['d0','d2']){g.command(ids,{kind:'gather',target});until(g,()=>g.s.units.every(u=>u.phase==='idle'));}return g;};
 test('one hundred paused build/cancel cycles retain bounded payment history and exact original custody',()=>{
  const g=fundedOpening(),before=totals(g),stores=g.stores(),time=g.s.time,size=g.serialize().length;
- for(let i=0;i<100;i++){const site=g.build('workshop',11,15,[]);assert.ok(site.id);assert.equal(g.s.storage.payments.length,1);assert.equal(g.cancel(site.id),true);assert.equal(g.s.storage.payments.length,0);assert.equal(Object.keys(g.s.storage.reservations).length,0);}
+ for(let i=0;i<100;i++){const site=g.build('workshop',11,15,[]);assert.ok(site.id);assert.equal(g.s.storage.payments.length,0);assert.equal(g.s.construction.sites.length,1);assert.equal(g.cancel(site.id),true);assert.equal(g.s.construction.sites.length,0);assert.equal(g.s.storage.payments.length,0);assert.equal(Object.keys(g.s.storage.reservations).length,0);}
  assert.equal(g.s.time,time);assert.deepEqual(g.stores(),stores);assert.deepEqual(totals(g),before);assert.ok(g.serialize().length<size+80);const copy=new Camp(JSON.parse(g.serialize()));assert.deepEqual(copy.s,g.s);custody(g);
 });
 
 test('paid unfinished v1/v2 construction migrates once with exact progress and original-source refund',()=>{
- const base=fundedOpening(),stock={...base.s.stock},total=totals(base),site=base.build('workshop',11,15,['u0']);assert.ok(site.id);until(base,()=>base.s.buildings.find(b=>b.id===site.id).work>=2);
+ // Generate prepaid work with the immutable pre-construction executable, never a relabelled physical site.
+ const {readFileSync}=require('node:fs'),{createHash}=require('node:crypto'),vm=require('node:vm');
+ const source=readFileSync(require('node:path').join(__dirname,'fixtures/hearth-v5-4c3ac2f-engine.txt'),'utf8');assert.equal(createHash('sha256').update(source).digest('hex'),'416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5');
+ const context={module:{exports:{}},structuredClone};vm.runInNewContext(source,context,{filename:'pinned-hearth-4c3ac2f6-v5.js'});const base=new context.module.exports.Camp();
+ for(const target of ['d0','d2']){base.command(base.s.units.map(u=>u.id),{kind:'gather',target});until(base,()=>base.s.units.every(u=>u.phase==='idle'));}
+ const stock={...base.s.stock},total=totals(base),site=base.build('workshop',11,15,['u0']);assert.ok(site.id);until(base,()=>base.s.buildings.find(b=>b.id===site.id).work>=2);assert.equal(base.s.version,5);
  for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;delete legacy.reclaim;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
   assert.equal(JSON.stringify(legacy),raw);legacyCertificate(g);assert.deepEqual(g.s.buildings,legacy.buildings);assert.deepEqual(g.s.units,legacy.units);assert.deepEqual(g.s.stock,legacy.stock);assert.deepEqual(g.s.spent,legacy.spent);assert.equal(g.s.storage.reservations[site.id].legacy,true);
   assert.equal(g.cancel(site.id),true);assert.deepEqual(g.store('b0').stock,stock);assert.deepEqual(totals(g),total);assert.equal(g.cancel(site.id),false);custody(g);

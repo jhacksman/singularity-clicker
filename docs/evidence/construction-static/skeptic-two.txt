@@ -1,0 +1,157 @@
+Independent source skepticism: C01 and C02
+Reviewer: /root/construction_browser_author/browser_compat
+Date: 2026-10-04
+
+Scope and evidence
+Read only construction-source-review-01/engine.js and construction-contract-v1.txt.
+Frozen source identity supplied by coordinator:
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e.
+No other review report was read. No code, parser, test, browser, build or network
+operation was executed. No production file was changed. Findings below are
+independent manual traces, not runtime results. Line numbers refer to that frozen
+engine; the vulnerable source-row guard is line 76, not line 79 in this copy.
+
+C01: CONFIRMED, Medium ordinary-command atomicity defect
+
+The proposed geometry is sufficient. The canonical hearth occupies x7..9,
+y11..13. Completed workshops at (6,9), (4,10), and (5,12) occupy these cells:
+ A: (6,9), (7,9), (6,10), (7,10).
+ B: (4,10), (5,10), (4,11), (5,11).
+ C: (5,12), (6,12), (5,13), (6,13).
+Worker u0 at (6,11) remains on a clear cell, but every cardinal exit is blocked:
+north (6,10) by A, west (5,11) by B, south (6,12) by C, east (7,11) by the hearth.
+The worker itself is a legal west hearth-edge goal returned by around(home),
+line 375. path(u0, around(home)) therefore returns the successful empty array
+at lines 371..373. Empty arrays are truthy, so the topology test at line 422
+accepts this worker even though it cannot leave that component.
+
+This is not restricted to fabricated obstacles. A and B can be completed with
+outside workers. Move u0 onto (6,11) while the southern approach remains open;
+then place and complete C with an outside worker. C does not overlap u0 and its
+outside edges (4,12), (5,14), and (6,14) remain usable. Every placement can satisfy
+the any-hearth-edge topology rule, and the supplying hearth has exterior edges
+connected to the builders. Earn the material beforehand, including eastern wood
+and stone: three workshops need 120W/90S, more than the initial+western stock,
+but below the canonical map totals. The later outpost adds 60W/20S. This is a
+feasibility argument from the map and rules, not an executed earned-play trace.
+
+With outside workers stopped clear of the new footprint, a visible outpost at
+(11,15) occupies (11,15), (12,15), (11,16), (12,16). Its clear northern edge at
+(11,14) remains connected to the hearth's outside southern/eastern edges and
+to an outside worker, for example at (10,14). The trapped cell is not an edge
+of that outpost. No canonical deposit or ford is cut off by that footprint.
+
+build(outpost,11,15,[u0,outsideWorker]) at lines 419..425 verifies identity and
+topology, finds physical supply, appends the construction ledger, and increments
+nextId before calling command. command prevalidates every changing worker at
+lines 408..409. accepts(u0, Build(newSite)) at lines 400..406 returns false because
+path(u0, around(newSite)) is null. The entire command returns 0 before assigning
+either worker. build ignores that result and returns {id:newSite} anyway. With
+all workers initially stopped, no path-replanning nuance is needed: the site,
+reservation, and new identity persist, while both selected workers stay idle.
+
+The violated contract is validation of selected workers before mutation and
+atomic rejection when a required path is unavailable. This does not spend the
+reserved inventory or prove material loss; the player can cancel the empty site
+or assign the outside worker separately. Medium is supported by the ordinary
+reachable setup and false-success/partial-commit behavior.
+
+Minimal correction: with the prospective footprint included in pathfinding,
+prevalidate every selected worker's intended Build acceptance before adding the
+ledger, incrementing nextId, or replanning any actor. On failure remove only the
+temporary footprint and return an error with the entire prior state unchanged.
+Using the same acceptance predicate as command avoids a drift between placement
+and assignment. If placement requires a nonempty selection, reject [] at this
+same boundary; that check is also absent, but is not needed for this witness.
+Checking command's result only after actor replanning is too late for atomicity.
+This narrow correction addresses C01; it does not establish that the broader
+any-hearth-edge topology rule forbids all physically isolated worker cells.
+
+C02: CONFIRMED, High persistence/inventory integrity defect after malformed input
+
+Use an otherwise canonical current-v6 camp with exactly 60W/20S in the real b0
+store, no competing reservations or cargo, and an active reserved-only outpost S
+at (11,15). Its stock can be earned by gathering another 40W/10S onto the initial
+20W/10S. Stop the assigned empty workers before a pickup, leaving S with work0,
+staged/released/returned zero, no origins, and source rows b0:60W and b0:20S.
+Change only the two JSON source-row storeId values from "b0" to ["b0"]. This is
+plain JSON data, without accessors or executable values.
+
+The admission bypass follows directly from the code:
+ * validConstruction builds reserved as an ordinary object with own b0 at line70.
+ * At line76 reserved[p.storeId] coerces ["b0"] to property key "b0". The source
+   guard lacks a string check and strict live-store identity check. Duplicate-key
+   strings also coerce the array; the wood and stone rows remain distinct.
+ * Both quantities accumulate onto reserved.b0 and pass line84 against the real
+   60W/20S inventory. The per-site recipe sum at line79 also remains exact.
+ * canonicalReason's actual inventory total at line108 is unchanged. paidVector
+   at line111 excludes the unfinished physical site. No reclaim claim is needed
+   for S, and no other check rejects the source-row ID type.
+ * Constructor line186 validates before and after cloning, but structuredClone
+   preserves arrays. Both validations therefore admit the same malformed state.
+
+After admission, stores() line297 compares p.storeId === b.id. The array is not
+the string "b0", so neither reservation is counted. Real available inventory
+becomes 60W/20S despite S owning the full bill. supplyTargets at line210 also uses
+strict identity and finds no usable store for S's array IDs; it cannot fetch
+those rows normally. This is a disagreement between validation and execution,
+not merely a cosmetic malformed field.
+
+Now an ordinary outpost placement R at (14,15), with an outside reachable worker,
+has a clear 2x2 footprint, visible ground and a route through the row y14 to the
+hearth. It does not obstruct S. placement/canPay and planSupply use the incorrect
+available amount and admit a second 60W/20S reservation, this time with real
+string "b0" source IDs. Neither build nor serialize validates the resulting
+whole state. On the next valid() call, line76 counts BOTH the array-S rows and
+the string-R rows into reserved.b0: 120W/40S against actual 60W/20S. Line84 rejects.
+serialize() line461 can serialize that state; constructor line186 rejects it
+when reloaded. Thus the engine has a concrete accepted-import -> ordinary-build
+-> rejected-roundtrip path. I did not read or execute the controller, so I do
+not claim an observed browser autosave, exact browser error, or loss of backups.
+
+High is supported for this project's malformed-admission plus persistence and
+double-reservation boundary. The entry requires malformed imported/saved data;
+normal planSupply emits string store IDs. This is not evidence that ordinary
+earned saves spontaneously acquire arrays, nor proof of remote compromise or
+unrecoverable material destruction. Canceling reservations before reloading may
+restore a valid state, and original raw backups are a separate controller concern.
+
+Inherited-key variant: replacing source IDs with "toString" or "__proto__" also
+passes the truthy lookup at line76 on ordinary objects. For "toString", += writes
+wood/stone NaN properties to the inherited Object.prototype.toString function.
+For "__proto__", it writes those properties to Object.prototype itself. The
+addition starts from undefined, giving NaN; no own entry is added to reserved,
+so Object.entries(reserved) at line84 omits the phantom reservation. Canonical
+store vectors still have their own normal resource members. The initial state
+can pass validation while the validation itself mutates shared intrinsics.
+The demonstrated writes are limited to the allowed resource property names;
+this trace does not establish arbitrary property writes or code execution.
+
+Minimal correction: before ANY indexed read/write, require a primitive string
+storeId, require strict membership in actual current buildings satisfying
+isStore, and require an own property in the expected storage/reservation map.
+Use a Map or a null-prototype accumulator as additional protection against
+inherited keys. Guard both c.sources rows at line76 and u.supplyPickup at line90:
+the latter currently has the same coercive/inherited lookup into storage.stores.
+The pickup variant alone is read-only here and may be reset by startSupply,
+but still violates malformed-current-state rejection and should not be admitted.
+
+Do not impose live-store membership on historical delivered-origin snapshots:
+the contract explicitly permits their source store to have retired. Also do not
+blindly require every in-flight supplyPickup to retain a positive source row;
+another worker may have taken the last item since the pickup route was assigned.
+Type, own-key, and current-store guards fix the identified boundary without
+invalidating that ordinary last-item race.
+
+Suggested Spark checks after the root fix
+ C01: run the earned three-workshop trap; compare full serialized state before
+ and after a mixed trapped/reachable placement rejection; then prove placement
+ with only the outside worker succeeds. Preserve all selected and unselected
+ worker custody/orders on rejection.
+ C02: reject ["b0"], "toString", and "__proto__" in construction sources and
+ supplyPickup before adoption; check intrinsic/prototype descriptors remain
+ unchanged even on rejected inputs. Use a separate realm for pollution-negative
+ controls so a deliberately vulnerable run cannot contaminate later checks.
+ Retain a legitimate exhausted-source pickup race and delivered origins whose
+ original source retired. Reject the malformed source bytes without normalizing
+ them into string IDs or losing their exact exportable originals.

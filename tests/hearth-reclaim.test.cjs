@@ -49,7 +49,8 @@ function camp(options) {
   assert.equal(certifyLegacy(source).ok, true, certifyLegacy(source).reason);
   const g = new Camp(source);
   assert.equal(JSON.stringify(source), bytes, 'Adoption must not modify its input');
-  assert.equal(g.s.version, 5);
+  assert.equal(g.s.version, 6);
+  assert.deepEqual(g.s.construction, { profile: 'accepted-opening.physical-construction.v1', sites: [] });
   assert.equal(g.s.reclaim.profile, PROFILE);
   check(g);
   return g;
@@ -61,6 +62,7 @@ function world(g) {
     g.s.deposits.filter(d => d.kind === r).reduce((n, d) => n + d.amount, 0)
     + Object.values(g.s.storage.stores).reduce((n, stock) => n + stock[r], 0)
     + g.s.units.filter(u => u.resource === r).reduce((n, u) => n + u.cargo, 0)
+    + (g.s.construction?.sites || []).reduce((n, c) => n + c.staged[r], 0)
     + g.s.spent[r]
   ]));
 }
@@ -147,7 +149,7 @@ test('certification ignores legacy unknown recovery authority and accepts semant
   s.reclaim = { profile: PROFILE, claims: [{ id: 'forged', unreleased: { wood: 999 } }], recovered: { wood: 999 } };
   s.buildings[1].retiring = true; s.units[0].reclaim = { claimId: 'forged' };
   const raw = JSON.stringify(s), g = new Camp(s);
-  assert.equal(g.s.version, 5); assert.equal(JSON.stringify(s), raw);
+  assert.equal(g.s.version, 6); assert.equal(JSON.stringify(s), raw);
   assert.equal(g.s.reclaim.claims.length, 1); assert.equal(claim(g).id, 'b1');
   assert.deepEqual(claim(g).unreleased, BILL); assert.deepEqual(g.s.reclaim.recovered, zero());
   assert.notEqual(g.s.buildings[1].retiring, true); assert.equal(g.s.units[0].reclaim, undefined);
@@ -186,7 +188,7 @@ test('partial and split canonical payments are assertions, while duplicate or co
     sources: [{ storeId: 'b0', resource: 'wood', amount: 20 }, { storeId: 'b0', resource: 'wood', amount: 40 }, { storeId: 'b0', resource: 'stone', amount: 20 }] });
   const s = legacy({ buildings: [building('b1', 'outpost', 11, 11), building('b2', 'workshop', 11, 16)] });
   s.storage.payments = [payment()]; const raw = JSON.stringify(s);
-  assert.equal(certifyLegacy(s).ok, true); assert.equal(new Camp(s).s.version, 5); assert.equal(JSON.stringify(s), raw);
+  assert.equal(certifyLegacy(s).ok, true); assert.equal(new Camp(s).s.version, 6); assert.equal(JSON.stringify(s), raw);
   for (const mutate of [
     p => p.kind = 'unknown', p => p.target = 'b0', p => p.target = 'missing', p => p.refunded = true,
     p => p.sources[0].amount++, p => p.sources[0].resource = 'food'
@@ -216,7 +218,7 @@ test('legacy pending and manually held transfer goods are counted once and prese
       u.cargo = 5; u.resource = 'wood'; u.transfer = 't1'; u.work = .125;
     } else { u.order = { kind: 'transfer', target: 't1' }; u.phase = 'pickup'; }
     const raw = JSON.stringify(s), g = new Camp(s);
-    assert.equal(certifyLegacy(s).ok, true); assert.equal(g.s.version, 5);
+    assert.equal(certifyLegacy(s).ok, true); assert.equal(g.s.version, 6);
     assert.deepEqual(g.s.storage, s.storage); assert.deepEqual(g.s.units, s.units); assert.equal(JSON.stringify(s), raw);
     refused(g, ['u1'], 'b1', /transfer|incoming|settle|load/i); check(g);
     assert.deepEqual(new Camp(snapshot(g)).s, g.s);
@@ -256,7 +258,7 @@ test('legacy transfer settlement headroom certifies its last safe boundary and o
       assert.deepEqual(world({ s }), TOTAL, 'Transfer attribution is not additional inventory');
       const certified = transferred === 9999994;
       assert.equal(certifyLegacy(s).ok, certified);
-      const g = new Camp(s); assert.equal(g.s.version, certified ? 5 : 4);
+      const g = new Camp(s); assert.equal(g.s.version, certified ? 6 : 4);
       assert.equal(JSON.stringify(s), raw, 'Optional certification must preserve exact incoming data');
       assert.deepEqual(g.s.storage, s.storage); assert.deepEqual(g.s.units, s.units); assert.deepEqual(world(g), TOTAL);
       if (certified) {
@@ -358,7 +360,7 @@ test('actual stock, durable incoming transfer endpoints and live refund origins 
   if (incoming.store('b1').stock.wood) refused(incoming, ['u0'], 'b1', /stock|empty|goods/i);
   const refundable = legacy({ buildings: [building('b1', 'outpost', 11, 11), building('b2', 'workshop', 11, 16, false, 1)] });
   refundable.storage.reservations.b2.sources.forEach(p => p.storeId = 'b1');
-  const g = new Camp(refundable); assert.equal(g.s.version, 5); refused(g, ['u0'], 'b1', /refund|reservation|construction|settle|source|paid|suppl|cancel/i);
+  const g = new Camp(refundable); assert.equal(g.s.version, 6); refused(g, ['u0'], 'b1', /refund|reservation|construction|settle|source|paid|suppl|cancel/i);
   assert.equal(g.cancel('b2'), true); refused(g, ['u0'], 'b1', /stock|empty|goods/i); check(g);
 });
 
@@ -366,7 +368,7 @@ test('historical completed payment origin is not a live retirement blocker', () 
   const s = legacy({ buildings: [building('b1', 'outpost', 11, 11), building('b2', 'workshop', 11, 16)] });
   s.storage.payments.push({ kind: 'construction', target: 'b2', refunded: false,
     sources: [{ storeId: 'b1', resource: 'wood', amount: 40 }, { storeId: 'b1', resource: 'stone', amount: 30 }] });
-  const g = new Camp(s); assert.equal(g.s.version, 5); begin(g); until(g, () => !exists(g)); check(g);
+  const g = new Camp(s); assert.equal(g.s.version, 6); begin(g); until(g, () => !exists(g)); check(g);
   assert.doesNotThrow(() => new Camp(snapshot(g)));
 });
 
@@ -507,7 +509,7 @@ test('a manually held final load keeps the footprint until its one receipt, then
   const before = g.serialize(); assert.ok(g.reclaim(['u1'], 'b1').error); assert.equal(g.serialize(), before);
 });
 
-test('v5 reload never reissues partly recovered claims and rejects forged custody partitions', () => {
+test('v6 reload never reissues partly recovered claims and rejects forged custody partitions', () => {
   const g = camp(); begin(g); until(g, () => !!g.s.units[0].reclaim); const original = snapshot(g);
   assert.deepEqual(new Camp(original).s, g.s);
   for (const mutate of [
@@ -517,7 +519,7 @@ test('v5 reload never reissues partly recovered claims and rejects forged custod
     s => delete s.units[0].reclaim, s => s.units[0].reclaim.claimId = 'missing',
     s => s.units[0].resource = 'stone', s => s.units[0].cargo = 0,
     s => s.reclaim.claims[0].assigned.push('missing'), s => s.reclaim.claims[0].assigned.push(s.reclaim.claims[0].assigned[0]),
-    s => s.version = 6, s => s.nextId = 10000000
+    s => s.version = 7, s => s.nextId = 10000000
   ]) {
     const bad = copy(original); mutate(bad); const before = copy(bad);
     assert.equal(valid(bad), false); assert.throws(() => new Camp(bad)); assert.deepEqual(bad, before);
@@ -563,7 +565,7 @@ test('more than forty actual build/reclaim cycles compact only settled history a
 });
 
 test('numeric ID headroom rejects optional construction before spend and cannot strand admitted recovery', () => {
-  const source = legacy(); source.nextId = 9999999; const g = new Camp(source); assert.equal(g.s.version, 5);
+  const source = legacy(); source.nextId = 9999999; const g = new Camp(source); assert.equal(g.s.version, 6);
   const before = g.serialize(); assert.ok(g.build('outpost', 13, 3, []).error); assert.equal(g.serialize(), before);
   const active = camp(); begin(active); active.s.nextId = 9999999;
   until(active, () => !exists(active)); assert.deepEqual(active.s.reclaim.recovered, BILL); assert.equal(active.s.nextId, 9999999);

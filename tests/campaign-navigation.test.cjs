@@ -16,16 +16,25 @@ function admitsRTS(state) {
 const create = (overrides = {}) => Navigation.create({digest, validateCave: Cave.valid, validateRTS: admitsRTS, ...overrides});
 function projectedRTS(version, source = new RTS.Camp().s) {
   // Deliberate compatibility projection, not an unmodified historical save.
-  assert.ok([1, 2, 3, 4, 5].includes(version));
+  assert.ok([1, 2, 3, 4, 5, 6].includes(version));
   const state = structuredClone(source); state.version = version;
-  if (version < 5) delete state.reclaim;
+  if (version < 6) {
+    delete state.construction;
+    for (const building of state.buildings) delete building.supplyProfile;
+    for (const actor of state.units) { delete actor.supply; delete actor.supplyPickup; }
+  }
+  if (version < 5) {
+    delete state.reclaim;
+    for (const building of state.buildings) delete building.retiring;
+    for (const actor of state.units) delete actor.reclaim;
+  }
   if (version < 3) delete state.storage;
   if (version === 1) { delete state.tools; delete state.knapping; }
   return state;
 }
 function gatheredCurrentRTS() {
-  // Actual current-v5 command/tick checkpoint; no cargo or phase injection.
-  const camp = new RTS.Camp(); assert.equal(camp.s.version, 5);
+  // Actual current-v6 command/tick checkpoint; no cargo or phase injection.
+  const camp = new RTS.Camp(); assert.equal(camp.s.version, 6);
   assert.equal(camp.command(['u0'], {kind: 'gather', target: 'd0'}), 1);
   for (let i = 0; i < 500 && !camp.s.units[0].cargo; i++) camp.tick(.1);
   assert.ok(camp.s.units[0].cargo > 0); assert.equal(camp.s.units[0].resource, 'wood');
@@ -92,11 +101,14 @@ test('legacy completed archives retain their actual unversioned array envelope w
   }
 });
 
-test('current RTS v5 and explicit v1/v2/v3/v4 projections share a key without changing raw identity', async () => {
-  const a = create(), v5 = new RTS.Camp().s, v4 = projectedRTS(4,v5), v3 = projectedRTS(3, v5), v2 = projectedRTS(2, v5), v1 = projectedRTS(1, v5);
+test('current RTS v6 and explicit v1/v2/v3/v4/v5 projections share a key without changing raw identity', async () => {
+  const a = create(), v6 = new RTS.Camp().s, v5 = projectedRTS(5, v6), v4 = projectedRTS(4,v6), v3 = projectedRTS(3, v6), v2 = projectedRTS(2, v6), v1 = projectedRTS(1, v6);
   assert.equal(v4.version, 4);
   assert.equal(v5.version, 5);
-  for (const state of [v1, v2, v3, v4, v5]) {
+  assert.equal(v6.version, 6); assert.deepEqual(v6.construction, {profile: 'accepted-opening.physical-construction.v1', sites: []});
+  for (const state of [v1, v2, v3, v4, v5]) assert.equal(state.construction, undefined, 'Legacy projections omit current construction authority');
+  assert.deepEqual(new RTS.Camp(v5).s, {...v5, version: 6, construction: v6.construction}, 'Certified v5 adoption adds only the new empty ledger and version');
+  for (const state of [v1, v2, v3, v4, v5, v6]) {
     const raw = JSON.stringify(state), s = await a.inspect(snapshot(undefined, raw));
     assert.equal(s.sources.rts.schema, state.version); assert.equal(s.sources.rts.key, KEYS.rts); assert.equal(s.route.eligible, true);
     assert.equal(s.sources.rts.raw, raw); assert.equal(JSON.stringify(state), raw);
@@ -123,7 +135,7 @@ test('real import-backup namespaces are inspected and lookalike keys remain excl
   assert.equal(s.backups.length, 1); assert.equal(s.backups[0].key, KEYS.rtsImportBackupV3 + '.2'); assert.equal(s.backups[0].raw, raw);
 });
 
-test('naturally gathered current-v5 Move and held checkpoints remain exact sources during inspection', async () => {
+test('naturally gathered current-v6 Move and held checkpoints remain exact sources during inspection', async () => {
   const a = create(), camp = gatheredCurrentRTS(), actor = camp.s.units[0], load = actor.cargo;
   const checkpoints = [camp.serialize()];
   assert.equal(camp.command([actor.id], {kind: 'move', x: 4, y: 9}), 1);
@@ -136,7 +148,7 @@ test('naturally gathered current-v5 Move and held checkpoints remain exact sourc
   for (const serialized of checkpoints) {
     const raw = ' \n' + serialized + '\n', before = camp.serialize(), inputs = snapshot(undefined, raw), originalInputs = structuredClone(inputs);
     const s = await a.inspect(inputs);
-    assert.equal(s.sources.rts.schema, 5); assert.equal(s.sources.rts.status, 'validated-standalone');
+    assert.equal(s.sources.rts.schema, 6); assert.equal(s.sources.rts.status, 'validated-standalone');
     assert.equal(s.sources.rts.raw, raw); assert.equal(s.sources.rts.identity, 'legacy:hearth-rts:' + digest(Buffer.from(raw)));
     assert.equal(s.route.eligible, true); assert.deepEqual(inputs, originalInputs); assert.equal(camp.serialize(), before);
     const intent = a.plan(s, 'open-hearth'); assert.equal(intent.sourceIdentities.rts, s.sources.rts.identity);
@@ -144,8 +156,15 @@ test('naturally gathered current-v5 Move and held checkpoints remain exact sourc
   }
 });
 
-const backupVersions = Object.freeze({rtsBackup: [1], rtsBackupV3: [1, 2], rtsImportBackupV3: [1, 2], rtsBackupV4: [1, 2, 3], rtsImportBackupV4: [1, 2, 3], rtsBackupV5: [1, 2, 3, 4], rtsImportBackupV5: [1, 2, 3, 4, 5], rtsOutgoingBackupV5: [1, 2, 3, 4, 5], rtsStoredBackupV5: [1, 2, 3, 4, 5], rtsWorkRoundoffBackup: [1, 2, 3], rtsImportWorkRoundoffBackup: [1, 2, 3]});
-test('all eleven backup families preserve supported raw versions and numbered copies without playable validation', async () => {
+const backupVersions = Object.freeze({rtsBackup: [1], rtsBackupV3: [1, 2], rtsImportBackupV3: [1, 2], rtsBackupV4: [1, 2, 3], rtsImportBackupV4: [1, 2, 3], rtsBackupV5: [1, 2, 3, 4], rtsImportBackupV5: [1, 2, 3, 4, 5], rtsOutgoingBackupV5: [1, 2, 3, 4, 5], rtsStoredBackupV5: [1, 2, 3, 4, 5], rtsBackupV6: [1, 2, 3, 4, 5], rtsImportBackupV6: [1, 2, 3, 4, 5, 6], rtsOutgoingBackupV6: [1, 2, 3, 4, 5, 6], rtsStoredBackupV6: [1, 2, 3, 4, 5, 6], rtsRejectedBackupV6: [1, 2, 3, 4, 5, 6], rtsWorkRoundoffBackup: [1, 2, 3], rtsImportWorkRoundoffBackup: [1, 2, 3]});
+test('construction backup names match the durable host families', () => {
+  const suffixes = {rtsBackupV6: '.before-v6', rtsImportBackupV6: '.import-before-v6', rtsOutgoingBackupV6: '.outgoing-before-import-v6', rtsStoredBackupV6: '.stored-before-import-v6', rtsRejectedBackupV6: '.rejected-before-import-v6'};
+  for (const [kind, suffix] of Object.entries(suffixes)) {
+    assert.equal(KEYS[kind], KEYS.rts + suffix); assert.equal(Navigation.backupKind(KEYS.rts + suffix), kind);
+  }
+});
+
+test('all sixteen backup families preserve supported raw versions and numbered copies without playable validation', async () => {
   let validations = 0;
   const a = create({validateRTS() { validations++; throw Error('Backups must not use playable admission'); }});
   for (const [kind, versions] of Object.entries(backupVersions)) for (const version of versions) {
@@ -173,7 +192,7 @@ test('backup discovery accepts only exact namespaces and positive canonical suff
     excluded.push(...['.0', '.01', '.-1', '.1x', '.1.2', '.', '\n', '.1\n', 'suffix'].map(suffix => key + suffix));
     excluded.push('prefix.' + key, key.replace('.v1.', '.v2.'));
   }
-  excluded.push(KEYS.rts + '.import-before-v2', KEYS.rts + '.before-v6', KEYS.rts + '.before-work-rounding', 'unrelated-secret');
+  excluded.push(KEYS.rts + '.import-before-v2', KEYS.rts + '.before-v7', KEYS.rts + '.import-before-v7', KEYS.rts + '.rejected-before-import-v5', KEYS.rts + '.before-work-rounding', 'unrelated-secret');
   let unrelatedReads = 0;
   for (const key of excluded) {
     assert.equal(Navigation.backupKind(key), null);
@@ -215,7 +234,7 @@ test('recognized unreadable backups block entry even when the live save is valid
   }
 });
 
-test('host admission repairs explicit legacy residue fixtures on clones while v5 negative work stays rejected', async () => {
+test('host admission repairs explicit legacy residue fixtures on clones while v4/v5/v6 negative work stays rejected', async () => {
   const current = gatheredCurrentRTS().s, a = create(), strict = create({validateRTS: RTS.valid});
   // Deliberately injected admission-boundary defect, not a naturally produced
   // historical roundoff trace. Current checkpoints above are generated normally.
@@ -235,12 +254,31 @@ test('host admission repairs explicit legacy residue fixtures on clones while v5
       assert.equal(s.sources[kind].raw, raw); assert.equal(s.backups[0].identity, accepted.sources.rts.identity);
     }
   }
-  const invalidCurrent = structuredClone(current); invalidCurrent.units[0].work = -Number.EPSILON;
-  const raw = JSON.stringify(invalidCurrent), before = structuredClone(invalidCurrent);
-  assert.equal(invalidCurrent.version, 5); assert.equal(RTS.repairWorkResidue(invalidCurrent), null);
-  assert.equal(admitsRTS(invalidCurrent), false); assert.deepEqual(invalidCurrent, before);
-  const s = await a.inspect(snapshot(undefined, raw));
-  assert.equal(s.sources.rts.status, 'invalid'); assert.equal(s.route.eligible, false); assert.equal(s.sources.rts.raw, raw);
+  for (const version of [4, 5, 6]) {
+    const invalidCurrent = projectedRTS(version, current); invalidCurrent.units[0].work = -Number.EPSILON;
+    const raw = JSON.stringify(invalidCurrent), before = structuredClone(invalidCurrent);
+    assert.equal(invalidCurrent.version, version); assert.equal(RTS.repairWorkResidue(invalidCurrent), null);
+    assert.equal(admitsRTS(invalidCurrent), false); assert.deepEqual(invalidCurrent, before);
+    const s = await a.inspect(snapshot(undefined, raw));
+    assert.equal(s.sources.rts.status, 'invalid'); assert.equal(s.route.eligible, false); assert.equal(s.sources.rts.raw, raw);
+  }
+});
+
+test('malformed current construction authority is rejected without normalization but retained backups stay export-only', async () => {
+  const a = create(), current = new RTS.Camp().s;
+  const missing = structuredClone(current); delete missing.construction;
+  const wrongProfile = {...structuredClone(current), construction: {profile: 'unsupported-construction-profile', sites: []}};
+  const malformedSite = {...structuredClone(current), construction: {profile: 'accepted-opening.physical-construction.v1', sites: [null]}};
+  for (const state of [missing, wrongProfile, malformedSite]) {
+    const raw = ' \n' + JSON.stringify(state) + '\n', before = structuredClone(state);
+    assert.equal(RTS.valid(state), false); assert.equal(RTS.repairWorkResidue(state), null); assert.equal(admitsRTS(state), false); assert.deepEqual(state, before);
+    const rejected = await a.inspect(snapshot(undefined, raw));
+    assert.equal(rejected.sources.rts.status, 'invalid'); assert.equal(rejected.route.eligible, false);
+    assert.equal(rejected.sources.rts.raw, raw); assert.equal(rejected.sources.rts.identity, 'legacy:hearth-rts:' + digest(Buffer.from(raw)));
+    const backup = await a.inspect({...snapshot(undefined, JSON.stringify(current)), [KEYS.rtsRejectedBackupV6]: raw, [KEYS.rtsRejectedBackupV6 + '.1']: raw});
+    assert.equal(backup.route.eligible, true); assert.equal(backup.sources.rtsRejectedBackupV6.status, 'preserved-only'); assert.equal(backup.backups[0].status, 'preserved-only');
+    assert.equal(backup.sources.rtsRejectedBackupV6.raw, raw); assert.equal(backup.backups[0].identity, rejected.sources.rts.identity); assert.deepEqual(state, before);
+  }
 });
 
 test('constructor admission rejects input-valid legacy worlds that fail post-migration obligations', async () => {
@@ -278,8 +316,9 @@ test('missing, empty, malformed, future, unavailable-validator and unreadable so
   for (const raw of ['', '{', 'null', '[]', '{}', '{"version":1}', '{"version":99}']) {
     const s = await a.inspect(snapshot(raw)); assert.equal(s.route.eligible, false); assert.equal(s.sources.cave.raw, raw); assert.equal(a.plan(s, 'open-cave').allowed, false);
   }
-  const futureRTS = JSON.stringify({...new RTS.Camp().s, version: 6});
+  const futureRTS = JSON.stringify({...new RTS.Camp().s, version: 7});
   const future = await a.inspect(snapshot(undefined, futureRTS)); assert.equal(future.sources.rts.status, 'unsupported'); assert.equal(future.route.eligible, false);
+  assert.equal(future.sources.rts.schema, 7); assert.equal(future.sources.rts.raw, futureRTS); assert.equal(a.plan(future, 'open-hearth').allowed, false);
   for (const raw of ['', '{', 'null', 'false', '0', '[]', '{}']) {
     const s = await a.inspect(snapshot(undefined, raw)); assert.equal(s.route.eligible, false); assert.equal(s.sources.rts.raw, raw);
     assert.equal(s.sources.rts.status, 'invalid'); assert.equal(a.plan(s, 'open-hearth').allowed, false);

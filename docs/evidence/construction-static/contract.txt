@@ -1,0 +1,183 @@
+Physical construction supply — reviewed implementation contract v1
+2026-10-04; baseline4c3ac2f6c16ce58563f0300f286040a7aae0a963
+Candidate branch codex/hearth-physical-construction, task3/hearth-physical-construction.
+Root alone owns production files. Parallel QA ownership will be named before
+authoring. All execution remains Spark-only through parent/coordinator.
+
+Player milestone
+Build a working supply line: gather into actual stores, reserve an outpost or
+workshop, assign workers once, watch materials fetched/carried/delivered, finish
+the existing build work, then use the new location for a useful subsequent haul
+and existing paid tool project. Preserve the warm drawn world and controls.
+This satisfies missing delivered-material H1 construction. It is not H2 tools/
+baskets/support, full Hearth, a claim of enjoyment or longer target playtime.
+
+Authority
+All14 v3 Level01:19,26–27,45,L01-A/C; RulesR2.2; Command cancellation; Technical
+physical jobs. Exact outpost60W20S/24worker-seconds and workshop40W30S/32worker-
+seconds stay unchanged. Full recipe delivery precedes installation work in this
+versioned boundary; no per-plank labor/multiplier, new cost or demolition timer.
+Existing Tools0184W8S/12work/.45global rate, finite map, no combat, storage and
+manual Move/Stop distinctions remain. Cargo5 and speed3cells/s remain.
+
+State/adoption
+Use save version6 and construction.profile='accepted-opening.physical-construction.v1'.
+Fresh canonical camps adopt6. Existing certified5 camps adopt6 by adding an
+empty construction ledger; no existing object/material/work/order moves. Existing
+unfinished sites remain legacy-prepaid and retain exact already-paid reservation,
+work and old cancel/refund behavior. Only newly placed sites use physical supply.
+Canonical1–4 first follow existing certification/migrations; failure retains
+legacy playable/exportable mode without falsely granting new authority. Never
+reinterpret arbitrary same-named incoming fields as current authoritative state.
+Preserve exact raw before-v6/import-before-v6 plus outgoing-live/durable/rejected
+sources using the existing durable-before-adopt controller pattern. v6 malformed
+state rejects without normalization; future7 stays explicit unsupported.
+Navigation must use integrated new engine/schema and native original exports.
+
+Ledger
+construction.sites contains at most the actual unfinished physical sites.
+Each site has buildingId,state(active/cancelling),sources(current unpicked
+resource amounts keyed by actual store),staged vector,released vector,returned
+vector, and bounded delivered-origin snapshots in origins. Its recipe is the canonical
+building kind/cost, not caller-provided material amounts. Origin snapshots name
+source store id/kind/x/y/resource/amount; they survive retirement of that store.
+Active invariant per resource: sources+staged+taggedcargo=recipe; released and
+returned are zero. Cancelling invariant: staged+taggedcargo+released+returned=
+recipe, sources empty. Reserved goods stay in actual source inventory and do
+not enter spent. Available stock subtracts construction sources AND transfer
+reservations. staged is separately owned onsite WIP, not spendable storage.
+Global fixed inventory is wild+all actualstores+all cargo+all staged+spent.
+Spent excludes new unfinished sites; it receives exactly the complete bill when
+the funded site completes installation. Old prepaid sites remain spent as before.
+New outpost reclaim claim issues only at completion, backed by delivered origin
+snapshots. It must not dereference a historical source as a current usable store.
+No double authority with transfer/reclaim cargo or old paid reservations.
+
+Placement/reservation
+Existing opening-pool versus post-opening local funding rule remains. A quote
+shows actual source reservations before confirmation. Validate stock, workers,
+source-to-site access, material headroom and topology before mutation. Site
+footprint placement must preserve access to existing unfinished/cancelling
+sites as well as workers, sources, stores and retiring outposts. Reservation
+chooses usable reachable stores deterministically; nearest route cost then
+identity breaks ties within the currently permitted funding pool. Reject
+atomically if any required quantity/path/identity is unavailable. No payments
+or instant spent/stock debit at site placement. No duplicate new work on repeat
+Build-site assignment. Physical admission must not reset other actor custody.
+
+Finite autonomous supply/work
+The existing Build-site order means fetch remaining material, deliver, then
+install. One assignment repeats the16outpost or14workshop five-item loads with
+all selected workers; no per-load confirmation. Empty-handed assigned workers
+choose reachable pending source/type deterministically. At an actual source
+edge, atomically decrement store and that source reservation by min5 remaining,
+set named site cargo, and start a real source-to-site path. Other workers cannot
+take the same last material. Pickup has no installation/work/stock grant.
+Tagged cargo has site identity and its actual source snapshot. At an actual
+site edge, unload into staged and add delivered-origin quantities; cargo clears.
+No usable store/drop-off exists until all inputs are delivered AND the original
+24/32 worker-seconds complete. Empty workers waiting at site retain Build-site
+order and resume without extra clicks as deliveries arrive. Idle/funded waiting
+is status; no invented urgency/upkeep.
+
+Manual override/custody
+Loaded Move starts immediately with the same construction cargo and holds it
+on arrival. It pauses that worker's automatic site delivery. Stop/other work
+physically return that cargo to a reachable real store under existing disclosed
+return-first semantics. If the site remains active, receipt re-reserves exactly
+that returned load at the receiving store for the same site; it never becomes
+unfunded or counts as gathering/transfer/reclaim. A later Build-site assignment
+can fetch it. If site is cancelling, receipt frees the goods and records that
+site's returned quantity. Non-site orders retain manual authority; no automatic
+site controller steals the worker back. Repeated/invalid commands preserve the
+whole accepted state. New placement replans actual site-delivery intent rather
+than routing every loaded worker home.
+
+Cancellation
+Active Cancel immediately releases only unpicked source reservations into free
+stock, with no stock addition; stores already own them. It changes the site to
+cancelling and stops future build work. Onsite WIP and carried quantities retain
+physical custody. Site-assigned carriers return their present load; empty site-
+assigned workers recover staged materials in ordinary five-item trips. Manual
+Move/held site cargo retains manual control and offers Stop and Return. Existing
+Build-site action on the cancelling site means Resume supply recovery, with
+explicit label. Recovery requires a reachable store; blocked cargo stays held.
+Remove footprint only after all remaining onsite/cargo/queued/live references
+settle. With no picked material, cancellation can remove the empty footprint
+immediately. Repeated Cancel never refunds twice. Completed outpost continues
+current reclaim; completed workshop reclaim is still outside this slice.
+
+Cancellation order table (explicit inherited semantics)
+* If next is Build(cancelledSite), replace next with Idle, rather than null:
+  finish the current physical return and then idle. Never revive the Gather,
+  Build(otherSite) or other old order which the player had already superseded.
+  Ordinary gathered/transfer/reclaim cargo keeps its existing receipt authority.
+* If next names another manual order, preserve it exactly. Site cargo returns
+  physically once, then the unrelated successor starts. Cancellation may not
+  replace that successor with recovery of the cancelled site.
+* Only a current Build(cancelledSite) with no queued successor is the site's
+  active autonomous assignment. Its loaded worker returns; its empty worker
+  may recover onsite supplies. Current Move/held/Idle manual intent is retained.
+* Final settlement clears only obsolete references to the removed site, leaving
+  other current/queued orders and their custody untouched.
+
+Current pickup allocations and delivered origins are different records. A load
+picked atA, returned toB and then fetched fromB records B when actually delivered
+to the site. An old delivered-origin snapshot never reserves A again. Origin
+rows sum to the current staged vector; cancellation pickup reduces those rows
+with the staged material. Recovered site loads use a recovery tag, not a forged
+new source-store purchase. Original quote history is not a material authority.
+
+View/controls
+Preserve #world/#move/#gather/#stop/#pause/#command-cancel and placement-confirm.
+Inspector #site-supply shows: source-reserved, en route, onsite, build work; the
+actual named source(s), next action and selected worker status. #site-cancel
+label is 'Cancel and recover supplies' for physical sites; explain what releases
+now and what still requires return. Cancelled sites offer #site-recover 'Resume
+supply recovery with selected villagers'. Legacy sites retain their documented
+prepaid/full-refund wording. Construction tray/confirmation states explicitly
+describe reservation and physical delivery. World Canvas shows unfinished site
+and existing cargo actor markers using original drawing primitives; no imagegen.
+Before work starts, Canvas draws an onsite wood/stone stack from the actual
+staged vector, a separate delivery progress cue and a cancellation/recovery cue.
+Five delivered wood must visibly differ from a still-empty site with work0.
+Changing staged material changes this cue without pretending installation has
+advanced. Existing hand-drawn primitives/colors supply the art; no new assets.
+Mission promotes supply then usable expansion/workshop without inventing a new
+shipment-count unlock. Panel waiting/material counters must reflect actual state.
+
+Acceptance
+1. Ordinary controls earn west wood/stone, place eastern outpost, and capture
+   each pickup/onsite receipt, actual delivery totals and paid24work completion.
+   Distinguish reserved/free/staged/spent and constant416W220S225F inventory.
+2. Use the eastern depot for real gathered wood; physically supply a nearby
+   workshop; finish Tools018; complete useful gathering afterward. Show source,
+   destination, workers, travel and .60→.45 extraction separately. No grant/seed
+   can replace the main earned sequence or declare synthetic states playable.
+3. Compare one meaningful source/worker allocation or depot placement using the
+   same actual earned start. Include prepositioning/reclaim time; no faster route
+   withheld to manufacture gain. No claimed enjoyment from clock-controlled tests.
+4. Ordinary western-depot116W investment can recover/relocate via existing reclaim
+   and the new supply path. Exact cancelled reserved-only, carried, onsite,
+   partial-work states return goods physically and permit a useful replacement.
+5. Deterministic regressions cover last-item races, multiple sources/workers,
+   repeated actions, invalid mixed selections, competing transfer/craft/recruit
+   funding, source retirement, held Move/Stop/reassign, blocked paths/topology,
+   pause/refresh/import and v1–v6/future version behavior. Keep old failure records.
+6. Genuine pre-v6 unfinished paid job and source bytes migrate, complete/cancel
+   without a second bill or retroactive trip. Integrated native nav/backup export
+   and browser startup paths use exact candidate built pages.
+7. Independent critic, two skeptics per ordinary finding/three for high-impact
+   persistence/custody, root fix ownership, separate source/evidence verification.
+   Source artifact immutable before Spark dispatch. No M6 execution or publication.
+
+Review disposition
+Independent critic: construction-contract-critic.txt. Strictly independent
+skeptics one and three confirmed the narrow onsite-art omission; root added the
+real-staged Canvas cue. On queued-order wording, one confirmed ambiguity and
+three found inherited semantics already sufficient. Root made the inherited
+transition explicit above, without claiming a demonstrated new engine defect.
+The provisional source-history concern was disproved, and its existing intended
+separation is now stated with an A-return-B example. Skeptic two is retained as
+supplementary only because it read a scout report; it does not supply the two
+independent reviews. No High product defect was asserted by this contract review.

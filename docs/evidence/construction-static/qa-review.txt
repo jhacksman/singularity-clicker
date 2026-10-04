@@ -1,0 +1,147 @@
+Construction QA source review 01 — independent skeptic one
+2026-10-04
+
+Scope
+Reviewed construction-contract-v1.txt, tests/hearth-construction.test.cjs, and
+tests/browser/hearth-construction.cjs. Used only the frozen production files in
+construction-source-review-01 to check alignment. Frozen engine SHA256:
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e.
+No application/parser/test/build/browser/network execution occurred. No test or
+production file was edited. A delegated read-only browser subreview independently
+checked the browser script without reading other reports; its observations were
+cross-checked against the deterministic suite before inclusion below. No external
+review reports were read for this QA task. These are authored-source findings,
+not claims of observed runtime failures.
+
+Q01 — Medium: retired delivered-source test misses completion of an outpost claim
+
+Witness in test source:
+hearth-construction.test.cjs:327–342 delivers an A-return-B load to a WORKSHOP,
+retires source B, then finishes that workshop. This establishes survival of its
+onsite origin snapshot, but workshop completion creates no reclaim claim.
+The ordinary outpost test at 114–148 uses b0 as its source; b0 remains available.
+The browser's outpost completions likewise do not use a retired source snapshot.
+
+False-pass counterexample:
+Replace only the delivered-origin outpost claim creation with a lookup of each
+source in the current live building/store list. Leave workshop completion and
+onsite origin retention correct. Every cited case can still pass, while a real
+outpost whose delivered source B has retired fails when issuing its completion
+claim. This is the precise historical-source dereference forbidden by the contract
+Ledger paragraph. Frozen engine issueClaim():199–201 / completion():457 are the
+relevant distinct branch, not exercised by the workshop witness.
+
+Minimal test correction:
+Earn enough resources for an optional source depot and a physical OUTPOST;
+physically deliver some input from that depot, remove its remaining live
+obligations, retire it, then complete the new outpost. Assert the completed
+claim's exact old id/kind/x/y/resource/amount snapshot, canonical full bill,
+single issuance, and exact save/reload. Preserve the existing workshop test if
+desired; it is useful but does not cover the claim branch.
+
+Q02 — Medium: multiple-worker completion can pass with incorrect labor rate
+
+Witness in test source:
+browser materialStep():159–204 bounds time and movement and checks store/staged/
+spent transitions, but never relates a building's work increment to eligible
+workers and elapsed time. complete():211–219 checks only final work=24/32.
+The allocation comparison at 299–307 records elapsed times without reconciling
+the installation contribution. Tools checks final work=12 at 288.
+The deterministic suite's work-delta bound at 132 is valuable, but that scenario
+has ONE builder. Multiple-worker tests at 150–178,181–187, and410–420 have no
+independent dt-times-eligible-builder work oracle.
+
+False-pass counterexample:
+Keep +dt for a sole builder, but for two or more eligible builders add
+dt*eligibleBuilderCount for EACH worker. Four builders now pay four times too
+little wall time for the same final numeric work. Fully staged-before-work,
+material conservation, source/site receipt counts, final work24/32, roundtrip,
+and same-input determinism still pass. The single-worker bound does not detect
+this multiworker-only defect. A comparable incorrect tools worker multiplier
+also escapes these endpoint-only browser checks.
+
+Minimal test correction:
+At a fully supplied site, use a known set of empty, actually adjacent builders
+and a controlled dt. Independently assert work gain=min(remainingWork,
+dt*eligibleBuilders), or integrate those eligible worker-seconds through every
+installation transition including the capped final tick. Include 1 and >1
+builders. Give Tools018 an equivalent actual12-worker-second check. Do not infer
+the work rate from the implementation's own resulting phase or endpoint alone.
+
+Q03 — Medium: browser legacy provenance checks are self-consistent, not pinned
+
+Witness in test source:
+browser:358–400 requires external raw fixture, report, and OLD_BASE_DIR. It checks
+report.sourceCommit and fixture.sourceCommit strings equal the named baseline;
+it hashes files from OLD_BASE_DIR against hashes asserted in that same report;
+and it checks flags such as earnedBeforeAnyConstructionCode and !sourceInjected.
+It does not bind those bytes to the actual immutable baseline tree or a trusted
+expected file/hash manifest. The two trusted event checks require only one world
+event and one export event, not the earned transition chain yielding the fixture.
+
+False-pass counterexample:
+A synthetically constructed balanced v5 unfinished camp and self-authored report
+can set the expected commit string/booleans, include world/export event objects,
+hash any supplied OLD_BASE_DIR and its matching HTML, and hash the synthetic raw.
+The browser accepts that package as status=passed/genuine even though no old UI
+journey produced the fixture. This is an evidence-admission gap, not a claim that
+the author fabricated evidence or that the actual coordinator will supply it.
+The absent-witness path is correctly honest: legacy stays pending and exitCode=2.
+The deterministic oldAPI() at 448–455 independently pins old engine source bytes,
+so its earned reducer witness does not have this same source-identity weakness;
+it is correctly distinct from ordinary browser provenance.
+
+Minimal test correction:
+Require independently pinned baseline source hashes (or git-show tree bytes from
+the named commit and match all exercised old engine/view/build inputs), bind the
+old built page and witness producer script to that immutable manifest, and retain
+the producer's fresh-start/control/checkpoint chain whose final Journey bytes
+equal the fixture. Verify that producer evidence as part of the immutable Spark
+package; flags in the producer report alone are not proof of earning. At minimum,
+do not automatically promote the supplied fixture to "genuine ordinary" without
+the independent source/artifact verification the contract already requires.
+
+Q04 — Low: the earlier-Build cancellation test never has an earlier current Build
+
+Witness in test source:
+hearth-construction.test.cjs:298–304 carries gathered food under Gather(d3), then
+issues Build(first) and Build(second) while still loaded. Return-first command
+semantics replaces u.next on both calls while u.order remains Gather(d3).
+Therefore the test title's "earlier Build on a different surviving site" is not
+the stored current order that could be resurrected. It duplicates much of 257–264.
+The separate267–275 test does have current Build(A)+cargoA+nextBuild(B), but
+cancels A rather than the queued B.
+
+Minimal correction:
+Start from picked() for A so current order=Build(A) and supply.siteId=A. Create B,
+queue Build(B), cancel B, then assert next=Idle, the A cargo returns once and is
+re-reserved for active A, and the worker remains idle instead of resuming A. This
+does not identify a current implementation defect; it makes the claimed matrix
+row real. Broad queued-target-to-Idle regressions are already covered by257–264.
+
+Additional bounded evidence observations (not blocking findings)
+- Main browser flow begins with fresh storage and ordinary trusted UI; replay
+  branches import its exact Journey bytes rather than authoring rich camp state.
+- Unit topology fault injection at379–390 is expressly marked supplementary and
+  moves already-paid objects without seeding inventory. It is not represented as
+  the ordinary earned milestone.
+- Browser pickup/receipt oracle checks actual adjacency, displacement bounds,
+  named per-store deltas and each material boundary. It is materially stronger
+  than aggregate-stock-only evidence.
+- Canvas screenshot inequality at262 is explicitly not final art acceptance;
+  report264 requires independent visual review. Its site crop excludes the
+  delivery bar/recovery text above the footprint, so use full-page/correctly
+  enlarged crops when verifying those separate cues. Do not interpret pixel
+  inequality alone as proof of the full material/cancellation visual contract.
+- #site-supply is only checked against /source|reserved/i at155. The screenshots
+  and independent UI review should verify actual counters/names/next action;
+  this text assertion alone would accept a constant string "source".
+- No expected exact completion-duration failure was established statically.
+  Existing finite bounds and browser wall-clock deadline still require Spark
+  execution; source review cannot certify the job fits its runtime budget.
+
+Disposition
+Send Q01–Q03 to the respective QA authors before claiming complete acceptance;
+Q04 is a small scenario correction. No test execution or pass result is claimed.
+Actual immutable-source Spark runs and independent visual/provenance verification
+remain necessary. No production change is proposed by this QA report.

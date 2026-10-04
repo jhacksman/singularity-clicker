@@ -22,7 +22,7 @@ const server = http.createServer((request, response) => {
 function sources() {
   const cave = new Cave(null, 17); cave.r.innovation = 1200; cave.r.event = 1;
   for (let i = 0; i < 3; i++) cave.fireStep();
-  const rts = new RTS.Camp().s; rts.version = 1; delete rts.tools; delete rts.knapping; delete rts.storage; delete rts.reclaim;
+  const rts = new RTS.Camp().s; rts.version = 1; delete rts.tools; delete rts.knapping; delete rts.storage; delete rts.reclaim; delete rts.construction;
   const raw = ' \n' + JSON.stringify(rts) + '\n';
   const completed = new Hearth(); completed.s.complete = true; completed.s.plowed = 1;
   return {[KEYS.cave]: cave.serialize(), [KEYS.rts]: raw, [KEYS.rtsBackup]: 'occupied v2 backup', [KEYS.rtsBackupV3]: 'occupied v3 backup', [KEYS.rtsBackup + '.7']: raw + ' ', [KEYS.hearth]: new Hearth().serialize(), [KEYS.hearthCompleted]: ' \n' + JSON.stringify([completed.serialize()]) + '\n', [KEYS.agriculture]: new Village().serialize()};
@@ -289,7 +289,7 @@ async function checkPresentation(page, label) {
   async function enterRTS(page) {
     await Promise.all([page.waitForURL('**/hearth-rts.html'), page.locator('#campaign-navigation [data-navigation-action="open-hearth"]').click()]);
     await page.locator('[data-unit="u0"]').waitFor(); assert.equal(await page.locator('#pause').innerText(), 'Resume');
-    const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts); assert.equal(state.version, 5); assert.ok(RTS.valid(state)); return state;
+    const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts); assert.equal(state.version, 6); assert.ok(RTS.valid(state)); return state;
   }
   async function backToCave(page, prior, label) {
     await page.goBack({waitUntil: 'domcontentloaded'}); await page.locator('#event-action').waitFor({state: 'visible'});
@@ -306,10 +306,10 @@ async function checkPresentation(page, label) {
     page.once('dialog', dialog => dialog.accept()); await page.locator('#file').setInputFiles({name: label + '.json', mimeType: 'application/json', buffer: Buffer.from(incoming)});
     await page.locator('#dialog').waitFor({state: 'hidden'}); // this attempt's completed handler, never a stale version predicate
     const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts);
-    assert.deepEqual(state, new RTS.Camp(RTS.repairWorkResidue(JSON.parse(incoming)) || JSON.parse(incoming)).s); assert.equal(state.version, 5); assert.equal(await page.locator('#pause').innerText(), 'Resume');
+    assert.deepEqual(state, new RTS.Camp(RTS.repairWorkResidue(JSON.parse(incoming)) || JSON.parse(incoming)).s); assert.equal(state.version, 6); assert.equal(await page.locator('#pause').innerText(), 'Resume');
   }
 
-  const integrationFixtures = {...sources(), [KEYS.rtsBackupV4]: 'occupied v4 backup'};
+  const integrationFixtures = {...sources(), [KEYS.rtsBackupV4]: 'occupied v4 backup', [KEYS.rtsBackupV5]: 'occupied v5 backup', [KEYS.rtsBackupV6]: 'occupied v6 backup'};
   const integration = await nativePage('native-route', integrationFixtures), integrated = integration.page;
   await integrated.evaluate(() => { window.__observeStorageOnMount = true; });
   await openCompletion(integrated); assert.deepEqual(await rawSources(integrated, Object.keys(integrationFixtures)), integrationFixtures);
@@ -379,24 +379,26 @@ async function checkPresentation(page, label) {
   assert.deepEqual(migrated, new RTS.Camp(JSON.parse(integrationFixtures[KEYS.rts])).s);
   const preservedKeys = Object.keys(integrationFixtures).filter(key => key !== KEYS.rts);
   assert.deepEqual(await rawSources(integrated, preservedKeys), Object.fromEntries(preservedKeys.map(key => [key, integrationFixtures[key]])));
-  for (const key of [KEYS.rtsBackup, KEYS.rtsBackupV3, KEYS.rtsBackupV4]) assert.equal((await rawSources(integrated, [key + '.1']))[key + '.1'], integrationFixtures[KEYS.rts]);
+  for (const key of [KEYS.rtsBackup, KEYS.rtsBackupV3, KEYS.rtsBackupV4, KEYS.rtsBackupV5, KEYS.rtsBackupV6]) assert.equal((await rawSources(integrated, [key + '.1']))[key + '.1'], integrationFixtures[KEYS.rts]);
   await integrated.reload(); await integrated.locator('[data-unit="u0"]').waitFor(); assert.equal(await integrated.locator('#pause').innerText(), 'Resume'); assert.deepEqual(JSON.parse((await rawSources(integrated, [KEYS.rts]))[KEYS.rts]), migrated);
   await backToCave(integrated, firstPosition, 'native-route-back-after-migration');
   assert.equal(await nativeExport(integrated, 'export:rtsBackupV4', 'native-existing-v4-backup.json'), integrationFixtures[KEYS.rtsBackupV4]);
-  for (const key of [KEYS.rtsBackup, KEYS.rtsBackupV3, KEYS.rtsBackupV4]) assert.equal(await nativeExport(integrated, 'export-backup:' + key + '.1', 'native-' + key + '.1.json'), integrationFixtures[KEYS.rts]);
+  for (const kind of ['rtsBackupV5', 'rtsBackupV6']) assert.equal(await nativeExport(integrated, 'export:' + kind, 'native-existing-' + kind + '.json'), integrationFixtures[KEYS[kind]]);
+  for (const key of [KEYS.rtsBackup, KEYS.rtsBackupV3, KEYS.rtsBackupV4, KEYS.rtsBackupV5, KEYS.rtsBackupV6]) assert.equal(await nativeExport(integrated, 'export-backup:' + key + '.1', 'native-' + key + '.1.json'), integrationFixtures[KEYS.rts]);
   const importPosition = await nativePosition(integrated); await enterRTS(integrated);
-  const v2 = new RTS.Camp().s; v2.version = 2; delete v2.storage; delete v2.reclaim;
+  const v2 = new RTS.Camp().s; v2.version = 2; delete v2.storage; delete v2.reclaim; delete v2.construction;
   const importRaws = [' \n' + JSON.stringify(v2) + '\n', '\n\n' + JSON.stringify(v2) + ' '];
   for (const incoming of importRaws) await importRTS(integrated, incoming, 'projected-legacy-v2');
-  for (const key of [KEYS.rtsImportBackupV3, KEYS.rtsImportBackupV4]) { assert.equal((await rawSources(integrated, [key]))[key], importRaws[0]); assert.equal((await rawSources(integrated, [key + '.1']))[key + '.1'], importRaws[1]); }
+  for (const key of [KEYS.rtsImportBackupV3, KEYS.rtsImportBackupV4, KEYS.rtsImportBackupV5, KEYS.rtsImportBackupV6]) { assert.equal((await rawSources(integrated, [key]))[key], importRaws[0]); assert.equal((await rawSources(integrated, [key + '.1']))[key + '.1'], importRaws[1]); }
   await backToCave(integrated, importPosition, 'native-route-back-after-imports');
-  for (const kind of ['rtsImportBackupV3', 'rtsImportBackupV4']) {
+  for (const kind of ['rtsImportBackupV3', 'rtsImportBackupV4', 'rtsImportBackupV5', 'rtsImportBackupV6']) {
     assert.equal(await nativeExport(integrated, 'export:' + kind, 'native-' + kind + '.json'), importRaws[0]);
     assert.equal(await nativeExport(integrated, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-1.json'), importRaws[1]);
   }
+  assert.equal(await nativeExport(integrated, 'export:rtsOutgoingBackupV6', 'native-outgoing-before-import-v6.json'), JSON.stringify(migrated), 'The original native exporter retains the actual outgoing camp from before the first import');
   const beforeReload = await rawSources(integrated, Object.values(KEYS)); await integrated.reload(); await integrated.locator('#event-action').waitFor(); assert.equal(await integrated.evaluate(() => window.__nativeMounts.length), 0); await openCompletion(integrated);
   assert.deepEqual(await rawSources(integrated, Object.values(KEYS)), beforeReload); await integration.context.close();
-  reports.push('Native Cave build, focus trap and presentation; explicit v1/v2 fixture migration into v5; real Back/reload and native exact backup exports');
+  reports.push('Native Cave build, focus trap and presentation; explicit v1/v2 fixture migration into v6; real Back/reload and native exact backup exports including retained v5 and new v6 families');
 
   // Delayed inspection is a labeled lifecycle fault fixture. It does not replace
   // host options, controller methods or product markup, and awaits original ready.
@@ -487,20 +489,22 @@ async function checkPresentation(page, label) {
   const recoveryCamp = new RTS.Camp(), recoveryUnit = recoveryCamp.s.units[0];
   Object.assign(recoveryUnit, {x: 5, y: 7, cargo: 2, resource: 'wood', phase: 'extract', order: {kind: 'gather', target: 'd0'}, next: null, path: [], work: 0});
   recoveryCamp.s.deposits[0].amount -= 2; recoveryCamp.reveal();
-  const residue = {...structuredClone(recoveryCamp.s), version: 3}; delete residue.reclaim; residue.units[0].work = -5.551115123125783e-17;
+  const residue = {...structuredClone(recoveryCamp.s), version: 3}; delete residue.reclaim; delete residue.construction; residue.units[0].work = -5.551115123125783e-17;
   const residueRaw = ' \n' + JSON.stringify(residue) + '\n', repaired = RTS.repairWorkResidue(residue); assert.ok(repaired && RTS.valid(repaired)); assert.equal(repaired.version, 3);
   const onlyWork = structuredClone(residue); onlyWork.units[0].work = 0; assert.deepEqual(repaired, onlyWork);
-  const adopted = new RTS.Camp(repaired).s, {reclaim, ...adoptedFields} = adopted;
-  assert.deepEqual(adoptedFields, {...onlyWork, version: 5}); assert.equal(reclaim.profile, 'accepted-opening.outpost-reclaim.v1'); assert.deepEqual(reclaim.claims, []); assert.deepEqual(reclaim.recovered, {wood: 0, stone: 0, food: 0});
+  const adopted = new RTS.Camp(repaired).s, {reclaim, construction, ...adoptedFields} = adopted;
+  assert.deepEqual(adoptedFields, {...onlyWork, version: 6}); assert.equal(reclaim.profile, 'accepted-opening.outpost-reclaim.v1'); assert.deepEqual(reclaim.claims, []); assert.deepEqual(reclaim.recovered, {wood: 0, stone: 0, food: 0});
+  assert.deepEqual(construction, {profile: 'accepted-opening.physical-construction.v1', sites: []});
   const currentNegative = {...structuredClone(residue), version: 4}; assert.equal(RTS.repairWorkResidue(currentNegative), null);
-  const postMigrationInvalid = new RTS.Camp().s; postMigrationInvalid.version = 2; delete postMigrationInvalid.storage; postMigrationInvalid.nextId = 2;
+  const postMigrationInvalid = new RTS.Camp().s; postMigrationInvalid.version = 2; delete postMigrationInvalid.storage; delete postMigrationInvalid.reclaim; delete postMigrationInvalid.construction; postMigrationInvalid.nextId = 2;
   postMigrationInvalid.buildings.push({id: 'b1', kind: 'workshop', x: 12, y: 14, done: false, work: 0, cost: {wood: 40, stone: 30}});
   assert.ok(RTS.valid(postMigrationInvalid)); assert.throws(() => new RTS.Camp(postMigrationInvalid), /compatible/);
-  for (const [label, state] of [['legacy-v4-negative', currentNegative], ['current-v5-negative', {...currentCamp.s, units: currentCamp.s.units.map((u,i) => i ? u : {...u, work: -Number.EPSILON})}], ['unknown-v6', {...currentCamp.s, version: 6}], ['legacy-v2-post-migration-invalid', postMigrationInvalid]]) {
+  const legacyV5Negative = {...structuredClone(currentCamp.s), version: 5}; delete legacyV5Negative.construction; legacyV5Negative.units[0].work = -Number.EPSILON;
+  for (const [label, state] of [['legacy-v4-negative', currentNegative], ['legacy-v5-negative', legacyV5Negative], ['current-v6-negative', {...currentCamp.s, units: currentCamp.s.units.map((u,i) => i ? u : {...u, work: -Number.EPSILON})}], ['current-v6-malformed-construction', {...currentCamp.s, construction: {profile: 'unsupported-construction-profile', sites: []}}], ['unknown-v7', {...currentCamp.s, version: 7}], ['legacy-v2-post-migration-invalid', postMigrationInvalid]]) {
     const raw = ' \n' + JSON.stringify(state) + '\n', fixtures = {...sources(), [KEYS.rts]: raw}, f = await nativePage(label, fixtures), p = f.page; await openCompletion(p);
     assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isDisabled(), true); assert.match(await p.locator('[data-navigation-status]').innerText(), /cannot be opened/);
     assert.equal(await nativeExport(p, 'export:rts', label + '-original.json'), raw); assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures);
-    assert.equal((await rawSources(p, [KEYS.rtsBackupV4, KEYS.rtsWorkRoundoffBackup]))[KEYS.rtsBackupV4], null); assert.equal((await rawSources(p, [KEYS.rtsWorkRoundoffBackup]))[KEYS.rtsWorkRoundoffBackup], null);
+    for (const key of [KEYS.rtsBackupV4, KEYS.rtsBackupV5, KEYS.rtsBackupV6, KEYS.rtsWorkRoundoffBackup]) assert.equal((await rawSources(p, [key]))[key], null);
     nativeEvidence.push({case: 'native-admission-' + label, routeAllowed: false, exactExport: true}); await f.context.close();
   }
   // Generate the two loaded checkpoints only through public engine commands and
@@ -512,7 +516,29 @@ async function checkPresentation(page, label) {
   assert.equal(loadedCamp.s.units[0].phase, 'carryMove'); const movingRaw = loadedCamp.serialize();
   for (let step = 0; step < 600 && loadedCamp.s.units[0].phase !== 'idle'; step++) loadedCamp.tick(.1);
   assert.equal(loadedCamp.s.units[0].phase, 'idle'); assert.equal(loadedCamp.s.units[0].cargo, 2); assert.equal(loadedCamp.s.units[0].x, 2); assert.equal(loadedCamp.s.units[0].y, 3); const heldRaw = loadedCamp.serialize();
-  for (const [label, raw] of [['current-v5-idle', currentRaw], ['current-v5-carry-move', movingRaw], ['current-v5-held', heldRaw]]) {
+  // Controlled retained-source fixtures exercise the unmodified native backup
+  // exporter, including rejected bytes that must never become playable state.
+  {
+    const legacyV5 = {...structuredClone(currentCamp.s), version: 5}; delete legacyV5.construction;
+    assert.ok(RTS.valid(legacyV5)); const legacyRaw = ' \n' + JSON.stringify(legacyV5) + '\n';
+    const retained = {
+      rtsBackupV6: legacyRaw, rtsImportBackupV6: ' \n' + movingRaw + '\n',
+      rtsOutgoingBackupV6: movingRaw, rtsStoredBackupV6: heldRaw,
+      rtsRejectedBackupV6: ' \n' + JSON.stringify({...currentCamp.s, version: 7}) + '\n',
+      rtsOutgoingBackupV5: legacyRaw, rtsStoredBackupV5: legacyRaw + ' '
+    };
+    const fixtures = {...sources(), [KEYS.rts]: currentRaw};
+    for (const [kind, raw] of Object.entries(retained)) { fixtures[KEYS[kind]] = raw; fixtures[KEYS[kind] + '.1'] = raw + '\n'; }
+    const f = await nativePage('retained-construction-backups', fixtures), p = f.page; await openCompletion(p);
+    assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isEnabled(), true);
+    for (const [kind, raw] of Object.entries(retained)) {
+      assert.equal(await nativeExport(p, 'export:' + kind, 'native-retained-' + kind + '.json'), raw);
+      assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-retained-' + kind + '-1.json'), raw + '\n');
+    }
+    assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures, 'Backup inspection and native exports leave all primary and retained bytes untouched');
+    nativeEvidence.push({case: 'native-v6-backup-family-exports', fixture: 'controlled retained sources; future7 rejected bytes are export-only', exactExports: Object.keys(retained), suffixedCopies: true}); await f.context.close();
+  }
+  for (const [label, raw] of [['current-v6-idle', currentRaw], ['current-v6-carry-move', movingRaw], ['current-v6-held', heldRaw]]) {
     const expected = JSON.parse(raw); assert.ok(RTS.valid(expected)); const fixtures = {...sources(), [KEYS.rts]: raw}, f = await nativePage(label, fixtures), p = f.page; await openCompletion(p);
     assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isEnabled(), true); assert.equal(await nativeExport(p, 'export:rts', 'native-' + label + '-original.json'), raw); assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures);
     assert.deepEqual(await enterRTS(p), expected); assert.equal(await p.locator('#stop').isDisabled(), false);
@@ -522,17 +548,17 @@ async function checkPresentation(page, label) {
     const foreign = [KEYS.cave, KEYS.hearth, KEYS.hearthCompleted, KEYS.agriculture]; assert.deepEqual(await rawSources(p, foreign), Object.fromEntries(foreign.map(key => [key, fixtures[key]])));
     nativeEvidence.push({case: 'native-admission-' + label, routeAllowed: true, exactExport: true, exactPausedReload: true, fixture: 'public engine commands/ticks; controlled completed Cave compatibility source'}); await f.context.close();
   }
-  { const fixtures = {...sources(), [KEYS.rts]: residueRaw, [KEYS.rtsBackupV4]: 'occupied before-v4', [KEYS.rtsWorkRoundoffBackup]: 'occupied before-work-roundoff'}, f = await nativePage('legacy-residue', fixtures), p = f.page;
+  { const fixtures = {...sources(), [KEYS.rts]: residueRaw, [KEYS.rtsBackupV4]: 'occupied before-v4', [KEYS.rtsBackupV5]: 'occupied before-v5', [KEYS.rtsBackupV6]: 'occupied before-v6', [KEYS.rtsWorkRoundoffBackup]: 'occupied before-work-roundoff'}, f = await nativePage('legacy-residue', fixtures), p = f.page;
     await openCompletion(p); assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isEnabled(), true); assert.equal(await nativeExport(p, 'export:rts', 'native-legacy-residue-original.json'), residueRaw); assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures);
     const position = await nativePosition(p); assert.deepEqual(await enterRTS(p), new RTS.Camp(repaired).s);
-    for (const key of [KEYS.rtsBackupV4, KEYS.rtsWorkRoundoffBackup]) { assert.equal((await rawSources(p, [key]))[key], fixtures[key]); assert.equal((await rawSources(p, [key + '.1']))[key + '.1'], residueRaw); }
+    for (const key of [KEYS.rtsBackupV4, KEYS.rtsBackupV5, KEYS.rtsBackupV6, KEYS.rtsWorkRoundoffBackup]) { assert.equal((await rawSources(p, [key]))[key], fixtures[key]); assert.equal((await rawSources(p, [key + '.1']))[key + '.1'], residueRaw); }
     const residueImports = [residueRaw, '\n' + residueRaw + ' ']; for (const incoming of residueImports) await importRTS(p, incoming, 'controlled-legacy-v3-residue');
     await backToCave(p, position, 'native-back-after-legacy-residue-imports');
-    for (const kind of ['rtsBackupV4', 'rtsWorkRoundoffBackup']) { assert.equal(await nativeExport(p, 'export:' + kind, 'native-' + kind + '-occupied.json'), fixtures[KEYS[kind]]); assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-residue.json'), residueRaw); }
-    for (const kind of ['rtsImportBackupV4', 'rtsImportWorkRoundoffBackup']) { assert.equal(await nativeExport(p, 'export:' + kind, 'native-' + kind + '-residue.json'), residueImports[0]); assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-residue-1.json'), residueImports[1]); }
+    for (const kind of ['rtsBackupV4', 'rtsBackupV5', 'rtsBackupV6', 'rtsWorkRoundoffBackup']) { assert.equal(await nativeExport(p, 'export:' + kind, 'native-' + kind + '-occupied.json'), fixtures[KEYS[kind]]); assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-residue.json'), residueRaw); }
+    for (const kind of ['rtsImportBackupV4', 'rtsImportBackupV5', 'rtsImportBackupV6', 'rtsImportWorkRoundoffBackup']) { assert.equal(await nativeExport(p, 'export:' + kind, 'native-' + kind + '-residue.json'), residueImports[0]); assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-residue-1.json'), residueImports[1]); }
     const foreign = [KEYS.cave, KEYS.hearth, KEYS.hearthCompleted, KEYS.agriculture]; assert.deepEqual(await rawSources(p, foreign), Object.fromEntries(foreign.map(key => [key, fixtures[key]])));
     nativeEvidence.push({case: 'native-legacy-v3-residue-repair-and-import', fixture: 'controlled balanced gathered cargo, deliberately authored residue; not earned play', exactOriginalExports: true}); await f.context.close(); }
-  reports.push('Native clone-only admission accepts current5 and explicit legacy3 recovery; rejects v4/v5 negative work, unknown6 and legacy post-migration invalidity; destination alone adopts and retains exact movement/roundoff backup families');
+  reports.push('Native clone-only admission accepts current6 and explicit legacy3 recovery; rejects v4/v5/v6 negative work, malformed construction, unknown7 and legacy post-migration invalidity; destination alone adopts and retains exact movement/roundoff/construction backup families');
   assert.deepEqual(errors, []);
   fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify({baseCommit: Navigation.BASE_COMMIT, result: 'pass', checks: reports, nativeEvidence, presentation, pageErrors: errors, limits: ['Native integration uses the ordinary unmodified built Cave page; separate opt-in fixtures still test helper APIs', 'Completed-source and recovery compatibility fixtures, not earned-play/pacing/enjoyment evidence', 'Completed Cave advance is inert; unchanged completed-camp counters do not prove dialog pause', 'Synthetic persisted events are labeled separately from actual Back/BFCache observations', 'No durable campaign handoff, grant, branch or full-age completion implemented', 'Desktop headless Chromium only; native/accessibility-device support not claimed', '200% text is simulated by doubling the root font size; browser zoom and assistive devices are not tested']}, null, 2) + '\n');
   console.log('PASS campaign navigation browser:', reports.join('; '));

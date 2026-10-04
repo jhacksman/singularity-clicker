@@ -1,0 +1,265 @@
+Construction production candidates C01/C02 — independent static skeptic one
+2026-10-04
+
+Scope
+Parent supplied two candidate claims and requested independent disproof against
+the frozen source. Read construction-source-review-01/engine.js directly; no
+other production critic/skeptic report was read. SHA256 verified with a read-only
+file hash:
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e.
+No application, parser, test, build, browser, or network execution occurred. No
+production or test files were edited. All outcomes below are static source proof,
+with actual ordinary-control and regression execution still required on Spark.
+
+C01 — Confirmed Medium: build commits an unreachable selected group
+
+Disproof attempted:
+build():419 validates integer placement, selected-ID existence, and duplicates.
+placement():418 checks the footprint, funding, visibility and headroom. The
+temporary-building topology check at421–422 tests every worker and existing site
+against hearth edges, and planSupply():206–208 requires actual store-to-site
+continuity. Those are substantial guards, but none proves that EACH selected
+worker can reach the new work or its coherent source/site component.
+command():408–410 does perform group preflight, but build():425 calls it after
+ledger creation and nextId increment, then discards its rejection result.
+
+Exact geometry:
+The hearth occupies x=7..9,y=11..13. Put empty, idle u0 at(6,11). Complete these
+three ordinary2x2 workshops:
+  A at(6,9): occupies x6..7,y9..10.
+  B at(4,10): occupies x4..5,y10..11.
+  C at(5,12): occupies x5..6,y12..13.
+The four cardinal neighbors of u0 are respectively blocked by A at(6,10), B at
+(5,11), C at(6,12), and the hearth at(7,11). Yet u0's cell(6,11) is itself an
+unblocked member of around(hearth). path(u0,around(hearth)) therefore returns []
+(truthy), so topology admission does not reject the isolated worker.
+
+The workshops have other usable external edges: A includes(8,10); B includes
+(4,12); C includes(5,14)/(6,14). These connect to the open outside component and
+other hearth edges. No footprints overlap each other or u0. Their construction
+can be supplied and worked by outside u1/u2/u3. Each staged placement admits the
+same existential connection checks. Completing C last closes u0's last exit.
+
+Ordinary source-derived sequence:
+1. Before making the enclosure, use ordinary Gather/Stop to earn and return at
+   least180W110S at b0. West alone gives116W70S; the still-open ford gives access
+   to enough finite eastern wood/stone for the rest. No grant or state mutation
+   is needed. All bills are fixed; three workshops cost120W90S.
+2. Move u0 to(6,11). Keep the other three workers outside the proposed footprints;
+   use them to build A, B, C, with C last. Let their cargo and work settle. The
+   absence of an eastern outpost keeps construction funding in opening-pool mode.
+3. Park outside u1 at a clear reachable edge of the proposed new outpost S at
+   (11,15), for example(11,14); keep the other actors clear of S's footprint.
+4. Call the ordinary new-outpost placement with selected group[u0,u1]. The group
+   contains stable IDs and S is clear, funded and externally connected.
+
+Static transition at step4:
+- The worker/hearth check still accepts u0's zero-length edge path.
+- planSupply finds b0's exterior-edge route to S and returns60W20S sources.
+- build():423 appends the physical ledger and425 increments nextId.
+- accepts(u0,Build(S)):404–406 finds no route from the enclosed cell to S.
+- command():409 returns0 before assigning any selected worker.
+- build():425 ignores0 and returns{id:S}, leaving the site, reservations and ID
+  committed. The UI can announce an assigned construction although both selected
+  orders stayed idle. Free stock is reduced by reservations, even though no
+  selected worker took the job.
+
+Impact and minimal correction:
+This violates the contract's selected-worker prevalidation and atomic rejection.
+It is recoverable: cancellation releases the reservation; another outside-only
+assignment can service S. No lost material or irrecoverable save is proved, so
+Medium is appropriate. The inherited existential-hearth topology weakness is
+the ordinary enabling geometry; do not claim that the new supply code invented
+that weakness or broaden this report to unrelated topology defects.
+
+After tentatively adding the footprint for route evaluation, preflight every
+selected worker's intended Build order/coherent supply access BEFORE committing
+ledger/payment/ID or replanning any actor. On failure pop the tentative footprint
+and return an error with exact serialized state unchanged. Preserve deliberate
+empty-selection placement. Do not run mutating command() as a preflight.
+The regression should include this ordinary enclosure and mixed group, assert
+the build rejection and byte-identical accepted state, then prove outside-only
+assignment remains legal. It should test the actual source-derived sequence on
+Spark rather than treating these static coordinates as an executed witness.
+
+C02 — Confirmed Medium: prototype names admit phantom current supply sources
+
+Exact malformed input:
+Start with a valid v6 earned camp containing a reserved-only physical outpost
+with sources b0:wood60 and b0:stone20, no workers assigned, staged/released/returned
+all zero, origins empty, and sufficient real b0 inventory. Alter only the wood
+source row's storeId from "b0" to "toString". Keep all quantities and actual stock
+unchanged. This is a malformed-import witness, not a state produced by ordinary
+placement. No forged material grant is required to make the accounting totals
+balance.
+
+Pure validator walk:
+1. Outer valid():29–58 accepts the otherwise unchanged valid state. Its live
+   storage source predicate45 applies only to old payment/refund records, not
+   construction.sites.sources. Empty selected workers have no supplyPickup marker
+   that might introduce a separate source check.
+2. validConstruction():70 creates reserved with Object.fromEntries; the resulting
+   dictionary inherits from Object.prototype. Its only own live-store entry is b0.
+3. At76, !reserved[p.storeId] is false for "toString": the inherited intrinsic
+   function Object.prototype.toString is truthy. No typeof or own-key/live-store
+   membership check rejects the row. Resource and amount remain valid.
+4. reserved[p.storeId][p.resource] += p.amount assigns
+   Object.prototype.toString.wood = undefined +60 = NaN. This mutates an intrinsic
+   function object, not merely the local reserved dictionary.
+5. Recipe partition79 still sees60 wood in sources, and world conservation108
+   still sees the exact original goods in b0. Both equations continue to pass.
+6. Object.entries(reserved) at84 includes only own entry b0. The phantom wood row
+   contributed nothing to b0, so its stock backing is never checked. The legitimate
+   stone20 backing remains valid.
+7. The idle workers pass85–95. validReclaim/canonicalReason checks fixed inventory,
+   paid bills, typed real stores, existing claims, and canonical building IDs, but
+   never checks these construction source IDs. The physical unfinished outpost is
+   properly exempt from paid/prepaid claims, so no subsequent guard rejects it.
+
+The "__proto__" variant has the same acceptance path but the dictionary lookup
+resolves Object.prototype itself. Accumulation then assigns Object.prototype.wood
+=NaN during validation. This side effect can occur even if a later independent
+check rejects the input. Returning false is therefore not sufficient proof that
+malformed-input validation preserved the running realm. The affected property
+name is constrained to a resource (wood/stone/food); no arbitrary property/code
+execution is established here.
+
+Result and bounds:
+The admitted ledger promises supply from a non-store. stores() does not reserve
+it against b0 because it matches rows to actual store IDs; startSupply() cannot
+find the fake source building. The recipe is thus backed only by a misleading
+row and can stall while the supposedly reserved real goods remain free. A later
+Cancel can release this malformed obligation. Global material totals remain
+unchanged in the initial witness; do not call this demonstrated duplication or
+an ordinary-play defect. Nevertheless it directly violates strict malformed-v6
+rejection and validation purity, with prototype mutation in the same JS realm.
+Medium is supported; no additional high-impact exploit is claimed.
+
+Minimal correction:
+Before any accumulator write, require a string storeId and explicit own-key or
+live usable-store membership (for example Object.hasOwn on the freshly built
+reserved map, with canonical live IDs established by the reader). Prefer a Map
+or null-prototype dictionary for the accumulator. Apply equivalent typed live
+membership to supplyPickup's source check at90 rather than another truthy
+property lookup. Preserve snapshot origin rules: historical origins intentionally
+need not resolve to a live store and should not be conflated with current sources.
+
+Regression requirements:
+Reject JSON-origin "toString", "__proto__", "constructor" and coercible/non-string
+source IDs before any resource-property write; verify source bytes and the active
+camp stay exact. In an isolated test realm, also assert Object.prototype and the
+referenced intrinsic function objects retain their prior own property descriptors
+on accepted/rejected validation and constructor paths. Include a valid retired
+historical origin control so tightening current-source membership does not reject
+the intentionally supported snapshot case. All runtime checks remain Spark-only.
+
+Extension C02-P — independently confirmed High persistence/custody consequence
+Added on the parent's request, after the initial narrower Medium assessment.
+
+Evidence identity and scope
+Re-read only the exact frozen engine above and its frozen view.js, SHA256
+f378c30e62e931a888872e634f1664bb491299bf2b4139d6add3d89f254d09b8.
+No other review was read and no runtime executed. This extension uses a JSON
+array source ID, not an inherited prototype key. It demonstrates a stronger
+accepted-import-to-invalid-durable-save chain and supersedes the earlier
+prototype-only limit on C02 severity within that malformed-input scope.
+
+Exact starting state and malformed change
+Use an otherwise valid v6 camp with one hearth b0 holding exactly60W20S, one
+reserved-only physical outpost S (for example at11,15), and no assigned workers,
+cargo, staged material, or other payment/reservation obligations. This inventory
+is within the canonical finite budget: fresh20W10S plus40 actually gathered wood
+and10 actually gathered stone suffices. The canonical wild/stock equations,
+building IDs, work0 and empty reclaim state remain unchanged.
+S initially has two legitimate source rows b0:wood60 and b0:stone20. In the
+imported JSON replace BOTH source storeId string values with the JSON array
+["b0"]. Do not change any amount, building, worker, stock, or canonical total.
+
+1. Initial malformed input is accepted
+At engine76, ordinary bracket lookup converts ["b0"] to the property key "b0".
+reserved[p.storeId] therefore resolves the actual own b0 vector, and accumulation
+adds60W20S to it. The duplicate key expression p.storeId+':'+resource also coerces
+to the expected b0/resource string. There is no explicit string-type requirement.
+The initial backing check84 compares reserved60W20S against actual60W20S and
+passes. Recipe partition79 and canonical world108 pass unchanged. No assigned
+worker/supplyPickup is needed. The remaining validator checks do not re-check
+construction source ID type. Constructor186 validates, structuredClones the
+arrays without converting them to strings, and validates the same accepted state
+again. Native import view332 consequently accepts this candidate and view335–336
+durably adopts it using the existing preservation sequence.
+
+This array variant does not rely on the prototype-write side effect. It passes
+by reaching a real own property during validation, yet remains a different value
+under the strict identity tests used by live economics.
+
+2. Current economy falsely releases the same physical goods
+engine294–299 computes each actual store's reservations using
+  p.storeId === b.id
+At297 an array ["b0"] is not the string "b0", so neither of S's rows contributes.
+The displayed/store-available vector is60W20S rather than0W0S. funding():319–325,
+canPay():412, and planSupply():206–208 use that same erroneous free-stock view.
+The construction summary may still report S's nominal reserved amount, but it
+does not repair the per-store spendability decision.
+
+3. One ordinary new-outpost placement commits double reservation authority
+While paused, select a reachable ordinary empty worker and place another outpost
+R on clear nearby ground, for example11,11 with S still at11,15 and workers kept
+off the proposed footprint. The original hearth's visibility covers that spot;
+both sites have usable exterior edges connected to the hearth. No topology
+fault, special ID, grant, or hidden command is needed for this second action.
+Placement funding sees60W20S free. planSupply creates canonical STRING b0 rows
+for R's60W20S. build423 appends those rows and425 commits the ID and worker order.
+No final valid() call guards the committed result. The real stock remains60W20S.
+
+Re-reading the resulting state now FAILS: engine76 aggregates S's array-valued
+rows through property-key coercion into reserved.b0, and also aggregates R's real
+string rows into the same vector. The backing check84 compares120W40S to60W20S
+and returns false. This failure exists immediately after placement, before a
+simulation tick, and does not require the malformed site's pickup to succeed.
+
+4. The invalid accepted state replaces the durable current camp
+Frozen view36 feedback() calls save() after successful placement. save():33 only
+serializes the active game and writes localStorage KEY; it does not call valid().
+Thus the above immediate invalid state is synchronously written as the active
+durable save. This is not merely a hypothetical later autosave; the normal
+placement feedback path performs the write. Periodic/pagehide saves have the
+same omission, but are unnecessary to the witness.
+On refresh, startup25 creates new Camp from that durable source. Its constructor
+rejects the over-reservation at engine84. Startup catch29 retains the raw source
+as rejected, creates only the blocked recovery shell, and sets blocked=true and
+paused=true. View33 then refuses further save and ready():39 refuses new orders.
+The current camp that the interface just accepted and saved is no longer playable
+through ordinary refresh/Continue.
+
+Impact calibration and explicit limits
+This confirms the requested High persistence/custody consequence: malformed v6
+authority was admitted as current, an ordinary legal-looking placement then
+committed conflicting promises over the same real goods, and the normal save
+path durably stored a state the same engine refuses to reopen. It is stronger
+than only a phantom source waiting forever or a prototype property write.
+
+The entry requires imported/loaded malformed source IDs. No untouched
+ordinary-play generator of array storeIds is identified. There is no demonstrated
+creation of material: wild+stores+cargo+staged+spent remains conserved; the
+double-counted quantities are competing reservation authority, not two physical
+copies. The bytes are not destroyed: the invalid KEY is retained, view329 can
+export the rejected raw source, and native import preserves its incoming and
+outgoing backups. Cancelling an affected site before refresh can also remove the
+conflict. These recovery avenues bound the impact but do not make the saved
+active camp valid or permit ordinary play after the failed reload.
+
+Correction and falsifiable regression
+The earlier typed own-key/live-store validation correction closes this array
+entry as well as prototype keys; Object.hasOwn alone is insufficient because it
+still coerces arrays, so the string-type guard is essential. Validate all current
+source and pickup IDs before any accumulator write. Do not normalize malformed
+v6 arrays into authoritative strings. A save-time validity check can additionally
+prevent this cascade from replacing durable state, but does not replace strict
+input rejection or correct per-store reservation accounting.
+On Spark, in an isolated fixture realm, import exact balanced JSON with both
+source IDs ["b0"], require rejection without changing active/durable/outgoing
+state, and retain/export exact incoming bytes according to the controller's
+rejection contract. Keep an old-source negative control showing that the frozen
+engine accepts that same JSON, ordinary R placement makes valid() false, its
+actual UI save writes that state, and refresh enters rejected/blocked mode.
+Separate this malformed-input control from the main earned playable journey.

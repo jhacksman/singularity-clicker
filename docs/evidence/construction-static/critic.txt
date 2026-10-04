@@ -1,0 +1,196 @@
+Physical construction — independent frozen-source critique 01
+2026-10-04; /root/implementation_critic
+
+Disposition: two concrete source candidates require skeptical verification and
+correction before release. C01 is Medium ordinary-command admission; C02 is High
+accepted-malformed-input persistence/custody. These are static transition
+witnesses, not executed failures. No application or QA implementation was edited.
+
+Frozen material read
+
+construction-source-review-01/engine.js SHA256
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e
+construction-source-review-01/view.js SHA256
+f378c30e62e931a888872e634f1664bb491299bf2b4139d6add3d89f254d09b8
+construction-source-review-01/adapter.cjs SHA256
+55fdfe34fadcf86c4593dea36f7249335c9022447f8a8bfd432ff0bf320668a9
+construction-source-review-01/browser.js SHA256
+bbf091b3b08b4ec67113527ccab38eace2dcd58565bab1c6dcbb10f06e64ccc6
+construction-contract-v1.txt SHA256
+4610f0197ee313b0a415640d0b0c09c3236a6da1e65983421655540ba5893ea4
+
+Read all four frozen production files and the controlling contract. The native
+host loader callback was checked through git show of immutable baseline
+4c3ac2f6c16ce58563f0300f286040a7aae0a963:src/view.js, not author WIP. No other
+agent reports, partial author files or WIP QA were read for this source review.
+No runtime, parser, test, build, lint, browser or network execution occurred.
+Only this report was written. Prior contract-review knowledge is not represented
+as independent runtime confirmation of this implementation.
+
+C01 — Medium — failed group assignment still creates and reserves the site
+
+Source: engine.js:419–425, with path() 371–373, accepts() 400–406 and command()
+408–410. build() validates coordinate/worker identities, temporarily places the
+building, and checks that every worker and site can reach SOME hearth perimeter
+cell. It then commits the construction ledger, nextId and route changes before
+calling command(ids, Build(site)). It ignores command's zero return and reports
+{id}. A worker's ability to reach a hearth perimeter cell does not imply access
+to the requested site's perimeter: the hearth itself can separate pockets.
+
+Static ordinary-play geometry witness:
+1. Earn sufficient canonical wood/stone through ordinary gathering. Three
+   workshops cost 120W/90S; leave another 60W/20S for the attempted outpost.
+   No grant or noncanonical world is needed; the finite map has enough material.
+2. Complete workshops at (6,9) and (4,10). Move u0 to (6,11) and stop it. Use
+   outside workers to place and complete the third workshop at (5,12).
+3. The third workshop closes u0's south neighbor (6,12). The first closes north
+   (6,10); the second closes west (5,11); the hearth closes east (7,11). u0 is
+   now trapped at (6,11), which is itself a legal hearth receiving edge. These
+   footprints do not overlap, and none contains u0. Their exterior edges and
+   the other workers retain routes to other hearth edges. Thus build's existing
+   topology check accepts the closures. Source deliveries to those workshops
+   can use their outside edges and outside workers.
+4. With the remaining 60W/20S available, select u0 and an outside worker and
+   place a new outpost S at (11,15). S and its supplying store retain outside
+   access. The topology check still accepts u0's zero-length route to its own
+   hearth edge. But u0 has no route out of its four-sided pocket to S.
+5. build() commits S, its source reservations and nextId. command() sees the
+   unreachable selected worker and returns zero before assigning either actor.
+   build() nevertheless returns S's id. view.js:95–97 announces that builders
+   fetch and deliver supplies and saves the mutated state.
+
+Attempted disproof: validation of every selected ID prevents unknown actors,
+and command() correctly rejects its whole group before assigning it. Neither
+rolls back the preceding placement mutation. The path-to-home checks do not
+connect different hearth edges to one another. Cancellation can release these
+unpicked reservations, so this is not permanent material loss or duplication.
+Empty-selected-list placement is an existing deliberate API behavior and is not
+the reported failure. The witness concerns a nonempty, valid but unreachable
+selected group for which the public command promises atomic admission.
+
+Required bounded correction/acceptance:
+Validate the requested worker assignment on the prospective topology before
+committing ledger/payment/id/order changes. A rejected mixed group must leave
+the entire serialized world, including counters, orders, custody, reservations
+and paths, unchanged. Preserve legal zero-length paths and deliberately allowed
+unstaffed plans. Spark should exercise this genuine pocket geometry plus a
+reachable group control. A broader redesign of all hearth-edge topology is not
+required merely to close this finding.
+
+C02 — High — malformed source identity is admitted, then ordinary placement
+double-reserves stock and produces an unloadable save
+
+Source: validConstruction() engine.js:70–84, especially line76; stores() 297;
+planSupply() 206–209; supplyTargets() 210; build() 423–425. Source rows never
+require storeId to be a string or an own member of the actual-store set. The
+validator uses object-key coercion, while availability and routing use strict
+identity. These are observably different admission and execution rules.
+
+Primary static witness, without relying on prototype mutation:
+1. From a genuine earned v6 camp with exactly 60W/20S at b0, place an outpost S,
+   then Stop its empty builders before pickup. Its active ledger has sources
+   [{storeId:'b0',resource:'wood',amount:60},
+    {storeId:'b0',resource:'stone',amount:20}], zero staged/cargo/work, empty
+   origins, and unchanged actual source stock. Workers can all be idle.
+2. In that exported JSON only, replace each source-row storeId with ["b0"].
+   This is an explicitly malformed-import witness, not a claim that ordinary
+   play generates array IDs. Keep every other field and all material totals.
+3. Line76 evaluates reserved[["b0"]] as reserved.b0. Its type check is absent,
+   key deduplication also coerces to b0, recipe sums remain correct, and the
+   aggregate backing check counts the original 60W/20S against actual b0 stock.
+   No later canonical or payment check validates these construction source IDs.
+   Both constructor validations therefore admit the state by this source trace.
+4. stores() line297 tests p.storeId === b.id; an array is not the string b0.
+   It subtracts none of S's reservation, so all 60W/20S is advertised as free.
+   supplyTargets() likewise cannot find a store strictly equal to the array;
+   S cannot collect those alleged sources.
+5. Use the ordinary placement control to place another reachable outpost R
+   while the opening is incomplete. planSupply() sees that advertised free
+   inventory and creates real string-b0 reservations for another 60W/20S.
+   build() reports success and the controller saves the result.
+6. Reload now fails validConstruction line84: the first array IDs coerce to b0
+   during validation, and the new string IDs add to the same reservation total,
+   giving 120W/40S reserved against only 60W/20S actually stored. No runtime
+   validation precedes serialize()/save() to prevent writing that state.
+
+The resulting save rejection, rather than an assertion of created physical
+items, is the High persistence/custody consequence. It requires an accepted
+malformed import; it is not demonstrated from an untouched generated camp.
+Existing raw/outgoing backups limit loss and must remain available. Cancelling
+the bad site before reload may restore a valid world, but the UI has already
+accepted the source and does not diagnose the hidden reservation mismatch.
+
+Related inherited-name witness under the same missing guard:
+Use string storeId 'toString' instead of b0 on those reserved-only source rows.
+reserved is a normal Object.fromEntries object, so the inherited function is
+truthy. Reservation accumulation mutates that function's resource properties
+(initially producing NaN); Object.entries(reserved) never checks this pseudo-
+source. The recipe/world equations can still pass with a nonexistent store.
+'__proto__' similarly addresses inherited authority. This is not a claim of
+arbitrary code execution, but it demonstrates that a supposedly read-only
+validator can mutate shared objects. The array witness above proves the core
+admission/execution mismatch without this ambient-object side effect.
+
+Required bounded correction/acceptance:
+Require a typed source identity belonging to the current actual-store set
+before accumulation, with no inherited-property lookup as authority. Apply the
+same typed/own-store rule to supplyPickup hints at line90, whose current lookup
+has the same weakness. Reject malformed v6 exactly, before controller backups/
+KEY adoption, rather than normalize it. Cover ["b0"], inherited names, missing
+and retired stores, and a valid string-b0 control. Check no shared/prototype
+object mutation and unchanged input. Preserve the genuine returned-A-to-B
+reservation and historical-delivered-origin cases: historical origins are a
+different authority and must not require their old store to remain live.
+Use an isolated Spark negative control for the array-ID import followed by the
+ordinary second placement; assert current corrected admission rejects it and
+does not produce a replacement save. Three fresh skeptical reviews are requested
+for the High persistence classification; none is claimed completed here.
+
+Other scoped source conclusions and remaining evidence
+
+No separate conservation contradiction was found in the intended typed source
+path. Pickup moves at most five actual units from source stock/reservation to a
+site-tagged carrier. Source and site receipt methods both require actual edge
+coordinates, and the prior fractional approach connector is used by route/home.
+Arrival transfers cargo into staged plus matching origins. Full staged cost is
+required before installation; completion moves that bill into spent, creates
+the delivered-origin outpost claim and only then makes storage available.
+Race losers restart and recompute remaining source rows rather than pick the
+same removed allocation. These are static observations, not a concurrency or
+timing proof from executed tests.
+
+Cancel's explicit queue logic matches the reviewed contract: matching next
+Build(S) becomes Idle, unrelated next survives, and only current Build(S) without
+a successor is automatically redirected into recovery. Held/manual Move cargo
+is retained. Stock is not added when unpicked reservations are released. Physical
+returns settle active reservations or cancelled returned quantities; staged
+recovery reduces origin rows and uses a recovery tag. Empty-site cleanup first
+clears obsolete site orders. No new queue-stealing counterexample was established.
+
+The new Canvas stack reads actual staged wood/stone independently of b.work,
+and its delivery/recovery cue changes with that ledger. Inspector text exposes
+source-reserved, carried, onsite and work quantities. This closes the narrow
+contract omission at source level; rendered legibility, touch layout and the
+usefulness of the added carrying remain unverified. Existing tools and building
+cost/work constants are unchanged. The earned depot-to-workshop-to-tools loop
+and a fair alternative allocation still need actual Spark and human evidence.
+
+Startup/import constructs a candidate before adoption, resolves preservation
+reads, retains collision-safe incoming/outgoing/durable/rejected originals,
+writes KEY last, and adopts the active camp only after that write. Current v6
+is not normalized; lower versions lose untrusted construction-authority fields,
+and certified v5 gains an empty ledger while prepaid obligations remain prepaid.
+The two C02 malformed identity shapes are exceptions to the promised strict
+admission, not a claim that controller write ordering itself was reversed.
+
+The adapter includes current6 and the precise v6 backup families/suffix rules;
+future7 remains unsupported. Backups retain originals rather than becoming
+adoption candidates. Baseline native host passes a clone-based Camp constructor
+callback, so it will use the integrated engine's actual migration/admission.
+Browser navigation code adds no save write or hidden campaign grant. No further
+concrete backup/navigation blocker was found in the supplied frozen scope.
+
+All claims above are bounded to these hashes. Compilation, game tests, browser
+flows, native persistence fault cases, rendered art, useful progression and
+immutable returned-artifact provenance remain pending. No overall release or
+full-game/UX acceptance is given by this report.

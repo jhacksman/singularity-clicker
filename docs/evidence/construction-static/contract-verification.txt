@@ -1,0 +1,130 @@
+Physical construction contract — separate final verification
+2026-10-04; /root/implementation_critic
+
+Verdict: bounded contract CLEAR. The frozen revision closes the concrete art
+omission and makes cancellation's inherited successor semantics explicit. No
+remaining contract blocker was found in this targeted verification. Root may
+proceed with production and separately owned QA against this contract; this is
+not acceptance of the partial implementation or a claim of runtime success.
+
+Reviewed identities
+
+Controlling construction-contract-v1.txt SHA256:
+4610f0197ee313b0a415640d0b0c09c3236a6da1e65983421655540ba5893ea4
+Original construction-contract-draft.txt SHA256:
+a237a790d69d4774f8672261e15c41580bbf0e8042db65a3cc34f1ad6ae55543
+construction-contract-critic.txt SHA256:
+cc8679fa8d19e7cc575a44b5a0d5bb4e35881961e1da4baa18339033abfb3472
+construction-contract-skeptic-one.txt SHA256:
+a4137632136b34f25034cf020aa68533a68f38678239941600b73a1576bb8629
+construction-contract-skeptic-three.txt SHA256:
+3dec156d67eca71dadb0075a056a84e381021b4a742b426559e759f1aef67b61
+Supplementary construction-contract-skeptic-two.txt SHA256:
+f55cb5bb3b335c226f6e9a13ad02efc85675a136c93cf1660adb6c9762a90279
+
+Read the complete controlling contract and original draft, their exact diff,
+the critic and all three named skeptical reports. Skeptic two's disclosed scout
+exposure remains supplementary; it is not counted as a strictly independent
+review. Skeptic three's disagreement about the original queue ambiguity is
+preserved rather than rewritten as unanimous confirmation of an engine defect.
+
+Clean source reads used git show of immutable baseline
+4c3ac2f6c16ce58563f0300f286040a7aae0a963, not the author worktree:
+src/hearth-rts/engine.js SHA256
+416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5
+src/hearth-rts/view.js SHA256
+2a6495938d9a10d305da0b53e39896bf0951d1d51edc44a17c6a96bea09c4e67
+Inspected baseline costs/validation/certification, claims, storage/funding,
+pickup/receipt, route/home/Move, command, build/cancel and relevant view drawing
+and return-status disclosure. No partial implementation was assessed as final.
+
+F1 closure — actual onsite art
+
+The added View/controls paragraph requires a Canvas wood/stone stack derived
+from actual staged ownership, separate delivery and installation cues, and a
+cancellation/recovery cue. Five delivered wood at work zero must visibly differ
+from an empty work-zero ghost; changing staged quantities changes the cue.
+This directly excludes the critic's witness: the baseline dashed footprint and
+b.work-only bar cannot remain the sole site-local representation after unload.
+It does not depict unpicked source reservations as onsite, invent a work charge,
+or require a new asset pipeline. The matching empty/partial/working/cancelling
+rendered evidence remains an implementation and Spark verification obligation.
+
+F2 closure — successor intent and custody are separate
+
+The explicit cancellation order table preserves the baseline's meaningful Idle
+sentinel. Baseline command() stores a loaded worker's new non-Move order in
+u.next while retaining return context; receive() promotes u.next before start().
+Baseline cancel() sets a matching queued target to {kind:'idle'}, not null.
+
+For ordinary Gather cargo with next=Build(S), Cancel S now explicitly replaces
+only that queued Build with Idle. The actual cargo retains its original receipt
+authority and physical return. After receipt the worker idles; the superseded
+Gather cannot resume merely because next was cleared to null. The same rule
+prevents revival of an old Build(T) or another superseded current instruction.
+
+For S-tagged cargo with current Build(S) and next=Gather, Build(T), or Idle,
+Cancel S preserves that successor exactly. S's load returns and settles once,
+then the accepted successor starts; it cannot be replaced with another S
+recovery trip. Automatic recovery is limited to current Build(S) with no queued
+successor. Current Move and held/manual Idle retain authority. Final cleanup
+clears only obsolete S references, not unrelated orders or cargo ownership.
+These rules resolve both critic witnesses and the null-versus-Idle trap without
+claiming that the old engine already had the proposed construction defect.
+
+Bounded material/source model
+
+The active partition sources + staged + tagged cargo = recipe is consistent
+with physically reserved source inventory: reservation changes availability,
+pickup moves actual stock into cargo, and onsite receipt moves cargo into WIP.
+Cancellation releases only unpicked reservations without adding stock; remaining
+staged/cargo plus released/returned account for the same fixed recipe. Returning
+active-site cargo increases receiving-store stock and its site reservation
+together, so that return neither grants free goods nor demands another bill.
+Cancelled-site receipt frees the actual goods exactly once. Recovery cargo is
+not relabeled as gathering, transfer or outpost-reclaim production.
+
+The clarified origins record is distinct from current sources: A pickup returned
+to B creates no A delivery origin; a later B pickup actually delivered records
+B. Origins sum to currently staged materials and decrease on recovery pickup.
+Historical origins survive source retirement and must not be dereferenced as
+live stores when the completed outpost obtains its claim. This clarifies the
+already intended model; it does not revive the disproved source-history finding
+or add an unbounded event journal.
+
+New completion moves the full staged bill into spent only after the original
+installation work. The unchanged costs are outpost 60W/20S with 24 worker-seconds
+and workshop 40W/30S with 32; cargo capacity remains five, speed three cells/s,
+and existing tool price/work/rate remains 4W/8S, 12, .45. Full delivery before
+work is the declared versioned boundary, not a new per-load labor cost. A partial-
+work cancellation physically recovers materials; performed work is not a refund
+or transferable replacement-site progress. Funding remains opening-pool versus
+post-opening local, with all construction and transfer reservations excluded
+from availability to competing purchases.
+
+Compatibility and remaining verification boundary
+
+Existing certified v5 material/work/order/cargo and prepaid unfinished sites
+are preserved when an empty construction ledger is added. Legacy prepaid sites
+keep their existing debit/refund authority; only newly placed physical sites use
+the new staged equation and completion-time claim. Optional legacy certification
+failure remains playable/exportable, current malformed v6 rejects, and future
+v7 is unsupported. Exact raw preservation and durable-before-active-adoption
+remain mandatory for startup/import, including outgoing live, durable and
+rejected sources; native navigation must validate/export through the integrated
+candidate. These are coherent obligations, not evidence that new handlers exist.
+
+The baseline's prepaid paidVector/claim issuance, source validators, availability
+and receipt routing necessarily require version-aware implementation changes.
+Their current differences from the proposed model are expected work, not new
+contract defects. Separate immutable-source review must verify those changes
+and finite bounds. Spark must then demonstrate physical boundaries, races,
+override/cancellation sequences and reloads, raw retention, source retirement,
+same-site art states and the earned useful-depot/workshop/tools progression.
+Neither automated elapsed time nor this contract review establishes enjoyment,
+human pacing, full H2/full Hearth, or full campaign acceptance.
+
+No application, parser, test, build, lint, browser or network execution occurred.
+Only this verification report was authored; product, tests and manifests were
+not edited. No permission question or additional economic design choice is
+required to proceed within the frozen contract.
