@@ -1,0 +1,235 @@
+Physical construction — separate final source verification 02
+2026-10-04; reviewer /root/construction_final_verifier
+
+Disposition
+C01 and C02 are corrected at the frozen-source boundary. The changes are narrow,
+preserve the required historical-origin and stale-pickup semantics, and introduce
+no further concrete production blocker in the inspected scope. Q01, Q02 and Q04
+are closed as authored regression-source gaps. Q03's unpinned provenance gate is
+corrected in source; genuine execution provenance still requires independent
+review of the returned immutable Spark artifacts. This is not a runtime pass,
+release approval, browser/visual acceptance or claim of enjoyable gameplay.
+
+Scope and independence
+I was not an implementation author, primary critic, or confirming skeptic for
+these findings. I read the controlling construction-contract-v1.txt, the primary
+source critique, production skeptic one (including its C02-P extension), source
+skeptic compatibility report, C02 skeptic three, and QA static review 01. I then
+compared frozen review-01 and review-02 source, inspected the affected engine
+callers/validators, and reviewed the named deterministic/browser/legacy-producer
+test sources. I used read-only text, diff, git-object and hash inspection. I did
+not execute application code, a parser, tests, builds, a browser, or network work.
+No production or test file was edited. Only this verification report was written.
+
+Immutable identities (SHA-256)
+Initial candidate commit f8ea5cfaffa6b028bf830710de79be13b7cdf109 was HEAD and its
+worktree was clean when inspected. Final QA-only commit
+f733a739d06c5a614a9bdfd18a501bd32181a048 was subsequently inspected: its diff adds
+the negative-control runner, diagnostic context/markers in the same regression
+assertions, and its two-line usage note. Its worktree was clean; scoped production
+remains frozen02.
+
+review-01/engine.js and tests/fixtures/hearth-construction-before-review.txt:
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e
+review-02/engine.js and candidate src/hearth-rts/engine.js:
+9ba982384a05a1f45410b77c8c3a92acb7fc27a8892b2f9c5b83babec5aab388
+Both frozen revisions and candidate src/hearth-rts/view.js:
+f378c30e62e931a888872e634f1664bb491299bf2b4139d6add3d89f254d09b8
+Both frozen revisions and candidate src/campaign-navigation/adapter.cjs:
+55fdfe34fadcf86c4593dea36f7249335c9022447f8a8bfd432ff0bf320668a9
+Both frozen revisions and candidate src/campaign-navigation/browser.js:
+bbf091b3b08b4ec67113527ccab38eace2dcd58565bab1c6dcbb10f06e64ccc6
+construction-contract-v1.txt:
+4610f0197ee313b0a415640d0b0c09c3236a6da1e65983421655540ba5893ea4
+Initial tests/hearth-construction.test.cjs at f8ea5cf:
+fba16c2cacda9b9949034dedf38edd9d3b5c2e2f49c4941b91ec9fa96a9d7f56
+Final tests/hearth-construction.test.cjs at f733a73:
+f460a3a8dd6ec8325786b18ed13612e83bd25ba37e17a8c2546d88eaa4d6c937
+scripts/check-construction-negative.cjs at f733a73:
+542ea5f06843b8def048c52c52b8574ba8e0a07cbd8d8a5162e94aba4c2828ea
+tests/browser/hearth-construction.cjs:
+31bbf333b2cc49d8ea08a05d64d2aaa41480a31777eb115e77e04cdc4ccb23a5
+tests/browser/hearth-construction-legacy.cjs:
+f8a4c31c3da1ee71ed6a0b97c3732b0e3ff6794caeab61718b630327cd7d569b
+
+Old-witness commit e1d5c858b9d97a8528dd12b6ab726ea38d3dfc85 was HEAD in
+hearth-construction-legacy-witness. Its diff against the named old baseline is
+only the 125-line producer addition, with the same producer hash above.
+I independently hashed git-show bytes at immutable old baseline
+4c3ac2f6c16ce58563f0300f286040a7aae0a963. All five hardcoded manifest values in
+both browser scripts match those baseline bytes:
+src/hearth-rts/engine.js
+416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5
+src/hearth-rts/view.js
+2a6495938d9a10d305da0b53e39896bf0951d1d51edc44a17c6a96bea09c4e67
+src/hearth-rts/shell.html
+124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd
+src/hearth-rts/styles.css
+3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+build.mjs
+cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47
+The deterministic old-engine fixture independently matches that engine hash.
+
+C01 — source correction verified
+Frozen02 engine.js:421 appends only the prospective building. Existing topology
+checks run with that footprint present. New lines425–427 then apply accepts(u,
+Build(newId)) to every selected worker before planSupply/ledger creation428,
+legacy payment429, nextId increment, actor route replanning or command430.
+accepts402–408 calls the nonmutating path calculation373–375. It does not release
+transfer/reclaim authority, alter cargo, assign orders, or reset an actor.
+Failure pops the sole provisional footprint and returns an error. All prior
+world entries, counters, custody, orders and paths remain unchanged by this
+branch. Zero-length route [] stays accepted through boolean conversion; an
+empty selected array stays an intentionally allowed unstaffed plan.
+
+The preflight also applies before legacy-prepaid payment, which is consistent
+with the same public build admission contract. No broad topology redesign is
+introduced; the pre-existing any-hearth-edge rule is unchanged. Production diff
+contains only this preflight and the C02 validator changes described below.
+
+Deterministic test452–469 earns sufficient materials, constructs the three
+actual workshop blockers, verifies the trapped worker's valid empty hearth-edge
+path and absent new-site path, and submits the mixed group. It requires an error
+and byte-identical complete serialization, then roundtrips. It targets the real
+C01 boundary and would expose the old false-success commit. It does not seed
+obstacles or materials. It asserts an outside worker has a route and that plain
+placement is legal; it does not additionally submit an outside-only success in
+that same final enclosure. General successful selected/empty placement controls
+exist elsewhere. This is a bounded coverage limit, not a demonstrated fix defect.
+
+C02 — source correction verified
+Frozen02 engine.js:70 creates a Map from own storage keys, with independent
+resource vectors. liveStore72 first requires a primitive string, then an own
+storage entry, then strict identity of a current building satisfying isStore
+(done, nonretiring hearth/outpost, line11). Current source rows78 must pass that
+guard before key concatenation, Map lookup or resource addition. Arrays, null,
+numbers and inherited names cannot supply dictionary authority. There is no
+coercive reservation-target access and no write to an inherited intrinsic.
+
+The Map transfer accumulation85 uses already checked transfer identities:
+valid51–57 establishes strict storeIds membership before validConstruction58.
+The backing comparison86 still combines physical construction and transfer
+reservations against actual source stock. The validator does not stringify or
+normalize rejected input. Constructor188 still validates supplied state before
+adopting/cloning it. Thus the malformed array entry is rejected before the
+ordinary second-build cascade can exist in an accepted Camp.
+
+Planned supplyPickup92 uses the same liveStore guard. It deliberately does not
+require a positive matching source row. A competing worker may consume the last
+row while another worker retains a plan; pickupSupply226–227 still checks the
+row at actual pickup and restarts a loser without a stock debit. Retirement also
+continues to reject stores still named by planned pickups (reclaimQuote260).
+
+Historical delivered origins are unchanged: validOrigin68 checks a bounded
+snapshot without live-store membership; cargo origins90 and onsite origins79
+still use it. issueClaim201–203 clones deliveredOrigins directly rather than
+dereferencing live source buildings. Completion462 passes c.origins. Reclaim
+origin validation151 likewise admits historical snapshots after source removal.
+The tightened guard therefore applies to present pickup authority, not history.
+
+Tests540–568 independently mutate source rows and pickup plans using ["b0"],
+toString, __proto__, constructor, null, 0 and17. Each child receives JSON bytes,
+checks false validation and constructor rejection, compares input bytes, and
+checks property descriptors on prototypes/intrinsic function objects before and
+after both paths. Separate child processes prevent a vulnerable negative case
+from polluting the remainder. Missing source IDs are also covered at523.
+Normal typed-source controls occur throughout the suite. These regressions
+directly target C02; the reviewed browser main flow is not a malformed-import
+controller regression. Explicit retired/missing pickup-identity negative cases
+and an explicit assertion of a still-pending exhausted source row are not named
+in these tests. Existing race cases209–238 exercise last-load competition and
+validate each completed tick; source inspection establishes the preserved rule.
+Isolated pre-fix negative controls, current-controller rejection/durable custody,
+and exact incoming-byte retention remain Spark evidence requirements.
+
+QA corrections against construction-qa-static-review-01.txt
+Q01: tests391–415 now run the A-return-B sequence for both workshop and OUTPOST.
+They assert the exact B id/kind/x/y/resource/amount snapshot, physically retire B,
+roundtrip with B absent, finish the new outpost, then check delivered-construction
+claim basis, exact historical row, canonical full origin bill/unreleased vector,
+and exact claim roundtrip. This reaches the distinct issueClaim completion
+branch the former workshop-only case missed. check()/roundtrip also invoke the
+validator's duplicate-claim guard147, so duplicate issuance cannot silently pass
+these completed-state checks. The regression gap is closed at source level.
+
+Q02: tests150–189 deliberately position empty workers at distinct site edges,
+then test one and four workers for both buildings and Tools018. Expected gain is
+independently min(remaining, dt*eligibleCount), with dt=.13 and an asserted capped
+last tick. Costs/work constants are locally specified. Multiplying by the group
+count once for every worker fails this oracle. Browser materialStep189–198 and
+craftComplete260–270 also count adjacent, empty, unqueued, path-finished eligible
+workers and relate gain to elapsed simulation time; comparisons363–364 require
+both one-worker and multiworker observations. Samples are bounded to at most one
+.1 engine tick, consistent with the view's fixed-step accumulator339, so actor
+arrival during a movement tick is not charged as a full installation tick.
+These corrections close the earlier endpoint-only labor gap at source level.
+
+Q03: browser18–25 and producer13–20 pin five old source/build inputs to independently
+verified baseline hashes. Producer75–89 validates them, binds exact HTML and its
+own script hash, serves those HTML bytes, and retains source/build/producer files.
+It opens a fresh browser context and uses ordinary trusted controls to gather
+d0,d2,d1, pay for an outpost and save a genuinely unfinished paid job in its
+intended execution path. No source injection or authored storage seed appears.
+
+Consumer437–478 verifies the fixed hashes, exact producer hash/copy, binding,
+ordered seven-checkpoint chain, downloaded bytes and screenshots, contiguous
+event ranges, trusted gather/control/export events, fresh stock, each earned
+resource/depletion transition, paid recipe and zero-work placement, then exact
+final fixture bytes. This is materially stronger than matching self-reported
+commit strings and flags. Consumer509 explicitly preserves independent
+coordinator artifact review: hashes establish correspondence, not authentication
+of an arbitrary report. HTML inclusion alone does not prove the file was built
+only by the pinned build inputs. The actual old build, dispatched producer,
+returned artifact custody and screenshot/checkpoint chain still need independent
+Spark evidence verification. Missing witness stays pending with exitCode2.
+
+Q04: tests358–368 now begin with picked Build(A) cargo, assert current Build(A),
+queue Build(B), cancel B, and require next=Idle. The load returns once, active A
+regains exactly five reserved items, the worker remains idle after further ticks,
+and B disappears. This is the previously missing current-Build matrix row.
+
+Supplementary negative-control runner
+The final QA-only change preserves all tested assertions. It adds a C01 rejection
+marker and passes field/state into each existing isolated C02 child so its failed
+admission assertion names source versus pickup. The runner hashes and requires
+the exact vulnerable00166e engine, copies the candidate test bytes unchanged into
+a private mkdtemp tree, and substitutes only the engine there. Exact anchored
+test-name filters run C01 and C02 separately with a240-second timeout and8MiB
+output bound. Success requires normal exit1, no signal/spawn error, the named
+test, its specific assertion marker and a TAP not-ok record. A no-match exit0,
+generic setup failure, timeout or parse failure without that named assertion
+does not satisfy these conditions. Full logs/hashes and failure details are saved
+before the runner fails. The owned temporary tree is removed in finally; the
+candidate source is never a cleanup target and is compared byte-for-byte after
+both controls. Output consists of test diagnostics and local test paths, with no
+secret read or network output path in this script.
+
+Its C02 negative run intentionally stops at the first failing source-array
+assertion. It does not establish separate negative sensitivity for inherited
+keys or planned-pickup IDs; the corrected-engine test still loops over those.
+The runner explicitly limits its evidence to reducer regression failures, not
+an observed browser adoption/save/refresh chain. No negative run was executed
+here. Runtime command compatibility and actual marker-bearing failures remain
+Spark checks.
+
+Additional browser source improvements
+The site crop now begins above the footprint and includes the delivery/recovery
+cue region (99–103). supplyText133–147 compares source-reserved, en-route, onsite,
+work, actual source names/amounts, next action and selected-worker status to the
+exported state. PNG inequality remains explicitly insufficient for art acceptance
+(315–316). Neither source change proves rendered legibility or visual quality.
+
+Remaining evidence and limitations
+All parser/test/build/browser outcomes remain unexecuted by this verifier. Spark
+must run the exact immutable candidate and old producer, retain failed runs and
+the vulnerable-engine negative controls, and return byte-bound evidence for
+independent review. In particular: C01 earned enclosure rejection and successful
+control; C02 rejected import/adoption without intrinsic or live/durable mutation;
+exact raw backup/export behavior; construction races and retired-origin claims;
+24/32/12 worker-second oracles; native navigation/startup/legacy migration; and
+the earned useful depot/workshop/tools sequence and allocation comparison.
+The producer's280-second and main harness's875-second budgets are authored limits,
+not proven execution durations. Full/correctly cropped screenshots still require
+independent visual review for staged-material difference, delivery/recovery cues,
+readability and layout. No human pacing, enjoyment, physical-device or full-game
+acceptance follows from this static verification.
