@@ -100,3 +100,14 @@ reuses byte-identical snapshots and keeps distinct originals under unused suffix
 The browser suite checks A-to-A reuse, A-to-B retention, and failed C main-write
 retaining A/B originals plus the failed candidate's own raw backup.
 These follow-ups were fixed only after both independent skeptic verdicts.
+
+F6 High, immutable aef0ec5 closure follow-up: validator admitted transfer cargo
+with an extraction phase/order. The resulting extraction could convert five wood
+into extra stone. All three independent skeptics confirmed the source trace,
+narrowed to malformed accepted imports rather than ordinary commands. Engine
+owner adds an exclusive compatible phase invariant and typed-conservation/reload
+regressions for both rejection and legitimate Stop/reassignment/blocked recovery.
+Storage019 was withdrawn before coordinator approval/execution. The corrected
+immutable candidate must use a new queue ID; no failed or passed runtime is claimed.
+Recovery tests now install the main-key fault only after successful Resume and
+freeze the browser clock between actions, so import itself must pause the camp.

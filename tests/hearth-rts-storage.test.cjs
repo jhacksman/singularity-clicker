@@ -213,3 +213,35 @@ test('construction cannot seal the final access edge of a stocked completed outp
  g.s.buildings.push({id:'seal-w',kind:'workshop',x:21,y:11,done:true,work:32,cost:{}},{id:'seal-e',kind:'workshop',x:25,y:11,done:true,work:32,cost:{}},{id:'seal-n',kind:'workshop',x:23,y:9,done:true,work:32,cost:{}});
  g.s.complete=false;assert.equal(g.placement('workshop',23,13),null);const before=g.serialize();assert.ok(g.build('workshop',23,13,[]).error);assert.equal(g.serialize(),before);assert.ok(g.store(outpost).stock.wood>=50);custody(g);
 });
+
+test('transfer cargo cannot import into a working, walking or pickup phase and change resource type',()=>{
+ const {g,outpost,workshop}=expanded(),before=totals(g);g.transfer(['u0'],'b0',outpost,'wood');until(g,()=>!!g.s.units[0].transfer);
+ const saved=g.serialize(),u=g.s.units[0],job=g.s.storage.transfers[0];assert.equal(u.cargo,5);assert.equal(u.resource,'wood');assert.equal(job.pending.u0,0);assert.equal(job.remaining,0);custody(g);
+ for(const [phase,order]of [
+  ['extract',{kind:'gather',target:'d6'}],
+  ['construct',{kind:'build',target:workshop}],
+  ['craft',{kind:'craft',target:workshop}],
+  ['walk',{kind:'move',x:25,y:14}],
+  ['pickup',{kind:'transfer',target:job.id}]
+ ]){const bad=JSON.parse(saved);bad.units[0].phase=phase;bad.units[0].order=order;bad.units[0].path=[];bad.units[0].work=.6;const raw=JSON.stringify(bad);
+  // In particular, the five carried wood must never enter extraction from the stone source.
+  assert.deepEqual(totals({s:bad}),before);assert.equal(valid(bad),false,phase);assert.throws(()=>new Camp(bad),/compatible RTS Hearth save/);assert.equal(JSON.stringify(bad),raw);assert.equal(g.serialize(),saved);
+ }
+ until(g,()=>!g.s.storage.transfers.length);assert.equal(g.store(outpost).stock.wood,5);assert.deepEqual(totals(g),before);custody(g);
+});
+
+test('valid transfer cargo survives Stop, Move and Gather reassignment with typed conservation after reload',()=>{
+ const {g:base,outpost}=expanded();base.transfer(['u0'],'b0',outpost,'wood');until(base,()=>!!base.s.units[0].transfer);const saved=base.serialize(),before=totals(base);
+ for(const order of [{kind:'idle'},{kind:'move',x:25,y:14},{kind:'gather',target:'d6'}]){const g=new Camp(JSON.parse(saved)),u=g.s.units[0];assert.equal(g.command(['u0'],order),1);assert.equal(u.phase,'return');assert.equal(u.cargo,5);assert.equal(u.resource,'wood');assert.deepEqual(u.next,order);custody(g);
+  const copy=new Camp(JSON.parse(g.serialize()));assert.deepEqual(copy.s,g.s);for(let i=0;i<500;i++){g.tick(.1);copy.tick(.1);}assert.deepEqual(copy.s,g.s);assert.deepEqual(totals(g),before);custody(g);
+ }
+});
+
+test('blocked idle transfer cargo remains reloadable and can recover without loss or conversion',()=>{
+ const {g,outpost}=expanded(),before=totals(g);g.transfer(['u0'],'b0',outpost,'wood');until(g,()=>!!g.s.units[0].transfer);
+ // Isolate the carrier at a store edge to exercise the genuine blocked-return state.
+ closeHearthCorner(g);const u=g.s.units[0];u.x=6;u.y=11;assert.equal(g.transferHome(u),false);assert.equal(u.phase,'idle');assert.deepEqual(u.path,[]);assert.equal(u.cargo,5);custody(g);
+ const copy=new Camp(JSON.parse(g.serialize()));assert.equal(copy.s.units[0].phase,'idle');steps(copy,2);assert.equal(copy.s.units[0].cargo,5);assert.deepEqual(totals(copy),before);
+ const malformed=JSON.parse(copy.serialize());malformed.units[0].path=[{x:6,y:11}];assert.equal(valid(malformed),false);assert.throws(()=>new Camp(malformed));
+ assert.equal(copy.command(['u0'],{kind:'idle'}),1);assert.equal(copy.s.units[0].phase,'return');until(copy,()=>!copy.s.units[0].cargo);assert.equal(copy.s.storage.transfers.length,0);assert.deepEqual(totals(copy),before);custody(copy);
+});
