@@ -67,6 +67,7 @@ function canonicalReason(s){
  if(canonicalDeposits.some(([kind,x,y,initial],i)=>!s.deposits.some(d=>d.id==='d'+i&&d.kind===kind&&d.x===x&&d.y===y&&d.initial===initial&&integer(d.amount)&&d.amount<=initial)))return 'A finite source differs from the canonical map';
  if(!['stock','spent','delivered'].every(k=>vector(s[k]))||!integer(s.depleted))return 'Material counters must be bounded integers';
  if(s.storage&&(!integer(s.storage.nextId)||s.storage.nextId<1||!vector(s.storage.transferred)||Object.values(s.storage.stores).some(v=>!vector(v))||s.storage.payments.some(p=>p.sources.some(v=>!integer(v.amount)))||Object.values(s.storage.reservations).some(v=>v.sources.some(p=>!integer(p.amount)))))return 'Store identities, payment and refundable-source materials must be bounded integers';
+ if(s.storage&&RESOURCES.some(r=>s.storage.transferred[r]+s.storage.transfers.filter(j=>j.resource===r).reduce((n,j)=>n+j.remaining+s.units.filter(u=>u.transfer===j.id).reduce((m,u)=>m+u.cargo,0),0)>=LIMIT))return 'Transfer counters lack room for existing reserved and carried loads';
  if(s.depleted+s.deposits.filter(d=>d.amount>0).length>=LIMIT||RESOURCES.some(r=>s.delivered[r]+s.deposits.filter(d=>d.kind===r).reduce((n,d)=>n+d.amount,0)+s.units.filter(u=>u.resource===r&&!u.transfer&&!u.reclaim).reduce((n,u)=>n+u.cargo,0)>=LIMIT))return 'Gathering counters lack room for the remaining finite resources';
  const totals={wood:416,stone:220,food:225};
  if(RESOURCES.some(r=>s.stock[r]+s.spent[r]+s.units.filter(u=>u.resource===r).reduce((n,u)=>n+u.cargo,0)+s.deposits.filter(d=>d.kind===r).reduce((n,d)=>n+d.amount,0)!==totals[r]))return 'The declared world does not conserve the original finite material budget';
@@ -101,7 +102,7 @@ function sourceLabel(s){let h=2166136261;for(const c of JSON.stringify(s))h=Math
 function validReclaim(s){
  const a=s.reclaim;if(!a||a.profile!==RECLAIM_PROFILE||typeof a.sourceIdentity!=='string'||a.sourceIdentity.length>100||!Array.isArray(a.claims)||a.claims.length>29||!vector(a.recovered)||!vector(a.settled)||!integer(a.settledSites)||!integer(a.closedPayments)||canonicalReason(s)||paymentReason(s))return false;
  if(!Number.isInteger(s.storage.nextId)||s.storage.nextId>=LIMIT||!sameCost(a.settled,{wood:a.settledSites*60,stone:a.settledSites*20,food:0}))return false;
- if(a.closedPayments+s.storage.payments.length>=LIMIT||RESOURCES.some(r=>s.storage.transferred[r]+s.storage.transfers.filter(j=>j.resource===r).reduce((n,j)=>n+j.remaining+s.units.filter(u=>u.transfer===j.id).reduce((m,u)=>m+u.cargo,0),0)>=LIMIT))return false;
+ if(a.closedPayments+s.storage.payments.length>=LIMIT)return false;
  const ids=new Set();
  for(const c of a.claims){
   if(!c||typeof c!=='object')return false;
