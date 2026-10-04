@@ -1,0 +1,160 @@
+G01 — independent gameplay/status skepticism
+2026-10-04
+
+Source and scope
+Read only construction-contract-v1.txt and engine.js/view.js via git show at
+bc12f3aa684ecd1092f665de11e80ed1dc147702. Did not read the new gameplay review or
+other skeptic reports. No application, parser, test, build, browser, or network
+execution occurred. No production/test files were edited. The queued Spark
+candidate remains untouched. This is a static finding and proposed regression,
+not a claimed observed runtime screenshot or passed ordinary-control run.
+
+Verdict: confirmed, narrow Low status defect
+Previously empty workers resume installation automatically, but their serialized
+reason and displayed selected/card status remain "Waiting for site supplies"
+until another start/order/completion transition replaces that reason. The material
+and installation logic itself continues correctly. The scope supports Low rather
+than a demonstrated Medium functional failure: no blocked completion, resource
+loss, order loss, or invalid save follows from this status text alone.
+
+Disproof attempted
+The view independently derives the site's next action from live supply counters.
+At view288, when no source-reserved or carried material remains, Next becomes
+"Install the delivered materials." The work progress and onsite counters also
+remain live. Thus a stronger claim that the entire inspector falsely says the
+site cannot proceed is disproved. Those live site fields do not override the
+individual worker status, however, and can contradict it in the same panel.
+
+Exact source transition
+1. engine220–222: when an active site has no reachable unpicked source choices,
+   startSupply routes the empty worker to the site, sets phase='construct', and
+   sets reason to "Waiting for site supplies" unless staged already equals the
+   recipe. This is the expected waiting state while the last loads are carried.
+2. engine462: an at-site construct worker with an incomplete staged recipe and
+   no remaining source rows simply continues the tick. There is no reason update.
+3. engine230–233: the final carrier unloads into staged, clears its cargo/tag,
+   and calls start(u) only on ITSELF. Its own startSupply now writes
+   "Installing outpost" (or workshop). Earlier waiters are not restarted here.
+4. engine462: once staged equals the recipe, each earlier at-site construct worker
+   falls through to b.work += dt. There is no assignment to u.reason and no start
+   call on that path. Their old Waiting reason survives while they add real work.
+5. engine240/462 eventually clears the completed site's orders through start(),
+   replacing the stale reason. The mismatch can therefore last through the
+   installation interval, rather than being only a single rendering frame.
+
+Source-derived ordinary four-worker witness
+Use an ordinarily earned outpost reservation, e.g. an outpost S at(11,15), with
+the real60W20S bill backed at the hearth. All control actions below are existing
+Move/Build/Pause actions; there is no source injection or special state mutation.
+
+- Let u3 perform the autonomous supply assignment until75 items are onsite:
+  staged={wood:60,stone:15,food:0}, work=0. Earlier in this supply sequence,
+  ordinary Move can park idle empty u0,u1,u2 at distinct accessible S edges such
+  as(13,15),(13,16),(12,17). These are outside the2x2 footprint and leave the
+  hearth-facing edge(10,15) available to u3.
+- Pause after u3 picks the final5 stone but before it reaches S. Now sources=[];
+  u3 has supply.siteId=S, cargo5 stone, phase=supplyDeliver; staged remains60W15S.
+- Assign u0,u1,u2 to Build(S) once. Each is already at a distinct free site edge,
+  so startSupply finds no sources, routes an empty path, and writes construct /
+  "Waiting for site supplies". u3 retains its existing delivery assignment.
+- Resume. While u3 walks, the three waiters do no installation because staged is
+  still short5 stone. No further click or reassignment is needed.
+- On u3's final receipt tick, stable actor order processes u0,u1,u2 first; all
+  three still wait. u3 then delivers, producing staged60W20S, calls its own start,
+  and receives reason="Installing outpost". The others retain Waiting.
+- On the next .1-second tick, all four are empty, at actual site edges, assigned
+  Build(S), and fully supplied. b.work rises from0 to.4 worker-seconds. u0/u1/u2
+  still have reason="Waiting for site supplies"; only u3 says Installing.
+
+An ordinary staggered final wave of four carriers has the same result: every
+carrier that unloads before the recipe becomes complete can receive Waiting,
+and the final receipt updates only its own carrier. The explicit paused boundary
+above avoids relying on unexecuted assumptions about exact natural arrival times.
+Coordinates and sequence are source-derived; Spark must establish the actual UI
+trace before reporting this as observed gameplay.
+
+Visible misleading output
+- view255–256 unitStatus returns u.reason unchanged when cargo=0.
+- view264–265 unitDetail does the same for an empty worker.
+- view299 uses unitStatus for every villager card and unitDetail for its title.
+- view291–293 uses unitDetail for the selected worker inspector.
+- view289 appends each selected worker's unitStatus to #site-supply, beside live
+  Build work and the independently computed Next: Install... text.
+Thus selecting the early waiters can show three supposedly waiting workers while
+their actual .3-worker-second contribution per .1 tick is included in progress.
+The contract requires selected next-action/status and waiting/material counters
+to reflect actual state, so this is a real, bounded mismatch with that contract.
+
+Minimal status-only correction
+At the already-authorized installation branch, after verifying a physical site
+has its complete staged bill and immediately before adding that worker's dt,
+refresh its reason to "Installing "+b.kind. Do not call start() on all workers:
+that would unnecessarily reset work/path state and can affect manual successors.
+Keep the existing order, phase, path, cargo, counters, work rate and ID unchanged.
+Alternatively derive empty-worker installation status from current site state in
+one shared view helper, but an engine reason refresh also keeps exported reasons
+consistent. Root remains the sole owner of any future correction.
+
+Regression that distinguishes the bug
+On Spark, use the ordinarily earned last-load boundary above with at least two
+early waiters and one late carrier. Before the final receipt assert work0, the
+exact incomplete staged vector, and Waiting statuses. Observe the actual final
+receipt, then one installation tick; independently assert four eligible workers
+contributed exactly.4 work, and all four currently installing workers now report
+Installing, not Waiting, on both cards and the selected-worker/site inspector.
+Check counters/custody/order/path remain identical apart from expected receipt,
+work and reason changes. Include pause/reload during installation so saved stale
+text cannot be treated as current truth on the next running work tick. A one-worker
+case alone is insufficient because its final carrier receives the correct reason
+already. Preserve the original bc12f3aa trace as the negative control; do not edit
+the immutable queued artifact to manufacture a pass.
+
+G02 follow-on — installation work is absent from the pre-placement quote
+Independent static check of the same exact bc12f3aa candidate; also read its
+shell.html for static button labels. No other review read, execution, or edit.
+
+Verdict: confirmed narrow omission; optional Low predictability improvement.
+The reviewed contract fixes24/32 worker-seconds and calls for material source /
+reservation / physical-delivery disclosure, but does not explicitly require the
+numeric installation labor in every precommit quote. Therefore this is useful
+low-impact clarity work, not a demonstrated Medium functional or save defect.
+The broader phrase "prices only" is imprecise: current guidance also names actual
+funding stores and explains pickup/hauling. What is absent is the labor quantity.
+
+Every new-site precommit path checked:
+- shell.html:4: Outpost and Workshop buttons list60wood20stone and40wood30stone;
+  no24/32, tooltip, or separate installation-work label is present.
+- view105: the arming toast describes placement/confirmation and reservation,
+  without the labor amount.
+- view213/219–226: armed #command-help names coordinates and actual source /
+  missing-material information; touch #placement-status adds the recipe and
+  availability/error. Neither appends WORK[mode].
+- view156–158: desktop placement commits on the target click, so there is no
+  later numeric labor confirmation before mutation. Touch sets a preview; its
+  confirmation at169 uses the same commit function after the above quote.
+- view178–193 and171: native keyboard activation uses the same build-button
+  handlers; there is no alternate installation quote in a keyboard branch.
+- view323: the placement Canvas ghost indicates geometry/validity only.
+
+The post-placement site inspector does show the exact WORK[b.kind] denominator
+at287/289. Inspecting an already-reserved site before reassigning builders is a
+real available work disclosure, but does not make the first new-site purchase
+quote complete. Tools' separate pre-project12-worker-second label at251 also
+does not disclose outpost/workshop installation work.
+
+Bounded wording assessment
+For the physical-v6 placement quote, "After delivery: 24 worker-seconds to
+install." (32 for workshop) accurately names the unchanged installation bill.
+It does not state a wall-clock completion ETA, include travel/hauling in that
+number, promise all selected workers are continuously productive, or add a new
+charge. Derive it from WORK[mode], and make it visible in armed guidance for the
+desktop path as well as touch confirmation. No timer, recipe, or order change is
+needed. For legacy playable/prepaid placement, omit the physical-delivery prefix
+and use "Installation: 24/32 worker-seconds" so the new text does not falsely
+promise retroactive hauling in the compatibility path.
+
+Small verification scope
+Check both structure kinds' armed desktop and touch preview text BEFORE placing
+the site, with the actual quote still mutation-free. After committing, the same
+numeric amount must agree with the site's work denominator. This wording change
+does not require a new runtime timing experiment or a human enjoyment claim.

@@ -1,0 +1,203 @@
+Independent physical-construction gameplay review protocol
+Reviewer: construction_gameplay_review
+Date: 2026-10-04
+Source reviewed: bc12f3aa684ecd1092f665de11e80ed1dc147702, clean on inspection
+Previous playable reference: 4c3ac2f6c16ce58563f0300f286040a7aae0a963
+
+Boundary and independence
+
+This is a source-derived protocol, not a runtime verdict. I read actual
+src/hearth-rts/engine.js, view.js, shell.html, styles.css; the committed physical
+construction contract and feature document; tests/browser/hearth-construction.cjs;
+the relevant all14-v3 Level 01, physical-job/cancellation rules and command
+contract. I did not read other gameplay, scout, critic or skeptic reports before
+forming this review. No runtime, parser, test, build, browser, benchmark, network
+or install ran on M6. No production or QA source was edited. Spark035–042 remains
+unreviewed here until the parent supplies exact returned artifacts.
+
+Provisional source assessment
+
+The new physical loop has a coherent player-facing implementation: actual source
+reservations, named five-item carriers, onsite stacks, then the original 24/32
+worker-seconds. Completed outposts become real stores; workshops expose the paid
+4W/8S/12-work Tools018 project and accurately separate extraction improvement from
+travel. Move holds cargo, Stop/new work return it, and cancellation releases only
+unpicked goods immediately. These statements describe inspected code, not proof
+that the ordinary browser journey succeeds or is enjoyable.
+
+The preserved opening is still four workers, finite 416W/220S/225F world matter,
+five-item capacity, three-cell movement, no combat, and directly drawn Canvas art.
+No H2 baskets, individual tools, support, new resources or full-Hearth acceptance
+is needed to evaluate this milestone. Existing Tools018 is deliberately distinct
+from the later v3 full-age tool recipes.
+
+Priority 1: distinguish a useful decision from parallel-speed evidence
+
+At tests/browser/hearth-construction.cjs:352–367, both branches replay the same
+earned start, but one assigns one builder and leaves three idle; the other assigns
+all four. Both stop at outpost completion. This is a valid parallelism/travel/work
+comparison. Its current interpretation overstates it as a meaningful allocation
+choice: there is no competing output or opportunity cost. It cannot close the
+contract's meaningful workforce/depot-choice criterion on its own.
+
+The main journey at :324–348 does plan actual useful eastern receipts, local
+workshop supply, paid Tools018, and subsequent wood gathering. Keep that evidence;
+its existence does not repair the comparison denominator. Relabel the old result
+as parallel construction speed and add the bounded comparison below. No product
+change follows from this evidence gap.
+
+Priority 2: verify possible stale waiting statuses during installation
+
+Source path: engine.js:222 gives a builder arriving before the final load the
+reason "Waiting for site supplies". At :462 that builder begins adding work when
+the full bill is staged, but its reason is not refreshed. view.js:255–256 and :289
+display that reason verbatim. A worker can therefore contribute installation
+while its card/Selected text still says it is waiting; the last delivering worker
+can correctly show Installing after startSupply runs again. This is a concrete
+source-derived inconsistency candidate, not a witnessed failure.
+
+Falsifier: find an ordinary checkpoint with full staged recipe and positive work,
+and inspect every adjacent construct worker's reason plus visible selected status.
+If previously waiting workers contributing work now say Installing, this concern
+is disproved by the actual candidate. If the mismatch is observed, the bounded
+correction is to update the worker's status on the funded-installation transition;
+do not add urgency, timers, production bonuses or new assignments.
+
+Priority 3: visual comprehension and commitment disclosure need actual screens
+
+Material prices appear before placement. The exact 24/32 worker-second installation
+cost is presently exposed in the site inspector after reservation, not in the
+build button/placement quote (shell.html; view.js:219–226,287–289). This is a modest
+source-visible predictability gap, not an execution blocker or a reason to redesign
+construction. A bounded optional improvement is to include "then 24/32
+worker-seconds to install" in the existing quote. Avoid implying a wall-clock ETA:
+travel, workers and their current cargo affect completion.
+
+The site inspector is one long paragraph containing four material/work stages,
+source details, next action, worker statuses, and cancellation terms. Source alone
+does not establish clipping or unreadability. Review returned full-page captures
+at ordinary size as well as site crops. A changed PNG hash is not visual acceptance.
+The tiny Canvas onsite label/piles must visibly distinguish five wood/work zero
+from an empty site and remain separate from the installation bar. If screens
+show clipping, split the existing inspector into short labeled rows rather than
+introducing another panel or system.
+
+Critical ordinary-input walkthrough and falsifiable screens
+
+1. Fresh camp / first receipt. Read the finite-source remainder, assign gathering,
+   identify extraction then five-item return, and inspect actual hearth stock.
+   Pass: source shrinks, no stock appears before receipt, no combat content or
+   unexplained free output. The ordinary earned checkpoint must retain its real
+   inputs, time, source depletion and 116W/70S result.
+
+2. Reservation preview and newly reserved eastern outpost. Before commitment,
+   identify price, selected workers and actual source. After commitment inspect
+   Source-reserved 60W20S, En route none, Onsite none, Work0/24. Pass: stored stock
+   and spent are unchanged while Free falls; the site is not a usable drop-off.
+   Check touch's separate Confirm and desktop's established click commitment.
+
+3. First source pickup / carrier / first onsite receipt. Follow the same named
+   actor from a real source edge to the site. Pass: pickup removes five from that
+   source reservation and stock, adds five tagged cargo, and grants no work/output;
+   receipt clears that cargo and creates five onsite wood with Work0. Compare
+   full screens and exact site crops. A legible wood pile and onsite delivery cue
+   should appear while the installation bar remains empty.
+
+4. Autonomous delivery through installation. One Build assignment must continue
+   all 16 outpost loads without per-load commands. Before full delivery no
+   installation progresses. At full 60W20S, workers waiting onsite proceed without
+   another click. Inspect partial-work state, selected-worker reasons, 24 actual
+   worker-seconds and completion. Pass: spent increases once at completion and
+   the completed structure becomes a selectable real store with initially zero
+   contents. Pause/reload at the five-wood boundary preserves custody and work.
+
+5. First useful depot haul and workshop. Gather eastern wood into the named new
+   depot, then gather stone and place the nearby workshop. Pass: the outpost stores
+   actual gathered goods; workshop sources name that depot, its 14 real five-item
+   deliveries total40W30S, and installation totals32 worker-seconds. A completed
+   workshop opens craft controls, not storage controls. This is useful expansion,
+   not merely a completed checklist icon.
+
+6. Tools018 and subsequent work. Quote/pay4W8S at the named local source; repeat
+   action must not pay twice. Finish12 worker-seconds and observe subsequent real
+   east-depot wood receipts. Check the0.60→0.45 extraction interval separately from
+   full-trip elapsed time. Pass: the UI accurately limits its benefit to extraction
+   and does not claim a25% whole-route speedup or increase five-item cargo.
+
+7. Manual override and recovery. With tagged cargo, Move must begin immediately,
+   preserve load/site identity and hold it at arrival. The card should say Holding
+   and offer Stop and Return. Stop at an active site physically returns and
+   re-reserves its load, leaving the worker idle until reassigned. Cancel while
+   held must not seize manual control. On cancelled sites, Resume supply recovery
+   assigns actual retrieval, and footprint removal waits for custody settlement.
+   Repeat at reserved-only, onsite and partial-work boundaries. Pass: only unpicked
+   reservations free immediately, all picked material returns physically, partial
+   installation grants no usable depot, and replacement can actually build and
+   receive fresh eastern wood. No repeated cancel refund.
+
+8. Completed west outpost recovery/relocation. Ordinary116W investment must recover
+   into actual stores before eastern replacement can supply/build/use it. Pass:
+   same finite capital is reused once, no grant repairs the route, and elapsed
+   recovery/reposition/build time stays visible. This is recoverability evidence;
+   it is not a depot-efficiency comparison unless useful output and fair setup are
+   explicitly compared.
+
+Required useful workforce comparison: three existing policies
+
+Use each branch's native Journey import of the exact same ordinary earned/scouted
+checkpoint:116W70S0F; west d0/d1/d2 depleted; d3 has75F; four original workers at the
+same positions, no held cargo; eastern site visible. Bind the actual source bytes
+and use the same outpost at22,11. t0 is before the first branch-specific order.
+Each branch has its own replayed finite75F budget; no shared depletion or authored
+state. Invite exactly one fifth villager for25 food at the Hearth.
+
+A — Build first: assign all four to the outpost. At completion assign all four
+to west-food d3. At the first Hearth free-food>=25 event, Invite u4, immediately
+give the original four Gather d4 and the new worker Gather d4. Their existing
+food cargo returns under ordinary return-first semantics; no artificial barrier
+waits for everyone to empty before allowing the new orders.
+
+B — Split work: assign u0 to build, u1–u3 to Gather d3. At Hearth free-food>=25,
+Invite u4 and assign u1–u4 to the same Build site. Keep u0's accepted order. When
+the outpost completes, assign all five Gather d4. Food cargo returns before Build,
+and empty actors may join immediately. Do not revoke useful work early to make a
+branch fit an expected winner.
+
+C — Food first: assign all four Gather d3. At Hearth free-food>=25, Invite u4 and
+place the same outpost with all five selected. Ordinary return-first handles
+remaining food cargo. On completion all five Gather d4. This includes the obvious
+alternative that gains a paid fifth builder before construction starts.
+
+Common endpoint: first state with the named eastern outpost usable, five actual
+workers, exactly25 food spent on that recruit, and at least20 newly gathered wood
+physically received in that named eastern store. Cargo is not receipt. Do not stop
+or drain all cargo merely to make final inventories look identical; retain cargo,
+food overshoot, wood overshoot, remaining wild food and every actor's order.
+
+Record separately: t(outpost usable), t(invitation/debit), t(20 east wood received),
+common earned/scouting time, branch elapsed, total time since fresh, exact spent
+vectors, final store/cargo/staged/wild/spent conservation, useful food above the25
+debit, original/new worker contribution, movement/extraction/supply/installation
+time and any idle time. Count all prepositioning and return travel. Brief event
+reaction quantization must be the same across branches; scripted zero-latency
+commands do not measure human attention or pacing. Do not set a required winner
+or minimum speedup: a dominant food-first result is an honest finding, while
+different earlier/later benefits may support an actual choice.
+
+QA caution: the existing materialStep/physicalUntil observer asserts no gathering
+receipt and no stock delta except supply pickups/returns. That assumption is
+invalid during the split policy. Use a combined per-actor ownership/receipt audit
+with global conservation, or a separately justified mixed-work observer. Do not
+disable matter checks or alter production to accommodate the test. Bind the
+supplementary QA source and immutable built candidate independently.
+
+Evidence verdict rules
+
+Returned Spark PASS can establish ordinary-input reachability, exact conservation,
+custody, work and fixed-policy outcomes when the exported state/inputs/screens
+match. It cannot establish uncoached understanding, fun, natural attention cost,
+real-time pacing, physical-device acceptance, full H2/Hearth or full campaign.
+Keep source findings, witnessed failures, missing coverage and human questions
+separate. No art or gameplay acceptance is implied before the actual PNGs and
+ordinary Journey records are reviewed. Parent owns production corrections and
+all execution/publication decisions.

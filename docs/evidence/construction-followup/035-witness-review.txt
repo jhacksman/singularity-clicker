@@ -1,0 +1,61 @@
+Independent returned Spark035 legacy witness review
+Reviewer: construction_skeptic_one
+Date: 2026-10-04
+
+VERDICT
+Usable as a genuine newly earned, old-executable v5 paid unfinished outpost fixture for subsequent migration acceptance. No blocking provenance or state contradiction found in this returned evidence. This result is not proof that the new construction implementation migrates, resumes, cancels, exports, or reloads it correctly.
+
+Scope and method
+Reviewed construction-runtime-evidence/035/artifacts/hearth-construction-legacy/ and task-2/spark-ci/results/singularity-20261004-construction-witness-035.json. Read the producer, pinned old source, checkpoint states, focused event chain and report tail; independently hashed artifacts and byte-compared source to immutable Git objects. Viewed fresh-pinned-v5.png, before-paid-placement.png, paid-reserved-before-work.png, and legacy-unfinished-v5.png with view_image. No application, parser, tests, build, browser, or network was executed on M6. No production or QA source was changed. Other review reports were not used for this verdict.
+
+Successful remote job and source binding
+- Job result names QA commit e1d5c858b9d97a8528dd12b6ab726ea38d3dfc85, gb10-02, exit_code 0, execution_exit_code 0, reason completed, no executor error, and verified absent cleanup state. Report status is passed, pageErrors is empty, and producer wallSeconds is 27.499.
+- The archived producer-source.cjs byte-compares equal to that QA commit's tests/browser/hearth-construction-legacy.cjs. SHA256: f8a4c31c3da1ee71ed6a0b97c3732b0e3ff6794caeab61718b630327cd7d569b.
+- Independently compared all five archived source files against 4c3ac2f6c16ce58563f0300f286040a7aae0a963 with git show plus cmp; all match exactly. Their independently computed hashes match report.sourceHashes:
+  engine.js: 416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5
+  view.js: 2a6495938d9a10d305da0b53e39896bf0951d1d51edc44a17c6a96bea09c4e67
+  shell.html: 124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd
+  styles.css: 3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+  build.mjs: cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47
+- Served HTML SHA256 is bf350f2b1ee95705feb20b37b0de3be17fbe6d919c00637b77ab832a317a3903, 109563 bytes. It is rebuilt from pinned source. It does not byte-match the older tracked dist/hearth-rts.html blob at 4c3. Do not describe it as the exact previously committed distribution file. This distinction does not invalidate the pinned-source witness: build.mjs describes direct source insertion; the archived HTML has two script blocks, and I independently extracted their text using sed and byte-compared them with the exact archived engine and view, both equal. The producer serves this one HTML buffer only (producer lines 75-95).
+- Report binding is 221660b56af5da981f09b7ea80492d853fbc9a31b4de29670e70cb662e2f1651. Producer line 82 derives it from source hashes, built HTML identity, and producer identity. It consistently appears on checkpoints/events. I verified the bound constituent hashes and byte comparisons; I did not run a JSON parser to recompute this composite value.
+
+Actual earning and export chain
+Producer lines 89-97 create a fresh Chromium context, serve the pinned old page, install a controlled clock, pause the simulation, and export the opening state. The only init script records DOM input metadata. Read-only page evaluations inspect Canvas geometry, pause-saved localStorage, and recorded inputs. There is no save injection, source rewrite, engine import, direct Camp construction, tick API call, or state-field assignment in this producer.
+
+Producer lines 100-104 select all villagers, arm Gather, and click each actual map deposit d0, d2, d1, in that order. Controlled clock steps run through ordinary Resume/Pause input. Each earning checkpoint waits for that deposit to be exhausted and all workers empty and idle. Journey exports are compared with the synchronous Pause-save state (lines 47-66). The final fixture is an actual downloaded Journey export; its raw bytes are copied neither from a manually authored template nor from a projected v6 schema.
+
+Checkpoint summary (wood / stone / food; times rounded here only):
+  fresh-pinned-v5          t=0.0   stock 20/10/0    spent 0/0/0    events [0,12)
+  earned-d0               t=23.0  stock 68/10/0    spent 0/0/0    events [12,168)
+  earned-d2               t=43.0  stock 68/70/0    spent 0/0/0    events [168,306)
+  earned-d1               t=66.0  stock 116/70/0   spent 0/0/0    events [306,462)
+  before-paid-placement   t=66.0  stock 116/70/0   spent 0/0/0    events [462,474)
+  paid-reserved-before-work t=66.0 stock 56/50/0    spent 60/20/0  events [474,489)
+  legacy-unfinished-v5    t=66.1  stock 56/50/0     spent 60/20/0  events [489,504)
+
+All seven exported JSON files and all seven PNG files independently hash to their respective report.checkpoints entries (report lines 4051-4156). earned-d1 and before-paid-placement have identical state bytes, which is consistent with selecting u0 being UI-only. Event ranges are contiguous. All 504 recorded input entries are trusted, with no trusted:false entry. The log has three select-all/Gather/world groups, u0 selection, a BUTTON/world placement group, and final Resume/Pause/Journey/export/close input. The anonymous BUTTON entry is identified as the outpost button by the pinned producer's explicit data-build="outpost" selector at line 106, not by a richer event-log selector.
+
+Final fixture facts and accounting
+Fixture: construction-runtime-evidence/035/artifacts/hearth-construction-legacy/legacy-unfinished-v5.json
+Raw SHA256: 584a073cd5779901e2cb8d560c30ef72a991b15f39197f39aff69bd840c72a03
+Size: 4570 bytes
+
+- version is 5; no construction ledger or physical construction cargo fields exist.
+- b1 is an outpost at (11,11), done=false, work=0.1, cost={wood:60,stone:20}. The preceding paid checkpoint has work=0, same time as the pre-placement state, and the debit has already occurred.
+- Aru/u0 is at (10,11), order Build b1, phase construct, cargo=0, resource=null, no queued successor. The other three villagers are empty and idle after d1 exhaustion. Aru is already adjacent, so 0.1 work after one 100 ms step is consistent with old engine line 373 and is not evidence of a fabricated travel shortcut.
+- stock and actual hearth store are both 56W/50S/0F. spent is 60W/20S/0F. storage.reservations.b1 contains b0 source records for 60 wood and 20 stone, and storage.payments contains the matching nonrefunded construction payment.
+- The v5 reclaim claim exists with unreleased 60W/20S, zero receipted/assigned/recovered/settled material, and recorded-payment origin at b0. It is old recovery authority, not a new construction supply ledger.
+- delivered is 96W/60S, depleted=3, and d0/d1/d2 are exhausted. Remaining wild resources are 300W/150S/225F. The independently readable endpoint equation is wood 300+56+60=416, stone 150+50+20=220, food 225+0+0=225, with all worker cargo zero. Producer lines 25-31 also assert this finite-world equation at every observation and exported checkpoint.
+- Old engine lines 335-344 physically debit stores into spent at placement and retain source records. Lines 345-347 implement old full refund; line 373 advances unfinished paid work. These semantics agree with the paid and final exports.
+
+Visual corroboration and limits
+- Fresh PNG shows 20 wood / 10 stone, four ready villagers, and the original deposits.
+- Before-placement PNG shows 116 wood / 70 stone, three exhausted nearby deposits, Aru selected, and no outpost.
+- Paid-before-work PNG shows the debit to 56/50 and the old outpost inspector, including Reserved materials 60 wood / 20 stone and Cancel site full refund. Its paused Canvas still shows the prior frame without the new footprint; this single screenshot should not be treated as proof that a map draw had run after placement.
+- Final PNG shows the unfinished outpost footprint beside Aru, Aru's Building outpost status, 56/50, and the same old full-refund/reserved-material inspector. A 0.1/24 progress change is too small for an independent numeric visual measurement; the exported state and producer assertion establish the exact work amount.
+- This is a new automated playthrough using the old executable with controlled time. It is not a historical player save or evidence of human pacing. The field earnedBeforeAnyConstructionCode should mean no new physical-construction implementation ran in its generating page, not that this artifact predates development of that implementation.
+- The event log is evidence alongside the pinned producer and checkpoint changes, not a standalone replay: it omits pointer coordinates and timestamps. No reload of the old fixture, new-version import, migration, completion, cancellation, mixed paid/physical behavior, current-version save/reload, or replacement-failure behavior is exercised by Spark035.
+
+Handoff
+Use the exact raw fixture above, preserving its hash and the complete provenance tree, as input to the separate new-version acceptance run. Spark035 satisfies the prerequisite of a genuine paid unfinished old save. Acceptance of the new implementation remains outstanding until that run demonstrates the required migration and subsequent behavior.

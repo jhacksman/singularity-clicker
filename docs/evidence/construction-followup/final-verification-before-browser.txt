@@ -1,0 +1,197 @@
+Construction follow-up — separate final source verification
+2026-10-04; /root/construction_final_verifier
+
+Blockers and disposition
+Later browser preflight addendum: the still-unchanged main browser harness has
+an independently confirmed extraction-start setup blocker described below.
+The requested source correction is supported, but its changed bytes have not
+yet been supplied/reviewed by this verifier. This must be resolved before the
+main browser run; it does not require another engine change.
+
+No source blocker found in the scoped follow-up. The two Spark036 QA failures
+are addressed without weakening their intended work/rejection/purity checks.
+G01's narrow working-status correction and G02's pre-placement labor disclosure
+match the independently confirmed findings. The negative runner includes the
+identical new G01 regression against the pinned vulnerable engine.
+Runtime acceptance remains blocked on a NEW immutable Spark run;036 remains
+failed evidence. No parser, test, build, browser or negative-control pass is
+claimed here, and no visual/gameplay acceptance follows from this review.
+
+Scope and identity
+Compared the five source files listed below to base commit
+bc12f3aa684ecd1092f665de11e80ed1dc147702 and read the new G01 regression. Read
+construction-036-independent-diagnosis.txt and the two G01 skeptic reports,
+including their G02 addenda. The contract/source context is the same as prior
+verification02. A delegated read-only reviewer separately checked the QA helper
+changes without other reports. I authored none of the scoped production/tests.
+Only this verification report was written. Text, git diff and SHA-256 inspection
+were used; git diff --check reported no whitespace errors. No M6 runtime occurred.
+
+This is a working-tree source snapshot, not yet a committed/frozen follow-up.
+The following SHA-256 values bind the reviewed content:
+src/hearth-rts/engine.js
+abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+src/hearth-rts/view.js
+a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955
+tests/hearth-construction.test.cjs
+d0cedefdc4253d4274208fc4f96aa72c5f0810329fea291fe67a6e6b6ecbebe3
+tests/hearth-construction-status.test.cjs
+56862f326aaf999668af64f5b6aeb3a364fdca23821a6097c57d2f03f84375dd
+scripts/check-construction-negative.cjs
+917db481e67730b9a111655095de9ca94f04af778eb01032259631b442943bd9
+tests/fixtures/hearth-construction-before-review.txt (unchanged negative engine)
+00166edf7b5f98c75538cee5843198106f48fb149384b2ff4b1ca78004449d9e
+
+The working tree also contains the separate untracked browser allocation script.
+That script is outside this assigned follow-up verification; no approval or
+coverage of it is implied. These conclusions must be re-bound if reviewed bytes
+change before dispatch.
+
+036 Tools correction — verified in source
+readyAtSiteEdges150–160 now stops all workers, selects the intended prefix, and
+moves each nonparticipant to a distinct(14+i,20) location using public Move.
+It waits for each to be idle, empty and exactly at that point, then independently
+asserts the point is not a work edge. For these fixtures the only new building
+is at(11,15); the parking cells14..16,20 are clear western land, away from its
+edges. No actor state or inventory is assigned directly.
+
+Only after those arrivals does the helper move selected workers to their four
+distinct measured edges. It verifies exact coordinates and empty hands. The
+count4 case naturally has no nonparticipants; all four actors are positioned.
+This removes the source of036's immediate craft rerouting without charging
+travel as installation or suppressing readiness assertions.
+
+Tests163–193 retain both1 and4 builders/artisans, actual phase/path/cargo/edge
+eligibility, exact eligible count, independent min(remaining,dt*count) work gain,
+dt=.13, explicit capped final tick, original24/32/12 totals, material charges,
+spent stability and roundtrip checks. The Tools assertion is still a rate oracle,
+not an endpoint-only completion check. No timing allowance was loosened.
+
+036 intrinsic purity correction — verified in source
+Tests555–577 retain all26 originally monitored prototypes, constructors and
+intrinsic function objects, including Map.prototype, Map, Set and Promise.
+Snapshots retain exact own keys (including symbols), each own descriptor,
+prototype and extensibility. assertUnchanged checks key count and identity/order,
+prototype identity, extensibility, descriptor field presence, and Object.is for
+value/writable/get/set/enumerable/configurable. Function and object values are
+compared by identity. The helper does not stringify or omit symbol/callable
+information and does not apply deepEqual to a Symbol.toStringTag descriptor bag.
+It therefore avoids the specific Node24.20 comparator mechanism diagnosed in036.
+
+The immediate untouched() at578 is a positive no-op control before valid().
+The null-prototype disposable probe579–607 checks rejection of string/symbol
+addition/deletion, writable/enumerable changes, value/getter/setter replacement,
+data-to-accessor field change and prototype replacement. Every mutation must
+produce ERR_ASSERTION; finally removes/restores probe properties in the saved
+order and restores its prototype, followed by a no-op restoration check. All
+tested probe properties remain configurable, so this cleanup is coherent by
+source inspection. A second untouched() confirms the probes did not change the
+true intrinsics. These checks add evidence of oracle behavior, rather than
+silencing the old failure.
+
+The comparator also checks configurability and extensibility, though the probe
+matrix does not deliberately mutate those two irreversible properties. This is
+a bounded self-control coverage omission, not a false comparison in the helper.
+Disposable separate one-use probes could exercise those branches if desired;
+their absence does not remove the actual intrinsic checks.
+
+All14 field/identity combinations remain: source and pickup each receive
+["b0"],toString,__proto__,constructor,null,0,17 in isolated JSON-fed children.
+After valid(), purity is checked before requiring no exception and false return;
+constructor rejection then receives another purity check and exact input-byte
+comparison. Child spawn errors, signals and nonzero exits remain failures.
+No malformed case or named C02 assertion was dropped. Spark still must establish
+that the no-op controls and full matrix actually pass in the execution image.
+
+G01 — narrow working-status correction verified
+The entire engine diff against bc12f3aa is one guarded reason assignment in the
+construct branch462: after a physical site's complete staged bill has passed
+the existing gate and before that actor adds dt, set reason to Installing+kind.
+No actor is restarted, no route/order/queue/cargo/counter changes were added, and
+legacy prepaid sites without a physical ledger keep their existing reason path.
+The update applies whenever an actor actually contributes physical installation.
+It does not assert immediate relabeling of earlier waiters in a paused snapshot
+between the last carrier's receipt and their next installation contribution.
+
+The new status regression earns116W/70S through ordinary gathering, prepositions
+u0/u1/u2 on three distinct edges, and gives u3 the sole autonomous supply order.
+After15 receipts and pickup of the final load, it requires75 onsite items and
+zero sources. The three peers receive Build once and must each have construct,
+zero path and the actual Waiting reason. The carrier's original order continues.
+
+After the real final receipt, one tick must increase work without completing
+the site. The installing IDs must equal exactly[u0,u1,u2], and EVERY one must
+have Installing outpost at the named G01 assertion. This follows the previously
+waiting actors, not merely the final carrier that already had correct text in
+the old source. It also validates every transition and exact serialized reload.
+The status case itself asserts positive work, not exact.4; the separate retained
+one/four-worker labor tests provide the exact-rate oracle. DOM card/inspector
+rendering and the analogous workshop label still need ordinary browser evidence.
+
+G02 — pre-placement work disclosure verified
+The view diff adds installationText213, deriving its amount from existing
+WORK[kind]. isPlacement37 restricts calls to outpost/workshop, whose constants
+remain24/32. Currentv6 text says After delivery before the worker-second amount;
+legacy playable states omit that delivery qualifier. No ETA or hauling duration
+is presented, and no new cost/work rule is introduced.
+
+command-help222 uses this text in the common armed placement flow before either
+desktop commit or touch confirmation. placement-status227 repeats it in the
+preview. Existing location, material bill, source reservation, shortage and
+readiness/error text and confirmation enablement remain. The helper is a string
+formatter with no mutation. Actual legibility and desktop/touch precommit display
+remain unexecuted browser checks; no screenshot result is claimed.
+
+Negative runner — G01 inclusion verified
+The runner reads the candidate status test bytes, records their hash, and copies
+them unchanged beside the existing main construction suite in its mkdtemp tree.
+The sole engine there remains the exact pinned00166e pre-review fixture. C01,
+C02 and G01 each use an anchored name filter and their correct test file.
+G01 requires G01_WAITING_WORKER_MUST_SHOW_INSTALLING. The old engine can execute
+this ordinary setup without either C01's pocket or C02's malformed identity;
+its missing status refresh leaves the three original waiters stale at that
+assertion. This is the intended falsifiable difference, not a modified test body.
+
+All controls retain normal exit1, no spawn error/signal, named test, named marker
+and TAP failure requirements; generic setup failures or unexpected passes do not
+satisfy the gate. Full logs/hashes are saved, candidate engine bytes are checked
+unchanged, and cleanup targets only the owned temporary directory. C02 still
+establishes negative sensitivity for its first source-array case, not every
+variant separately. The runner does not claim browser persistence evidence.
+
+Later main-browser extraction preflight — second independent confirmation
+At the coordinator's additional request I read the unchanged main browser
+tests/browser/hearth-construction.cjs, SHA-256
+31bbf333b2cc49d8ea08a05d64d2aaa41480a31777eb115e77e04cdc4ccb23a5,
+against the frozen bc12f3aa engine. No primary browser-critic report was read.
+
+extractionProbe279 accepts phase=extract and cargo=0 before sampling35 default
+100ms pulses. Engine start400 assigns extract immediately after creating the
+route; tick446 processes a nonempty path and continues before extraction460.
+Thus the predicate does not mean the actor has reached the resource.
+The fresh first probe commands u0 at(6,14) to d0 at(5,6). Every cardinal edge
+of that one-cell deposit is at least8 grid steps away. Even the ideal continuous
+bound8/3 seconds of travel plus4*.6 seconds of extraction exceeds5 seconds,
+whereas35*100ms is only3.5 seconds. Grid-step rounding makes travel no faster.
+The original predicate admits the walking actor immediately, so this is a
+concrete source-derived false failure of the four-item sample requirement.
+
+The proposed correction is appropriate: resolve the actor's actual Gather target
+to a live deposit, then require phase=extract, cargo=0, an empty path, and actual
+cardinal deposit adjacency before beginning samples. Generic atEdge55–59 must
+also use size3 for hearth,2 for outpost/workshop,1 for other targets, matching
+engine around377. Its existing nonhearth size2 is wrong for deposits, especially
+the right/bottom edge. Keep exact item-boundary and cumulative-rate assertions.
+If the separately reviewed clock pulse changes from100 to80ms, derive loop
+counts from an unchanged virtual-time budget so this correction does not shorten
+the observation window. I have not independently certified the proposed80ms RAF
+bound in this addendum, and no browser runtime is claimed.
+
+Remaining requirements
+Freeze these reviewed source hashes into the dispatched commit, retain failed036,
+and run fresh Spark syntax/full-unit/build and C01/C02/G01 negative gates. Review
+the actual returned logs and exact artifacts. Then verify G01's cards/selected
+inspector and G02's both-kind desktop/touch precommit wording with the real built
+page. Broader earned-journey, legacy provenance, persistence, rendering and
+allocation evidence remains governed by the prior verification and separate
+browser review; this report does not complete those gates.

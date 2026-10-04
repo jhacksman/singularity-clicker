@@ -210,6 +210,7 @@ window.addEventListener('blur',()=>{cancelInput(true,true);ui();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelInput(true,true);ui();}});
 window.addEventListener('resize',()=>{cancelInput(true,true);ui();});
 function goods(map){return resources.filter(r=>map?.[r]>0).map(r=>Math.round(map[r]*100)/100+' '+r).join(' · ')||'none';}
+function installationText(kind){return (game.s.version===6?'After delivery: ':'')+WORK[kind]+' worker-seconds to install.';}
 function fundingText(f){if(!f)return '';const label=f.mode==='opening-pool'?'all opening stores':f.name||game.stores().find(s=>s.id===f.storeId)?.name||'no reachable store';const sources=f.sources?.map(p=>p.amount+' '+p.resource+' at '+(game.store(p.storeId)?.name||p.storeId)).join('; ');return 'Funding source: '+label+'.'+(resources.some(r=>f.missing?.[r]>0)?' Missing here: '+goods(f.missing)+'. Bring supplies to this store.':sources?' Reserve for pickup: '+sources+'. Workers carry supplies to the site.':'');}
 function commandUI(){
  let help='Select villagers, then choose a command. Unarmed taps inspect; right-click gives a contextual order.';
@@ -218,12 +219,12 @@ function commandUI(){
  else if(mode==='build')help='Build site: choose an unfinished site. Workers fetch its reserved supplies, deliver them, then install. Cancelled sites recover supplies; older prepaid sites keep their original terms.';
  else if(isPlacement()){
   const target=placement||hover,x=Math.floor(target.x),y=Math.floor(target.y);
-  help='Place '+mode+' at '+x+', '+y+'. '+fundingText(game.funding(mode,x,y));
+  help='Place '+mode+' at '+x+', '+y+'. '+installationText(mode)+' '+fundingText(game.funding(mode,x,y));
  }
  $('command-help').textContent=help;
  const preview=!!placement&&isPlacement()&&placement.kind===mode;
  $('placement-controls').hidden=!preview;
- if(preview){const error=game.placement(mode,placement.x,placement.y);$('placement-status').textContent=mode+' at '+placement.x+', '+placement.y+' · '+goods(COST[mode])+'. '+(error||'Ready to reserve materials.');$('placement-confirm').disabled=blocked||!actors().length||!!error;}
+ if(preview){const error=game.placement(mode,placement.x,placement.y);$('placement-status').textContent=mode+' at '+placement.x+', '+placement.y+' · '+goods(COST[mode])+'. '+installationText(mode)+' '+(error||'Ready to reserve materials.');$('placement-confirm').disabled=blocked||!actors().length||!!error;}
  else{$('placement-status').textContent='';$('placement-confirm').disabled=true;}
  for(const [id,verb] of [['move','move'],['gather','gather'],['assign-build','build']]){const button=$(id);button.classList.toggle('active',mode===verb);button.setAttribute('aria-pressed',String(mode===verb));button.disabled=blocked||!actors().length;}
  $('command-cancel').disabled=!mode&&!placement&&!pointer&&!spaceCycle;

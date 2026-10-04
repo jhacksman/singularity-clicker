@@ -1,0 +1,196 @@
+G01 independent source skeptic two
+Reviewer: /root/construction_browser_author/browser_compat
+Date: 2026-10-04
+
+Verdict: CONFIRMED. Low gameplay/UI correctness impact; not a work-stall,
+inventory, or persistence-integrity defect on the reviewed evidence.
+
+Scope
+Read engine.js and view.js directly from commit bc12f3aa using git show, plus
+the previously supplied construction-contract-v1.txt. No other gameplay review
+report was read. No engine, parser, tests, browser, build, or network operation
+was executed. No production source or queued artifact was changed. The trace
+below is independently derived from these sources, not an observed runtime run.
+
+Engine transition
+startSupply at engine lines 214..222 chooses a remaining source when one is
+available. Otherwise it routes the empty worker to the site, sets phase to
+construct, and stores either "Installing <kind>" or "Waiting for site supplies"
+in u.reason, depending on whether the staged vector already equals the recipe.
+
+receiveSupply at lines 230..233 adds that actor's cargo to staged, records its
+origin, clears its cargo, and calls start only for that same actor. No other
+worker's reason is refreshed when the last delivery completes the recipe.
+
+At line462, an empty actor already in construct waits without restarting while
+materials are incomplete and sources are empty. Once the recipe is complete,
+the exact same branch begins adding dt to b.work. It does not change u.reason.
+The final carrier received after the recipe filled and therefore got the new
+Installing reason from its own startSupply call. Earlier waiters retain Waiting
+while they actually contribute the same installation work.
+
+Ordinary four-worker trace
+An ordinary outpost supplies 60 wood and 20 stone in sixteen five-item loads.
+The player can gather the missing stock into b0, place a reachable site, select
+the four original villagers, and let their Build orders continue automatically.
+No malformed import, synthetic inventory, or special command is required for
+the relevant transition. Consider an ordinary final wave in which four actors
+are carrying the final four stone loads: sources is empty, staged is 60W/0S,
+and the four actors each carry 5S for that same active site.
+
+ Receipting actor    Staged afterward    Its new phase/reason
+ first              60W/5S              construct / Waiting for site supplies
+ second             60W/10S             construct / Waiting for site supplies
+ third              60W/15S             construct / Waiting for site supplies
+ fourth             60W/20S             construct / Installing outpost
+
+Different travel times are sufficient but not necessary. Even if all four
+receipts happen in one simulation tick, actors are processed sequentially at
+engine line439. Each receiveSupply branch continues at line451. The first three
+actors observe an incomplete recipe when startSupply sets their reasons; the
+fourth observes a complete one. Once those actors have finished their paths,
+their later construct iterations advance paid installation while retaining the
+different reason strings. The stale label persists until another start/order
+transition or completion, rather than correcting on the next ordinary work tick.
+
+This is a source-defined feasible final-wave trace, not a claim that a specific
+unexecuted placement gives all sixteen pickup/arrival times above, or that every
+four-worker placement ends in this exact four-carrier wave. The necessary
+condition is only one empty assigned waiter while another actor brings the last
+missing load. The finite automatic multiworker loop provides that condition
+without changing the player's assignment. Two such final carriers also suffice.
+
+Current UI exposure
+view line256 returns u.reason directly whenever cargo is zero. unitDetail uses
+the same fast path at line265. Consequently the stale state is exposed in:
+ - worker-card small text and title at line299;
+ - the individual worker inspector through unitDetail at line293;
+ - #site-supply's Selected list through unitStatus at line289.
+Normal ui refreshes cannot repair it: they read the stored reason rather than
+derive whether that worker is now installing. The frame loop at line339 keeps
+refreshing this same text while engine work advances.
+
+The aggregate site description is already more accurate. Lines288..289 derive
+Next from the current reserved/carried vectors and report "Install the delivered
+materials" after delivery, alongside the increasing work counter and full onsite
+quantity. Thus the player can see a direct contradiction: the site is installing
+and its work increases, but some selected workers say Waiting for site supplies.
+
+Impact and contract
+This violates the contract's requirement that selected-worker status and waiting
+information reflect actual state. It can suggest that the supply line still
+needs attention after all materials arrived. However the reviewed branch still
+performs work and completes at the original bill/work amount; no additional
+input is required, the aggregate counters remain informative, and there is no
+demonstrated stock/cargo loss or rejected save. Low is the supported severity
+for this isolated presentation defect. It merits correction before claiming
+accurate construction-state feedback.
+
+Minimal correction options for the root owner
+The narrow engine correction is to refresh the physical constructor's reason
+to "Installing <kind>" in the funded construct branch immediately before it
+adds work. This makes an actor's reason agree whenever it actually contributes
+installation, without restarting routes or altering orders, custody, or work.
+
+For immediate accuracy when the player pauses on the final-receipt boundary,
+the same current-ledger interpretation can instead be shared by unitStatus and
+unitDetail, or the receipt transition can refresh only the site's empty current
+construct workers. Do not call start on every assigned worker merely to refresh
+text: that also clears paths/work bookkeeping and may replan or disturb intent.
+Do not relabel loaded, manually moving, returning, cancelling, or unrelated
+workers. A view-derived fix should cover both the card/status and detail paths.
+
+Focused verification after the root fix
+Use ordinary gather/build commands and four workers. Observe an empty worker
+with Build(site), construct, no next order, and Waiting while another carries
+the final load. Record its ID before the final receipt. After the full recipe
+is staged, require increasing site work and an Installing status for that same
+worker, then check its real card, inspector, and the site Selected text. Keep
+the pre-delivery Waiting assertion so the fix cannot erase meaningful waiting.
+Include pause immediately after final receipt, then Resume; finish the original
+24 worker-seconds and verify the exact bill and custody totals stay unchanged.
+The regression must follow an earlier waiter, not only the final carrier, which
+already receives the correct Installing label in bc12f3aa.
+
+Addendum: G02 independent precommit-copy review
+
+Verdict: CONFIRMED omission, Low predictability/clarity impact. Reviewed the
+current working-tree view.js and shell.html as separately authorized. At the
+time of this read the construction command help and preview did not contain
+24/32 or WORK-derived installation effort. No gameplay report was consulted.
+
+The complete precommit path is:
+ * shell line4: outpost/workshop buttons show their wood/stone bills only.
+ * view arm(), line105: placement feedback explains site preview/confirmation
+   and reservation, without an installation work amount.
+ * fundingText(), line213: funding pool/store, missing materials, actual source
+   reservations, and carrying guidance; no work amount.
+ * commandUI(), lines219..223: placement location plus that funding text.
+ * touch preview at line157 and placement-status at line226: location, material
+   bill, readiness/error, and Confirm site; no work amount.
+ * desktop pointerup commits directly at line158; touch Confirm commits at
+   line169. Neither has a later precommit numeric installation disclosure.
+Only after commitPlacement sets the new site as inspected do siteUI lines287
+and289 expose the fixed worker-seconds alongside actual work.
+
+"After delivery: 24 worker-seconds to install" for an outpost and the equivalent
+32-worker-second workshop phrase accurately states fixed labor after physical
+delivery. Use WORK[mode] in the existing placement quote to avoid another set of
+hard-coded numbers. It is not an ETA: hauling, paths, worker availability and
+parallel participation are deliberately not converted into elapsed seconds.
+Use the delivery qualifier only for newly placed physical-v6 sites. A legacy
+playable camp can say "Installation: <WORK> worker-seconds" without implying
+another material trip for its prepaid construction semantics.
+
+The common command-help quote reaches both desktop and touch before mutation;
+putting it only in touch placement-status would leave the desktop path uncovered.
+Repeating it in the touch confirmation text is reasonable but not essential to
+the bounded correction if the common quote stays visible. Preserve actual named
+source reservations and material cost; the added labor phrase supplements them.
+
+Rule alignment: contract Authority fixes 24/32 worker-seconds and requires full
+recipe delivery before physical installation; the view requirements describe
+reservation/delivery and postplacement build work. The contract does not state
+an explicit numeric precommit-disclosure requirement. Accordingly I confirm a
+small clarity omission and a compatible bounded improvement, not a new engine
+rule, pacing promise, or missing mandatory simulation mechanic.
+
+Addendum: source review of new G01 unit regression
+
+Reviewed only the authorized current tests/hearth-construction-status.test.cjs
+and the current funded-construct line. No execution was performed.
+
+The test setup is feasible by source analysis. Lines11..15 gather d0/d1/d2 with
+public commands and await idle empty workers. Their finite amounts plus initial
+stock are exactly 116W/70S. The peers are moved with ordinary commands onto
+(10,15), (10,16), and (11,17). These are distinct clear edges, not footprint cells,
+of the eventual outpost at (11,15). Their presence therefore does not invalidate
+placement; they remain outside the source-to-site path's other usable edges.
+
+The sole builder u3 keeps its original Build order through fifteen receipts and
+pickup of the sixteenth load. At the line26 predicate, staged totals75, u3 has
+site cargo, and line28 requires no unpicked sources. No Move/hold/return command
+is issued to that last carrier. Assigning the three already-on-edge peers then
+has no remaining source to fetch, and each route may use its own current site
+edge: freeTargets excludes other actors' destinations/positions, not itself.
+Each peer therefore has construct, zero path, and the explicitly checked Waiting
+reason before the last receipt. This avoids dependence on an unproven natural
+four-carrier arrival ordering while preserving ordinary command/custody rules.
+
+The final receipt by u3 runs after u0/u1/u2 in the sorted actor tick. The peers
+still see incomplete staged material during that tick; on the following explicit
+tick they see the full recipe and contribute work. In old bc12f3aa their reason
+remains Waiting, so line40 is a targeted negative oracle for this exact bug.
+With the new root reason assignment immediately before physical construct +dt,
+those peers get Installing outpost. The test also checks valid state after every
+tick and an exact constructor/serialization reload of the installation state.
+
+No setup blocker or false held-cargo assumption found. One small strengthening
+would make the postcondition stricter: require installing IDs to equal the three
+waitingIds, rather than filtering and requiring only installing.length > 0.
+All three have been explicitly positioned with zero paths, and the test controls
+their commands, so silently losing two expected participants should not pass.
+This is not required to catch the old stale-reason implementation: that version
+leaves all three in construct with Waiting and already fails the exact reason
+assertion. The test currently covers engine reason strings and reload; it does
+not independently assert browser card, tooltip, or selected-site DOM text.
