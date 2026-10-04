@@ -1,0 +1,13 @@
+Pinned stylesheet-only negative control for the selected-carrier touch status.
+Source commit: 82dc5ed120ff608cef977a33c77b6296185c3f4e
+Source path: src/hearth-rts/styles.css
+SHA-256: 022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+File: hearth-rts-touch-status-before.css
+
+Retained verbatim using git show, without executing any application or test.
+The focused browser harness replaces only the sole inline style in the same
+current built RTS HTML. It asserts that masking that style leaves identical
+markup/scripts and compares the same public-command checkpoint, selected u0,
+390x844 viewport, initial scroll0, and glyph-visibility measurement function.
+This is an old-presentation control; it does not substitute old game mechanics.
+Runtime and rendered artifact review are restricted to Spark.

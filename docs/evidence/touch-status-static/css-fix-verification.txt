@@ -1,0 +1,45 @@
+Independent source verification — bounded P3 selected-card CSS correction
+
+Verdict: the frozen correction removes the identified source cause for selected cards at viewport widths at or below720px. No concrete new source defect found. This is source clearance, not a rendered readability or control-actionability pass. The separate authorized browser/raster gate remains necessary.
+
+Reviewed identity and scope
+
+Repository: task-3/hearth-touch-status, HEAD 82dc5ed120ff608cef977a33c77b6296185c3f4e.
+src/hearth-rts/styles.css SHA-256 3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535, checked both before and after review.
+src/hearth-rts/view.js SHA-256 ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c.
+src/hearth-rts/engine.js SHA-256 ea412f31690fd5b398263dfd5cdaeb1c81aef23a21bdc2ab3dab4ceb9ec4cb55.
+src/hearth-rts/shell.html SHA-256 124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd.
+
+Actual source diff against frozen82dc5ed is exactly two added lines in RTS styles: a comment and the selected-card media rule at line19. View, engine, and shell have no diff. An untracked old-CSS fixture belongs to the separate browser owner; its unfinished harness was not reviewed here. No product or test files were edited. No app, parser, test, build, lint, or browser execution occurred on M6.
+
+Why the cause is removed
+
+The old source put the full state/load text in a single small element, constrained beside a floated portrait and forced to nowrap/hidden/ellipsis. At390px the selected card could be about79px wide and visibly showed only "Holding…".
+
+The appended rule uses .unit-card[aria-pressed=true] within @media(max-width:720px). Its specificity exceeds the base .unit-card and .unit-card small selectors, and it comes after the existing mobile rules. flex-basis140px and min-width140px, together with existing max-width140px and border-box sizing, fix a selected card's outer width at140px. The status remains display:block through the existing button-small rule, but clear:both places it below the portrait. white-space:normal and overflow-wrap:anywhere allow its complete existing state/load string to wrap, while overflow:visible and text-overflow:clip remove the ellipsis/clipping mechanism. Neither card nor roster has a fixed maximum height or a clipping overflow rule; the card can grow with wrapped text. Existing44px minimum touch height is retained.
+
+Selection and multiple selection
+
+view.js:273 sets aria-pressed from selected.has(u.id) on every UI refresh. The rule therefore follows actual selection rather than only the inspected unit or idle phase. Tapping a different card restores the old card's compact presentation and expands the newly selected one. Shift selection, Select all at line270, and Idle selection at line167 can mark several cards true; each receives the full rule. The CSS does not create a first-selected-only assumption or alter any event handlers, focus attributes, unit status strings, engine state, or command targeting.
+
+The existing roster uses flex-wrap:wrap. At390px the normal roster content width is approximately340px after the main gutters, roster borders, and padding. Two140px selected cards plus an8px gap fit; three do not. Mixed selected/unselected rosters can redistribute cards and create additional rows. That is an intended layout consequence, not evidence of changed selection identity. The existing stable card elements and click handler do not replace controls merely because their size changes.
+
+Eight-unit boundary
+
+The engine admits at most eight units and training stops at eight. With all eight selected at390px, the width rule implies four card rows; the roster grows in normal document flow. There is no static clipping box that would truncate those rows. Additional rows can extend beneath the initial viewport or the fixed tray, so source inspection cannot establish that every card is simultaneously visible or tappable without scrolling. The below520px body padding remains290px and the tray remains fixed; those facts support a scroll recovery route but are not a measurement of occlusion or hit testing. The separate gate should verify each selected card can be brought above the tray and tapped, without demanding all eight fit at once.
+
+Desktop and width boundary
+
+The new rule is inactive above720 CSS pixels. Desktop source styling, command-tray styling, and engine behavior are unchanged. At exactly720 it applies; at721 it does not. This fix makes no claim to eliminate any pre-existing compact-card truncation at wider constrained layouts or on unselected cards. Enlarging selected cards can reflow the roster at mobile widths; actual desktop regression and breakpoint geometry are rendered-evidence questions, not already observed results.
+
+Text scaling boundary
+
+There is no new fixed height, nowrap, or overflow clipping for selected status text. At a fixed390px viewport, increasing roster text to200% should consume extra vertical lines rather than force the original ellipsis; overflow-wrap:anywhere also permits long status tokens to break. That is the source-level reason the correction is compatible with the planned stress case. Actual font metrics, native button rendering, portrait clearance, name visibility, line placement, and tray overlap must still be measured and viewed. The source uses short authored names Aru, Nara, Tavi, Uma, Sela, Kori, Luma, and Oru; this review does not assert arbitrary imported names or every browser accessibility mode are proven readable.
+
+A measured roster-only200% test is not equivalent to browser page zoom, device text autosizing, or an OS accessibility-font setting. It should be reported with its exact scope. The CSS still uses the existing9px base status font; no broader minimum-font or accessibility conformance claim follows from this correction.
+
+Remaining evidence gate
+
+The planned browser owner gate is appropriate: real built page; same-state old-CSS-only negative control;390x844 viewport; mixed loads and actual selection changes; measured roster-only200% text; maximum eight selected units; and desktop comparison. It must establish visible name/state/resource/quantity and usable controls with raster and geometry/hit-test evidence, rather than passing on unchanged innerText alone. For lower roster rows, scroll into an actually unobscured position before judging card/control reachability. State, cargo, selection, and command behavior should remain unchanged across the CSS-only comparison.
+
+No new finding is raised, and no additional product change is requested from this static review. The frozen026/native and Move025/4e391c2 histories remain separate and unchanged. Only this report was written; final visual closure awaits the authorized execution environment and returned evidence review.

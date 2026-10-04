@@ -1,0 +1,53 @@
+Independent packaging and Spark gate review — P3 touch status plus native-focus oracle
+
+Verdict: no missing necessary execution gate identified for the inspected combined scope. The proposed two separate syntax/build/browser jobs are appropriate. This is packaging clearance, conditional on the final immutable commit preserving the inspected inputs; it is not a runtime pass or publication approval. No application, parser, test, build, lint or browser code was executed locally. Only this review report was written.
+
+Inspected combined state
+
+Worktree: task-3/hearth-touch-status. HEAD at review: e9f395d39eb20a25e10135dae0b4f40146c5d97c, the committed navigation-focus correction, with the authorized P3 files awaiting their final commit. Compared with Navigation026 source82dc5ed120ff608cef977a33c77b6296185c3f4e, the tracked executable/product diff contains only src/hearth-rts/styles.css and tests/browser/campaign-navigation.cjs. The additional untracked executable is tests/browser/hearth-rts-touch-status.cjs; its pinned CSS/provenance fixtures and documentation are the remaining additions. No engine, view, shell, asset, build, syntax-checker, smoke or deterministic-test delta was found. The product change is exactly two appended CSS lines, one comment and one selected-card media rule.
+
+Checked SHA-256 identities:
+  RTS CSS: 3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+  RTS engine: ea412f31690fd5b398263dfd5cdaeb1c81aef23a21bdc2ab3dab4ceb9ec4cb55
+  RTS view: ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c
+  RTS shell: 124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd
+  build.mjs: cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47
+  corrected campaign browser: 3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14
+  new touch-status browser: c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020
+  pinned old CSS: 022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+  old-CSS provenance: fba3966e5f03f629847b83f03f9c7da5a6bb864809880026a1465ef40b1491c8
+
+The prior separate touch-harness review and CSS verification remain scoped static reviews. I also read the navigation-focus correction plan and final separate verification, including its final3e7d631a trace-retention closure. That harness changes focus observations/assertions and evidence retention only; no custom product focus trap or host change is being packaged.
+
+Historical evidence retained
+
+I read the actual Navigation026 result/log. Source82dc5ed exited1 after syntax33, all124 deterministic tests with zero failures/skips, four builds and the browser smoke passed. The campaign browser then failed the immediate one-Tab expectation at311 with an empty activeElement.id. Its later cases did not run. This does not establish background focus escape, nor a complete campaign-browser pass. The corrected full suite must run from its beginning. The unchanged124 tests and smoke are valid predecessor evidence, not newly executed results for this combined commit.
+
+Required focused jobs
+
+1. touch-status-027:
+   node scripts/check-syntax.cjs && node build.mjs && node tests/browser/hearth-rts-touch-status.cjs
+2. navigation-focus-028:
+   node scripts/check-syntax.cjs && node build.mjs && node tests/browser/campaign-navigation.cjs
+
+Both jobs must name the same final exact combined commit and source archive and use the approved pinned Spark image/environment. Independent jobs are useful here: one browser failure must not suppress evidence collection for the other. Syntax should cover34 files for these inputs; all four HTML pages must rebuild in each job. Neither job substitutes for the other. Preserve separate actual commands, results, logs, image/source identities, cleanup and artifacts. A failed browser does not become a combined pass because the other job succeeds.
+
+No further deterministic or unrelated full-browser rerun is necessary merely to increase coverage counts: the product delta is CSS-only; all deterministic tests and their product inputs are unchanged; the new browser exercises the changed roster geometry, actual touch commands, state exports, enlarged roster text, desktop boundary and old-style sensitivity. The full campaign browser covers the modified oracle and previously unexecuted native flows. This reasoning must be reconsidered if packaging introduces another product/build/test delta, an output identity mismatch, or a new failure that implicates those areas.
+
+Actual returned-output baselines and expected identities
+
+I independently hashed and counted the returned026 files in task-2/spark-ci/results/singularity-20261004-navigation-026-review-dist, matching its built-dist-provenance.json:
+  index.html: 160460 bytes; 7ab8d9ad47781f51f392d7f0446c0e0c743e38a6edfd778d591aea20ab0beee4
+  hearth.html: 83881 bytes; a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+  agriculture.html: 52583 bytes; 690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+  hearth-rts.html: 85447 bytes; 50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef
+
+The unchanged builder assembles RTS from its shell/styles/engine/view. Cave embeds the pure RTS engine but not RTS CSS; previous Hearth and Agriculture use their own unchanged inputs. Therefore both new jobs must return identical four-page outputs to each other. Cave/index, previous Hearth and Agriculture must also equal the026 bytes/hashes above. RTS must differ from its026 hash, with the HTML difference confined to the reviewed CSS insertion; record its actual new size/hash. Tests, fixture files and documentation do not enter the builder. No locally synthesized output or hypothetical hash is substituted for returned build artifacts.
+
+The prior RTS equality to Move025 is deliberately no longer an output acceptance condition. Engine/view/shell identity preserves the relevance of earlier mechanics evidence, while rendered acceptance belongs to the new RTS artifact. A changed RTS hash alone is insufficient: check the actual output difference and its inline stylesheet identity. Any unexpected change in the other three pages or in RTS script/markup is a packaging blocker until explained and reviewed.
+
+Remaining acceptance and limits
+
+The touch gate must actually observe its old-CSS clipping control and complete the corrected cases using the same oracle, retain viewport images, geometry, exports and input evidence, and receive independent raster/evidence review. DOM text or a PASS line alone does not prove readability. The campaign gate must complete all native and retained helper cases, retain the richer focus observations and Stay/reopen trace, and demonstrate the required live-controller/destination behavior. Treat lost document focus with BODY/HTML as the observed boundary state, not proof of a named browser-chrome control.
+
+Keep emulated touch, public-command-generated compatibility fixtures, controlled-clock samples and roster-only measured200% text distinct from physical-device play, fresh browser-earned progression and browser/OS zoom. Do not infer full mobile UX, all accessibility modes or broader mechanics closure. The final immutable commit/archive manifest, both Spark results and actual returned artifacts remain pending at this review. Nothing here authorizes an M6 rebuild, production deployment, main merge or Library replacement.

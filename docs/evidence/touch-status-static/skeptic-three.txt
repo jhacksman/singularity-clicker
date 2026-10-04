@@ -1,0 +1,38 @@
+Independent P3 disproof triage — selected touch card cargo readability
+
+Verdict: confirmed, with a narrow scope. At the captured 390x844 touch viewport, the selected Aru card visibly truncates its holding status before the cargo quantity and resource. This is a Low-severity/P3 readability follow-up. It is not a demonstrated mechanics, custody, save, command-actionability, or full mobile accessibility failure. The requested source and evidence were read only; no app, tests, parser, build, lint, or browser execution occurred on M6. No other fresh P3 reports were read.
+
+Evidence identity
+
+- Reviewed owner report: task-10/MOVE025-OWNER-EVIDENCE-REVIEW.md SHA-256 1bffa7fd68533efdc514a3fff4f7b3bd06c187513e1403d942c23131b350d484, matching the supplied identity.
+- Repository: task-3/hearth-rts-ic02, HEAD 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558; git status was clean.
+- src/hearth-rts/view.js SHA-256 ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c.
+- src/hearth-rts/styles.css SHA-256 022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c.
+- src/hearth-rts/shell.html SHA-256 124046ab8f67f79b72eecb7a771e61dae8416e396449b79e84e8e6d751250ebd.
+- Viewed actual task-2/spark-ci/results/singularity-20261004-rts-move-025-evidence/artifacts/hearth-rts-move-touch-held.png, SHA-256 9d6d58a985d0d49d16634af4306ce400d9817659cb4f268cf665029c9c5ad0be. It is a 390x1434 full-page PNG, not an 844px-high screenshot. The harness declares the touch viewport as 390x844 at tests/browser/hearth-rts-move.cjs:51 and requests fullPage at the held capture, line122. The distinction matters: content shown below y844 is outside the initial viewport.
+
+Observed result and source cause
+
+The selected gold-bordered Aru card, around y473–522, shows the name and "Holding…"; neither "2" nor "wood" is readable there. All four villager cards remain on one row. The aggregate line beneath the cards visibly includes "Carried: 2 wood". The fixed command tray occupies roughly y655–844, about189px. Its visible cargo note explains general Move/Stop behavior but does not identify this carrier's amount. The full inspector below the initial fold shows "Aru" and "Holding 2 wood — choose Move or Stop and Return" around y904–966.
+
+The result agrees with the exact source. view.js:239–246 builds the card status as a phase label followed by the load; line243 gives "Holding · 2 wood" for the ordinary holding case. Line273 puts the complete status in the card's small element and the complete unitDetail in the button title. styles.css:1 forces .unit-card small to white-space:nowrap, overflow:hidden, and text-overflow:ellipsis at 9px. The same line supplies flex:1 cards, a floated portrait with margin, and, below720px, min-width65px with6px padding. At390px, four cards fit at approximately79px each, leaving substantially less width beside the portrait for status. No selected-card rule makes the cargo visible, and the below520px additions at line17 change minimum height but retain the ellipsis behavior. This is ordinary current styling, not evidence of a missing cargo value in the game state.
+
+Attempts to disprove and resulting limits
+
+1. The quantity/resource are present elsewhere. The screenshot itself disproves any claim that all cargo information is lost: the aggregate is readable, and the inspector below the fold carries the complete selected-unit detail. styles.css:17 also supplies bottom page padding, so the fixed tray is not evidence that the inspector can never be scrolled into view. The defect is the inability to read the selected carrier's own load at a glance in the visible card/command area.
+
+2. In this exact one-loaded-worker fixture, the aggregate happens to identify the same two wood. That reduces immediate practical ambiguity. It does not repair the selected-card contract: view.js:268 derives the aggregate from all in-transit goods, not the selected unit. With several carriers it cannot generally attribute a resource quantity to Aru. No multiple-carrier screenshot was supplied or executed here; that consequence is source-based, not an additional observed scenario.
+
+3. The full status exists in textContent, and unitDetail is also assigned to title and the inspector. This is not evidence that screen readers lose it, nor that a desktop hover cannot reveal it. A title attribute is not evidence of reliably visible at-a-glance information for touch users. This review makes no assistive-technology or physical-device result claim.
+
+4. The screenshot uses the owner's controlled clock and emulated touch checkpoint, rather than proving fresh-play comprehension on a real phone. Nevertheless, the visible ellipsis corresponds directly to CSS independent of simulation timing. Frozen-clock canvas timing or the older invalid-target toast does not explain away the DOM card's narrow one-line truncation. Neither is promoted to a separate finding.
+
+5. More scrolling, a wider viewport, or selecting the card and reading the lower inspector provides a recovery route. No new loss of cargo, inability to Stop/Move, or irreversible outcome is shown. Those alternatives keep severity bounded and prevent treating P3 as a blocker for the previously observed scoped Move mechanics pass.
+
+Bounded correction and acceptance requirements
+
+Keep this a selected-cargo presentation change. A selected card may wrap its phase and load into short readable lines, or the existing command area may show a clearly associated selected-unit name, phase, quantity, and resource. A general camp aggregate, tooltip alone, or unchanged hidden textContent would not address the finding. Do not require a new game mechanic, change custody, alter the frozen Move/native sources, or broaden this into a mobile redesign during triage.
+
+Acceptance should inspect a rendered 390x844 viewport, not only a full-page image or innerText: a selected loaded villager's name, Holding/Moving or planned state, resource, and quantity must be visibly readable without horizontal truncation, with its existing command controls reachable. Include representative supported text scaling and at least a second carrier with a different load, so camp-wide totals cannot stand in for selected-unit information. Verify selection changes update the association, and that additional readable lines do not cover or displace controls into an unreachable region. Future physical-device evidence, if required for mobile closure, remains separate from emulated browser evidence.
+
+Status: triage complete; report is the only file written. No source correction or full UX closure is claimed. Native82dc5ed and Move0254e391c2 remain preserved. Any accepted correction needs its own reviewed candidate and subsequent rendered evidence on the authorized execution environment.

@@ -1,0 +1,158 @@
+P3 selected touch-status browser release — 2026-10-04
+Author: /root/skeptic_one
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-touch-status
+Base: 82dc5ed120ff608cef977a33c77b6296185c3f4e
+
+Frozen authored files, SHA-256
+tests/browser/hearth-rts-touch-status.cjs
+c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020
+tests/fixtures/hearth-rts-touch-status-before.css
+022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+tests/fixtures/hearth-rts-touch-status-before.provenance.txt
+fba3966e5f03f629847b83f03f9c7da5a6bb864809880026a1465ef40b1491c8
+
+Product stylesheet observed, separately owned/reviewed by parent:
+src/hearth-rts/styles.css
+3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+
+Only the new browser harness and its two test-only fixture files were authored.
+No existing harness, game, view, engine, save, build, or navigation file was edited.
+No commit, M6 browser, runtime, public reducer, parser, test, lint, or build ran.
+All executable fixture generation and browser work in this file is for Spark.
+
+Plan and static review
+
+The parent approved the concrete fixture/oracle plan before authoring, including
+roster-only measured text enlargement and a same-built-page old-style control.
+The author read README, critic, skeptic-two and skeptic-three findings first.
+/root/skeptic_one/roundtrip_scan independently reviewed the public fixture recipe,
+then the actual authored harness. That review identified an overbroad desktop
+planned/return-label assertion, since desktop wrapping is unchanged by the mobile
+CSS correction. The final harness narrows desktop to matched old/candidate held
+surfaces and recorded scrolling. Its fresh static recheck found no remaining
+concrete blocker. No child edits or execution occurred. This author/child check
+does not replace the parent's separate oracle critic or rendered evidence review.
+
+Six browser contexts; 23 viewport-only rendering checkpoints
+
+1. Old-CSS touch control, 390x844: four-person held fixture, actual u0 touch
+   selection, scrollY0. The shared character-geometry oracle MUST identify
+   horizontally clipped/out-of-card selected status text. Expected clipping is
+   saved as evidence and does not count as candidate acceptance.
+2. Candidate touch, 390x844: initial u0 holding2wood at scroll0; selected u1
+   holding3stone; selected u2 holding4food; actual touch Move plans u0 to(13,3);
+   resumed and physically advanced Moving; held on arrival; actual Stop and
+   Return while paused retains the complete load. Seven viewport checkpoints.
+3. Candidate touch with explicitly measured roster-only200% text: the same seven
+   checkpoints and real Move/Stop/selection sequence. Actual computed name/status
+   font sizes must double; root font-size is not used as a proxy.
+4. Candidate max8 touch: actual selection of last actor u7 holding4food, followed
+   by u1 holding3stone; two measured viewport captures with recorded scrolling.
+5–6. Old-CSS/candidate desktop at1440x1100: same held u0/u1/u2 surfaces, three
+   captures each. Complete measured glyph/card/tray/control geometry must match
+   across the old/candidate styles after the same scrolling/selection routine.
+
+Only the original four-roster touch u0 issue is required at exact scroll0.
+Later mobile and desktop selection may use ordinary vertical window scrolling,
+recorded in every geometry artifact. The harness does not require every actor to
+fit in the initial viewport or invent cargo labels for unloaded Ready actors.
+
+Fixture provenance and scope
+
+The four-person save begins with new Camp. Public command/tick calls gather
+exactly2wood for u0,3stone for u1,4food for u2, then Move each to clear western
+holding cells. Empty u3 also moves there. No cargo, quantity, position, order,
+resource or stock field is manually rewritten. Every bounded stage validates;
+the final save must survive an exact constructor round trip.
+
+The eight-person fixture clones that valid checkpoint. Empty u3 gathers the
+remaining71western food, then eastern food until at least100 is delivered. A
+public idle command stops it empty. Four public train calls each spend25food;
+the harness asserts eight villagers and100food spent. Public gathering/Move then
+leaves u7 holding4food. Earlier three held actors must remain exactly unchanged.
+Both final JSON fixtures and their hashes are emitted by the Spark harness.
+Each predicate loop has an explicit12000tick bound. This is fixture generation,
+not a browser-earned/scouted resource journey: the public engine can target an
+unscouted deposit. No full economy, custody, transfer or broad gameplay rerun is
+claimed or required for this presentation increment.
+
+Candidate/control identity
+
+The candidate serves the actual built dist/hearth-rts.html. The harness checks
+that its sole inline stylesheet equals current src/hearth-rts/styles.css, so a
+stale historical build cannot quietly act as the candidate. The control replaces
+only that inline style with the verbatim pinned pre-P3 CSS from the base commit.
+The pinned hash is asserted before use. Masking the style must leave candidate
+and control HTML identical, including all markup and both game scripts. No old
+mechanics, product DOM, app state hook, or alternate input implementation is used.
+The baseline and candidate initial case share the exact four-person save, selected
+u0,390x844viewport, scroll0, sizing, and geometry function. Runtime report records
+candidate/control HTML/CSS hashes and fixture hashes.
+
+Rendering oracle
+
+Each selected name/status string is checked against an actual Journey download
+of the current live world and the real Pause/Resume control. Per-character DOM
+Range rectangles then check the complete rendered name and status against card
+bounds, clipping ancestors, viewport, portrait overlap, neighboring cards, and
+fixed command-tray occlusion. elementFromPoint samples verify the glyph centers
+belong to the selected card. The page must not overflow horizontally. Move and
+Stop must have visible viewport-contained, hit-testable, enabled44px targets.
+These assertions check outcomes; they do not require the particular flex-basis,
+clear, wrapping, or overflow declarations chosen by the product owner.
+
+All captures use fullPage:false. Every PNG has a geometry JSON containing
+viewport, scroll, selected actor state, running flag, per-character rectangles,
+computed font sizes/line height/overflow, all card rectangles, tray position,
+control hit results and issues. Independent raster inspection remains necessary:
+automated rectangles do not establish typography quality or player comprehension.
+
+Real inputs, clocks and export synchronization
+
+The harness uses Playwright touchscreen taps on visible selected cards, Move,
+Stop and the visible map point. It verifies armed Move and records trusted touch
+pointerdown events for all required targets. It does not dispatch fabricated
+pointer events or call hidden view/reducer functions to issue browser commands.
+Desktop uses actual mouse selection. The recorded scrolling is test-driven
+ordinary window scrolling, not a claim of an observed physical swipe.
+
+The seeded game starts paused. A Playwright clock is explicitly installed and
+frozen; simulation advances only with declared runFor intervals. The Moving case
+actually resumes the game, advances time and actor position, and captures with
+Pause still displayed. The Journey dialog temporarily prevents advancement but
+does not toggle the underlying paused flag; it is closed before measuring and
+capturing the selected card. The shared oracle derives Moving versus Move planned
+from exported phase plus the real current pause control, and exact expected text
+must agree. It cannot rename a paused planned checkpoint as Moving.
+
+Journey downloads install their download promise before the actual Export tap,
+save/read the resulting file, and close the dialog. Each render/scroll/capture is
+bracketed by exact live exports under the frozen clock. Selection-only changes
+also preserve exact raw bytes. Move/arrival/Stop preserve every actor's load and
+resource; material totals stay equal, and stock/spent/delivered/deposits remain
+unchanged by the bounded Move/Stop sequence. Stop is only tested through accepted
+return planning with its cargo retained; this harness does not duplicate delivery
+settlement/custody mechanics already attributed to Move025.
+
+Scaling is a labeled test-only CSSOM fixture that doubles measured computed px
+font sizes for roster names/statuses. It adds no markup and does not change game
+state. Portraits, controls and the rest of the page are not enlarged. It is not
+browser zoom, whole-page text resizing, assistive technology or physical-device
+accessibility evidence. No arbitrary timeout sleeps are used.
+
+Artifacts, failure behavior and remaining gates
+
+Spark writes artifacts/hearth-rts-touch-status with source/fixture hashes,
+viewport PNGs, glyph/geometry JSON, original live export files, trusted input
+telemetry, videos, and report.json. A browser-stage failure writes a viewport
+failure PNG plus failure.json with available body/scroll/events and prior report
+observations. Early fixture/build-identity assertions fail before browser capture
+and are attributable through the Spark process log.
+
+Frozen for separate oracle critique, then the parent's immutable focused Spark
+gate (syntax, all4builds, this browser). A source-only clear verdict is not a
+runtime pass. Old-CSS clipping must actually be observed, candidate assertions
+must pass, and an independent reviewer must inspect returned viewport artifacts.
+No edits after freeze without explicitly reopening ownership. Broader gameplay,
+navigation, physical devices, accessibility and full mobile UX remain outside
+this bounded release.

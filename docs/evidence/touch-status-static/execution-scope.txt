@@ -1,0 +1,50 @@
+P3 touch status: proposed focused Spark gate
+
+Candidate is not yet frozen. Root owns the two-line product CSS correction;
+the browser owner owns the new rendered-layout runner and pinned old-style fixture.
+Parent owns approval and dispatch through the shared Spark coordinator.
+
+Proposed P3 command after independent harness review:
+node scripts/check-syntax.cjs && node build.mjs && node tests/browser/hearth-rts-touch-status.cjs
+
+Separate navigation-focus job on the same immutable combined candidate:
+node scripts/check-syntax.cjs && node build.mjs && node tests/browser/campaign-navigation.cjs
+Keep the jobs independent so failure in either browser suite does not prevent
+the other suite from collecting its own evidence.
+
+Use the existing approved ARM64 Node/Playwright/Chromium image, sandbox true,
+network none, 2 CPU / 4 GiB / 900 seconds. No installs, new runtime, dependencies,
+credentials, hardware or external network. All execution remains Spark-only.
+
+This is a CSS-only product correction. The engine, view, shell, navigation,
+build logic and existing deterministic tests remain byte-identical to the frozen
+Navigation026 base. That exact base passed syntax, all 124 deterministic tests,
+four builds and smoke; its campaign browser stopped at an unsupported immediate
+one-Tab modal-wrap assumption. Preserve that failed run and its later unrun cases.
+The separately reviewed test-only focus correction is inherited by this combined
+candidate; the full corrected campaign suite must complete in its separate gate.
+Do not rerun the unchanged 124 deterministic tests or unrelated full browser
+suites solely to increase counts. The syntax gate covers the new browser script
+and corrected campaign script (34 files expected); all four pages rebuild;
+the new browser runner covers the changed card geometry, load labels, real input
+reachability, live-state exports, desktop boundary and old-style negative control.
+Any subsequent product/engine/view change reopens this focused-scope decision.
+
+The old RTS HTML hash MUST change because its stylesheet changes. Record its new
+exact bytes/hash; do not use Move025 output equivalence for visual acceptance.
+Cave, previous Hearth and Agriculture builds should remain byte-identical to
+Navigation026 if no other input changes. Compare the actual returned built files
+when those artifacts are available, attributing predecessor checks separately.
+
+Retain source archive and per-file identity, command/image/log/result/cleanup,
+all successful and failed screenshots, videos, downloads and geometry reports.
+The same old-CSS control must demonstrate the original clipping on the same
+fixture and geometry oracle. Keep synthetic text scaling and command-generated
+or controlled-clock checkpoints distinct from fresh play, browser/OS zoom and
+physical-device evidence. No hidden pass, skipped negative or DOM-only readability
+claim is acceptable. Independent artifact review remains required after execution.
+
+After gates pass, retrieve all four actual built HTML pages as sibling files for
+the user-facing review preview, plus representative corrected viewport images and
+exact provenance. No M6 rebuild, production deployment, main merge or silent
+replacement of the accepted Library item follows from this proposed gate.

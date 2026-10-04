@@ -1,0 +1,155 @@
+P3 selected touch-status harness — independent concrete static review
+2026-10-04. Read-only source/fixture review. No app/test edits, JavaScript parser,
+runtime, reducer execution, tests, build, lint or browser execution occurred on M6.
+Only this assigned report was written. No screenshots/videos from this new gate
+exist in this review and no runtime pass is claimed.
+
+Verdict: no concrete static blocker found in the frozen bounded harness. Its
+old-style control and candidate use a meaningful shared rendered-text oracle,
+and its inputs/claims remain within the approved P3 presentation scope. Approval
+is limited to taking this reviewed harness to the parent's immutable Spark gate.
+Actual old-CSS sensitivity, successful candidate checks and independent inspection
+of viewport artifacts remain required before closing P3.
+
+Reviewed identity
+Workspace: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-touch-status
+Base: 82dc5ed120ff608cef977a33c77b6296185c3f4e
+  tests/browser/hearth-rts-touch-status.cjs
+    c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020
+  tests/fixtures/hearth-rts-touch-status-before.css
+    022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+  tests/fixtures/hearth-rts-touch-status-before.provenance.txt
+    fba3966e5f03f629847b83f03f9c7da5a6bb864809880026a1465ef40b1491c8
+  src/hearth-rts/styles.css (parent-owned correction; inspected for binding/scope)
+    3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+The complete 221-line harness, pinned fixture provenance, author release and
+relevant unchanged RTS engine/view behavior were read. The author's child-review
+verdict was not used as a substitute for this independent source analysis.
+
+Faithful control and candidate identity
+
+Lines 10–17 bind the current build's sole inline style to the actual current
+stylesheet, verify the pinned old CSS hash, and replace only that style for the
+negative control. Masking the style must leave all scripts and markup identical.
+The candidate is served from the ordinary rebuilt dist/hearth-rts.html; the
+control route serves the same HTML with the explicit CSS-only substitution.
+The control cannot accidentally use historical return-first mechanics or a
+test-injected replacement selection/status component.
+
+Both initial touch arms use the same fourRaw, actual u0 selection, 390x844 sizing,
+scroll0 and geometry function. Boot requires the seeded world to be adopted
+unchanged through a real live Journey export. Initial captures record the same
+actor/phase/load and require scrollY0. Candidate layout may legitimately change
+card/row sizes; the inputs and viewport are matched, not the resulting geometry.
+The control must report actual selected small-text horizontal clipping or glyphs
+outside the card, while the candidate must have no recorded visibility issues.
+This is an expected baseline failure, explicitly marked, not a candidate pass.
+
+Reachable public fixture generation
+
+The four-worker fixture starts from new Camp and uses gather/Move/tick commands
+to hold u0 with 2 wood, u1 with 3 stone and u2 with 4 food in clear western cells. Empty
+u3 is moved separately. Each bounded step checks its reached predicate and valid()
+and asserts exact partial cargo and arrival; the final world must constructor-
+roundtrip exactly. No stock, cargo, coordinates, orders or phases are assigned.
+
+The eight-worker fixture loads that checkpoint, has u3 deliver the remaining
+71 western food, gathers eastern food until at least 100 is stored, stops empty,
+and recruits four workers through train(). It asserts eight actors and exact
+100 food spending, then gathers/holds 4 food with u7. Original held actors must remain
+exactly unchanged. The path/finite-food/worker-cap preconditions are consistent
+with the unchanged engine; there is sufficient accessible food and recruitment
+space. Predicate loops are bounded at 12000 ticks and fail explicitly if unmet.
+
+This is public reducer fixture generation, not browser-earned progression: the
+harness correctly discloses that engine commands can address unscouted deposits.
+Both output fixtures and hashes are recorded. It does not borrow aggregate cargo
+as a selected-actor oracle: each selected card's actual name/status is compared
+with its own actor in a fresh live Journey export.
+
+Rendered visibility and same-oracle sensitivity
+
+At :104–138 each non-whitespace character of both name and status has a DOM Range
+rectangle checked against card bounds, viewport bounds and clipping ancestors.
+The oracle also detects tray intersection, portrait intersection, card overlap,
+horizontal page overflow and glyph centers occluded by something outside the
+selected card. It records text ranges, computed fonts/overflow, card positions,
+viewport/scroll and tray geometry rather than accepting innerText alone.
+
+The old CSS's nowrap/hidden/ellipsis line retains layout positions for the hidden
+tail, so this oracle is designed to expose the reported missing status/load via
+horizontal clipping/out-of-card issues. Source inspection supports that sensitivity;
+the Spark control must actually demonstrate it before runtime closure. The
+candidate is not required to use specific CSS declarations: it must satisfy the
+same complete visible identity/state/load outcome with an empty issues list.
+
+The .75px geometry tolerance avoids subpixel rounding noise. Border-box ancestor
+checks and center hit tests are useful outcome measures, but DOM Range rectangles
+are not proof of readable ink, contrast, typography or comprehension. Returned
+fullPage:false PNGs still require direct review; a geometry-only pass is not the
+final P3 verdict. The initial artifact must show the selected surface above the
+tray in the actual viewport, not merely somewhere in a full-page image.
+
+Move/Stop checks additionally require enabled, fully viewport-contained, at least
+44px targets with successful center hit tests. Per-actor mixed-load captures and
+max-eight selections prevent a global carried total from disguising wrong actor
+association. Later captures use explicitly recorded window scrolling to bring a
+selected card above the tray; only the original four-worker u0 case must remain
+at scroll0. This is the stated acceptance boundary, not a claim that all eight
+actors or enlarged content fit in the initial viewport without scrolling.
+
+Real commands, truthful state labels and synchronization
+
+The helper uses actual touchscreen taps on card, Move, Stop and an independently
+hit-tested visible canvas point. It verifies armed Move, then exported order and
+phase. Trusted touch pointerdown records are required for u0/u1/u2, Move/Stop and
+world; max-eight selection separately requires u7/u1 touch events. Browser commands
+do not invoke hidden reducer methods or substitute synthetic pointer events.
+
+The clock is explicitly controlled and the seeded camp starts paused. The Moving
+case actually taps Resume, requires Pause displayed, runs declared clock time,
+then asserts both increased simulation time and changed actor coordinates while
+phase remains carryMove. capture() derives planned/moving/held/return wording
+from exported phase plus the actual Pause/Resume control. It cannot silently call
+a paused planned screenshot Moving. Journey temporarily stops frame advancement
+while open; it closes before card measurement and does not alter the pause flag.
+
+Actual download promises are installed before Export activation. Each layout
+capture is bracketed by exact live Journey exports under the frozen clock, and
+selection-only changes retain exact world bytes. Planned/moving/held/Stop phases
+preserve loads; totals and stock/spent/delivered/deposits remain unchanged for the
+bounded movement/return-plan sequence. Stop coverage ends at an accepted physical
+return plan with retained cargo; no new settlement/custody acceptance is claimed.
+
+Scaling and desktop limits
+
+scaleRoster() doubles the measured computed name/status pixel sizes through a
+labeled CSSOM-only fixture and independently reads them back. It does not use
+root-font doubling as an ineffective proxy for px-sized text. The repeated
+seven-checkpoint sequence therefore exercises actual enlarged roster text.
+Portraits, controls and page text are not doubled: this is explicitly roster-only
+font simulation, not native browser/OS zoom, full-page accessibility or real-phone
+evidence. No extra product markup or state is injected for the scaling case.
+
+The desktop comparison correctly stays with held u0/u1/u2 surfaces under old and
+candidate styles, including recorded selection/scrolling and the entire measured
+geometry object. The patch is limited to the narrow media query; equality is a
+meaningful preservation check. This does not claim that every longer existing
+desktop planned/return label has newly been made readable by a mobile CSS patch.
+
+Scope and remaining gate
+
+The source declares six contexts and 23 viewport screenshots: one baseline touch,
+seven ordinary touch, seven enlarged-roster touch, two max-eight, and three held
+desktop captures for each style. The additional scaling record is not a screenshot.
+All captures retain geometry JSON, state/download evidence and input telemetry;
+browser failures attempt a viewport PNG plus failure.json. Early fixture/build
+assertions remain attributable through the Spark process log.
+
+The parent's distinct immutable gate must build all outputs and run the focused
+harness on Spark, then review actual baseline clipping and corrected viewport
+pixels/geometry/state before declaring P3 closed. The CSS change creates a new
+RTS HTML identity; do not silently reuse Move025's HTML hash for this output.
+No app/harness changes were made by this reviewer. No new concrete finding was
+raised, and no full mechanics, native navigation, transfer-custody, physical-device,
+assistive-technology or full mobile-UX acceptance follows from this static verdict.

@@ -1,0 +1,28 @@
+These source reviews retain their original observation time and base identity.
+README.txt describes the pre-correction triage, when Navigation026 was pending;
+the actual subsequent Navigation026 failure is preserved separately under
+docs/evidence/native-navigation-026/. No old status is promoted into a pass.
+
+The combined candidate inherits the test-only native-focus correction from
+e9f395d39eb20a25e10135dae0b4f40146c5d97c. The P3 stylesheet, browser runner and
+old-CSS fixtures remain byte-identical to their independently reviewed freezes.
+Only two product CSS lines change from Navigation026. All current app execution
+remains pending two separately approved Spark jobs on the same final commit.
+No M6 execution, GitHub-hosted CI, push, merge to main or publication occurred.
+
+Frozen identities:
+src/hearth-rts/styles.css
+3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+tests/browser/hearth-rts-touch-status.cjs
+c56245c179c74eae3f79d976e6991982f9936c29172541f0a564afa86e4f3020
+tests/browser/campaign-navigation.cjs
+3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14
+tests/fixtures/hearth-rts-touch-status-before.css
+022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+
+Source clearance is not rendered acceptance. The pinned old-style arm must show
+the actual clipping through the same geometry oracle as the corrected page;
+returned candidate viewport PNGs need independent visual review. The full native
+campaign runner must finish after its corrected focus boundary check. Scope and
+artifact requirements are described in execution-scope.txt and the immutable
+parent-routed job manifests outside this repository.

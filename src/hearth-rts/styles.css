@@ -15,3 +15,5 @@ body{padding-bottom:170px}
 .world-foot>span:first-child{max-width:85%}
 @media(max-width:900px){body{padding-bottom:220px}#action-tray{padding:10px 12px calc(10px + env(safe-area-inset-bottom));grid-template-columns:1fr;gap:7px}#action-tray .command-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:520px){body{padding-bottom:290px}#action-tray .command-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#action-tray button{font-size:11px;padding:6px 8px}#action-tray button small{font-size:9px}#action-tray p{font-size:10px}#action-tray #cargo-command-note{font-size:9px}#placement-controls{gap:8px}.build-tools{min-width:0}.unit-card{min-height:44px}#selection .selection-title button{min-height:32px;padding:4px 8px}}
+/* Keep the selected villager's state and load readable beside the other cards. */
+@media(max-width:720px){.unit-card[aria-pressed=true]{flex-basis:140px;min-width:140px}.unit-card[aria-pressed=true] small{clear:both;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}}

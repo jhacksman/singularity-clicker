@@ -1,0 +1,153 @@
+Move025 P3 selected-carrier touch readability — independent triage
+2026-10-04. Image inspection and read-only source/evidence reads only. No app/test
+edits, parser, runtime, build, lint, browser execution or source changes. Only this
+assigned report was written. Native candidate 82dc5ed and Move025 remain frozen.
+
+Verdict: P3 is supported as a bounded narrow-screen readability defect. In the
+returned held screenshot, the selected villager card visibly truncates its status
+before the cargo quantity/resource. Existing aggregate and scrolled detail remain
+available, so this is not lost state, a mechanics failure, total inaccessibility,
+or a reason to overturn the scoped Move025 mechanics result. A small presentation
+correction is warranted after the parent's independent disproof gate; no source
+change is authorized or performed by this triage.
+
+Reviewed evidence identity
+
+QA report:
+  /Users/m6mini/Documents/Codex/2026-10-03/task-10/MOVE025-OWNER-EVIDENCE-REVIEW.md
+  SHA-256 1bffa7fd68533efdc514a3fff4f7b3bd06c187513e1403d942c23131b350d484
+Exact source worktree:
+  /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-rts-ic02
+  HEAD 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558
+  No working-tree differences in reviewed RTS view/styles/shell.
+  src/hearth-rts/styles.css SHA-256
+    022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+  src/hearth-rts/view.js SHA-256
+    ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c
+Returned PNG actually viewed at original detail:
+  /Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/results/
+  singularity-20261004-rts-move-025-evidence/artifacts/
+  hearth-rts-move-touch-held.png
+  SHA-256 9d6d58a985d0d49d16634af4306ce400d9817659cb4f268cf665029c9c5ad0be
+Also read the matching hearth-rts-move-touch-5-held.json as text and the relevant
+owner harness source. The PNG is full-page, not an 844px viewport-only capture.
+No video was watched and no returned suite was rerun.
+
+Concrete observation and source mechanism
+
+The owner harness sets the touch context to 390x844, hasTouch/isMobile true
+(tests/browser/hearth-rts-move.cjs:50–51). It selects u0 through a touch tap and
+captures the held screenshot after the earned-load Move/hold sequence (:105–122).
+Its controlled clock/checkpoint reuse remains an explicit evidence limitation;
+this triage does not call the sequence fresh, real-time or a physical-device run.
+
+In the PNG, Aru is highlighted in the first of four compact unit cards. The name
+is legible but the status visibly ends at Holding…; neither 2 nor wood is visible
+on that card. The aggregate line below is legible as Carried: 2 wood. Aru's separate
+Villager section with Holding 2 wood — choose Move or Stop and Return appears
+below the initial 844px viewport. The fixed tray occupies approximately the bottom
+190px of that initial viewport. Those positions are visual observations, not new
+DOM geometry measurements performed here.
+
+The saved checkpoint independently has u0 at (2,3), phase idle, order idle,
+cargo 2, resource wood, work 0.1 and reason Holding 2 wood — choose Move or Stop
+and Return. The view is not omitting the data: unitStatus() at :239–246 builds
+Holding · 2 wood for this actor; ui() at :273 puts that string in the card's small
+element and puts unitDetail() into title and the separate inspector.
+
+styles.css:1 sets .unit-card small to white-space:nowrap, overflow:hidden and
+text-overflow:ellipsis at 9px. The narrow rules reduce card padding/minimum width
+but never remove that truncation. Four flex cards share the narrow selection row;
+the floated portrait also occupies part of the early name/status line. This is
+a direct source explanation for the visible clipping, not an inference from
+innerText alone. The longer Move planned/Move blocked status variants have no
+narrow override either, although this single image measures only held rendering.
+
+Attempted disproof and severity limits
+
+1. The aggregate quantity is visible, so no amount is actually hidden anywhere.
+   Partly true: total carried stock remains readable. It does not associate the
+   amount with a selected carrier when multiple villagers hold different loads.
+   The screenshot itself has one loaded actor and does not demonstrate such a
+   multi-load case; the general attribution limitation follows from aggregate
+   versus per-unit display. This rebuts a total-information-loss claim, not the
+   narrow selected-card readability finding.
+
+2. The inspector and button title contain the complete text.
+   True and useful mitigation. The inspector is below the initial viewport, and
+   title is not a continuously visible touch status surface. The screenshot and
+   source do not establish a screen-reader defect, nor that scrolling to the
+   inspector is impossible. They establish that visible selected-card status
+   cannot be read at a glance without using another surface.
+
+3. A full-page screenshot can exaggerate the original viewport or overlay issue.
+   Correct limitation. The capture must not be treated as a native screenshot
+   of everything simultaneously visible on the device. The harness fixes the
+   844px viewport and CSS fixes the tray to bottom:0; the selected card's actual
+   ellipsis is visible in the original raster irrespective of full-page height.
+   A future acceptance capture must separately use fullPage:false and record
+   viewport/scroll/geometry so the visibility claim is direct.
+
+4. The controlled clock, old invalid-target toast or stale canvas could explain it.
+   Those do not explain the card's ellipsis: the visible aggregate and full Aru
+   detail agree with the held JSON, and the relevant card CSS deliberately clips.
+   No separate toast-timing or canvas-frame defect is inferred from this image.
+
+5. The tray's roughly 190px footprint is itself a demonstrated defect.
+   Not established. It supplies reachable command controls and explains available
+   viewport space; the narrow issue can be addressed without redesigning the tray.
+   This review neither requires shrinking its targets nor opens a broad mobile
+   layout, text-size or input-mechanics project.
+
+Minimal correction boundary if authorized after disproof
+
+Prefer a narrow selected-card presentation change: let its status use enough
+lines/width, clear the portrait where needed, and keep quantity plus resource
+together on a short load line. A dedicated state/load pair is reasonable if CSS
+alone cannot reliably present the existing combined string. An equivalently clear
+selected-load surface in the command area can satisfy the user need, but avoid
+adding another large block that hides the map/cards or makes controls unreachable.
+
+Preserve selection semantics, public orders, all reducer/custody/accounting state,
+save versions and bytes, migration/backup logic, native navigation and old releases.
+Keep planned versus moving versus held wording truthful; do not fix clipping by
+dropping the quantity, resource or meaningful state, or by further shrinking text.
+Existing inspector detail remains useful. Multiple selections must not falsely
+attribute an aggregate to one named actor. No mechanics change is implied.
+
+Required Spark rendered-viewport acceptance for a later bounded patch
+
+- Use the exact immutable corrected source and a labeled earned/checkpoint fixture
+  whose selected actor has a known quantity/resource. Keep before/after baseline
+  screenshots for the same 390x844 viewport, state, selection and scroll position.
+  Capture viewport-only PNGs after the real UI has rendered; a full-page image can
+  supplement them but cannot substitute for the initial-viewport evidence.
+- In actual selected planned-Move, moving and held states, show the actor name,
+  truthful state, resource and quantity in the rendered selected surface. Assert
+  those strings match exported state, then verify geometry and raster readability:
+  no horizontal overflow, ellipsis, line clamp or clipping of essential text; no
+  occlusion by the fixed tray; no overlap with adjacent cards/controls. DOM text
+  presence, title, aggregate Carried text and export bytes alone are insufficient.
+- Include the existing four-card roster and a representative different-load actor
+  selection, so the quantity is visibly associated with the selected actor rather
+  than inferred from one global total. If larger supported rosters wrap, verify
+  selection and required vertical scrolling do not leave the selected information
+  hidden behind the tray. Do not require every actor to occupy the initial viewport.
+- Exercise Move and Stop and Return through the visible touch controls; retain
+  reachable targets and selected-card focus/pressed feedback. Check elementFromPoint
+  or equivalent hit geometry along with screenshots; do not trade readability for
+  clipped controls or accidental command activation. A desktop-width preservation
+  check should show the bounded layout change did not regress ordinary cards.
+- Use a defined representative supported text-scaling method and record the actual
+  resulting text metrics/rendered size. These styles use explicit px font sizes:
+  merely setting the root font-size to 200% would not necessarily enlarge the card
+  text and must not be reported as a successful enlarged-text test without proof.
+- Preserve state across presentation/selection-only actions; targeted checks should
+  establish that the correction did not alter commands, cargo or save semantics.
+  No repeat of unrelated economy or campaign suites is implied by this triage.
+
+Spark Chromium touch emulation can close a scoped rendered-layout regression,
+not physical iOS/Android readability, assistive technology, full mobile usability,
+full IC02 or player comprehension/fun. Physical-device evidence remains separate
+if claimed. Parent owns the two fresh skeptic verdicts, any authorized sole-owner
+correction and subsequent independent fix/evidence verification.

@@ -1,0 +1,139 @@
+P3 selected touch-card clipping: fresh skeptical evidence triage
+2026-10-04. Reviewer /root/skeptic_two.
+
+Verdict
+CONFIRMED, narrowly: a rendered selected-villager card clips its amount/resource
+at the evidenced 390 x 844 emulated-touch layout. This is a bounded presentation
+follow-up, not a demonstrated IC02 mechanics, custody or broad mobile-UX blocker.
+The information exists elsewhere; it is not absent from the save or whole page.
+
+Review independence and limits
+I reached this conclusion from the requested owner report, exact returned PNG
+and frozen source/test text. I did not read other new reviewers' reports. I was
+the earlier UI view-label author, so this is independent evidence triage relative
+to those new reviewers, not independent implementation authorship. No game,
+parser, tests, build, lint or browser was executed locally. No source/test/app
+files changed. Only this report was written. Both frozen candidates remain so.
+
+Identity checked
+- Owner report: /task-10/MOVE025-OWNER-EVIDENCE-REVIEW.md
+  SHA-256 1bffa7fd68533efdc514a3fff4f7b3bd06c187513e1403d942c23131b350d484
+- RTS checkout hearth-rts-ic02 HEAD:
+  4e391c2e2ebf255e1cf0fb5b57bed6d123b51558; working tree clean when inspected.
+- Native navigation checkout HEAD:
+  82dc5ed120ff608cef977a33c77b6296185c3f4e; not changed by this review.
+- RTS view.js SHA-256:
+  ed8fe4dc1a9f2025c667acbc9c2f1a003c53fe58ac094f0ae5b49dc40bfc2c0c
+- RTS styles.css SHA-256:
+  022365f62483eaf6f0898c92682f28c0f9bd5c793ab1a6fa7bb45d74677d961c
+- Viewed actual returned PNG:
+  /task-2/spark-ci/results/singularity-20261004-rts-move-025-evidence/
+  artifacts/hearth-rts-move-touch-held.png
+  SHA-256 9d6d58a985d0d49d16634af4306ce400d9817659cb4f268cf665029c9c5ad0be
+Paths above are relative to /Users/m6mini/Documents/Codex/2026-10-03.
+
+Attempts to disprove P3
+
+1. Perhaps the text itself omits the quantity, or the screenshot captured stale
+   state before the holding update.
+   The source contradicts that explanation. unitStatus at view.js:239-246 forms
+   "Holding · " plus cargoLabel for idle loaded actors. ui at :273 assigns that
+   string to the card's small element. The visible card has already reached its
+   Holding label. The same screenshot shows Carried: 2 wood and the lower Aru
+   inspector says Holding 2 wood. The amount exists; horizontal card presentation
+   hides it. No claim about the canvas's next animation frame is needed.
+
+2. Perhaps image cropping or scaling, rather than product CSS, removes the end.
+   The selected card is visible within the selection panel, alongside all four
+   cards. Its status visibly ends in an ellipsis. styles.css:1 explicitly sets
+   .unit-card small to white-space:nowrap, overflow:hidden and text-overflow:ellipsis.
+   The row uses flex:1 cards, a maximum width of140px, a narrow-screen minimum
+   width of65px and six-pixel padding; the floated portrait also occupies space.
+   There is no selected-card exception that reveals the full status/cargo.
+   This is a direct CSS mechanism matching the returned pixels. The image alone
+   was not used to invent precise clientWidth/scrollWidth or glyph measurements.
+
+3. Perhaps the aggregate Carried line already makes the selected amount clear.
+   It supplies useful mitigation in this particular two-wood fixture. But
+   economy-flow at view.js:268 reports camp-wide economy.inTransit, independent
+   of selected IDs. It cannot generally attribute loads to one selected actor
+   when multiple actors carry different quantities or types. This PNG does not
+   itself demonstrate such a multi-load case; that consequence is an inference
+   from the aggregation source and needs an explicit fixture for acceptance.
+   I do not claim the player cannot discover the current quantity anywhere.
+
+4. Perhaps the inspector or title provides the missing information immediately.
+   The inspector does show the full selected load in the full-page image, and
+   ui assigns unitDetail to the card title. Those are real alternate disclosures.
+   The browser fixture sets a 390 x 844 viewport at hearth-rts-move.cjs:51, but
+   captures this image with fullPage:true at :122. The lower inspector in that
+   tall image is not evidence that its text was initially visible in the 844px
+   viewport. A title attribute also does not establish visible touch disclosure
+   without hover. The narrow finding is the card's at-a-glance readability, not
+   that scrolling, inspection or every accessibility path is impossible.
+
+5. Perhaps the controlled clock explains the visible problem and invalidates
+   a product finding.
+   The test installs/pauses a Playwright clock at :57-59, reuses an earned seed
+   for the touch case at :105-107 and advances ticks under control. That limits
+   fresh-play/real-time evidence. It does not change the declared nowrap/ellipsis
+   layout or supply a reason why this string would fit under ordinary elapsed
+   time. The test's :120 innerText assertion only checks /Holding/i and cannot
+   establish rendered quantity/resource visibility. The evidence supports text
+   clipping regardless of the separate simulation-clock limitations.
+
+What is not established
+- The old invalid-target toast in this screenshot is not a new defect here. The
+  test deliberately issued that invalid command at :115; last-message/clock
+  context does not establish an incorrect current order or feedback duration.
+- Canvas actor/frame timing is not adjudicated by this clipping review.
+- No resource loss, command failure, wrong selection, inaccessible inspector,
+  physical-device defect, screen-reader failure or full IC02 failure was shown.
+- I did not reverify the owner's complete mechanics evidence or rerun any suite.
+
+Minimum requirements for a bounded fix, if authorized
+Ensure the selected actor's identity, movement/holding state, cargo quantity and
+resource are visibly associated at the narrow layout without requiring a title
+hover or inference from camp totals. A short separate state/load line with enough
+width, or a selected-cargo area near the command controls, can satisfy this. A
+wrapping fix must account for the portrait float; merely changing text content
+or checking that innerText contains the amount cannot prove visibility.
+
+Preserve stable actor selection and existing Move, Stop and Return, Gather,
+Build/placement-confirm and cancellation behavior. Do not change cargo mechanics,
+clock behavior, save schema, art or navigation for this correction. Avoid solving
+one clipped line by obscuring the map or making the fixed command tray overlap
+the selected identity/load. Existing aggregate and detailed inspector information
+can remain; they are helpful but do not alone close the identified card issue.
+
+Meaningful rendered-viewport Spark acceptance
+1. Use the actual assembled candidate at 390 x 844 with the same four-card case,
+   selected holding 2 wood, and capture viewport-only pixels (fullPage:false).
+   Await a known rendered UI update/frame before capture. Keep an additional
+   full-page shot if useful, but do not substitute it for viewport evidence.
+2. Include moving/planned, held and blocked-held state labels, and a mixed-load
+   case that defeats aggregate inference: e.g. two workers carrying different
+   wood amounts plus another carrying stone. Select the relevant stable IDs and
+   verify the visible name/state/quantity/resource belongs to that actor.
+3. Record rendered geometry as well as text: status/load element and applicable
+   clipping ancestors, client/scroll dimensions, text ranges where useful, viewport
+   bounds and tray overlap. Wrapping must retain the whole text vertically; no
+   hidden overflow, ellipsis or horizontal page scroll may hide the required
+   information. Review actual pixels; innerText or DOM presence alone is weak.
+4. Keep the promised controls reachable through actual pointer/touch-emulated
+   actions and hit testing. Check selection among four and the supported maximum
+   eight villagers if the layout changes, including later rows. Do not satisfy
+   the check by enlarging the viewport or pre-scrolling away from the reported
+   initial composition without explicitly changing the acceptance scope.
+5. Test representative supported text scaling and record computed text sizes.
+   The current status uses an explicit 9px font, so changing only the root font
+   size may not scale it at all. Label any CSS/font simulation honestly and do
+   not call it native browser zoom or physical-device coverage.
+6. Preserve a same-fixture old-style negative control: it should still expose
+   the clipped selected cargo in pixels/geometry, while the bounded correction
+   makes the required selected information readable and keeps actions usable.
+
+Physical touch/device behavior remains a separate observation requirement;
+headless mobile emulation cannot certify it. This report supports a narrow UI
+follow-up and a focused rendered-layout gate, without reopening or contradicting
+the already bounded Move025 mechanics pass.

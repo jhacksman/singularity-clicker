@@ -1,0 +1,67 @@
+P3 selected touch-card readability — bounded follow-up
+
+Base: frozen native navigation 82dc5ed120ff608cef977a33c77b6296185c3f4e.
+The separate Move025 source is 4e391c2e2ebf255e1cf0fb5b57bed6d123b51558;
+its verified mechanics and returned artifact remain unchanged. Navigation026
+passed syntax, 124 deterministic tests, four builds and smoke, then failed its
+immediate one-Tab modal-wrap assumption. Its failed result and later unrun cases
+are retained. This candidate also inherits a separately reviewed test-only focus
+oracle correction; the full corrected campaign suite has its own Spark gate.
+
+Confirmed problem
+At the recorded 390x844 touch viewport, the selected Aru card displayed Holding…
+while hiding its two-wood load. The aggregate remained readable and full selected
+detail was available below the initial viewport. Exact source supplied the full
+text, but nowrap/hidden/ellipsis clipped it in the compact row beside a floated
+portrait. The parent-supplied QA review, a concrete critic and two fresh disproof
+reviews confirmed this bounded Low/P3 readability issue. It is not a mechanics,
+cargo-loss, total information-loss or broad mobile-accessibility defect.
+
+Correction
+Only src/hearth-rts/styles.css changes in the product. At widths of 720px or less,
+a selected unit card keeps 140px of width, matching the existing maximum card
+width. Its status clears the portrait, wraps normally and has no clipped overflow
+or ellipsis. Height grows with the text; words may wrap rather than overflow.
+This preserves the existing name/status/load text and makes room for it instead
+of shortening it or shrinking its font. Other cards may wrap to another row.
+Desktop rules, view rendering, names, controls, selection, game state, save formats,
+engines, authored art and navigation source remain unchanged.
+
+Product CSS SHA-256 at author freeze:
+3054d93950fbf881a06ebbd0f15235286479628da74137df3bce7a279b94d535
+Independent source verification found the clipping cause removed and no concrete
+new source defect at this hash. It checked actual aria-pressed selection binding,
+multiple selections, larger rosters and the desktop media boundary. Its report
+SHA-256 is cae06b4428d38bb82935d6e769638ac17774d29ddfba68ceed53f1a8be5c4a15.
+The browser harness is tracked separately. No source review can establish the
+resulting pixel visibility by itself.
+
+Focused acceptance authored and independently reviewed
+The browser gate uses the actual rebuilt RTS page and public-command-generated
+compatibility states for known mixed loads. It must capture viewport-only 390x844
+images of selected planned, moving and held states; compare them with live Journey
+exports; check glyph bounds, clipping ancestors, overlap, tray occlusion and actual
+touch selection/Move/Stop reachability. The original four-card case at scroll zero
+is retained. Later and maximum-eight selections use explicitly recorded vertical
+scrolling where needed. Desktop presentation remains separately checked.
+
+A defined roster-only 200% text fixture must prove actual computed text growth.
+The existing status text uses px sizes, so changing only root font size would not
+prove enlarged text. This fixture is not browser zoom or physical-device evidence.
+The same held checkpoint, selection, scroll and markup/scripts are tested against
+the hash-pinned original stylesheet as an explicitly labeled negative control.
+The geometry and raster evidence must show original clipping and corrected text;
+innerText presence or aggregate cargo alone is insufficient.
+
+All parser, tests, builds and browser execution remains exclusively on Spark.
+No runtime result for this correction is claimed yet. An immutable manifest identifies exact
+commands, source, approved runtime, artifact requirements and source reviews.
+The changed RTS stylesheet necessarily changes its built HTML identity; do not
+reuse Move025's HTML hash or silently carry its visual acceptance onto this page.
+Unchanged engine/input mechanics retain their separately scoped prior evidence.
+
+After exact-source gates and independent artifact review pass, retrieve the actual
+built sibling HTML pages and visual evidence for an improved user-facing review
+preview. No production deployment, main merge or accepted-preview replacement has
+occurred. Physical-device, broader accessibility, fractional browser Stop, native
+blur, full IC02 and campaign acceptance remain separately owned gates.
