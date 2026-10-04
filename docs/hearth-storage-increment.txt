@@ -1,0 +1,56 @@
+Storage increment — frozen-v3 reconciliation and implementation scope
+
+Reference: frozen singularity-all14-spec-v3, FROZEN.json manifest SHA256
+1a1d987bd4efefdeb4b5f6a9356784ad9973dc726e6ec3e6943e87498f1ebbbc.
+Read levels/01-hearth.md, EM00/EM01 in ECONOMY-MANIFESTS.md, R2.5 in
+RULES-AND-BALANCE.md, COMMAND-CONTRACT and TECHNICAL-SPEC. Four independent
+closure reviews remain external to this workstream; no frozen spec files edited.
+
+Adopted requirements
+Preserve the accepted opening and its finite deposits, no combat, autonomous
+hauling, responsive controls, paid construction and safe return. Storage should
+identify where goods actually are and what is available rather than showing one
+ambiguous number. A transfer cannot credit a receiver before arrival or create
+newly gathered output. Show real reserved and carried goods. Existing population,
+stores and cargo survive save migration without a new grant.
+
+Bounded implementation decision
+Existing completed hearth/outpost drop-offs become named local stores. Add a
+finite transfer order using existing workers and paths, with source/receiver
+custody and real walking. Surface stock, availability, reservations and transit
+separately. The accepted opening remains support-free and uncapped; no retroactive
+loss or arbitrary cap is imposed on old saves. Existing instant reservation of
+construction/knapping materials is a declared legacy abstraction unless explicitly
+replaced and independently verified; do not claim every ingredient is physically
+hauled merely because transfers are.
+
+Dependencies deliberately isolated
+V3 drying: 4 food +20 worker-seconds ->4 distinct provisions at a12wood/4fiber
+rack; preserved goods use0.75 carried slot each. It is not an increased food yield,
+less camp food use, unlimited regeneration, spoilage removal or recruitment-food
+alias. Current core lacks fiber/water, explicit H2 support activation, provisioned
+expedition jobs and a typed receiver. A rack now would produce an unusable object
+or require invented consumption. Therefore no drying icon or unsupported benefit
+ships in this increment. Next preservation work needs those connected consumers,
+funding/return rules and capacity reservation first.
+
+V3 caps100/item and200total and full-age support are prospective H2 content.
+The generic overflow+200 rule and Hearth's cache+50 recipe need explicit local
+reconciliation before adoption. Importing caps into the opening could strand old
+stock or silently change the accepted fixture. Capacity activation/migration and
+its disclosure remain separate from this local-custody step.
+
+Tools018's shared0.45-second toolset is accepted prototype content. V3 ordinary
+0.48 and sharp0.42 per-worker tool recipes/fiber/mastery are a different contract.
+Retain and label the legacy toolset; do not silently reinterpret it or double-grant
+new equipment. Restoring all craft/practice remains staged, not implied complete.
+
+Acceptance
+Source/deposit/store/reserved/cargo/consumption conservation; no transfer-output
+credit; repeated assignment/Stop/reload retain ownership; invalid or unreachable
+quotes have no debit; old saves keep their exact holdings. Browser play earns its
+stores and supplies through ordinary controls, then moves a paid finite lot and
+checks receiver credit only on arrival, user-visible reservations/cargo and exact
+paused restore. Include meaningful source-local shortage/recovery feedback and
+screenshots. Spark alone executes tests/builds/browser automation. No production
+publication or whole-Hearth completion claim.

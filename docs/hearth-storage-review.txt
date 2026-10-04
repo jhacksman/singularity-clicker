@@ -1,0 +1,102 @@
+Storage increment: adversarial review ledger (runtime verification pending)
+
+Workflow source supplied by parent:
+https://www.youtube.com/watch?v=2zLuYU_Ub_0&t=358s (screen349s).
+The parent reviewed the full transcript/screens. This workstream did not watch it.
+
+Roles (all requested Astra ultra):
+- implementation_critic: independent adversarial discovery and closure review.
+- skeptic_one, skeptic_two, skeptic_three: separate read-only attempts to disprove
+  findings; no implementation edits and no runtime execution.
+- storage_engine: sole engine and storage-unit-test implementation owner.
+- root: UI, browser-test, integration and documentation implementation owner.
+- economy_review: independent scope/economy/spec verification.
+All runtime checks must execute on Spark through the shared coordinator.
+
+Evidence preserved outside the repository in task-3/storage-critic:
+pre-skeptic/engine.js SHA256
+17303d0619a1d2d4609849a56e7ae77dac96faf915f882f8028160c15d953976
+pre-skeptic/view.js SHA256
+e7b77d211ae3ea1dec509270f79f2f79439fa60bb8be43cb878f6ecdb4275a58
+findings.md and skeptic-one.md / skeptic-two.md / skeptic-three.md.
+
+Confirmed findings and disposition (source changes; not runtime closure):
+IC-01 High release priority: invalid reassignment canceled accepted transfer.
+All three skeptics confirmed; skeptic2 narrowed impact to recoverable lost work.
+Engine preflights actor/target/path before releasing any reservation.
+
+IC-02 High: missing/mismatched imported refund reservations caused crashes or
+invalid refund arithmetic. All three confirmed. Require complete obligations,
+exact source totals matching recorded paid cost, and sufficient spent totals.
+Do not silently replace legitimate historical recorded costs with today's recipe.
+
+IC-03 Low: prospective funding described as already reserved. All three confirmed.
+UI now names a prospective funding source; accepted projects retain reserve status.
+
+IC-04 Medium: button focus swallowed S/M shortcuts. All three confirmed, with
+platform-focus caveat. Preserve button Space/Enter and input/select interaction;
+allow documented S/M controls from portraits. Actual-control Spark check authored.
+
+IC-05 Low: carrier array printed as count. All three confirmed. Render admitted
+worker count and finite quantity. Actual-control one/four-carrier checks authored.
+
+IC-06 Medium: repeated refunded construction history grew without bound. Skeptics2/3
+confirmed the bounded-history failure. Refunded
+payments and terminal transfers are pruned without losing active obligations.
+
+IC-07 Medium, split into concrete findings:
+- Corner workshop could not find a reachable supplying store.
+- New paid site could have no reachable work edge.
+- Knapping payment preceded actor/path admission.
+- Transfer independently proved two disconnected source approaches.
+All three independently checked explicit map geometry. Perimeter funding,
+site-edge admission, preflight crafting and continuous source-to-receiver paths
+address those cases. Recruitment avoids isolated hearth-edge spawning.
+
+A Medium: legacy-file import skipped raw migration backup. All three confirmed,
+noting the external source file remains intact. Preserve exact imported bytes.
+B Medium: failed import write was followed by a success message. All three
+confirmed. Commit durable storage before adopting the candidate; on write failure
+retain prior disk/memory camp, pause, and expose accurate recovery status.
+Separate browser fault fixtures exercise bootstrap/import backup/main failures.
+
+F5 High: accepted transfer could have both pending and already-carried material
+for one actor; pickup overwrote cargo. All three confirmed, including a fixture
+within the nominal five-item bound. Require carried-marker => zero pending and
+compatible pickup phase; bound original job quantity by its workers.
+
+Migration Medium: legacy input accepted by the old shape check could migrate to
+an unloadable v3 obligation state. All three confirmed, explicitly narrowing to
+previously shape-accepted inconsistent input, not ordinary earned saves.
+Validate the migration result before adoption. Fractional stock alone causing
+immediate reload failure was rejected by skeptics; integer transfer quotes must
+preserve a legacy fractional remainder and remain reloadable.
+
+Workflow exception: IC-01/02/06 and the initial perimeter/store-access corrections
+were already implemented before the parent supplied the skeptic-first sequence.
+They were not reverted to restage the process. Independent skeptics examined the
+preserved earlier source and current corrections; independent final verification
+remains required. All later reported corrections waited for sufficient verdicts.
+
+Scope exclusions: no combat, new art, harvesting regeneration, drying icon with no
+consumer, support/cap retrocharge, campaign rewrite, production deployment, push or
+merge. The accepted first expansion retains pooled construction funding; after it,
+construction/crafting use their named local store and recruitment uses the hearth.
+
+Candidate commit, Spark job/commands/results and final independent verification
+will be recorded after the immutable candidate is queued and executed. Until then,
+this document records static dispositions and authored regressions only.
+
+UI closure follow-up, independently confirmed by skeptic_one and skeptic_two:
+UIC-01 Medium: import left the prior inspector and its captured Cancel ID alive;
+with colliding IDs, it could cancel a different imported project. Empty selection
+now clears inspector DOM/datasets/handlers. A colliding-site browser fixture checks
+that the imported reservation survives and the stale button is removed.
+UIC-02 Low: bootstrap main-write failure overwrote the saving warning with a false
+load-failure/original-export promise. Preserve the accurate saving warning; only
+rejected originals are described as original recovery exports.
+A-retention Medium: repeated imports overwrote a single raw backup. retainRaw now
+reuses byte-identical snapshots and keeps distinct originals under unused suffixes.
+The browser suite checks A-to-A reuse, A-to-B retention, and failed C main-write
+retaining A/B originals plus the failed candidate's own raw backup.
+These follow-ups were fixed only after both independent skeptic verdicts.
