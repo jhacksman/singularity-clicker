@@ -5,6 +5,10 @@ const steps=(g,seconds)=>{for(let i=0;i<seconds*10;i++)g.tick(.1);};
 const until=(g,predicate,seconds=180)=>{for(let i=0;i<seconds*10&&!predicate();i++)g.tick(.1);assert.ok(predicate(),'Expected physical work to finish within the test bound');};
 const totals=g=>Object.fromEntries(resources.map(r=>[r,g.s.stock[r]+g.s.spent[r]+g.s.deposits.filter(d=>d.kind===r).reduce((sum,d)=>sum+d.amount,0)+g.s.units.filter(u=>u.resource===r).reduce((sum,u)=>sum+u.cargo,0)]));
 const custody=g=>{assert.ok(valid(g.s));for(const r of resources)assert.equal(g.stores().reduce((sum,b)=>sum+b.stock[r],0),g.s.stock[r]);};
+const legacyCertificate=(g,outpostIds=[])=>{assert.equal(g.s.version,5);const a=g.s.reclaim;assert.equal(a.profile,'accepted-opening.outpost-reclaim.v1');assert.equal(typeof a.sourceIdentity,'string');assert.deepEqual(a.recovered,{wood:0,stone:0,food:0});assert.deepEqual(a.settled,{wood:0,stone:0,food:0});assert.equal(a.settledSites,0);assert.equal(a.closedPayments,0);assert.deepEqual(a.claims.map(c=>c.id),outpostIds);for(const c of a.claims){assert.equal(c.buildingId,c.id);assert.deepEqual(c.unreleased,{wood:60,stone:20,food:0});assert.deepEqual(c.receipted,{wood:0,stone:0,food:0});assert.deepEqual(c.assigned,[]);assert.equal(c.basis.rule,'legacy-state-consistency');assert.equal(c.basis.origin,'payment-origin-unrecorded');assert.deepEqual(c.origin,[]);}};
+// These preexisting geometry controls deliberately test playable, uncertified v4 maps.
+// Their fake zero-cost blockers are not evidence for canonical reclaim certification.
+const legacyTopology=g=>{g.s.version=4;delete g.s.reclaim;};
 let earned;
 function expanded(){
  if(!earned){
@@ -19,7 +23,7 @@ function expanded(){
 }
 
 test('fresh local custody preserves the accepted uncapped opening and item totals',()=>{
- const g=new Camp();assert.equal(g.s.version,4);assert.deepEqual(g.s.stock,{wood:20,stone:10,food:0});assert.deepEqual(g.store('b0').stock,g.s.stock);assert.deepEqual(g.economy().available,g.s.stock);
+ const g=new Camp();legacyCertificate(g);assert.deepEqual(g.s.stock,{wood:20,stone:10,food:0});assert.deepEqual(g.store('b0').stock,g.s.stock);assert.deepEqual(g.economy().available,g.s.stock);
  const before=totals(g);g.command(g.s.units.map(u=>u.id),{kind:'gather',target:'d0'});until(g,()=>g.s.units.every(u=>u.phase==='idle'));
  assert.equal(g.store('b0').stock.wood,68);assert.equal(g.economy().produced.wood,48);assert.deepEqual(totals(g),before);custody(g);
 });
@@ -106,8 +110,8 @@ test('opening construction may combine stores, while later construction names a 
 
 test('v1 and v2 migration preserves every legacy world field and the exact uncapped aggregate once',()=>{
  const base=new Camp();base.command(['u0'],{kind:'gather',target:'d0'});until(base,()=>base.s.units[0].cargo>0);
- for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
-  assert.equal(JSON.stringify(legacy),raw);assert.equal(g.s.version,4);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(g.s[field],legacy[field]);assert.deepEqual(g.store('b0').stock,legacy.stock);
+ for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;delete legacy.reclaim;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
+  assert.equal(JSON.stringify(legacy),raw);legacyCertificate(g);for(const field of ['stock','spent','deposits','buildings','units','seen','time','complete'])assert.deepEqual(g.s[field],legacy[field]);assert.deepEqual(g.store('b0').stock,legacy.stock);
   const copy=new Camp(JSON.parse(g.serialize()));assert.deepEqual(copy.s,g.s);assert.deepEqual(totals(copy),totals(base));custody(copy);
  }
 });
@@ -120,7 +124,7 @@ test('save/reload at reservation, pickup and receipt preserves exact obligations
 
 test('malformed current ownership, reservations and transfer obligations fail closed',()=>{
  const {g,outpost}=expanded();g.transfer(['u0'],'b0',outpost,'wood');
- for(const change of [s=>s.version=5,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
+ for(const change of [s=>s.version=6,s=>s.storage.version=2,s=>s.stock.wood++,s=>delete s.storage.stores.b0,s=>s.storage.stores[outpost].stone=-1,s=>s.storage.transfers.push(structuredClone(s.storage.transfers[0])),s=>s.storage.transfers[0].remaining++,s=>s.storage.transfers[0].pending.u0=6,s=>s.storage.transfers[0].to='missing',s=>s.units[0].dropoff='missing']){
   const bad=JSON.parse(g.serialize());change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));
  }
  const fresh=new Camp();fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d0'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));fresh.command(fresh.s.units.map(u=>u.id),{kind:'gather',target:'d2'});until(fresh,()=>fresh.s.units.every(u=>u.phase==='idle'));const site=fresh.build('workshop',11,15,[]);assert.ok(site.id);
@@ -130,12 +134,12 @@ test('malformed current ownership, reservations and transfer obligations fail cl
 test('a funded site with no reachable work edge is rejected without spending or advancing its ID',()=>{
  const g=new Camp(),ids=g.s.units.map(u=>u.id);for(const target of ['d0','d2']){g.command(ids,{kind:'gather',target});until(g,()=>g.s.units.every(u=>u.phase==='idle'));}
  // Geometry-only fixtures close the two legal sides of a corner site.
- g.s.buildings.push({id:'edge-n',kind:'workshop',x:2,y:0,done:true,work:32,cost:{}},{id:'edge-w',kind:'workshop',x:0,y:2,done:true,work:32,cost:{}});g.s.seen=Array.from({length:36*24},(_,i)=>i);
+ legacyTopology(g);g.s.buildings.push({id:'edge-n',kind:'workshop',x:2,y:0,done:true,work:32,cost:{}},{id:'edge-w',kind:'workshop',x:0,y:2,done:true,work:32,cost:{}});g.s.seen=Array.from({length:36*24},(_,i)=>i);
  const before=g.serialize();assert.ok(g.build('workshop',0,0,ids).error);assert.equal(g.serialize(),before);custody(g);
 });
 
 test('workshop funding searches reachable perimeter edges at the top-left map corner',()=>{
- const g=new Camp();g.s.buildings.push({id:'corner-workshop',kind:'workshop',x:0,y:0,done:true,work:32,cost:{}});const before=g.serialize(),q=g.knappingFunding('corner-workshop');assert.equal(q.storeId,'b0');assert.equal(q.error,null);assert.equal(g.serialize(),before);
+ const g=new Camp();legacyTopology(g);g.s.buildings.push({id:'corner-workshop',kind:'workshop',x:0,y:0,done:true,work:32,cost:{}});const before=g.serialize(),q=g.knappingFunding('corner-workshop');assert.equal(q.storeId,'b0');assert.equal(q.error,null);assert.equal(g.serialize(),before);
 });
 
 test('uneven group allocations release exactly the stopped share and never strand the other load',()=>{
@@ -148,13 +152,13 @@ test('uneven group allocations release exactly the stopped share and never stran
 });
 
 test('migration rejects unpaid legacy construction without mutating the legacy payload',()=>{
- for(const version of [1,2]){const legacy=JSON.parse(new Camp().serialize());legacy.version=version;delete legacy.storage;if(version===1){delete legacy.tools;delete legacy.knapping;}
+ for(const version of [1,2]){const legacy=JSON.parse(new Camp().serialize());legacy.version=version;delete legacy.storage;delete legacy.reclaim;if(version===1){delete legacy.tools;delete legacy.knapping;}
   legacy.buildings.push({id:'unpaid',kind:'workshop',x:11,y:15,done:false,work:0,cost:{wood:40,stone:30}});const raw=JSON.stringify(legacy);assert.throws(()=>new Camp(legacy));assert.equal(JSON.stringify(legacy),raw);
  }
 });
 
 test('fractional legacy holdings remain owned while transfers carry only whole items',()=>{
- const {g,outpost}=expanded(),legacy=JSON.parse(g.serialize());legacy.version=2;delete legacy.storage;legacy.stock.wood=.5;const migrated=new Camp(legacy),before=migrated.serialize();
+ const {g,outpost}=expanded(),legacy=JSON.parse(g.serialize());legacy.version=2;delete legacy.storage;delete legacy.reclaim;legacy.stock.wood=.5;const migrated=new Camp(legacy),before=migrated.serialize();assert.equal(migrated.s.version,4);assert.equal(migrated.s.reclaim,undefined);assert.ok(migrated.reclaimIssue);
  assert.deepEqual(migrated.store('b0').stock,legacy.stock);assert.ok(migrated.transfer(['u0'],'b0',outpost,'wood').error);assert.equal(migrated.serialize(),before);custody(migrated);
  legacy.stock.wood=5.5;const funded=new Camp(legacy);assert.equal(funded.transfer(['u0'],'b0',outpost,'wood').amount,5);until(funded,()=>!funded.s.storage.transfers.length);assert.equal(funded.store('b0').stock.wood,.5);assert.equal(funded.store(outpost).stock.wood,5);custody(funded);
 });
@@ -166,11 +170,11 @@ test('a transfer save cannot give the same worker held cargo and another pending
  const excessive=JSON.parse(g.serialize());excessive.storage.transfers[0].amount=6;excessive.storage.transfers[0].delivered=1;assert.equal(valid(excessive),false);
 });
 
-const closeHearthCorner=g=>g.s.buildings.push(
+const closeHearthCorner=g=>{legacyTopology(g);return g.s.buildings.push(
  {id:'corner-n',kind:'workshop',x:6,y:9,done:true,work:32,cost:{}},
  {id:'corner-w',kind:'workshop',x:4,y:10,done:true,work:32,cost:{}},
  {id:'corner-s',kind:'workshop',x:5,y:12,done:true,work:32,cost:{}}
-);
+);};
 test('transfer admission and pickup require a continuous actor-to-store-to-receiver path',()=>{
  const {g,outpost,workshop}=expanded();closeHearthCorner(g);const u=g.s.units[0];u.x=6;u.y=11;u.path=[];u.order={kind:'idle'};u.phase='idle';
  assert.deepEqual(g.path(u,g.around(g.s.buildings[0])),[]);const before=g.serialize();assert.ok(g.transfer(['u0'],'b0',outpost,'wood').error);assert.equal(g.serialize(),before);
@@ -192,16 +196,16 @@ test('one hundred paused build/cancel cycles retain bounded payment history and 
 
 test('paid unfinished v1/v2 construction migrates once with exact progress and original-source refund',()=>{
  const base=fundedOpening(),stock={...base.s.stock},total=totals(base),site=base.build('workshop',11,15,['u0']);assert.ok(site.id);until(base,()=>base.s.buildings.find(b=>b.id===site.id).work>=2);
- for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
-  assert.equal(JSON.stringify(legacy),raw);assert.deepEqual(g.s.buildings,legacy.buildings);assert.deepEqual(g.s.units,legacy.units);assert.deepEqual(g.s.stock,legacy.stock);assert.deepEqual(g.s.spent,legacy.spent);assert.equal(g.s.storage.reservations[site.id].legacy,true);
+ for(const version of [1,2]){const legacy=JSON.parse(base.serialize());legacy.version=version;delete legacy.storage;delete legacy.reclaim;if(version===1){delete legacy.tools;delete legacy.knapping;}const raw=JSON.stringify(legacy),g=new Camp(legacy);
+  assert.equal(JSON.stringify(legacy),raw);legacyCertificate(g);assert.deepEqual(g.s.buildings,legacy.buildings);assert.deepEqual(g.s.units,legacy.units);assert.deepEqual(g.s.stock,legacy.stock);assert.deepEqual(g.s.spent,legacy.spent);assert.equal(g.s.storage.reservations[site.id].legacy,true);
   assert.equal(g.cancel(site.id),true);assert.deepEqual(g.store('b0').stock,stock);assert.deepEqual(totals(g),total);assert.equal(g.cancel(site.id),false);custody(g);
  }
 });
 
 test('paid partial v2 knapping migrates its progress and resumes without another material charge',()=>{
- const {g:base,workshop}=expanded();assert.equal(base.beginKnapping(workshop,['u0']),null);until(base,()=>base.s.knapping.work>=2);base.command(['u0'],{kind:'idle'});
- const legacy=JSON.parse(base.serialize());legacy.version=2;delete legacy.storage;const raw=JSON.stringify(legacy),g=new Camp(legacy),stock={...g.s.stock},total=totals(g);
- assert.equal(JSON.stringify(legacy),raw);assert.deepEqual(g.s.knapping,legacy.knapping);assert.deepEqual(g.s.units,legacy.units);assert.equal(g.s.storage.reservations.knapping.legacy,true);assert.equal(g.beginKnapping(workshop,['u0']),null);assert.deepEqual(g.s.stock,stock);
+ const {g:base,workshop,outpost}=expanded();assert.equal(base.beginKnapping(workshop,['u0']),null);until(base,()=>base.s.knapping.work>=2);base.command(['u0'],{kind:'idle'});
+ const legacy=JSON.parse(base.serialize());legacy.version=2;delete legacy.storage;delete legacy.reclaim;const raw=JSON.stringify(legacy),g=new Camp(legacy),stock={...g.s.stock},total=totals(g);
+ assert.equal(JSON.stringify(legacy),raw);legacyCertificate(g,[outpost]);assert.deepEqual(g.s.knapping,legacy.knapping);assert.deepEqual(g.s.units,legacy.units);assert.equal(g.s.storage.reservations.knapping.legacy,true);assert.equal(g.beginKnapping(workshop,['u0']),null);assert.deepEqual(g.s.stock,stock);
  until(g,()=>g.s.tools);assert.deepEqual(g.s.stock,stock);assert.deepEqual(totals(g),total);assert.equal(g.s.storage.reservations.knapping,undefined);custody(g);
 });
 
@@ -210,7 +214,7 @@ test('construction cannot seal the final access edge of a stocked completed outp
  for(const [resource,target,amount]of [['wood','d4',50],['stone','d6',30]]){g.command(ids,{kind:'gather',target});until(g,()=>g.store(outpost).stock[resource]>=amount);g.command(ids,{kind:'idle'});until(g,()=>g.s.units.every(u=>!u.cargo));}
  g.command(ids,{kind:'move',x:12,y:13});until(g,()=>g.s.units.every(u=>u.phase==='idle'));
  // Three fixed obstacles leave the southern store edge open. A fourth would seal its actual stock.
- g.s.buildings.push({id:'seal-w',kind:'workshop',x:21,y:11,done:true,work:32,cost:{}},{id:'seal-e',kind:'workshop',x:25,y:11,done:true,work:32,cost:{}},{id:'seal-n',kind:'workshop',x:23,y:9,done:true,work:32,cost:{}});
+ legacyTopology(g);g.s.buildings.push({id:'seal-w',kind:'workshop',x:21,y:11,done:true,work:32,cost:{}},{id:'seal-e',kind:'workshop',x:25,y:11,done:true,work:32,cost:{}},{id:'seal-n',kind:'workshop',x:23,y:9,done:true,work:32,cost:{}});
  g.s.complete=false;assert.equal(g.placement('workshop',23,13),null);const before=g.serialize();assert.ok(g.build('workshop',23,13,[]).error);assert.equal(g.serialize(),before);assert.ok(g.store(outpost).stock.wood>=50);custody(g);
 });
 

@@ -1,0 +1,40 @@
+Outpost reclaim implementation — scoped skeptical review
+2026-10-04; reviewer /root/skeptic_two
+
+Verdict: NO CONCRETE FINDING in the requested physical-job, topology, manual-override and cleanup scope at the frozen commit. The counterexamples attempted below are addressed by the inspected branches. This is static evidence only, not a passed test suite, demonstrated ordinary-control recovery, or authorization to declare runtime closure.
+
+Identity and method
+Repository: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-outpost-reclaim.
+Inspected exact commit c2f72666e8efdaaef0eb84328a5b0bc14b43a2a6 using git show; mutable QA/working-tree changes were not used.
+- src/hearth-rts/engine.js SHA-256: 7e2413d1c6f3a1caa4c71af35a0d49e11508666ae9d566d8e151e956ccbb6d25
+- src/hearth-rts/view.js SHA-256: ecc4201fc372d13edfc9dbb5c9b7f692f93eed9071ba0acac628c20dc6d46be3
+- docs/hearth-outpost-reclaim-contract.txt SHA-256: 948de6f34217a04f38102c7f15f713a34e8b758295c19952904828d59cc84e96
+No application, parser, tests, lint, build, browser, remote or network execution. No product or test edits. No other fresh reviewers' reports read. A subordinate source-only check by /root/skeptic_two/ui_static independently inspected receipt/cleanup/overrides at this same commit and returned scoped no finding; this remains one review deliverable, not an extra top-level skeptical gate. I previously authored portions of the old UI/navigation foundation, not this reclaim implementation.
+
+Attempted disproofs and code evidence
+
+1. Quote/rejection secretly closes a store, debits capital, or changes an actor.
+reclaimQuote() (163–184) reads the state and builds local arrays/path results. No mutation was found in it or its path helpers. reclaim() (186–190) returns on failure/repetition before setting retiring, deleting the empty store, or releasing assignments. Group identity/duplicate/empty-hand/obligation/path validation occurs before those changes. A valid repeat of an already assigned group returns early (170,187), including while that group's genuine load is in flight; it neither picks up again nor resets its route. General command() preflights changing actors before releaseReclaim() (322–324). Invalid loaded Move/group commands therefore do not discard old recovery ownership or cargo.
+
+2. Capital appears remotely or repeated inputs accelerate handling.
+Only tick()'s reclaimPickup branch performs physical pickup (345–356). It rechecks current assignment, empty cargo, retiring source, connected adjacent edge and spend backing (193–200). It atomically moves min(5, remaining resource) from spent/unreleased to one actor's typed reclaim cargo. Resource order is wood then stone from RESOURCES, and v5 actors are processed in stable ID order (8,198–200,346). There is no private allocation splitting, source pile, demolition timer, gathered-yield increment, or handler-triggered pickup. Each branch ends with continue, so even a shared zero-length pickup/receipt edge cannot perform both transitions for that actor in the same tick. Starting from the canonical 60W20S vector, ordinary pickups are twelve wood loads and four stone loads.
+
+3. A worker reaches one edge while only an unrelated edge can reach storage.
+reclaimTargets() (162) retains each specific unblocked edge only if that edge reaches a different eligible non-retiring store. Quote checks every selected worker can reach one of those exact targets (183); start() uses that same target set (300–302); pickup checks the actor is actually at one of the freshly recomputed targets (196–197). This defeats the disconnected-edge conjunction. Pickup then uses home()'s real route to an eligible receiver, or retains the load safely with a blocked-return reason if free receiving edges are crowded (295). Temporary crowding is not falsely counted as a receipt.
+
+4. Later construction or receiver retirement strands remaining capital.
+build() includes both isStore() and retiring structures in its post-placement route-to-hearth guard (333–337). A rejected candidate is popped before payment/ID increment. Thus removal from isStore does not remove the unsettled source's access protection. reclaimQuote() checks every other retiring claim for a surviving source-edge receiving route with the proposed receiver excluded, and every already-held reclaim carrier for an alternative store route (179). Immediate incoming dropoff and transfer/source obligations also block retirement (175–178). Pickup recomputes connectivity again. No missing retiring-site protection was found in this patch.
+
+5. A retired site remains spendable, receives unrelated cargo, or both eastern stores retire together.
+isStore() excludes retiring structures globally (9); commit sets retiring and removes its empty storage entry (189). Store views, funding/pay, home, transfer-target validation and physical receive all use that eligibility. RC09's guard counts only another actual isStore outpost with x>20 (174). The second paused sequential retirement therefore sees the first as ineligible and rejects. updateGoal() uses the same non-retiring predicate (210), as does the goal UI (view.js:286). No sticky-phase rewrite or widened eastern threshold was introduced. This is a source conclusion for ordinary reachable topology, not a full audit of arbitrary imported map geometry.
+
+6. Stop/Move/work replacement preserves future pickup authority or loses custody.
+releaseReclaim() removes assignment membership and the reclaim order, but not u.reclaim or cargo (192). It runs after successful preflight and before replacement (324), so a valid Move keeps the load under immediate carryMove; Stop/other work retain the existing physical-return/queued-next semantics. Receipt credits the tagged claim even after assignment was revoked, then follows only the surviving current/next order (277–279). It does not reconstruct the abandoned reclaim assignment. The reclaim validator disallows tagged cargo in extract/craft/construct/pickup phases and disallows simultaneous transfer custody (120–125), addressing typed-load corruption through a working phase. The subordinate override review found no conflicting path.
+
+7. Receipt counts as fresh production or final cleanup removes held cargo / never finishes.
+receive() requires an eligible adjacent store (273–275). The reclaim branch updates claim.receipted and recovered, clears the marker, and bypasses ordinary delivered/transferred counters (277–279). Final pickup releases empty assigned workers immediately (201); receiving workers release their assignment when no capital remains (277). finishReclaims() waits for zero unreleased material, no assignment, no reclaim marker and no old order/next reference (203–208). A manually held final load keeps its marker and blocks removal. After final physical receipt, marker/membership cleanup occurs before finalization. The finished claim is removed once and folded into settled totals; no implicit outpost recreation was found.
+
+Remaining gates and limits
+Spark still must verify exact vector conservation through every pickup/receipt and reload boundary, legal shared-edge zero-length travel, repeat input, invalid groups, Stop/Move/other work non-recapture, blocked/crowded returns, new-building source-edge seals, retiring receiver dependencies, competing east admissions and final held-load settlement. Ordinary desktop/touch controls must earn and recover the old six-outpost witness, then fund a useful replacement; source inspection cannot establish that sequence, actionability or enjoyment.
+
+This review is not a complete legacy-certificate, numeric-limit, bounded-history, storage-failure, import/export, navigation, visual-art or accessibility audit. Those remain separate owners/gates. The inspected reclaim row preserves the existing cargo/movement/handling model and does not change paid Tools018 constants; that observation is not a broader preservation certification.

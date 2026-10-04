@@ -1,0 +1,122 @@
+Reclaim implementation disproof — skeptic_three, 2026-10-04
+
+Frozen reviewed commit: c2f72666e8efdaaef0eb84328a5b0bc14b43a2a6
+Repository: task-3/hearth-outpost-reclaim
+All source reads used git show/diff at that commit, not concurrent QA changes.
+Contract SHA256:948de6f34217a04f38102c7f15f713a34e8b758295c19952904828d59cc84e96
+RTS view SHA256:ecc4201fc372d13edfc9dbb5c9b7f692f93eed9071ba0acac628c20dc6d46be3
+Navigation adapter SHA256:220f8ed435b066acc81ee44046e614408f29d79519b0448333e194d02531f98d
+
+Verdict
+One concrete source-preservation finding remains in this frozen commit. Ordinary
+startup/import ordering and backup-family/navigation wiring survive the bounded
+static review. No app, parser, test, build, browser or network execution occurred;
+runtime/failure-injection, real controls and built-page evidence remain pending
+Spark. Only this report was written. No other fresh reviewer reports were read.
+
+RI-S3-01 — previously offered recovery source can be lost on successful import
+Severity: Medium, bounded recovery-data preservation failure; static confidence
+high. This is not ordinary verified live-camp loss and not a runtime reproduction.
+
+Witness using three distinct raw strings A, B and C:
+1. KEY initially contains A that this reader cannot open (for example a future
+   payload). Startup catches the load failure, retains rejected=A, blocks saving
+   and offers A through Journey export. No before-v5 backup was made because
+   candidate construction failed before preserveBeforeWrite.
+2. Another tab changes KEY to B, or deletes it. The existing storage listener
+   pauses/blocks but does not change rejected=A. Journey still offers A. A now
+   need not exist in any durable key; this document retains its recovery copy.
+3. User imports supported C and confirms replacement after storage is available.
+   Import's outgoing expression returns null because rejected!==null. It backs
+   up C and current prior=B (or no stored record if KEY is null), but never A.
+4. After successful KEY commit, the success branch clears rejected. A loses its
+   last application-held recovery copy. The previous error/export path promised
+   that copy, yet successful recovery import does not retain it.
+
+Source: view startup catch (line29 in the frozen file), export312, import318-319,
+storage handler321. The important source facts are rejected=originalRaw in catch;
+outgoing=rejected===null&&!unreadableSave?game.serialize():null; only prior is
+added as stored-before-import-v5; and success sets rejected=null.
+
+Disproof attempted: ordinary A still in KEY is protected by the prior backup;
+an already-created before-v5 copy also protects A; a failed import retains the
+in-memory rejected value. Those facts narrow the witness, but do not cover a
+changed/deleted KEY after startup rejection with no earlier copy. A can also be
+a supported source whose startup preservation failed, rather than necessarily
+an unsupported save. No fabricated engine state or material exploit is needed.
+
+Bounded correction: preserve any known rejected/recovery raw A before successful
+replacement, in addition to current prior B and verified outgoing LIVE state.
+Use the existing collision-safe stored-before-import-v5 family for distinct raw
+sources; do not serialize the fresh fallback as a guessed outgoing camp. Include
+empty-string A by testing against null rather than truthiness. Root acknowledged
+this scope and proposed that correction; I have not reviewed a changed source.
+Needed browser regression: first observe original A export, change/delete KEY,
+import C, then verify independently retained exact A/B/C copies and current C.
+Also inject failure while preserving A and require no candidate adoption or
+loss of the previous recovery export. Root owns correction and separate review.
+
+Startup and ordinary import checks that held
+preserveBeforeWrite plans collision-safe records without replacing distinct
+bytes, checks expected KEY before writes and again before main commit, rechecks
+each intended backup slot, then writes KEY last. A read/backup/main-write throw
+prevents the following adoption assignment; earlier successful backups may
+remain without being called a committed import.
+
+Startup constructs incoming privately, preserves an old source and writes its
+serialization before game=incoming. Catch retains originalRaw as rejected and
+blocked prevents the final save from overwriting it. Journey reads rejected
+before serializing fallback. When the first KEY read fails, unreadableSave blocks
+export and save, rather than pretending a fresh camp is the original source.
+
+Import serializes the current live game after file reading/confirmation, validates
+that outgoing representation, and backs it up separately from incoming raw text.
+It also preserves exact prior KEY when different from the live serialization.
+Thus a live camp newer than autosave is not replaced by the older disk snapshot
+in its outgoing record. Normal preservation/write failure leaves game unchanged,
+pauses/blocks, and does not execute the success message or dialog-close branch.
+Import parsing/candidate construction precedes these writes. Rejected-source
+retention in RI-S3-01 is the uncovered additional input, not a failure of this
+ordinary verified outgoing path.
+
+Legacy fallback and navigation checks that held
+Engine constructor143 retains an accepted legacy state at version4 with a
+reclaimIssue when optional certification fails; it does not fabricate claims.
+Unknown legacy reclaim/retiring/actor markers are stripped from the candidate,
+with original bytes retained by the controller. Canonical states alone adopt5;
+carryMove validation intentionally admits4/5. Journey names the optional-feature
+failure while retaining play/export. Claims/profile live under nested reclaim,
+so no new emitted top-level field collides with the adapter's separate metadata
+rejection.
+
+The four declared backup families appear in adapter KEYS, schemas, KIND_SOURCE,
+backup-kind mapping and numbered-suffix recognition. before-v5 accepts source1-4;
+import/outgoing/stored families accept1-5. Unsupported/invalid backup contents
+remain available as raw source data, rather than gaining simulation authority.
+Browser labels distinguish those purposes and raw export uses freshly read data.
+
+Native host view132-135 still checks destination admission with the bundled
+Camp constructor on the policy clone, including disclosed work-residue handling.
+That may create a private in-memory candidate but performs no storage writes or
+adoption. Browser refresh/inspection/export stay read-only. build.mjs9 and21 use
+the same RTS engine source for native navigation and actual RTS destination;
+this is static inclusion evidence, not proof of returned built-page identities.
+
+Reclaim UI/input binding checks that held
+Completed outpost inspection creates one explicit Recover button whose handler
+calls current game.reclaim with the current selection and inspected building ID.
+The quote gates its disabled state; commit revalidates independently. A failure
+only reports the reason; success clears the armed command, saves and rerenders
+the retired-site inspector. Inspector reconstruction refreshes the captured
+building when switching sites. Retiring sites use their claim panel instead of
+trying to read a removed live-store row; final removal falls back to field notes.
+The panel distinguishes structural remainder, cargo and receipts, and worker
+detail identifies reclaimed loads. Existing delegated semantic button keys and
+multi-touch cancellation cover these dynamically created buttons; no new global
+shortcut or canvas command mode was added.
+
+These observations do not establish rendered reachability, small-screen clipping,
+keyboard focus continuity after rerender, or real touch/actionability. Those and
+the full failure matrix require the scoped Spark browser evidence. The engine's
+complete custody/topology implementation is outside this assigned view/navigation
+review; no whole-engine correctness clearance is implied.

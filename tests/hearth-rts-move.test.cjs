@@ -9,7 +9,7 @@ let v3;
 function oldAPI(){if(!v3){const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),crypto=require('node:crypto'),source=fs.readFileSync(path.join(__dirname,'fixtures/hearth-rts-engine-v3.txt'),'utf8');assert.equal(crypto.createHash('sha256').update(source).digest('hex'),'3b22d81b32f01f44fc033c488e68a91c027889780f82db380ea899f837f20be4');const context={module:{exports:{}},structuredClone};vm.runInNewContext(source,context,{filename:'pinned-hearth-rts-3b15d608-v3.js'});v3=context.module.exports;}return v3;}
 function gathered(amount=1,Type=Camp){const g=new Type();g.command(['u0'],{kind:'gather',target:'d0'});until(g,()=>g.s.units[0].cargo===amount);if(amount<5)g.tick(.1);return g;}
 const expansion={};
-function expanded(legacy=false){const key=legacy?'v3':'v4';if(!expansion[key]){const g=new (legacy?oldAPI().Camp:Camp)();for(const target of ['d0','d1','d2']){g.command(ids(g),{kind:'gather',target});until(g,()=>g.s.units.every(u=>u.phase==='idle'));}const workshop=g.build('workshop',11,15,ids(g));assert.ok(workshop.id);until(g,()=>g.s.buildings.find(b=>b.id===workshop.id).done);g.command(['u0'],{kind:'move',x:25,y:14});until(g,()=>g.s.units[0].phase==='idle');const outpost=g.build('outpost',23,11,ids(g));assert.ok(outpost.id);until(g,()=>g.s.complete);g.command(ids(g),{kind:'idle'});expansion[key]={state:snapshot(g),outpost:outpost.id,workshop:workshop.id};}const saved=expansion[key];return{g:new (legacy?oldAPI().Camp:Camp)(saved.state),outpost:saved.outpost,workshop:saved.workshop};}
+function expanded(legacy=false){const key=legacy?'v3':'v5';if(!expansion[key]){const g=new (legacy?oldAPI().Camp:Camp)();for(const target of ['d0','d1','d2']){g.command(ids(g),{kind:'gather',target});until(g,()=>g.s.units.every(u=>u.phase==='idle'));}const workshop=g.build('workshop',11,15,ids(g));assert.ok(workshop.id);until(g,()=>g.s.buildings.find(b=>b.id===workshop.id).done);g.command(['u0'],{kind:'move',x:25,y:14});until(g,()=>g.s.units[0].phase==='idle');const outpost=g.build('outpost',23,11,ids(g));assert.ok(outpost.id);until(g,()=>g.s.complete);g.command(ids(g),{kind:'idle'});expansion[key]={state:snapshot(g),outpost:outpost.id,workshop:workshop.id};}const saved=expansion[key];return{g:new (legacy?oldAPI().Camp:Camp)(saved.state),outpost:saved.outpost,workshop:saved.workshop};}
 function carriedTransfer(){const {g,outpost,workshop}=expanded();g.transfer(['u0'],'b0',outpost,'wood');until(g,()=>!!g.s.units[0].transfer);return{g,outpost,workshop};}
 function held(g,x,y){assert.equal(g.command(['u0'],{kind:'move',x,y}),1);until(g,()=>g.s.units[0].phase==='idle');assert.equal(g.s.units[0].x,x);assert.equal(g.s.units[0].y,y);}
 
@@ -76,7 +76,8 @@ test('active repeated Move is identical to one command while a different Move re
 });
 
 test('a new Move overrides an identical queued v3 Move while migration itself preserves the old return plan',()=>{
- const old=gathered(1,oldAPI().Camp),target={kind:'move',x:14,y:8};old.command(['u0'],target);assert.equal(old.s.units[0].phase,'return');assert.deepEqual(old.s.units[0].next,target);const raw=old.serialize(),state=JSON.parse(raw),g=new Camp(state),expected={...state,version:4};assert.deepEqual(g.s,expected);assert.equal(old.serialize(),raw);
+ const old=gathered(1,oldAPI().Camp),target={kind:'move',x:14,y:8};old.command(['u0'],target);assert.equal(old.s.units[0].phase,'return');assert.deepEqual(old.s.units[0].next,target);const raw=old.serialize(),state=JSON.parse(raw),g=new Camp(state),{reclaim,...gameplay}=snapshot(g);assert.deepEqual(gameplay,{...state,version:5});assert.equal(old.serialize(),raw);
+ assert.match(reclaim.sourceIdentity,/^canonical-v3-snapshot-[0-9a-f]{8}$/);assert.deepEqual(reclaim,{profile:'accepted-opening.outpost-reclaim.v1',sourceIdentity:reclaim.sourceIdentity,claims:[],recovered:{wood:0,stone:0,food:0},settled:{wood:0,stone:0,food:0},settledSites:0,closedPayments:0});
  assert.equal(g.command(['u0'],target),1);assert.equal(g.s.units[0].phase,'carryMove');assert.equal(g.s.units[0].next,null);assert.equal(g.s.units[0].dropoff,undefined);const pos={x:g.s.units[0].x,y:g.s.units[0].y};g.tick(.1);assert.ok(Math.hypot(g.s.units[0].x-pos.x,g.s.units[0].y-pos.y)>0);assert.equal(g.s.units[0].cargo,state.units[0].cargo);check(g);
 });
 
@@ -95,6 +96,8 @@ test('rejected Move commands preserve complete pending, carried, moving and held
 
 test('a valid Move target reachable by only one selected actor rejects the whole group atomically',()=>{
  const {g,outpost}=expanded();g.transfer(['u0'],'b0',outpost,'wood');const target={kind:'move',x:14,y:8},trapped=g.s.units[1];trapped.x=2;trapped.y=2;
+ // Uncertified v4 route control: fake IDs and zero-cost blockers are not canonical capital.
+ g.s.version=4;delete g.s.reclaim;
  // Controlled disconnected-component fixture; normal construction refuses this enclosure.
  for(const [id,x,y]of [['west',0,2],['east',3,2],['north',1,0],['south',1,3]])g.s.buildings.push({id:'group-isolated-'+id,kind:'workshop',x,y,done:true,work:32,cost:{}});
  assert.equal(g.blocked(target.x,target.y),false);assert.ok(g.path(g.s.units[0],[target]));assert.equal(g.path(trapped,[target]),null);assert.equal(g.store('b0').reserved.wood,5);check(g);const before=g.serialize();assert.equal(g.command(['u0','u1'],target),0);assert.equal(g.serialize(),before);assert.equal(g.s.storage.transfers[0].pending.u0,5);assert.equal(g.store('b0').reserved.wood,5);
@@ -122,11 +125,14 @@ test('active loaded Move rejects forged working states, disconnected paths, bad 
  for(const change of changes){const bad=structuredClone(original);change(bad);assert.equal(valid(bad),false);assert.throws(()=>new Camp(bad));}assert.deepEqual(snapshot(g),original);
 });
 
-test('v3 local custody, partial paid jobs and pending/loaded transfers migrate only the outer version',()=>{
+test('v3 migration preserves local custody and active paid jobs while certifying old capital',()=>{
  const {g:old,outpost,workshop}=expanded(true);for(const [resource,target,amount]of [['wood','d4',40],['stone','d6',30]]){old.command(ids(old),{kind:'gather',target});until(old,()=>old.store(outpost).stock[resource]>=amount);old.command(ids(old),{kind:'idle'});until(old,()=>old.s.units.every(u=>!u.cargo));}
  const site=old.build('workshop',26,13,['u2']);assert.ok(site.id);until(old,()=>old.s.buildings.find(b=>b.id===site.id).work>=2);old.command(['u2'],{kind:'idle'});assert.equal(old.beginKnapping(workshop,['u3']),null);until(old,()=>old.s.knapping.work>=2);old.command(['u3'],{kind:'idle'});
- old.command(['u0'],{kind:'move',x:10,y:12});until(old,()=>old.s.units[0].phase==='idle');old.transfer(['u0','u1'],'b0',outpost,'stone');until(old,()=>!!old.s.units[0].transfer);assert.equal(old.s.storage.transfers[0].pending.u1,5);const state=snapshot(old),raw=JSON.stringify(state),g=new Camp(state);assert.deepEqual(g.s,{...state,version:4});assert.deepEqual(g.s.storage,state.storage);assert.equal(JSON.stringify(state),raw);assert.equal(g.s.storage.version,1);assert.equal(g.s.storage.reservations[site.id].sources[0].storeId,outpost);assert.ok(g.s.storage.reservations.knapping);
- for(const current of [new Camp(),g,gathered()]){assert.equal(oldAPI().valid(current.s),false);assert.throws(()=>new (oldAPI().Camp)(snapshot(current)));const future=snapshot(current);future.version=5;assert.equal(valid(future),false);assert.throws(()=>new Camp(future));}
+ old.command(['u0'],{kind:'move',x:10,y:12});until(old,()=>old.s.units[0].phase==='idle');old.transfer(['u0','u1'],'b0',outpost,'stone');until(old,()=>!!old.s.units[0].transfer);assert.equal(old.s.storage.transfers[0].pending.u1,5);const state=snapshot(old),raw=JSON.stringify(state),g=new Camp(state),{reclaim,...gameplay}=snapshot(g);
+ const activePayments=state.storage.payments.filter(p=>p.kind==='construction'&&p.target===site.id||p.kind==='knapping');assert.equal(activePayments.length,2);assert.equal(state.storage.payments.length,4);
+ const preservedStorage={...state.storage,payments:activePayments};assert.deepEqual(gameplay,{...state,version:5,storage:preservedStorage});assert.deepEqual(g.s.storage,preservedStorage);assert.equal(JSON.stringify(state),raw);assert.equal(g.s.storage.version,1);assert.equal(g.s.storage.reservations[site.id].sources[0].storeId,outpost);assert.ok(g.s.storage.reservations.knapping);
+ assert.match(reclaim.sourceIdentity,/^canonical-v3-snapshot-[0-9a-f]{8}$/);assert.deepEqual(reclaim,{profile:'accepted-opening.outpost-reclaim.v1',sourceIdentity:reclaim.sourceIdentity,claims:[{id:outpost,buildingId:outpost,unreleased:{wood:60,stone:20,food:0},receipted:{wood:0,stone:0,food:0},assigned:[],basis:{rule:'legacy-state-consistency',origin:'recorded-payment',sourceIdentity:reclaim.sourceIdentity,recipe:'accepted-opening.outpost-reclaim.v1'},origin:[{storeId:'b0',resource:'wood',amount:60,kind:'hearth',x:7,y:11},{storeId:'b0',resource:'stone',amount:20,kind:'hearth',x:7,y:11}]}],recovered:{wood:0,stone:0,food:0},settled:{wood:0,stone:0,food:0},settledSites:0,closedPayments:2});
+ for(const current of [new Camp(),g,gathered()]){assert.equal(oldAPI().valid(current.s),false);assert.throws(()=>new (oldAPI().Camp)(snapshot(current)));const future=snapshot(current);future.version=6;assert.equal(valid(future),false);assert.throws(()=>new Camp(future));}
 });
 
 test('loaded Move and hold preserve exact every-tick reload continuation and typed totals',()=>{
@@ -135,6 +141,8 @@ test('loaded Move and hold preserve exact every-tick reload continuation and typ
 
 test('Stop with unreachable storage holds a moved transfer load safely until a reachable return is requested',()=>{
  const {g}=carriedTransfer(),before=totals(g);held(g,2,2);const u=g.s.units[0],job=u.transfer;
+ // Uncertified v4 route control: fake IDs and zero-cost blockers are not canonical capital.
+ g.s.version=4;delete g.s.reclaim;
  // Controlled unavailable-route fixture; ordinary construction separately rejects trapping actors.
  for(const [id,x,y]of [['west',0,2],['east',3,2],['north',1,0],['south',1,3]])g.s.buildings.push({id:'isolated-'+id,kind:'workshop',x,y,done:true,work:32,cost:{}});
  assert.equal(g.command(['u0'],{kind:'idle'}),1);assert.equal(u.phase,'idle');assert.deepEqual(u.path,[]);assert.equal(u.cargo,5);assert.equal(u.transfer,job);check(g);const copy=new Camp(snapshot(g));steps(copy,10);assert.equal(copy.s.units[0].cargo,5);assert.equal(copy.s.units[0].transfer,job);assert.deepEqual(totals(copy),before);

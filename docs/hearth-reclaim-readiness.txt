@@ -1,0 +1,78 @@
+Outpost recovery candidate — 2026-10-04
+
+User-visible purpose
+An optional completed outpost no longer has to lock its 60 wood and 20 stone
+away permanently. Selected empty-handed villagers recover its structural
+materials in real five-item loads. Only delivery to an operating store makes
+those materials spendable. The finite world, existing walking/extraction rates,
+paid tools, required eastern outpost, workshop and directly authored art remain
+the basis of this opening preview.
+
+Status
+Source candidate only. No application, parser, test, build or browser execution
+occurred on M6. The accepted b365ae01e4315bfd183a14438175c19c6396b11d preview stays
+unchanged. This branch is not a tested replacement or a production release.
+The copied contract is the frozen pre-implementation authority, not runtime
+evidence. Independent source review does not establish a playable milestone.
+
+Implemented boundaries
+* Schema5 and the exact accepted-opening.outpost-reclaim.v1 profile. Canonical
+  v1-v4 worlds can adopt claims without recorded payment history when both
+  finite-material equations hold. Missing origin is explicitly unrecorded.
+  A playable source that fails optional certification keeps the v4 path.
+* Empty, settled optional outposts only. Recovery ends store service immediately
+  but keeps the footprint through all unreleased or carried capital. Neither
+  the hearth/workshop nor the last usable eastern outpost may be recovered.
+* Pickup and receipt are separate tick transitions; no demolition timer,
+  instantaneous stock grant, new support cost, deposit refill or labor refund.
+  Manual orders revoke future pickup authority while carried custody survives.
+* Finished accounting compacts into bounded summaries. Current refund origins
+  and active cargo remain live obligations. IDs and counters retain their
+  existing numeric bounds, with admission and reload headroom checks.
+* Startup/import preserves sources before the durable write and active adoption.
+  Incoming raw, outgoing verified live state, prior durable text and previously
+  offered rejected recovery text remain distinct when their bytes differ.
+  Navigation discovers all four new backup families without issuing claims.
+
+Visible controls
+Select villagers and inspect a completed outpost. #outpost-reclaim is labeled
+Recover this outpost, or Resume recovery with selected villagers after retirement.
+#reclaim-status states readiness/blockers. #reclaim-capital shows unreleased,
+carried and received amounts at a retiring site. Economy text lists Recovered
+separately from Gathered and Moved between stores. Stop and Return, immediate
+loaded Move, other disclosed return-first work switches, pause, export and
+existing touch/keyboard commands retain their distinct meanings.
+
+Required Spark gates, not yet run
+1. Mandatory old executable witness in the separate hearth-reclaim-witness
+   branch, commit3bbd169b1e1573b921c415ebc9425261eed78d52. It pins old source hashes
+   and uses only ordinary browser controls to gather396W210S, build six western
+   outposts plus a workshop, and export the actual exhausted v4 world. The
+   expected old-source negative control is44W short of an eastern outpost and
+   no completed-outpost recovery control. A fabricated save is not a substitute.
+2. Exact candidate syntax, all node:test files, and all four page builds.
+3. Existing RTS journey -> roundtrip -> bootstrap/recovery/Move browser suites
+   and campaign navigation, with artifacts retained. Compatibility projections,
+   historical page controls and current input evidence are explicitly distinct.
+4. New tests/browser/hearth-reclaim.cjs requires the actual old exported file and
+   its report via LEGACY_RECLAIM_WITNESS and LEGACY_RECLAIM_WITNESS_REPORT.
+   It refuses missing/unprovenanced evidence. Its primary rescue checks every
+   five-item physical load, received store, paused reload, held Move/Stop,
+   actual eastern construction and independent material equations. Isolated
+   storage-fault fixtures and synthetic Cave navigation are separately labeled.
+5. Independent returned-artifact verification of exact source/build hashes,
+   commands, container image, exit status, cleanup, screenshots and source raw.
+
+Queue ownership
+Parent routes the immutable source/manifest to the shared Spark coordinator.
+Only the coordinator dispatches. Use the existing approved ARM64 browser image,
+Chromium sandbox, no installs/network/credentials/hardware. No GitHub-hosted CI,
+push, main merge, deployment or accepted Library preview replacement is implied.
+Tracked dist files are inherited artifacts; rebuild them on Spark before use.
+
+Limits
+The reclaim unit fixtures are declared-state/synthetic tests. The genuine old
+browser witness and candidate rescue are still required. Neither accelerated
+browser input nor source review establishes real-time human pacing, choice,
+clarity, maintenance or enjoyment. Full Hearth, First Furrow, agriculture handoff,
+physical-device/accessibility acceptance and full-age campaign remain separate.

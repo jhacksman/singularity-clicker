@@ -1,0 +1,73 @@
+Fresh transfer-headroom disproof — skeptic one
+2026-10-04
+
+Immutable input: d4c07939:src/hearth-rts/engine.js, read via git show.
+SHA256 f89e75c4eacb4be9ce23d4cad47d290cfcef996c92043d3d5a18ef8c71720dc1
+No product edits, tests, parser, runtime, browser or networking.
+
+Verdict: CONFIRMED Medium optional-certification/adoption defect.
+The supplied counterexample survives the source checks. An accepted legacy v4
+camp obtains a successful certificate but constructor adoption then throws; it
+does not retain the promised playable legacy compatibility path.
+
+Attempted disproof / exact chain
+- Legacy valid() line39 requires transferred values to be finite and <10000000.
+  9999998 is accepted. Lines48-54 validate pending transfer custody independently
+  but impose no cumulative-metric-plus-pending headroom condition.
+- canonicalReason line69 requires transferred to be a bounded integer vector;
+  9999998 passes. Line70 protects gathering/depletion counters only. Equations at
+  72 and 95 do not and should not count cumulative transfer metrics as inventory.
+- certifyLegacy lines90-96 therefore returns ok for the canonical balanced state.
+- Constructor line149 adopts reclaim because certificate.ok is true. Adoption
+  lines157-160 changes to v5 without changing the live transfer or its metric.
+- Its final valid(this.s) now reaches validReclaim line104. That sums transferred
+  with each job's remaining + carried amount, and rejects 9999998+5>=10000000.
+- Constructor throws. There is no catch/fallback around failed optional adoption.
+  The controller rejects the incoming camp or enters startup blocked recovery;
+  original bytes are preserved, but existing legacy play is unavailable.
+
+Concrete minimal balanced v4 witness (controlled state, not an executed fixture)
+Use the normal four actors, canonical eight deposits, original b0 hearth, and one
+completed b1 outpost at (0,0), work24, canonical cost60W20S; nextId=2. No tools,
+knapping, reservations or payment rows. Missing payment history is supported.
+Set d0.amount=3 (45 wood gathered), d2.amount=50 (10 stone gathered); retain all
+other source amounts/initials. spent=60W20S, stock=5W0S0F, delivered=45W10S0F,
+depleted=0, complete=false. b0 store contains5W, b1 store is empty.
+Wood:351wild+5stored+60spent=416; stone:200wild+20spent=220; food:225wild.
+
+storage.nextId=2; storage.transferred={wood:9999998,stone:0,food:0}.
+One transfer:
+ {id:'t1',from:'b0',to:'b1',resource:'wood',amount:5,remaining:5,
+  delivered:0,recovered:0,cancelled:0,workers:['u0'],requested:'u0',
+  pending:{u0:5}}
+u0 has order={kind:'transfer',target:'t1'}, phase='pickup', cargo=0,
+resource=null, next=null, path=[], and can be placed at the actual b0 edge(6,13).
+No u0.transfer marker exists before pickup. Other actors remain empty/idle;
+normal bounded time/seen/work/reason fields suffice. Store stock backs the full
+pending amount, and all legacy transfer equations pass. The high typed metric
+is an edited cumulative diagnostic; no inventory grant is introduced by it.
+
+Minimum correction boundary
+Before certifying/adopting any legacy state with storage, check equivalent
+headroom for all already-admitted pending/carried transfer goods. Fail OPTIONAL
+certification with a precise reason and retain the valid v4 compatibility world.
+Keep strict v5 headroom rejection. Do not clamp cumulative counters, cancel jobs,
+discard carried stock, or broaden the legacy reader's invalid-save category.
+A shared predicate can prevent certificate/admission drift, but implementation
+choice belongs to the sole fixer.
+
+Required future Spark boundaries
+1. pending5 and metric9999994: sum9999999<LIMIT; certify/adopt v5 and roundtrip.
+2. pending5 and metric9999995: exact LIMIT; legacy valid=true, certificate=false,
+   new Camp succeeds as v4 with optional-feature explanation, unchanged transfer.
+3. pending5 and metric9999998: same fallback; assert no constructor exception.
+4. Carried5 variant: remove5 from source stock, remaining/pending=0, u0 cargo5wood,
+   transfer='t1', phase='transfer', real route/dropoff to b1. Same budget and same
+   boundary expectations. This proves both terms are covered, not pending only.
+5. Native v5 input with either unsafe form remains rejected before adoption.
+6. Startup/import for unsafe legacy input preserves exact original backups and
+   permits compatibility play/export; do not assert that completing the already
+   overcommitted legacy transfer itself fixes its old metric limit.
+
+No runtime closure is claimed. This report is independent source reasoning on
+the named immutable commit and does not replace the required Spark gate.

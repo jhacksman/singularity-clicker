@@ -1,0 +1,120 @@
+Reclaim unit harness: independent static disproof review
+Reviewer: skeptic_two. 2026-10-04. No application, parser, test, lint, build,
+browser or other runtime execution. No product/test edits.
+
+Verdict: no blocking fixture error, wrong expected transition, or removed
+physical assertion found in the reviewed scope. This is a static assessment,
+not a passing Spark result. Two narrow coverage-wording limits are below.
+
+Frozen inputs
+- tests/hearth-reclaim.test.cjs: initially reviewed 32 declarations at
+  f15f3d99eee8966cb8c92d6962393a91a16a6a6a4fad1f7009ecebc6285df17c;
+  reviewed the added transfer-counter case and verified final 33-declaration
+  SHA256 6294e4cbbe4c7fe2edd81fcfefa1bf5178a1bd91e9a0181bd80b271a59d87284.
+- tests/hearth-rts.test.cjs:
+  0c507748c40620afa7aea8b428c6e13029fc9823e8a56f46f64c6b1aa735aeeb
+- tests/hearth-rts-storage.test.cjs:
+  80b9ac6acd707a02ab076e493b75e11919df59852b2a044e7ce374a7b3a613aa
+- tests/hearth-rts-move.test.cjs:
+  c358efa4baba0a1c333ab8ea15fb6f8e276b317d80e154c5061f53fcd58acfed
+- Product inspected through git show at d4c07939bb7da2b9892968575c72deb7702a3d43,
+  then the complete bounded final delta to
+  28b410b6c09c42a0d4bcd705383c6f1cd4f118b0. Final engine blob SHA256:
+  416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5.
+
+Disproof attempts and supported coverage
+1. Circular material accounting: not found. Core lines 6-9 independently fix
+   416 wood / 220 stone / 225 food and the 60/20 outpost bill. world() sums
+   actual local store rows, typed actor cargo, deposits and spent capital;
+   neither aggregate stock nor delivered/recovered counters create inventory.
+   check() separately tests aggregate agreement, claim partitions, unique
+   assignment and loadability after each tick. It does call product valid(),
+   but its conservation and partition oracles do not depend only on valid().
+
+2. Automatic refund or same-transition pickup/receipt false pass: not found.
+   Lines 278-310 assert quote/commit/repeated confirmation byte stability,
+   zero commit pickup, and a real shared-edge run with precisely twelve
+   five-wood and four five-stone pickups/receipts. A pickup cannot also change
+   stock; a receipt cannot also decrease spent. Production, transfer and
+   depletion attribution are fixed throughout that run.
+
+3. Topology false positives: the same-edge case (384), receiver dependency
+   (395), later obstruction (404) and retiring-source construction guard (418)
+   use costed canonical-ID synthetic fixtures distinct from old zero-cost
+   blocker controls. The same-edge case expressly proves that the actor can
+   reach the source, another edge can reach home, and the actor cannot reach
+   home; a second actor supplies a positive recovery control. The obstruction
+   case is explicitly injected after admission, not presented as an ordinary
+   legal building operation. Static inspection found no contradictory geometry.
+
+4. Assignment versus custody: the Stop, loaded Move, queued work-switch,
+   invalid override, reassignment and final-held-load cases (435-509) observe
+   real pickup first, inspect the marker/load/assignment separately, and wait
+   for actual receipt or hold. Invalid operations compare full serialization.
+   The final five-stone load keeps the site blocked across movement, idle
+   ticks and reload before one final receipt clears references. The Move
+   test checks positive motion at at most 0.3 cells per 0.1-second tick.
+
+5. Repetition and bounds: the repeated-command/reload comparison (313) checks
+   identical every-tick state, not only final stock. until() has a finite
+   12,000-tick bound and a required terminal predicate; the dedicated pickup
+   loop has 2,000 ticks and requires removal. These are simulation bounds,
+   not evidence of human play duration. The 45-cycle case (548) performs
+   actual paid construction between completed recoveries and asserts bounded
+   histories, distinct IDs, conserved inventory and reloadability. It does
+   not simply inject 45 settled claims.
+
+6. Added headroom case (242-276): correct against final 28b410b6 line 70.
+   Both reserved five-item and manually held five-item transfer states are
+   exercised. 9,999,994 + 5 = 9,999,999 is below the exclusive 10,000,000
+   limit; 9,999,995 and 9,999,998 must decline optional certification. The
+   test requires exact incoming bytes, storage, units and inventory, v4
+   fallback/reload, and rejection of the corresponding claim-bearing v5
+   payload. This distinguishes fallback from throwing after adoption. The
+   case uses legacy v4; it does not claim a separate v3 boundary matrix.
+
+Retained RTS coverage
+The three adaptation diffs preserve all 15 + 30 + 22 = 67 test declarations.
+I found no deleted physical assertion in those diffs. Migration equality was
+updated to account explicitly for v5 authority and completed-payment history
+compaction: physical fields and active reservations/payments remain compared.
+Unknown-future rejection moves to version 6. Artificial free blockers and
+invented cargo now explicitly stay in uncertified v4 controls; they were not
+quietly presented as certified v5 saves. The old-reader source hash and the
+extraction negative-control assignment guard remain. Current v5 plus projected
+v4 invalid-residue rejection is stronger than the former v4-only assertion.
+This review does not establish the parent's entire prior-106 suite manifest;
+it establishes retention in these three files. Spark must run the full prior
+suite as well as the new reclaim file.
+
+Narrow findings / evidence limits (non-blocking for scheduling Spark)
+A. Low, coverage wording: core test at line 373 is titled as excluding a
+   retiring store from "transfer, receipt and local funding admission". It
+   directly checks store()/stores(), nearestStore(), both transfer directions,
+   and the chosen dropoff after a real gathering interruption. It ends before
+   receipt and does not call a funding/payment operation. A receive-only or
+   funding-only regression can therefore escape that test despite its title.
+   Do not report this one case as a direct receipt/payment negative control.
+   Narrow the evidence wording, or have its owner add a bounded actual receipt
+   and explicit funding assertion if that stronger claim is required. This is
+   not a demonstrated product defect or a reason to discard the strong
+   separate reclaim pickup/receipt conservation test.
+
+B. Low, evidence boundary: the new high-counter fallback case proves legacy
+   admission and exact reload preservation. It does not complete the already
+   excessive legacy transfer; doing so is not proved safe by its word
+   "playable". The old format already accepts those counters. Do not describe
+   this regression as repairing legacy transfer overflow or demonstrating
+   future settlement at the excessive boundary. No such change is required
+   by the bounded optional-certification fallback fix.
+
+Remaining gates
+- Execute the exact frozen files through the parent-controlled Spark runner;
+  no runtime result is asserted here.
+- Keep the mandatory old-executable, ordinary-control 416-minus-400 exhausted
+  world witness separate. The core file labels its declared-state fixtures
+  as supplementary and does not prove ordinary input reachability or human
+  duration. The adapted pinned-v3 tests exercise real old-engine actions for
+  other scenarios but do not replace that specific mandatory witness.
+- Browser input, viewport, persistence backups and navigation compatibility
+  were outside this unit-harness review.

@@ -1,0 +1,155 @@
+Independent browser oracle review — skeptic_three, 2026-10-04
+
+Scope: task-3/hearth-outpost-reclaim/tests/browser/hearth-reclaim.cjs.
+Initial frozen reviewed SHA256:
+adbab72542aa9f502874d6e65805fc2873a2b4661fede788b78a4da2781b2c33
+This is static harness review only. No browser, app, parser, test, build or network
+execution occurred. No harness/product edits; only this report was written.
+Source issues below are test-oracle gaps, not observed game failures.
+
+Findings sent to root before corrections
+
+BH-S3-01 — native read-only assertion missed same-byte/transient writes (Medium)
+Initial lines647-660 compared final RTS storage bytes after navigation/export.
+The existing probe logged getItem/setItem but did not assert zero mutation calls;
+removeItem/clear were not instrumented. A navigation regression writing the same
+raw bytes back to a backup would pass, as would a transient create/delete pair.
+This did not invalidate exact-byte download checks, only the stronger read-only
+claim. Root authorized a bounded mutation-call window after host initialization
+and before intentional pagehide/destination saves.
+
+Verified correction SHA256:
+31ad29a8ae0d12a7a5309e86015e0f3528cd871a5434167e33ab0ab43df46029
+The probe now observes setItem/removeItem/clear. The native window starts before
+event-action opens the panel, includes all original downloads, and ends before
+navigation. It asserts zero localStorage mutation calls, including same-byte
+writes, while retaining exact storage and downloaded-byte comparisons. Window
+calls are written as evidence. This finding is statically closed at that hash.
+
+BH-S3-02 — construction oracle allowed wrong placement or compressed work (Medium)
+Initial build helper206-218 verified one new paid unfinished site, its kind,
+then done and work24/32. It did not assert x/y or an independent minimum elapsed
+work duration. A regression moving the site to a different clear cell, or setting
+done/work24 on its first construction tick, could pass. Completion later trusted
+s.complete without independently stating all opening facts. Root authorized exact
+requested coordinates, minimum WORK/actual-selected-builder-count simulated time,
+and an independent depleted-source/completed-eastern-outpost/workshop predicate.
+Author is preparing the bounded correction; final-source verification pending.
+
+BH-S3-03 — reclaim-tagged Move could pass without reaching the target (Medium)
+Initial first/final loaded Move cases required carryMove at admission, then idle
+with preserved load. physicalStep only bounded displacement from above. A buggy
+transition immediately idling the carrier at its pickup edge with zero movement
+could therefore pass. Root authorized checking unchanged admission position/load/
+resource/work/tag, positive bounded motion on the first actual simulation tick,
+and exact commanded destination5,16 for both loads. The separate existing Move
+suite is not itself evidence for newly reclaim-tagged cargo.
+Author is preparing the bounded correction; final-source verification pending.
+
+Other oracle checks that survived disproof
+
+The genuine legacy witness is a mandatory external input, not reconstructed by
+this harness. witness() checks a passed report, b365ae0 source identity, pinned
+engine/view/shell/style/build hashes, exact export hash/bytes, explicit noninjected
+flags and the observed negative-control outcome. The expected report shape agrees
+with the separate hearth-reclaim-witness.cjs producer. The raw export is imported
+unchanged by the actual file control. No game object, engine import or primary
+state injection is used. The actual030 witness has not been obtained by this
+review; these preconditions cannot be reported as an earned run until it exists.
+
+Candidate built HTML is hashed from returned build files, served without source
+transformation, compared with the response, and checked for exact embedded engine/
+view/navigation source text. Dispatched commit/archive identity still depends on
+the coordinator manifest and returned artifact review, as usual.
+
+Primary observation uses an actual Resume/runFor/Pause control sequence. Pause
+synchronously saves the live camp, so the read-only KEY snapshot is tied to that
+control rather than an assumed autosave. Each physical pickup/receipt snapshot
+is independently compared with a Journey download.50ms clock steps are guarded
+by actual simulation delta<=0.1; zero-tick samples are allowed without treating
+them as a transition. Successful termination and exact12wood/4stone pickup AND
+receipt counts prevent a stationary loop from being declared complete.
+
+Independent arithmetic counts wild material, actual local stores, all actor cargo
+and remaining spent once. It separately partitions each claim and remaining paid
+obligations. Physical transition checks require real source-edge adjacency,
+empty hands, five-item loads, named receiving-store adjacency, exact per-store
+increments, unchanged gathered/depleted/transfer totals and separate transitions
+for arrival versus receipt. Retained work/tool fields prevent recovery from
+silently buying/changing tools. No production metric substitutes for inventory.
+
+Repeated paused Recover clicks must preserve the exact exported state; five
+paused clock seconds must also do so. Save/reload checks preserve full serialized
+custody before pickup, while carrying, while holding and after receipt. Stop must
+return once and leave no assignment; a subsequent interval proves no automatic
+recapture. The final held load keeps the footprint until actual receipt. Fresh
+relocation is a separate ordinarily earned mechanics session, explicitly not a
+human enjoyment or real-time pacing result.
+
+Fault fixtures are isolated and labelled. Startup get/backup/main faults verify
+the intended failing call, no successful main write, unchanged original KEY,
+blocked controls and original-source export where readable, then recovery after
+the fault is cleared. Import cases create a live camp newer than its durable
+copy, assert those differ, inject all named get/set preservation boundaries,
+and check prior durable and outgoing LIVE retention separately. Read-only storage
+inspection bypasses the injected get fault only through the saved native getter;
+it does not alter product state. Collision/dedup cases use distinct raw whitespace
+and verify exact suffix content, failed main commit, and retry reuse.
+
+Failure-status waits do not currently reuse stale matching text: individual
+matrix cases have fresh contexts; retries reopen Journey or wait for actual
+dialog closure after success. The before/after comparisons and fault-call checks
+also prevent merely finding a stale error string from satisfying the full case.
+
+The rejected-A/current-B-or-null regression uses a real second browser tab and
+waits for its trusted storage event. It first downloads A, proves A is still
+offered after KEY changes, imports C, and checks A/B retention separately from
+incoming C and current adopted state. This is an explicitly synthetic recovery
+fixture; it does not fabricate an old earned gameplay witness.
+
+Native navigation uses the actual built Cave host with a clearly labelled
+synthetic completed Cave fixture, not a manually mounted helper. It exports all
+four new base families and numbered originals, then follows the real destination
+for v5, reclaim carryMove-v5 and playable-but-uncertified v4. It checks exact
+certified source roundtrip and continued uncertified legacy play. New-profile
+admission is not inferred solely from an enabled button.
+
+Limits and remaining gates
+The780-second internal deadline lies inside the requested900-second queue budget,
+but its adequacy is not established statically. Failure/report/artifact paths are
+present; a timeout must remain a failed/incomplete run, not waived coverage.
+The harness is headless Chromium desktop only. Physical-device/touch, assistive
+technology and real-time human usefulness are explicitly unproved. Engine suites
+own their separate broader matrix; this file does not establish all legacy
+versions/topologies/work switches/history boundaries by itself.
+
+Final actual-source follow-up
+Author froze SHA256:
+bf3c6004c5d5d49ca4652c8bbd4a441c810b3bfae1f97917262e66640237ec75
+I independently checked that hash and read the corrected functions and both
+scenario call sites. No harness execution was performed.
+
+BH-S3-02: build() now checks actual selected builder count, zero work and exact
+requested x/y at paid admission, exact x/y and canonical work at completion,
+and paid-to-completed simulated duration >= requiredWork/builderCount. Both
+opening claims use openingFacts(), requiring a depleted-source predicate, an
+actual completed nonretiring eastern outpost and actual completed workshop
+before accepting s.complete. The duration is a necessary lower bound, not a
+trace of every worker's construction contribution; exhaustive timing belongs
+to the separate engine coverage. The authorized bounded correction is present.
+
+BH-S3-03: holdWithMove() is used for both first and final reclaim loads. It checks
+exact move order5,16; unchanged admission position, load, resource, work and tag;
+no economic release on admission; revoked future assignment; a positive bounded
+displacement on the first actual simulation tick; and exact held arrival5,16
+with the original load. Zero-tick clock samples are traversed without falsely
+counting movement. It retains the actual accepted carryMove export for native
+navigation, rather than creating a projected moving state.
+
+BH-S3-01's zero-mutation window and all prior exact-byte/download assertions are
+still present in this final hash. Physical matter/per-store receipt assertions,
+real second-tab A/B/null cases, genuine-witness preconditions and bounded780s
+deadline remain. All three reported gaps have their scoped source corrections.
+No remaining concrete blocker was established in this static harness review.
+Actual030 witness production and the complete candidate Spark run remain gates;
+this report is not runtime or enjoyment clearance.

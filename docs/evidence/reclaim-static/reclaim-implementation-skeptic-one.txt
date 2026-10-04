@@ -1,0 +1,155 @@
+Independent reclaim implementation disproof — skeptic one
+2026-10-04
+
+Frozen source reviewed
+Commit c2f72666e8efdaaef0eb84328a5b0bc14b43a2a6, branch
+codex/hearth-outpost-reclaim, via git show in hearth-outpost-reclaim.
+engine.js SHA256 7e2413d1c6f3a1caa4c71af35a0d49e11508666ae9d566d8e151e956ccbb6d25
+view.js SHA256 ecc4201fc372d13edfc9dbb5c9b7f692f93eed9071ba0acac628c20dc6d46be3
+adapter.cjs SHA256 220f8ed435b066acc81ee44046e614408f29d79519b0448333e194d02531f98d
+Contract SHA256 948de6f34217a04f38102c7f15f713a34e8b758295c19952904828d59cc84e96
+The working tree has QA edits; none were read as product truth or modified.
+
+Verdict
+One new Medium static blocker: optional certification overlooks fractional
+reservation-source amounts. A previously accepted v4 camp can be certified and
+adopted as v5, then an ordinary Cancel creates a v5 save rejected on refresh.
+The two reported first-draft defects are corrected in this frozen candidate.
+No separate canonical minting counterexample found under the two equations.
+This is source reasoning, not executed reproduction or release clearance.
+
+S1 — Medium, confirmed static admission/roundtrip defect
+Relevant engine.js lines: 38-45, 59, 69, 90-96, 102, 143, 338-341.
+Relevant view.js lines: 33, 315-319.
+
+Attempted disproof:
+- Legacy valid() checks each reservation source with n(amount), requiring a
+  finite positive bounded number, not an integer (41,43).
+- Its per-resource reservation sums must equal the canonical bill (45), but
+  sums can be integral while named-store components are fractional.
+- canonicalReason checks integer stores, transferred metrics and PAYMENT source
+  amounts (69). It does not inspect RESERVATION source amounts.
+- paymentReason's reservation comparison (84-85) runs only for a present payment.
+  Missing payments are explicitly supported by the contract and implementation.
+- v5 validReclaim invokes the same canonicalReason and therefore has no later
+  reservation-integrality guard. Compacting payments does not repair reservations.
+These checks do not reject the witness.
+
+Concrete source-plausible witness; this is an edited supported-reader input,
+not a claim that an ordinary historical play session generates half units:
+1. Start from the ordinary v4 shape with canonical deposits, b0 hearth, four
+   u0..u3 empty idle actors, tools=false, knapping=null, no transfer jobs.
+2. Add b1 completed outpost at (0,0), work=24, cost={wood:60,stone:20}; add b2
+   unfinished outpost at (4,0), work=0, with the same canonical cost. nextId=3.
+3. Set d0.amount=0, d1.amount=0, d4.amount=176, d2.amount=30; retain all other
+   canonical initial/remaining source fields. This consumes 100W and 30S.
+4. stock={wood:0,stone:0,food:0}; spent={wood:120,stone:40,food:0};
+   delivered={wood:100,stone:30,food:0}; depleted=2; complete=false.
+5. storage: version=1, nextId=1, transferred=zero vector, transfers=[],
+   payments=[], stores.b0=zero vector, stores.b1=zero vector. Its only reservation:
+   b2.sources=[
+     {storeId:'b0',resource:'wood',amount:0.5},
+     {storeId:'b1',resource:'wood',amount:59.5},
+     {storeId:'b0',resource:'stone',amount:20}
+   ]. Ordinary bounded time/seen/actor fields are unchanged.
+
+The two equations independently balance:
+  wood: 296 wild + 0 stored + 0 cargo + 120 spent = 416;
+  stone: 180 wild + 0 stored + 0 cargo + 40 spent = 220;
+  food: 225 wild + 0 stored + 0 cargo + 0 spent = 225.
+  paid: two outposts = 120W40S, exactly spent.
+Legacy valid() accepts the reservation sum; certifyLegacy returns ok; constructor
+adopts two full claims and its final v5 valid() still passes by the same chain.
+
+Call cancel('b2'). Lines 339-341 refund to actual named sources and remove b2.
+Result: b0 contains 0.5W20S, b1 contains 59.5W, stock=60W20S,
+spent=60W20S. Aggregate matter is conserved, but vector(store) now fails line69.
+serialize/save has no valid() gate (view33), so the ordinary UI cancellation
+saves this state. Reload rejects it as v5, pauses a fallback world, and offers
+the rejected original for export. An outgoing import is also blocked because
+line318 explicitly verifies the now-invalid outgoing camp.
+
+Severity boundary: this requires a fractional imported/edited legacy reservation;
+it is not evidence that canonical old gameplay generated fractional goods. It is
+nevertheless a concrete violation of the promised canonical-integer certificate
+and failure-preserves-play boundary. Exact original import/startup backups reduce
+irrecoverability; they do not make the adopted current camp roundtrip valid.
+
+Minimal correction direction for sole fixer:
+Apply canonical bounded integer checking to every refundable reservation source
+as well as payment sources. For v3/v4 this must fail OPTIONAL certification and
+retain the accepted legacy compatibility camp, not reject formerly playable raw
+input. The same condition should reject this malformed claim-bearing v5 input.
+Do not round source amounts, invent payment rows, change named refund origins,
+or tighten the legacy reader indiscriminately.
+
+Exact future Spark regressions:
+- Use the above supported v4 state. Assert legacy valid=true, certification=false
+  with a reservation/material reason, Camp remains v4, reclaim unavailable, raw
+  preserved, and ordinary cancel/export/reload retain prior legacy semantics.
+- Paired integral control: b0 wood1 + b1 wood59, same stone20. Assert certification
+  succeeds and cancel leaves integer named-store balances with a valid v5 reload.
+- A constructed v5 version of the fractional state must fail admission before
+  adoption; active camp and all original export bytes stay unchanged.
+- Include an unfinished knapping reservation integrality rejection for contract
+  completeness; do not imply knapping currently has a Cancel action.
+
+First-draft findings independently checked
+FRESH CERTIFICATION — fixed statically. The saved initial draft certifies fresh()
+before it has storage even though fresh.version=4. Candidate line143 first runs
+migrateStorage(), then uses a clone of that complete fresh state for certification
+when no source argument exists. The supplied legacy source remains the certificate
+basis for actual v1-v4 inputs. No missing-storage failure remains on this path.
+
+STORAGE NEXT ID — fixed statically. Candidate line69 requires integer(nextId),
+which includes <10000000, plus >=1. A legacy v3/v4 source accepted by old valid()
+with an out-of-range transfer counter now fails optional certification rather
+than receiving a certificate and failing final v5 admission. Constructor keeps
+the version4 compatibility state and reclaimIssue. This deliberately preserves
+the prior reader's broader acceptance rather than silently widening v5 limits.
+
+Other attacked paths; no additional concrete blocker found
+- Unknown legacy reclaim fields: valid() validates a stripped clone (24), and
+  constructor strips top-level reclaim, building.retiring and unit.reclaim (61,
+  143). New claim/retirement/cargo authority is generated only by adoption, not
+  inherited from unknown old-schema fields. Old-schema reclaim orders/phases
+  remain unsupported by the old order/phase enumerations, as expected.
+- v1 ignores ineffective knapping and pre-v3 storage for certification (92), then
+  uses the existing storage adapter. v2 tools/project bill and v3/v4 cargo are
+  counted by paidVector/material equation. Missing or partial payment rows are
+  accepted; duplicate construction/project rows and excess recruit assertions
+  fail paymentReason. Existing live reservation/payment origin conflicts fail.
+- Fixed source identity and costs: canonicalReason pins all eight deposit records,
+  original b0, generated building IDs, 4..8 stable workers and semantic bills.
+  Equations count pending transfer stock and carried goods once. Claims are
+  allocated without adding stock or cargo. v5 reload uses remaining claim capital,
+  not the legacy full-bill equation, and never reruns legacy issuance.
+- v5 partition: claim unreleased + tagged cargo + receipted must equal 60W20S;
+  spent is independently remaining outpost capital + workshop/tools/recruit
+  obligations; global T remains fixed. Recovery markers exclude transfer custody
+  and extraction/construct/craft phases. Removing/mutating fields is not a source
+  of extra material without also violating an equation. Consistent edited states
+  remain possible by the contract's explicit non-authentication trust model.
+- Historical provenance is bounded data, not a spendable store: issueClaim copies
+  source locations into claim.origin before compactPayments drops closed payments.
+  Missing history is explicitly labeled unrecorded, not converted into a witnessed
+  hearth payment. Live refundable reservations retain their store dependencies.
+- Detailed payment compaction retains only live construction/knapping reservations;
+  settled claims fold into fixed vectors/counts. Quote/pay/build check relevant
+  count/counter headroom before new work. No ordinary generated history-overflow
+  chain found in the reviewed paths. This is not a proof over unlimited execution.
+- Candidate startup writes required backups/main KEY before assigning game; import
+  resolves/retains incoming, outgoing live and differing durable bytes before the
+  main write/adoption. A thrown backup/main operation leaves prior active state
+  and original export selection; partial backups may remain. Collision handling
+  reuses only identical bytes. No execution of fault-injected storage was done.
+- Navigation enumerates v5 and all four new backup families, including numbered
+  records; source metadata restrictions remain. Actual built destination and
+  browser failure gates still require Spark evidence.
+
+Limits and ownership
+Read only immutable commit source, frozen contract and the designated first-draft
+snapshot. Did not read other fresh skeptical reports, change product/tests, run a
+parser/reducer/test/build/browser, or use networking. Only this report was written.
+Root remains sole fixer. S1 needs independent rebuttal/confirmation and future
+Spark before closure; all wider acceptance witnesses remain the contract's gates.

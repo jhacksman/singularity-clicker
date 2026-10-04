@@ -3,19 +3,25 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),{spawn}=require('node:child_process'),{once}=require('node:events');
 const playwright=require(process.env.PLAYWRIGHT_MODULE||'playwright'),{Camp,KEY,valid,repairWorkResidue}=require('../../src/hearth-rts/engine.js');
 const earned=JSON.parse(fs.readFileSync('artifacts/hearth-rts-earned-camp.json','utf8')),earnedRaw=JSON.stringify(earned);
-assert.equal(earned.version,4);
+assert.equal(earned.version,5);
 const legacyEvidence=JSON.parse(fs.readFileSync('artifacts/hearth-rts-roundtrip-legacy-v3-old-subtraction.json','utf8'));
 const bad=legacyEvidence.checkpoint,badRaw=fs.readFileSync('artifacts/hearth-rts-roundtrip-legacy-v3-old-subtraction-download.json','utf8'),repaired=repairWorkResidue(bad);
-assert.equal(legacyEvidence.seedProjection,'controlled projection: outer version 4 to 3 only');
+assert.equal(legacyEvidence.seedProjection,'controlled projection: version 5 to 3 and omit v5 reclaim authority');
 assert.equal(legacyEvidence.source.sha256,'4fa74911ae0a0650885355e5e20b4cd2b532c83e4b8bed496a50866a09a63b0a');
 assert.deepEqual(JSON.parse(badRaw),bad);assert.equal(bad.version,3);assert.equal(valid(bad),false);assert.ok(repaired&&valid(repaired));assert.equal(repaired.version,3);
 const independentlyRepaired=structuredClone(bad);assert.equal(independentlyRepaired.units[0].work,-5.551115123125783e-17);assert.equal(independentlyRepaired.units[0].cargo,2);independentlyRepaired.units[0].work=0;
 assert.deepEqual(repaired,independentlyRepaired,'Legacy repair may change only the observed worker residue');
+assert.equal(bad.reclaim,undefined);assert.ok(bad.buildings.every(b=>b.retiring===undefined));assert.ok(bad.units.every(u=>u.reclaim===undefined),'The controlled legacy source carries no v5 reclaim authority');
+assert.deepEqual(bad.storage.payments,[{kind:'recruitment',target:null,sources:[{storeId:'b0',resource:'food',amount:25}],refunded:false}],'The pinned v3 gathering retains the earned camp\'s single recruitment payment');
+assert.deepEqual(bad.storage.reservations,{});assert.equal(bad.buildings.filter(b=>b.kind==='outpost').length,1);
 const adopted=new Camp(repaired).s;
-assert.equal(adopted.version,4);assert.deepEqual(adopted,{...independentlyRepaired,version:4},'Adoption changes only the outer version after the independently checked residue repair');
-for(const field of ['storage','stock','spent','delivered','deposits','buildings','seen','time','tools','knapping'])assert.deepEqual(adopted[field],bad[field],'Legacy adoption independently preserves '+field);
+assert.equal(adopted.version,5);assert.match(adopted.reclaim.sourceIdentity,/^canonical-v3-snapshot-[0-9a-f]{8}$/);
+const expectedReclaim={profile:'accepted-opening.outpost-reclaim.v1',sourceIdentity:adopted.reclaim.sourceIdentity,claims:bad.buildings.filter(b=>b.kind==='outpost').map(b=>({id:b.id,buildingId:b.id,unreleased:{wood:60,stone:20,food:0},receipted:{wood:0,stone:0,food:0},assigned:[],basis:{rule:'legacy-state-consistency',origin:'payment-origin-unrecorded',sourceIdentity:adopted.reclaim.sourceIdentity,recipe:'accepted-opening.outpost-reclaim.v1'},origin:[]})),recovered:{wood:0,stone:0,food:0},settled:{wood:0,stone:0,food:0},settledSites:0,closedPayments:1};
+assert.deepEqual(adopted.reclaim,expectedReclaim,'Adoption issues full-bill claims without inventing the absent outpost payment origin and closes exactly the one recruitment row');
+assert.deepEqual(adopted,{...independentlyRepaired,version:5,storage:{...independentlyRepaired.storage,payments:[]},reclaim:expectedReclaim},'Independently checked adoption preserves all gameplay and local custody fields; only the version, new certificate and closed payment history change');
+assert.deepEqual(bad,JSON.parse(badRaw),'Candidate preparation never changes the exact legacy source');
 const currentBad=JSON.parse(fs.readFileSync('artifacts/hearth-rts-roundtrip-old-subtraction.json','utf8')).checkpoint,currentBadRaw=fs.readFileSync('artifacts/hearth-rts-roundtrip-old-subtraction-download.json','utf8');
-assert.deepEqual(JSON.parse(currentBadRaw),currentBad);assert.equal(currentBad.version,4);assert.equal(valid(currentBad),false);assert.equal(repairWorkResidue(currentBad),null);assert.throws(()=>new Camp(currentBad),/compatible RTS/);
+assert.deepEqual(JSON.parse(currentBadRaw),currentBad);assert.equal(currentBad.version,5);assert.equal(valid(currentBad),false);assert.equal(repairWorkResidue(currentBad),null);assert.throws(()=>new Camp(currentBad),/compatible RTS/);
 const url='http://127.0.0.1:8080/hearth-rts.html';fs.mkdirSync('artifacts',{recursive:true});
 (async()=>{const server=spawn(process.execPath,['scripts/serve.cjs'],{stdio:['ignore','pipe','inherit']});let browser;
 try{
@@ -56,51 +62,54 @@ try{
   }finally{await context.close();}
  }
  {const {context,page,errors}=await open(null);try{const state=JSON.parse(await readRaw(page));assert.ok(valid(state));assert.equal(await page.locator('#stop').isDisabled(),false);assert.deepEqual(errors,[]);evidence.push({case:'absent-starts-fresh',valid:true,errors});}finally{await context.close();}}
- // Current-v4 residue remains rejected; it must never borrow the legacy repair path.
+ // Current-v5 residue remains rejected; it must never borrow the legacy repair path.
  {const {context,page,errors}=await open(currentBadRaw);try{
   assert.equal(await readRaw(page),currentBadRaw);assert.equal(await page.locator('#pause').innerText(),'Resume');assert.equal(await page.locator('#stop').isDisabled(),true);
-  assert.equal(await exportRaw(page,'hearth-rts-v4-negative-boot-rejected'),currentBadRaw,'Rejected current bytes remain available through the real download');
-  for(const suffix of ['.before-work-roundoff','.before-v4'])assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+suffix),null);
-  await page.clock.runFor(2500);assert.equal(await readRaw(page),currentBadRaw);assert.deepEqual(errors,[]);evidence.push({case:'current-v4-negative-boot-rejected-unrepaired',errors});
+  assert.equal(await exportRaw(page,'hearth-rts-v5-negative-boot-rejected'),currentBadRaw,'Rejected current bytes remain available through the real download');
+  for(const suffix of ['.before-work-roundoff','.before-v4','.before-v5'])assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+suffix),null);
+  await page.clock.runFor(2500);assert.equal(await readRaw(page),currentBadRaw);assert.deepEqual(errors,[]);evidence.push({case:'current-v5-negative-boot-rejected-unrepaired',errors});
  }finally{await context.close();}}
  {const {context,page,errors}=await open(earnedRaw);try{
-  const before=await exportRaw(page,'hearth-rts-v4-negative-import-before');assert.deepEqual(JSON.parse(before),earned);await page.locator('#close').click();
+  const before=await exportRaw(page,'hearth-rts-v5-negative-import-before');assert.deepEqual(JSON.parse(before),earned);await page.locator('#close').click();
   let confirmations=0;page.on('dialog',dialog=>{confirmations++;dialog.dismiss();});await page.locator('#journey').click();
   assert.doesNotMatch(await page.locator('#save-status').innerText(),/not a compatible RTS camp/);
-  await page.locator('#file').setInputFiles({name:'current-v4-negative.json',mimeType:'application/json',buffer:Buffer.from(currentBadRaw)});await page.locator('#save-status').filter({hasText:'not a compatible RTS camp'}).waitFor();
-  assert.equal(confirmations,0);assert.equal(await readRaw(page),earnedRaw);assert.equal(await exportRaw(page,'hearth-rts-v4-negative-import-after'),before,'Rejected v4 import leaves the previous camp in memory exactly');
-  for(const suffix of ['.import-before-work-roundoff','.import-before-v4'])assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+suffix),null);
-  assert.deepEqual(errors,[]);evidence.push({case:'current-v4-negative-import-rejected-before-confirmation',errors});
+  await page.locator('#file').setInputFiles({name:'current-v5-negative.json',mimeType:'application/json',buffer:Buffer.from(currentBadRaw)});await page.locator('#save-status').filter({hasText:'not a compatible RTS camp'}).waitFor();
+  assert.equal(confirmations,0);assert.equal(await readRaw(page),earnedRaw);assert.equal(await exportRaw(page,'hearth-rts-v5-negative-import-after'),before,'Rejected v5 import leaves the previous camp in memory exactly');
+  for(const suffix of ['.import-before-work-roundoff','.import-before-v4','.import-before-v5','.outgoing-before-import-v5','.stored-before-import-v5'])assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+suffix),null);
+  assert.deepEqual(errors,[]);evidence.push({case:'current-v5-negative-import-rejected-before-confirmation',errors});
  }finally{await context.close();}}
- // Real UI gathering in the pinned v3 page produced these bytes. Both the
- // residue and version backups must succeed before adoption of the repaired v4 camp.
- for(const fault of ['roundoff-backup','version-backup','main',null]){
-  const backupKey=KEY+'.before-work-roundoff',versionKey=KEY+'.before-v4',writeFault=fault==='roundoff-backup'?backupKey:fault==='version-backup'?versionKey:fault==='main'?KEY:null;
+ // Real UI gathering in the pinned v3 page produced these bytes. The v5,
+ // residue and v4 backups, then the main write, must succeed before adoption.
+ for(const fault of ['v5-backup','roundoff-backup','version-backup','main',null]){
+  const v5Key=KEY+'.before-v5',backupKey=KEY+'.before-work-roundoff',versionKey=KEY+'.before-v4',writeFault=fault==='v5-backup'?v5Key:fault==='roundoff-backup'?backupKey:fault==='version-backup'?versionKey:fault==='main'?KEY:null;
   const {context,page,errors}=await open(badRaw,{writeFault});
   try{
    assert.equal(await page.locator('#pause').innerText(),'Resume');
-   assert.equal(await page.evaluate(key=>localStorage.getItem(key),backupKey),fault==='roundoff-backup'?null:badRaw);
-   assert.equal(await page.evaluate(key=>localStorage.getItem(key),versionKey),fault==='roundoff-backup'||fault==='version-backup'?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),v5Key),fault==='v5-backup'?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),backupKey),['v5-backup','roundoff-backup'].includes(fault)?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),versionKey),['v5-backup','roundoff-backup','version-backup'].includes(fault)?null:badRaw);
    assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+'.before-v3'),null,'A v3 save must not take pooled-storage migration');
-   if(fault==='roundoff-backup'||fault==='version-backup'){
-    assert.equal(await readRaw(page),badRaw);assert.equal(await page.locator('#stop').isDisabled(),true);assert.equal(await exportRaw(page,'hearth-rts-roundoff-'+fault+'-failure'),badRaw);
+   if(fault){
+    assert.equal(await readRaw(page),badRaw);assert.equal(await page.locator('#stop').isDisabled(),true);assert.match(await page.locator('#toast').innerText(),/could not be loaded/);assert.equal(await exportRaw(page,'hearth-rts-roundoff-'+fault+'-failure'),badRaw,'No failed startup write may expose the repaired candidate as the active export');
    }else{
-    if(fault==='main'){assert.equal(await readRaw(page),badRaw);assert.equal(await page.locator('#stop').isDisabled(),true);assert.match(await page.locator('#toast').innerText(),/Saving stopped/);assert.deepEqual(JSON.parse(await exportRaw(page,'hearth-rts-roundoff-main-failure')),adopted);}
-    else{assert.deepEqual(JSON.parse(await readRaw(page)),adopted);assert.equal(await page.locator('#stop').isDisabled(),false);assert.deepEqual(JSON.parse(await exportRaw(page,'hearth-rts-roundoff-boot-adopted')),adopted);await page.reload();await page.locator('[data-unit="u0"]').waitFor();assert.deepEqual(JSON.parse(await readRaw(page)),adopted);assert.equal(await page.evaluate(key=>localStorage.getItem(key),backupKey),badRaw);assert.equal(await page.evaluate(key=>localStorage.getItem(key),versionKey),badRaw);}
+    assert.deepEqual(JSON.parse(await readRaw(page)),adopted);assert.equal(await page.locator('#stop').isDisabled(),false);assert.deepEqual(JSON.parse(await exportRaw(page,'hearth-rts-roundoff-boot-adopted')),adopted);await page.reload();await page.locator('[data-unit="u0"]').waitFor();assert.deepEqual(JSON.parse(await readRaw(page)),adopted);for(const key of [v5Key,backupKey,versionKey])assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),badRaw);
    }
-   await page.clock.runFor(2500);assert.equal(await page.locator('#pause').innerText(),'Resume');assert.deepEqual(JSON.parse(await readRaw(page)),fault?bad:adopted);
+   await page.clock.runFor(2500);assert.equal(await page.locator('#pause').innerText(),'Resume');assert.deepEqual(JSON.parse(await readRaw(page)),fault?bad:adopted);if(fault)assert.equal(await readRaw(page),badRaw);
    assert.deepEqual(errors,[]);evidence.push({case:'roundoff-boot-'+(fault||'saved'),errors});
   }finally{await context.close();}
  }
- for(const fault of ['roundoff-backup','version-backup','main',null]){
-  const {context,page,errors}=await open(earnedRaw),backupKey=KEY+'.import-before-work-roundoff',versionKey=KEY+'.import-before-v4';
+ for(const fault of ['v5-backup','roundoff-backup','version-backup','outgoing-backup','main',null]){
+  const {context,page,errors}=await open(earnedRaw),v5Key=KEY+'.import-before-v5',backupKey=KEY+'.import-before-work-roundoff',versionKey=KEY+'.import-before-v4',outgoingKey=KEY+'.outgoing-before-import-v5';
   try{
-   if(fault){await page.locator('#pause').click();await page.evaluate(key=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Controlled imported-repair write failure','QuotaExceededError');return set.call(this,k,v);};},fault==='roundoff-backup'?backupKey:fault==='version-backup'?versionKey:KEY);}
+   if(fault){await page.locator('#pause').click();await page.evaluate(key=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Controlled imported-repair write failure','QuotaExceededError');return set.call(this,k,v);};},fault==='v5-backup'?v5Key:fault==='roundoff-backup'?backupKey:fault==='version-backup'?versionKey:fault==='outgoing-backup'?outgoingKey:KEY);}
    await page.locator('#journey').click();page.once('dialog',dialog=>dialog.accept());await page.locator('#file').setInputFiles({name:'old-generated-roundoff.json',mimeType:'application/json',buffer:Buffer.from(badRaw)});
    if(fault){await page.locator('#save-status').filter({hasText:'Import could not be saved'}).waitFor();assert.equal(await readRaw(page),earnedRaw);assert.deepEqual(JSON.parse(await exportRaw(page,'hearth-rts-roundoff-import-'+fault)),earned);assert.equal(await page.locator('#pause').innerText(),'Resume');}
    else{await page.locator('#dialog').waitFor({state:'hidden'});assert.deepEqual(JSON.parse(await readRaw(page)),adopted);assert.deepEqual(JSON.parse(await exportRaw(page,'hearth-rts-roundoff-import-adopted')),adopted);assert.equal(await page.locator('#pause').innerText(),'Resume');}
-   assert.equal(await page.evaluate(key=>localStorage.getItem(key),backupKey),fault==='roundoff-backup'?null:badRaw);
-   assert.equal(await page.evaluate(key=>localStorage.getItem(key),versionKey),fault==='roundoff-backup'||fault==='version-backup'?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),v5Key),fault==='v5-backup'?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),backupKey),['v5-backup','roundoff-backup'].includes(fault)?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),versionKey),['v5-backup','roundoff-backup','version-backup'].includes(fault)?null:badRaw);
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),outgoingKey),fault===null||fault==='main'?earnedRaw:null,'The outgoing verified live camp is retained before the main write');
+   assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+'.stored-before-import-v5'),null,'This scenario has identical outgoing live and stored bytes');
    assert.equal(await page.evaluate(key=>localStorage.getItem(key),KEY+'.import-before-v3'),null);
    await page.locator('#close').click();await page.clock.runFor(2500);assert.deepEqual(JSON.parse(await readRaw(page)),fault?earned:adopted);assert.equal(await page.locator('#pause').innerText(),'Resume');
    assert.deepEqual(errors,[]);evidence.push({case:'roundoff-import-'+(fault||'saved'),errors});
@@ -131,5 +140,5 @@ try{
   await page.keyboard.press('Enter');await page.waitForURL('**/hearth.html');assert.deepEqual(errors,[],'Native Enter navigation remains available');
  }finally{await context.close();}}
  fs.writeFileSync('artifacts/hearth-rts-bootstrap-report.json',JSON.stringify(evidence,null,2));
- console.log('PASS startup/read-denial and raw retention: absent versus invalid input; generated legacy-v3 residue repairs into v4 after exact raw backups; current-v4 negatives stay rejected; failed boot/import writes preserve originals');
+ console.log('PASS startup/read-denial and raw retention: absent versus invalid input; generated legacy-v3 residue repairs into v5 after exact source backups and durable main write; current-v5 negatives stay rejected; failed boot/import writes preserve original exports');
 }finally{if(browser)await browser.close();server.kill();}})().catch(error=>{console.error(error);process.exitCode=1;});

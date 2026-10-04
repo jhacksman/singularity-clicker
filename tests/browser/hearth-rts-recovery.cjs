@@ -3,10 +3,10 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),{spawn}=require('node:child_process'),{once}=require('node:events');
 const playwright=require(process.env.PLAYWRIGHT_MODULE||'playwright'),{KEY,valid}=require('../../src/hearth-rts/engine.js');
 const earned=JSON.parse(fs.readFileSync('artifacts/hearth-rts-earned-camp.json','utf8'));
-assert.equal(earned.version,4,'Use the current browser-earned v4 camp');
-// Controlled compatibility projections: v3 changes ONLY the outer version;
+assert.equal(earned.version,5,'Use the current browser-earned v5 camp');assert.equal(earned.reclaim.profile,'accepted-opening.outpost-reclaim.v1');
+// Controlled compatibility projections: v3 changes the version and omits v5 reclaim authority;
 // v2 additionally omits the local-storage fields absent from its pooled schema.
-const fixtures=[2,3].map(version=>{const legacy=structuredClone(earned);legacy.version=version;if(version===2)delete legacy.storage;return{version,legacy,raw:JSON.stringify(legacy,null,2)+'\n',families:version===2?[3,4]:[4]};});
+const fixtures=[2,3].map(version=>{const legacy=structuredClone(earned);legacy.version=version;delete legacy.reclaim;if(version===2)delete legacy.storage;return{version,legacy,raw:JSON.stringify(legacy,null,2)+'\n',families:version===2?[5,3,4]:[5,4]};});
 const current=JSON.stringify(earned),url='http://127.0.0.1:8080/hearth-rts.html';
 (async()=>{const server=spawn(process.execPath,['scripts/serve.cjs'],{stdio:['ignore','pipe','inherit']});let browser;
 try{await once(server.stdout,'data');browser=await playwright.chromium.launch({headless:true,chromiumSandbox:true});
@@ -14,19 +14,25 @@ const open=async(seed,fault)=>{const context=await browser.newContext({viewport:
 const downloadRaw=async(page,name)=>{const event=page.waitForEvent('download');await page.locator('#export').click();const download=await event,path='artifacts/'+name+'.json';await download.saveAs(path);return fs.readFileSync(path,'utf8');};
 const exported=async(page,name)=>{if(!await page.locator('#dialog').evaluate(d=>d.open))await page.locator('#journey').click();return downloadRaw(page,name);};
 const assertMigrated=(migrated,legacy)=>{
- assert.equal(migrated.version,4);
+ assert.equal(migrated.version,5);const {reclaim,...world}=migrated;
  for(const field of ['stock','spent','delivered','deposits','buildings','units','seen','time','nextId','depleted','complete','tools','knapping'])assert.deepEqual(migrated[field],legacy[field],'Migration preserves '+field);
  if(legacy.version===3){
   assert.notDeepEqual(legacy.storage.stores.b0,legacy.stock,'The v3 fixture must contain earned local stock outside the hearth');
-  assert.deepEqual(migrated.storage,legacy.storage,'v3 local custody must remain unchanged');
-  assert.deepEqual(migrated,{...legacy,version:4},'v3 migration changes only the outer version');
+  assert.deepEqual(legacy.storage.payments,[{kind:'recruitment',target:null,sources:[{storeId:'b0',resource:'food',amount:25}],refunded:false}]);
+  const storage={...legacy.storage,payments:[]};
+  assert.deepEqual(migrated.storage,storage,'v3 local custody remains unchanged while one closed recruitment row compacts');
+  assert.deepEqual(world,{...legacy,version:5,storage},'v3 gameplay changes only its schema and closed payment detail');
  }else{
   const stores=Object.fromEntries(legacy.buildings.filter(b=>b.done&&['hearth','outpost'].includes(b.kind)).map(b=>[b.id,b.kind==='hearth'?{...legacy.stock}:{wood:0,stone:0,food:0}]));
-  assert.deepEqual(migrated,{...legacy,version:4,storage:{version:1,stores,transfers:[],nextId:1,transferred:{wood:0,stone:0,food:0},reservations:{},payments:[]}},'v2 pooled stock is adopted at the hearth exactly once');
+  assert.deepEqual(world,{...legacy,version:5,storage:{version:1,stores,transfers:[],nextId:1,transferred:{wood:0,stone:0,food:0},reservations:{},payments:[]}},'v2 pooled stock is adopted at the hearth exactly once');
  }
+ const outposts=legacy.buildings.filter(b=>b.kind==='outpost');assert.equal(outposts.length,1);assert.equal(typeof reclaim.sourceIdentity,'string');
+ assert.deepEqual(reclaim,{profile:'accepted-opening.outpost-reclaim.v1',sourceIdentity:reclaim.sourceIdentity,
+  claims:[{id:outposts[0].id,buildingId:outposts[0].id,unreleased:{wood:60,stone:20,food:0},receipted:{wood:0,stone:0,food:0},assigned:[],basis:{rule:'legacy-state-consistency',origin:'payment-origin-unrecorded',sourceIdentity:reclaim.sourceIdentity,recipe:'accepted-opening.outpost-reclaim.v1'},origin:[]}],
+  recovered:{wood:0,stone:0,food:0},settled:{wood:0,stone:0,food:0},settledSites:0,closedPayments:legacy.version===3?1:0});
 };
 const assertRawBackups=async(page,fixture,prefix,count)=>{
- for(const family of [3,4])assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+prefix+family),fixture.families.slice(0,count).includes(family)?fixture.raw:null,'Exact raw retention for '+prefix+family);
+ for(const family of [3,4,5])assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+prefix+family),fixture.families.slice(0,count).includes(family)?fixture.raw:null,'Exact raw retention for '+prefix+family);
 };
 const importRaw=async(page,text,name,success=true)=>{
  if(await page.locator('#dialog').evaluate(d=>d.open))await page.locator('#close').click();
@@ -44,11 +50,10 @@ for(const fixture of fixtures){
   assert.equal(await page.locator('#pause').innerText(),'Resume');assert.equal(await page.locator('#stop').isDisabled(),faultSuffix!==null);
   await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),disk);
   const memory=await exported(page,label);
-  if(faultSuffix)assert.equal(memory,raw,'Failed migration backup must export exact original bytes');
+  if(faultSuffix!==null)assert.equal(memory,raw,'Any failed required backup or main write exports exact original bytes');
   else{
    assertMigrated(JSON.parse(memory),legacy);
-   if(faultSuffix===''){assert.match(await page.locator('#toast').innerText(),/Saving stopped/);assert.doesNotMatch(await page.locator('#toast').innerText(),/original|could not be loaded/);}
-   else assert.equal(memory,disk,'Successful startup adopts the same v4 camp in memory and on disk');
+   assert.equal(memory,disk,'Successful startup adopts the same v5 camp in memory and on disk');
   }
   assert.deepEqual(errors,[]);await context.close();
  }
@@ -65,6 +70,7 @@ for(const fixture of fixtures){
   }
   await importRaw(page,raw,'projected-v'+version+'.json',faultSuffix===null);
   await assertRawBackups(page,fixture,'.import-before-v',faultSuffix?suffixes.indexOf(faultSuffix):families.length);
+  assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY+'.outgoing-before-import-v5'),faultSuffix?null:before,'Outgoing live preservation completes after incoming backups and before the main write');
   assert.equal(await page.locator('#pause').innerText(),'Resume');
   if(faultSuffix!==null){
    assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),current);assert.equal(await page.locator('#dialog').evaluate(d=>d.open),true);
@@ -77,7 +83,7 @@ for(const fixture of fixtures){
    const migrated=await page.evaluate(k=>localStorage.getItem(k),KEY);assertMigrated(JSON.parse(migrated),legacy);
    assert.equal(await page.locator('#store-title').count(),0,'Successful import must clear old store inspector controls');
    await page.clock.runFor(2500);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),migrated);
-   assert.equal(await exported(page,label+'-after'),migrated,'Successful import adopts the same paused v4 camp in memory and on disk');await page.locator('#close').click();
+   assert.equal(await exported(page,label+'-after'),migrated,'Successful import adopts the same paused v5 camp in memory and on disk');await page.locator('#close').click();
   }
   assert.deepEqual(errors,[]);await page.screenshot({path:'artifacts/'+label+'.png',fullPage:true});await context.close();
  }
@@ -109,6 +115,9 @@ for(const fixture of fixtures){
 // control drops only preventScroll, reproducing the previous focus() call.
 {
  const before=structuredClone(earned),site=before.buildings.find(b=>b.kind==='workshop');
+ // This preexisting inspector/focus collision fixture deliberately changes paid
+ // projects without rebalancing their bills. Keep it playable and uncertified v4.
+ before.version=4;delete before.reclaim;
  site.done=false;site.work=1;before.tools=false;before.knapping=null;
  before.storage.reservations[site.id]={sources:[{storeId:'b0',resource:'wood',amount:40},{storeId:'b0',resource:'stone',amount:30}]};
  const incoming=structuredClone(before),other=incoming.buildings.find(b=>b.id===site.id);
@@ -168,5 +177,5 @@ for(const fixture of fixtures){
  }
  console.log('PASS same-viewport focus regression: old focus scrolls and misses the site; fixed focus preserves coordinates; colliding-ID import clears stale Cancel and retains incoming paid project');
 }
-console.log('PASS projected v2/v3 persistence fixtures: each applicable v3/v4 backup and main-write fault preserves raw bytes; startup main failure exports migrated v4; failed imports retain prior disk and downloaded memory; successful migration preserves the expected v4 world; identical imports reuse backups and distinct A/B/C bytes survive failed replacement');
+console.log('PASS projected v2/v3 persistence fixtures: each applicable v5/v3/v4 backup and main-write fault preserves raw bytes; every failed startup adoption exports the original; failed imports retain prior disk and downloaded memory; successful adoption preserves gameplay in certified v5; identical imports reuse backups and distinct A/B/C bytes survive failed replacement');
 }finally{if(browser)await browser.close();server.kill();}})().catch(e=>{console.error(e);process.exitCode=1;});

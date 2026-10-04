@@ -35,6 +35,7 @@ function atStoreEdge(u,b){
 }
 function custody(s){
  assert.ok(valid(s),'Every observed current checkpoint must remain strictly loadable');
+ assert.equal(s.version,5);assert.equal(s.reclaim.profile,'accepted-opening.outpost-reclaim.v1');assert.deepEqual(s.reclaim.recovered,{wood:0,stone:0,food:0});
  for(const job of s.storage.transfers){
   const carried=s.units.filter(u=>u.transfer===job.id).reduce((n,u)=>n+u.cargo,0);
   assert.equal(job.amount,job.remaining+job.delivered+job.recovered+job.cancelled+carried);
@@ -132,14 +133,14 @@ fs.mkdirSync('artifacts',{recursive:true});
     report.groups.push({name:method,seed:'ordinary-earned-load',message,before,accepted,routeWitness,first,arrival,held:waited,receipt,...await f.close()});
    }catch(e){await evidenceFailure(f,method,e);await f.context.close();throw e;}
   }
-  // Historical whole-page control. Only the seed schema is projected to v3;
+  // Historical whole-page control. Project the seed v5 to v3 and omit reclaim authority;
   // page bytes are the exact retained Input023 build, with old return-first Move.
-  {const projected=structuredClone(earned);projected.version=3;const f=await open('legacy-return-first',JSON.stringify(projected),{legacy:true});try{
+  {const projected=structuredClone(earned);projected.version=3;delete projected.reclaim;const f=await open('legacy-return-first',JSON.stringify(projected),{legacy:true});try{
    await f.page.locator('[data-unit="u0"]').click();const before=JSON.parse(await f.exported('before'));assert.deepEqual(before,projected);
    await f.ground(target.x,target.y,'m');const after=JSON.parse(await f.exported('accepted')),u=unit(after,'u0');
    assert.equal(u.phase,'return');assert.deepEqual(u.next,{kind:'move',...target});assert.notDeepEqual(u.path.at(-1),target);assert.equal(u.cargo,unit(before,'u0').cargo);
    assert.match(await f.page.locator('#toast').innerText(),/return home before/i);const first=await f.nextTick(after);assert.equal(unit(first,'u0').cargo,u.cargo);assert.notDeepEqual({x:unit(first,'u0').x,y:unit(first,'u0').y},{x:u.x,y:u.y});
-   await f.page.screenshot({path:'artifacts/hearth-rts-move-legacy-return-first.png',fullPage:true});report.groups.push({name:'old-return-first-negative-control',seed:'ordinary-earned-load with explicitly projected version3',sourceCommit:'3b15d6081f5396fcc579140c09d86e532674e2dd',before,accepted:after,first,...await f.close()});
+   await f.page.screenshot({path:'artifacts/hearth-rts-move-legacy-return-first.png',fullPage:true});report.groups.push({name:'old-return-first-negative-control',seed:'ordinary-earned-load projected v5 to v3 with reclaim authority omitted',sourceCommit:'3b15d6081f5396fcc579140c09d86e532674e2dd',before,accepted:after,first,...await f.close()});
   }catch(e){await evidenceFailure(f,'legacy-return-first',e);await f.context.close();throw e;}}
   {const raw=fs.readFileSync('artifacts/hearth-rts-transfer-carried.json','utf8'),f=await open('transfer',raw);try{
    const before=JSON.parse(await f.exported('before')),carrier=before.units.find(u=>u.transfer&&u.cargo);assert.ok(carrier);const job=before.storage.transfers.find(j=>j.id===carrier.transfer);assert.ok(job);assert.equal(before.storage.transfers.length,1);custody(before);

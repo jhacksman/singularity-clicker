@@ -1,0 +1,164 @@
+Outpost reclaim — separate post-skeptic source verification
+2026-10-04. Static only; no runtime acceptance.
+
+Final reviewed immutable product: 28b410b6c09c42a0d4bcd705383c6f1cd4f118b0
+Repository: task-3/hearth-outpost-reclaim
+Exact diff basis: c2f72666e8efdaaef0eb84328a5b0bc14b43a2a6
+Intermediate corrective commit reviewed: d4c07939bb7da2b9892968575c72deb7702a3d43
+Line references below refer to d4c07939 unless the final correction is named.
+Controlling contract SHA256:
+948de6f34217a04f38102c7f15f713a34e8b758295c19952904828d59cc84e96
+
+Final committed source hashes (git show, not mutable QA files):
+src/hearth-rts/engine.js
+416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5
+src/hearth-rts/view.js
+2a6495938d9a10d305da0b53e39896bf0951d1d51edc44a17c6a96bea09c4e67
+Only those two product files changed from c2f72666 in d4c07939; 28b410b6 changes
+only the shared transfer-headroom predicate placement in engine.js.
+
+Verdict: S1 and RI-S3-01 close statically, and the additional custody guards fit
+ordinary transitions. This review discovered IC-R03 in d4c07939 and separately
+verified its narrow correction in 28b410b6 below. No remaining concrete source
+blocker found in this bounded review. Runtime and actual built-page acceptance
+remain pending; this is not a successful Spark gate.
+
+Inputs read in full
+reclaim-implementation-skeptic-one.txt
+c4d9410c9d98b700b66fa988dd34cb23ae1f0efdd1cecad51aa9a3d6321cc009
+reclaim-implementation-skeptic-two.txt
+eb11c40d0e2c27c9b8da32dde2b55ee0064adb40ebf3627c6b3c6236319f5e4a
+reclaim-implementation-skeptic-three.txt
+0eeea2523dc5b213c2c7bcfdd4a8590fdecbf4280b6067fc6da87b1c2a9aa1e2
+
+Confirmed static fix closures
+1. S1 fractional refundable sources: canonicalReason69 now checks every
+   reservation-source amount with the same bounded integer predicate used for
+   payment sources. The skeptic's 0.5W/59.5W split therefore fails OPTIONAL
+   legacy certification before adoption. The old reader remains unchanged, so
+   constructor149 keeps the playable v4 compatibility state and its named refund
+   semantics. Claim-bearing v5 also invokes canonicalReason102 and rejects the
+   malformed source before loading. No rounding or invented payment is applied.
+   The integral 1W/59W counterpart is not rejected by this added condition.
+
+2. RI-S3-01 rejected A / durable B / incoming C: view318 now adds every known,
+   distinct rejected raw to the same collision-safe stored-before-import-v5
+   family after current durable B, before preserveBeforeWrite commits C. The
+   !==null check includes empty-string A. The helper's planned-write map handles
+   two distinct values in one family by allocating separate numbered records;
+   byte-identical values reuse the same record. If preserving A throws, KEY
+   commit17 and active adoption319 are not reached, rejected remains A, and
+   export312 still returns A. Deleted KEY and A===B cases are covered by the
+   same branches. The fresh fallback is never mislabeled a verified outgoing camp.
+
+3. The original IC-R01 fresh initialization fix remains at constructor149:
+   migrateStorage precedes certification of a normalized fresh clone. IC-R02's
+   isolated storage.nextId upper-bound case remains covered by canonicalReason69
+   and retains v4. The new aggregate-counter variant below is a separate gap.
+
+Added guards and ordinary transition compatibility
+- Null claim rows/origin entries are rejected before their new field accesses.
+  Legacy unknown reclaim fields are stripped only on a clone, with array/object
+  checks around the stripping path. This is not a claim that all inherited
+  malformed-input paths return false rather than throwing.
+- Assigned empty actors are restricted to reclaimPickup or blocked idle with no
+  dropoff; assigned loaded actors require that exact claim's marker and return or
+  blocked-idle phase. This rejects the construct+reclaim-order stranding example.
+  Commitment196 clears stale empty dropoff. Ordinary start306-308, pickup199-207,
+  home301 and receipt278-285 produce these accepted states.
+- Manual overrides330 revoke membership before Move/return-first transitions,
+  preserving the carried marker. Thus valid carryMove and held actors remain
+  outside the stricter assigned-actor branch. Receipt clears the marker and,
+  after the final pickup, assignment before finishReclaims209-214. The final
+  held load still prevents cleanup. No new ordinary cleanup counterexample found.
+- For already valid v5 camps, pending transfer/cargo headroom104 is conserved by
+  pickup and destination receipt, and decreases on cancellation/recovery elsewhere.
+  ClosedPayments plus live rows stays constant through compaction. Recovery
+  received+active-unreleased+tagged-cargo122 stays constant through handling;
+  settledSites+active count stays constant through finalization. These checks
+  align with admission/pay preflights and do not require a new ID at receipt.
+  Their placement only in v5 admission causes IC-R03 at legacy conversion.
+- No navigation product file changed in this correction. Its existing clone-only
+  actual-loader callback inherits the same optional-certification issue below;
+  prior bounded backup/profile wiring conclusions otherwise remain applicable.
+
+IC-R03 — Medium, found at d4c07939; statically closed at 28b410b6:
+pending transfer headroom rejected a previously accepted legacy camp instead
+of retaining compatibility
+
+Exact chain at d4c07939:
+- The legacy reader's transferred map is finite, nonnegative and <10000000 per
+  resource. Its transfer conservation checks do not reserve cumulative receipt
+  headroom. A value of 9999998 plus a pending five-unit transfer is accepted.
+- canonicalReason69 checks transferred's integer individual values; line70
+  reserves gathering counters only. certifyLegacy90-96 returns ok for the world
+  below. It does not apply validReclaim104's pending-transfer sum.
+- Constructor149 calls adoptReclaim and then the final valid check. New
+  validReclaim104 rejects 9999998+5>=10000000. The constructor throws, so the
+  previously accepted camp loses the promised playable v4 fallback. Navigation
+  using the actual constructor also treats it as unsupported.
+
+Concrete supplementary state witness, not an observed historical play session:
+Use an otherwise supported canonical v4 snapshot with b0 hearth and completed
+b1 outpost at(11,11), nextId2, four original idle villagers and no tools/recruits.
+All six wood/stone deposits are exhausted, food remains225, spent60W20S,
+stock356W200S, stores.b0=stock and stores.b1=zero; delivered396W210S, depleted6.
+storage.nextId=2, payments=[], reservations={}, transferred=(9999998W,0S,0F).
+Install the ordinary pending t1 shape: b0->b1, wood, amount5, remaining5,
+delivered/recovered/cancelled0, workers=['u0'], requested='u0', pending={u0:5}.
+u0 has order transfer/t1, phase pickup, cargo0, resource null, next null and an
+ordinary bounded path/position; other actor fields are valid. This reserves goods
+already in b0. Both canonical material equations and transfer custody balance.
+The high cumulative transfer count is attribution, not additional inventory.
+
+Attempted disproof: per-field integer bounds, source stock, transfer conservation,
+source/destination existence, actor membership, source-ID bounds and both fixed
+material equations all hold. New-operation quoteTransfer261 does not run while
+loading an existing legacy job. Exact source backups preserve recovery bytes but
+do not satisfy the promised continued play/export compatibility.
+
+Required bounded correction direction: fail optional legacy certification when
+the candidate cannot reserve headroom for existing transfers, or otherwise retain
+the validated legacy compatibility candidate if optional adoption cannot validate.
+Keep strict v5 rejection, preserve the old reader, and do not alter counters/cargo.
+
+Required future regressions: pending and already-picked legacy transfer variants
+must remain v4 with an explicit optional-feature reason and unchanged raw input;
+stop/ordinary compatible serialization must remain possible. A paired sufficiently
+low-counter world should adopt v5 and deliver/reload normally. The insufficient
+claim-bearing v5 version must remain rejected. Include a safe exact boundary
+(counter9999994 plus load5 yields9999999) so the strict '<LIMIT' rule is exercised.
+
+Separate IC-R03 correction verification at 28b410b6
+The complete d4c07939 -> 28b410b6 product diff is one added shared predicate and
+removal of its duplicated v5-only occurrence. canonicalReason now rejects
+transferred[r] + sum(each matching job's remaining + actual tagged carrier cargo)
+when that sum is >=LIMIT. It returns the explicit reason 'Transfer counters lack
+room for existing reserved and carried loads'. certifyLegacy calls this function
+before declaring success, while validReclaim still calls it during strict v5
+admission. No reader widening, counter repair, job cancellation or generic catch
+was introduced. v1/v2's ineffective storage remains normalized away as before.
+
+For both pending5 and carried5, 9999994+5=9999999 passes the shared condition;
+9999995+5=10000000 and 9999998+5 fail optional legacy certification, leaving
+constructor's existing v4 fallback instead of taking adoptReclaim. The same
+unsafe claim-bearing v5 forms still fail validReclaim through canonicalReason.
+The actor/job custody and stock are unchanged. This closes the precise reported
+witness without promising to repair an already overcommitted old metric when
+the player later continues its old transfer under retained legacy behavior.
+
+Fresh independent disproof report read after it was produced:
+reclaim-final-headroom-disproof.txt
+SHA256 0673fee32ea52d03d908e1ff62013301b79a43ea2b3bcee056fbad66c39bbbc3.
+It confirms the d4c07939 pending/carried witness and the same strict boundary;
+the final corrected expression was verified directly from git, not inferred
+from that report or from unexecuted QA assertions. Engine d4c07939 hash was
+f89e75c4eacb4be9ce23d4cad47d290cfcef996c92043d3d5a18ef8c71720dc1.
+
+Remaining evidence
+This review ran no application, parser, tests, builds, browser or network actions.
+Uncommitted QA files were not treated as source truth or execution evidence.
+The genuine b365 old-world witness, independent vector/reload regressions,
+fractional-reservation and counter-boundary fixtures, A/B/C backup fault cases
+and built-page navigation remain required Spark gates. No reviewed fix is being
+credited with runtime proof before those results return.

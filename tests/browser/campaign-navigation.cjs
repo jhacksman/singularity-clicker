@@ -22,7 +22,7 @@ const server = http.createServer((request, response) => {
 function sources() {
   const cave = new Cave(null, 17); cave.r.innovation = 1200; cave.r.event = 1;
   for (let i = 0; i < 3; i++) cave.fireStep();
-  const rts = new RTS.Camp().s; rts.version = 1; delete rts.tools; delete rts.knapping; delete rts.storage;
+  const rts = new RTS.Camp().s; rts.version = 1; delete rts.tools; delete rts.knapping; delete rts.storage; delete rts.reclaim;
   const raw = ' \n' + JSON.stringify(rts) + '\n';
   const completed = new Hearth(); completed.s.complete = true; completed.s.plowed = 1;
   return {[KEYS.cave]: cave.serialize(), [KEYS.rts]: raw, [KEYS.rtsBackup]: 'occupied v2 backup', [KEYS.rtsBackupV3]: 'occupied v3 backup', [KEYS.rtsBackup + '.7']: raw + ' ', [KEYS.hearth]: new Hearth().serialize(), [KEYS.hearthCompleted]: ' \n' + JSON.stringify([completed.serialize()]) + '\n', [KEYS.agriculture]: new Village().serialize()};
@@ -289,7 +289,7 @@ async function checkPresentation(page, label) {
   async function enterRTS(page) {
     await Promise.all([page.waitForURL('**/hearth-rts.html'), page.locator('#campaign-navigation [data-navigation-action="open-hearth"]').click()]);
     await page.locator('[data-unit="u0"]').waitFor(); assert.equal(await page.locator('#pause').innerText(), 'Resume');
-    const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts); assert.equal(state.version, 4); assert.ok(RTS.valid(state)); return state;
+    const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts); assert.equal(state.version, 5); assert.ok(RTS.valid(state)); return state;
   }
   async function backToCave(page, prior, label) {
     await page.goBack({waitUntil: 'domcontentloaded'}); await page.locator('#event-action').waitFor({state: 'visible'});
@@ -304,9 +304,9 @@ async function checkPresentation(page, label) {
   async function importRTS(page, incoming, label) {
     await page.locator('#journey').click(); assert.doesNotMatch(await page.locator('#save-status').innerText(), /Import could not be saved|not a compatible/);
     page.once('dialog', dialog => dialog.accept()); await page.locator('#file').setInputFiles({name: label + '.json', mimeType: 'application/json', buffer: Buffer.from(incoming)});
-    await page.locator('#dialog').waitFor({state: 'hidden'}); // this attempt's completed handler, never a stale version==4 predicate
+    await page.locator('#dialog').waitFor({state: 'hidden'}); // this attempt's completed handler, never a stale version predicate
     const state = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEYS.rts);
-    assert.deepEqual(state, new RTS.Camp(RTS.repairWorkResidue(JSON.parse(incoming)) || JSON.parse(incoming)).s); assert.equal(state.version, 4); assert.equal(await page.locator('#pause').innerText(), 'Resume');
+    assert.deepEqual(state, new RTS.Camp(RTS.repairWorkResidue(JSON.parse(incoming)) || JSON.parse(incoming)).s); assert.equal(state.version, 5); assert.equal(await page.locator('#pause').innerText(), 'Resume');
   }
 
   const integrationFixtures = {...sources(), [KEYS.rtsBackupV4]: 'occupied v4 backup'};
@@ -385,7 +385,7 @@ async function checkPresentation(page, label) {
   assert.equal(await nativeExport(integrated, 'export:rtsBackupV4', 'native-existing-v4-backup.json'), integrationFixtures[KEYS.rtsBackupV4]);
   for (const key of [KEYS.rtsBackup, KEYS.rtsBackupV3, KEYS.rtsBackupV4]) assert.equal(await nativeExport(integrated, 'export-backup:' + key + '.1', 'native-' + key + '.1.json'), integrationFixtures[KEYS.rts]);
   const importPosition = await nativePosition(integrated); await enterRTS(integrated);
-  const v2 = new RTS.Camp().s; v2.version = 2; delete v2.storage;
+  const v2 = new RTS.Camp().s; v2.version = 2; delete v2.storage; delete v2.reclaim;
   const importRaws = [' \n' + JSON.stringify(v2) + '\n', '\n\n' + JSON.stringify(v2) + ' '];
   for (const incoming of importRaws) await importRTS(integrated, incoming, 'projected-legacy-v2');
   for (const key of [KEYS.rtsImportBackupV3, KEYS.rtsImportBackupV4]) { assert.equal((await rawSources(integrated, [key]))[key], importRaws[0]); assert.equal((await rawSources(integrated, [key + '.1']))[key + '.1'], importRaws[1]); }
@@ -396,7 +396,7 @@ async function checkPresentation(page, label) {
   }
   const beforeReload = await rawSources(integrated, Object.values(KEYS)); await integrated.reload(); await integrated.locator('#event-action').waitFor(); assert.equal(await integrated.evaluate(() => window.__nativeMounts.length), 0); await openCompletion(integrated);
   assert.deepEqual(await rawSources(integrated, Object.values(KEYS)), beforeReload); await integration.context.close();
-  reports.push('Native unmodified Cave build, focus trap and presentation; actual v1 migration and v2 imports into v4; real Back/reload and native exact backup exports');
+  reports.push('Native Cave build, focus trap and presentation; explicit v1/v2 fixture migration into v5; real Back/reload and native exact backup exports');
 
   // Delayed inspection is a labeled lifecycle fault fixture. It does not replace
   // host options, controller methods or product markup, and awaits original ready.
@@ -487,14 +487,16 @@ async function checkPresentation(page, label) {
   const recoveryCamp = new RTS.Camp(), recoveryUnit = recoveryCamp.s.units[0];
   Object.assign(recoveryUnit, {x: 5, y: 7, cargo: 2, resource: 'wood', phase: 'extract', order: {kind: 'gather', target: 'd0'}, next: null, path: [], work: 0});
   recoveryCamp.s.deposits[0].amount -= 2; recoveryCamp.reveal();
-  const residue = {...structuredClone(recoveryCamp.s), version: 3}; residue.units[0].work = -5.551115123125783e-17;
+  const residue = {...structuredClone(recoveryCamp.s), version: 3}; delete residue.reclaim; residue.units[0].work = -5.551115123125783e-17;
   const residueRaw = ' \n' + JSON.stringify(residue) + '\n', repaired = RTS.repairWorkResidue(residue); assert.ok(repaired && RTS.valid(repaired)); assert.equal(repaired.version, 3);
-  const onlyWork = structuredClone(residue); onlyWork.units[0].work = 0; assert.deepEqual(repaired, onlyWork); assert.deepEqual(new RTS.Camp(repaired).s, {...onlyWork, version: 4});
+  const onlyWork = structuredClone(residue); onlyWork.units[0].work = 0; assert.deepEqual(repaired, onlyWork);
+  const adopted = new RTS.Camp(repaired).s, {reclaim, ...adoptedFields} = adopted;
+  assert.deepEqual(adoptedFields, {...onlyWork, version: 5}); assert.equal(reclaim.profile, 'accepted-opening.outpost-reclaim.v1'); assert.deepEqual(reclaim.claims, []); assert.deepEqual(reclaim.recovered, {wood: 0, stone: 0, food: 0});
   const currentNegative = {...structuredClone(residue), version: 4}; assert.equal(RTS.repairWorkResidue(currentNegative), null);
   const postMigrationInvalid = new RTS.Camp().s; postMigrationInvalid.version = 2; delete postMigrationInvalid.storage; postMigrationInvalid.nextId = 2;
   postMigrationInvalid.buildings.push({id: 'b1', kind: 'workshop', x: 12, y: 14, done: false, work: 0, cost: {wood: 40, stone: 30}});
   assert.ok(RTS.valid(postMigrationInvalid)); assert.throws(() => new RTS.Camp(postMigrationInvalid), /compatible/);
-  for (const [label, state] of [['current-v4-negative', currentNegative], ['unknown-v5', {...currentCamp.s, version: 5}], ['legacy-v2-post-migration-invalid', postMigrationInvalid]]) {
+  for (const [label, state] of [['legacy-v4-negative', currentNegative], ['current-v5-negative', {...currentCamp.s, units: currentCamp.s.units.map((u,i) => i ? u : {...u, work: -Number.EPSILON})}], ['unknown-v6', {...currentCamp.s, version: 6}], ['legacy-v2-post-migration-invalid', postMigrationInvalid]]) {
     const raw = ' \n' + JSON.stringify(state) + '\n', fixtures = {...sources(), [KEYS.rts]: raw}, f = await nativePage(label, fixtures), p = f.page; await openCompletion(p);
     assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isDisabled(), true); assert.match(await p.locator('[data-navigation-status]').innerText(), /cannot be opened/);
     assert.equal(await nativeExport(p, 'export:rts', label + '-original.json'), raw); assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures);
@@ -510,7 +512,7 @@ async function checkPresentation(page, label) {
   assert.equal(loadedCamp.s.units[0].phase, 'carryMove'); const movingRaw = loadedCamp.serialize();
   for (let step = 0; step < 600 && loadedCamp.s.units[0].phase !== 'idle'; step++) loadedCamp.tick(.1);
   assert.equal(loadedCamp.s.units[0].phase, 'idle'); assert.equal(loadedCamp.s.units[0].cargo, 2); assert.equal(loadedCamp.s.units[0].x, 2); assert.equal(loadedCamp.s.units[0].y, 3); const heldRaw = loadedCamp.serialize();
-  for (const [label, raw] of [['current-v4-idle', currentRaw], ['current-v4-carry-move', movingRaw], ['current-v4-held', heldRaw]]) {
+  for (const [label, raw] of [['current-v5-idle', currentRaw], ['current-v5-carry-move', movingRaw], ['current-v5-held', heldRaw]]) {
     const expected = JSON.parse(raw); assert.ok(RTS.valid(expected)); const fixtures = {...sources(), [KEYS.rts]: raw}, f = await nativePage(label, fixtures), p = f.page; await openCompletion(p);
     assert.equal(await p.locator('[data-navigation-action="open-hearth"]').isEnabled(), true); assert.equal(await nativeExport(p, 'export:rts', 'native-' + label + '-original.json'), raw); assert.deepEqual(await rawSources(p, Object.keys(fixtures)), fixtures);
     assert.deepEqual(await enterRTS(p), expected); assert.equal(await p.locator('#stop').isDisabled(), false);
@@ -530,7 +532,7 @@ async function checkPresentation(page, label) {
     for (const kind of ['rtsImportBackupV4', 'rtsImportWorkRoundoffBackup']) { assert.equal(await nativeExport(p, 'export:' + kind, 'native-' + kind + '-residue.json'), residueImports[0]); assert.equal(await nativeExport(p, 'export-backup:' + KEYS[kind] + '.1', 'native-' + kind + '-residue-1.json'), residueImports[1]); }
     const foreign = [KEYS.cave, KEYS.hearth, KEYS.hearthCompleted, KEYS.agriculture]; assert.deepEqual(await rawSources(p, foreign), Object.fromEntries(foreign.map(key => [key, fixtures[key]])));
     nativeEvidence.push({case: 'native-legacy-v3-residue-repair-and-import', fixture: 'controlled balanced gathered cargo, deliberately authored residue; not earned play', exactOriginalExports: true}); await f.context.close(); }
-  reports.push('Native clone-only admission accepts current4 and explicit legacy3 recovery; rejects current4 negatives, unknown5 and legacy post-migration invalidity; destination alone adopts and retains exact v4/roundoff backup families');
+  reports.push('Native clone-only admission accepts current5 and explicit legacy3 recovery; rejects v4/v5 negative work, unknown6 and legacy post-migration invalidity; destination alone adopts and retains exact movement/roundoff backup families');
   assert.deepEqual(errors, []);
   fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify({baseCommit: Navigation.BASE_COMMIT, result: 'pass', checks: reports, nativeEvidence, presentation, pageErrors: errors, limits: ['Native integration uses the ordinary unmodified built Cave page; separate opt-in fixtures still test helper APIs', 'Completed-source and recovery compatibility fixtures, not earned-play/pacing/enjoyment evidence', 'Completed Cave advance is inert; unchanged completed-camp counters do not prove dialog pause', 'Synthetic persisted events are labeled separately from actual Back/BFCache observations', 'No durable campaign handoff, grant, branch or full-age completion implemented', 'Desktop headless Chromium only; native/accessibility-device support not claimed', '200% text is simulated by doubling the root font size; browser zoom and assistive devices are not tested']}, null, 2) + '\n');
   console.log('PASS campaign navigation browser:', reports.join('; '));

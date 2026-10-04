@@ -33,28 +33,40 @@ await click(26.5,16.5,'right');await page.locator('#pause').click();await wait(s
 await click(24.5,19.5,'right');await page.locator('#pause').click();await wait(s=>s.storage.stores[outpost].food>=25,'eastern food delivered',60);await page.locator('#stop').click();await wait(s=>s.units.every(u=>!u.cargo&&u.phase==='idle'),'food cargo returned',30);await page.locator('#pause').click();const beforeRecruit=await read();await page.locator('#train').click();assert.deepEqual(await read(),beforeRecruit);assert.match(await page.locator('#toast').innerText(),/25 food.*Hearth/);
 await click(22.5,11.5);await page.locator('#store-destination').selectOption('b0');await page.locator('#store-resource').selectOption('food');await page.locator('#store-transfer').click();await page.locator('#pause').click();await wait(s=>s.storage.transferred.food===20,'first food transfer',60);await page.locator('#pause').click();const stillShort=await read();await page.locator('#train').click();assert.deepEqual(await read(),stillShort);assert.match(await page.locator('#toast').innerText(),/5 food/);
 await page.locator('[data-unit="u0"]').click();await click(22.5,11.5);await page.locator('#store-resource').selectOption('food');assert.match(await page.locator('#store-quote').innerText(),/5 food · 1 carriers/);await page.locator('#store-transfer').click();await page.locator('#pause').click();await wait(s=>s.storage.transferred.food===25,'final food load',60);await page.locator('#pause').click();await page.locator('#train').click();const recruited=await read();assert.equal(recruited.units.length,5);assert.equal(recruited.storage.stores.b0.food,0);assert.equal(recruited.spent.food,25);assert.deepEqual(recruited.delivered,beforeRecruit.delivered);await page.screenshot({path:'artifacts/hearth-rts-local-recruitment.png',fullPage:true});
-const saved=await read();await page.screenshot({path:'artifacts/hearth-rts-expansion.png',fullPage:true});await page.reload();await page.locator('[data-unit="u0"]').waitFor();assert.equal(await page.locator('#pause').innerText(),'Resume');assert.deepEqual(await read(),saved);await page.clock.runFor(2500);assert.deepEqual(await read(),saved,'Restored camp must stay exactly frozen until explicit Resume');await page.locator('#pause').click();await page.clock.runFor(1000);await page.locator('#pause').click();assert.ok((await read()).time>saved.time,'Resume must advance the restored camp');assert.deepEqual(errors,[]);fs.writeFileSync('artifacts/hearth-rts-earned-camp.json',JSON.stringify(saved,null,2));console.log('PASS fresh RTS: drag selection, ordinary clicks/right-click gathering, visible cargo, finite depletion, construction debit, ford scouting, eastern outpost/workshop and refresh; paid/interrupted/resumed workshop knapping completes once; '+Math.round(saved.time)+' simulated seconds; no page errors');await context.close();context=null;
-// Explicit compatibility projections of the earned camp: v3 changes only the outer version.
+const saved=await read();assert.equal(saved.version,5);assert.equal(saved.reclaim.profile,'accepted-opening.outpost-reclaim.v1');assert.deepEqual(saved.reclaim.recovered,{wood:0,stone:0,food:0});await page.screenshot({path:'artifacts/hearth-rts-expansion.png',fullPage:true});await page.reload();await page.locator('[data-unit="u0"]').waitFor();assert.equal(await page.locator('#pause').innerText(),'Resume');assert.deepEqual(await read(),saved);await page.clock.runFor(2500);assert.deepEqual(await read(),saved,'Restored camp must stay exactly frozen until explicit Resume');await page.locator('#pause').click();await page.clock.runFor(1000);await page.locator('#pause').click();assert.ok((await read()).time>saved.time,'Resume must advance the restored camp');assert.deepEqual(errors,[]);fs.writeFileSync('artifacts/hearth-rts-earned-camp.json',JSON.stringify(saved,null,2));console.log('PASS fresh RTS: drag selection, ordinary clicks/right-click gathering, visible cargo, finite depletion, construction debit, ford scouting, eastern outpost/workshop and refresh; paid/interrupted/resumed workshop knapping completes once; '+Math.round(saved.time)+' simulated seconds; no page errors');await context.close();context=null;
+// Explicit compatibility projections of the earned camp omit v5 reclaim authority.
 // Older pooled schemas omit storage; v1 additionally predates the toolset fields.
 for(const version of [1,2,3]){
- const migration=await browser.newContext(),old=structuredClone(saved);old.version=version;
+ const migration=await browser.newContext(),old=structuredClone(saved);old.version=version;delete old.reclaim;
  if(version<3)delete old.storage;if(version===1){delete old.tools;delete old.knapping;}
  const raw=JSON.stringify(old,null,2)+'\n';await migration.addInitScript(({key,raw})=>{if(!localStorage.getItem(key))localStorage.setItem(key,raw);},{key:KEY,raw});
  const mp=await migration.newPage();await mp.goto('http://127.0.0.1:8080/hearth-rts.html');await mp.locator('[data-unit="u0"]').waitFor();assert.equal(await mp.locator('#pause').innerText(),'Resume');
  assert.equal(await mp.evaluate(k=>localStorage.getItem(k+'.before-v4'),KEY),raw);
+ assert.equal(await mp.evaluate(k=>localStorage.getItem(k+'.before-v5'),KEY),raw);
  assert.equal(await mp.evaluate(k=>localStorage.getItem(k+'.before-v3'),KEY),version<3?raw:null);
  assert.equal(await mp.evaluate(k=>localStorage.getItem(k+'.before-v2'),KEY),version===1?raw:null);
- const upgraded=await mp.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);assert.equal(upgraded.version,4);
+ const upgraded=await mp.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY);assert.equal(upgraded.version,version===1?4:5);
  for(const field of ['stock','spent','delivered','deposits','buildings','units','seen','time','nextId','depleted','complete'])assert.deepEqual(upgraded[field],old[field],'v'+version+' migration preserves '+field);
  assert.equal(upgraded.tools,version===1?false:old.tools);assert.deepEqual(upgraded.knapping,version===1?null:old.knapping);
  if(version===3){
   assert.notDeepEqual(old.storage.stores.b0,old.stock,'The v3 fixture must retain earned resources outside the hearth');
-  assert.deepEqual(upgraded.storage,old.storage,'v3 migration preserves every local store and custody field');
-  assert.deepEqual(upgraded,{...old,version:4},'v3 migration changes only the outer version');
+  assert.deepEqual(old.storage.payments,[{kind:'recruitment',target:null,sources:[{storeId:'b0',resource:'food',amount:25}],refunded:false}]);
+  const expectedStorage={...old.storage,payments:[]},{reclaim,...world}=upgraded;
+  assert.deepEqual(upgraded.storage,expectedStorage,'v3 preserves local custody and compacts the one closed recruitment row');
+  assert.deepEqual(world,{...old,version:5,storage:expectedStorage},'v3 adoption preserves every gameplay field beside its explicit schema and closed history');
  }else{
   const stores=Object.fromEntries(old.buildings.filter(b=>b.done&&['hearth','outpost'].includes(b.kind)).map(b=>[b.id,b.kind==='hearth'?{...old.stock}:{wood:0,stone:0,food:0}]));
   assert.deepEqual(upgraded.storage,{version:1,stores,transfers:[],nextId:1,transferred:{wood:0,stone:0,food:0},reservations:{},payments:[]},'v'+version+' migration adopts pooled stock at the hearth exactly once');
  }
- await migration.close();console.log('PASS projected v'+version+' compatibility fixture: byte-exact raw backups, unchanged world/cargo and '+(version===3?'preserved local custody':'pooled-stock adoption')+' in v4');
+ if(version===1){
+  // This projection drops the paid knapping project while preserving its spent bill.
+  assert.equal(upgraded.reclaim,undefined);await mp.locator('#journey').click();assert.match(await mp.locator('#save-status').innerText(),/Legacy camp remains playable.*recovery unavailable/i);
+ }else{
+  const a=upgraded.reclaim;assert.equal(typeof a.sourceIdentity,'string');
+  assert.deepEqual(a,{profile:'accepted-opening.outpost-reclaim.v1',sourceIdentity:a.sourceIdentity,
+   claims:[{id:outpost,buildingId:outpost,unreleased:{wood:60,stone:20,food:0},receipted:{wood:0,stone:0,food:0},assigned:[],basis:{rule:'legacy-state-consistency',origin:'payment-origin-unrecorded',sourceIdentity:a.sourceIdentity,recipe:'accepted-opening.outpost-reclaim.v1'},origin:[]}],
+   recovered:{wood:0,stone:0,food:0},settled:{wood:0,stone:0,food:0},settledSites:0,closedPayments:version===3?1:0});
+ }
+ await migration.close();console.log('PASS projected v'+version+' compatibility fixture: byte-exact raw backups, unchanged world/cargo and '+(version===3?'preserved local custody':'pooled-stock adoption')+' in '+(version===1?'playable uncertified v4':'certified v5'));
 }
 }catch(e){if(page){await page.screenshot({path:'artifacts/hearth-rts-failure.png',fullPage:true}).catch(()=>{});fs.writeFileSync('artifacts/hearth-rts-failure.txt',await page.locator('body').innerText().catch(()=>''));}throw e;}finally{if(context)await context.close();if(browser)await browser.close();server.kill();}})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,0 +1,96 @@
+Outpost reclaim — independent implementation critic
+2026-10-04. Initial source pass; immutable candidate verification pending.
+
+Worktree: hearth-outpost-reclaim
+Diff basis: b365ae01e4315bfd183a14438175c19c6396b11d
+Controlling contract: reclaim-contract-v1.txt
+SHA256 948de6f34217a04f38102c7f15f713a34e8b758295c19952904828d59cc84e96
+
+This review read the complete reducer, controller changes and relevant surrounding
+controller code, the authored reclaim unit cases, and the navigation integration.
+No source/test edits, application execution, parser, test, build, browser or network
+checks occurred. The sole product owner was still editing; this is not a frozen
+source approval or a Spark result.
+
+Preserved first draft
+reclaim-critic-beforefix-engine.txt
+SHA256 a224576dd4f042dd5a1f552b3c30a97441f3b83c2300eb5ee5945932a65fb03b
+The root independently retained the same bytes as reclaim-engine-first-draft.js.
+Initial controller SHA256:
+0ae20d071b2763c1cd1dc29f48084b272d56ea6d87ab79cd35a31166e16fe5e9
+
+IC-R01 — Medium: fresh worlds initially miss recovery certification
+First-draft engine15 creates version4 without storage. Constructor137 calls
+certifyLegacy before migrateStorage; valid38-39 rejects that missing storage.
+Consequently new Camp() stays v4 with reclaimIssue and recovery remains unavailable
+throughout its first session, despite otherwise canonical play. Reload/import of
+its later normalized serialization changes eligibility. This is initialization
+ordering, not a flaw in the legacy material certificate. Sent to root immediately.
+
+IC-R02 — Medium: optional certification can reject previously playable imports
+An otherwise valid canonical v3/v4 snapshot with storage.nextId=10000000 and no
+transfers is accepted by the old reader: first-draft valid39 requires an integer
+at least1, without that upper bound. certifyLegacy/canonicalReason then say ok,
+but adopted v5 fails validReclaim99 and constructor throws instead of retaining
+the v4 compatibility path. This is an accepted old-input boundary, not a claimed
+short ordinary-play sequence. Sent to root with the preserved source identity.
+
+Owner corrections observed, not yet immutable closure
+Subsequent engine SHA256:
+7e2413d1c6f3a1caa4c71af35a0d49e11508666ae9d566d8e151e956ccbb6d25
+Constructor now certifies a normalized fresh source after storage initialization;
+legacy certification checks the bounded transfer identity before adoption, so the
+IC-R02 witness falls back to v4. Static traces address both reported witnesses.
+Also inspected the owner's independently known payment/reservation consistency,
+v1/v2 ignored-storage normalization, failed-knapping-payment guard, bounded gather
+counters, claim profile/source consistency and last-eastern validation changes.
+These edits were in progress during this pass; the final commit and independently
+authored regression evidence remain necessary. No pre-fix runtime was performed.
+
+Other scoped conclusions
+- Physical release is confined to real pickup, with stable actor order and full
+  five-unit tranches. Receipt credits actual eligible adjacent storage. Reclaim
+  markers distinguish recovery from gathered/transferred counters. Claim and
+  world vector equations are independently expressed in validation/tests.
+- Quote/admission traces check entire selected groups, durable transfer endpoints,
+  incoming orders, refundable origins and the same usable pickup edge/receiver
+  connection. Retiring sites retain physical topology protection. Source service
+  ends immediately through the common store predicate.
+- Valid replacement commands separate future assignment from carried custody;
+  loaded Move retains its marker, other work returns first, and receipt cannot
+  recapture a released assignment. Final-load membership is cleared before site
+  removal, while held cargo preserves the footprint. No further concrete blocker
+  was found in these traced transitions.
+- Missing legacy payment history remains eligible under the fixed two-equation
+  certificate. Completed histories compact separately from live refund sources;
+  current claim origins are snapshots rather than spendable stores. Partial v5
+  reload validates the remaining partition without issuing capital again.
+- Controller sourceBackups/preserveBeforeWrite retains incoming exact bytes,
+  verified outgoing LIVE serialization and distinct prior durable bytes using
+  collision-safe named families. Required preservation and durable KEY write
+  precede active adoption. Startup keeps original export on failed adoption;
+  import failure retains the active camp. Partial successful backups are possible
+  by design and are not evidence that adoption committed.
+- The separate navigation helper found no product blocker: all four families are
+  enumerated, raw backup identity is preserved, the actual nested reclaim.profile
+  is validated by the bundled reducer, and navigation itself issues no claims.
+  Helper report: reclaim-navigation-helper-review.txt, SHA256
+  4890dd3a3713131a2d6786470c91ec6f53cb481d02a3454d477ce021a68e8942.
+  Its narrower conclusion does not substitute for the reducer/persistence review.
+
+Outstanding acceptance
+1. Bind the final review to an immutable commit and reread intervening changes.
+2. Preserve intentional v5 positives and genuinely future-version negatives in
+   inherited tests. Initially core/storage/Move/navigation fixtures still expected
+   version4 or rejected version5/.before-v5. Owners are adapting them; do not remove
+   legacy custody/operator comparisons or pinned v3 residue negative controls.
+3. Add/check direct fresh-v5 and old high-storage.nextId fallback regressions;
+   inspect final browser fault fixtures for source/outgoing/durable backup failure,
+   collision, KEY failure and exact exports. Browser authoring was not frozen here.
+4. Execute the mandated genuine b365 old-world sequence and returned Spark gates.
+   Synthetic unit camps, source reasoning and unrun test declarations are not the
+   earned old-executable witness or runtime acceptance.
+
+Current disposition: no additional concrete blocker identified beyond the two
+reported witnesses, whose owner corrections have a plausible static closure.
+Final source and runtime acceptance remain pending.
