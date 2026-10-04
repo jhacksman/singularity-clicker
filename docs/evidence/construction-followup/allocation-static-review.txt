@@ -1,0 +1,127 @@
+Independent allocation harness source review
+Reviewer: construction_gameplay_review
+Date: 2026-10-04
+Reviewed file: hearth-physical-construction/tests/browser/hearth-construction-allocation.cjs
+Reviewed SHA256: 34d13520f59d55f88d5ad14cead376adb4a4661bb69efaa8cc19bd96647f2273
+Status at review: new untracked QA file; no runtime result claimed
+
+Disposition
+
+No blocking protocol, fairness or accounting issue found in the inspected source.
+The harness is suitable to submit for the coordinator's separate immutable Spark
+execution after the normal remaining source reviews. This is source clearance,
+not a PASS, a timing prediction or a verdict on enjoyment. I edited only this
+report, not production or harness source, and ran no parser/test/build/browser or
+game code. Tools used were read-only text/Git/hash inspection and report writing.
+
+Scope and independence
+
+I first read the complete new harness independently against the previously agreed
+A/B/C protocol, then checked the relevant actual engine command, receipt,
+placement, recruitment and tick semantics. I read the author's handoff notes only
+after forming the source assessment. No other reviewer report was used. The
+previous bc12f3aa jobs and their pending results are separate from this new QA.
+
+Fair start and actual costs
+
+Lines410–433 earn the116W70S0F start with ordinary gathering, actual return trips,
+east scouting and west return. The assertions require the original finite source
+depletion, unchanged food75 and east wood180, no spent matter, four empty idle
+workers, and discovered destination/source. Common setup has its own elapsed and
+worker-time cost; it is also included in totalTimeSinceFresh at490–499.
+
+Each branch imports the exact same Journey bytes at384–388 and verifies the same
+state again at441. The outpost price/source/position are fixed at189–205, with no
+remote stock debit on reservation. Recruitment at216–232 proves a new fifth
+person at Hearth, unchanged first four, exact25 food stock/spent delta and the
+actual Hearth payment source. Newcomer work is assigned at the same simulation
+time in all branches. Each branch has an independent replay of its own75 finite
+food; the comparison does not spend one shared budget multiple times.
+
+Policy fidelity and useful endpoint
+
+A at442–447: all four build, all four gather west food, first free25F recruits.
+B at448–455: u0 builds while u1–u3 gather; threshold recruits; u1–u4 join the same
+site and u0's complete actor state is preserved at208–214. C at456–462: all four
+gather first, threshold recruits, then all five supply/build the same site.
+All branches then assign all five to d4 at464. These are the agreed three useful
+existing policies, including the obvious recruitment-first alternative.
+
+Loaded workers receive the new Gather/Build order immediately, with ordinary
+return-first handling checked at174–177. There is no all-empty barrier and no
+branch Stop input; the input-count assertion at398 makes that explicit. Setup's
+Stop/return steps are common paid setup, not an asymmetric branch delay. Site
+completion is acted on at the first observed simulation boundary in each policy.
+Newly recruited u4 receives a productive order without a simulation-time gap and
+must physically travel before the endpoint at477.
+
+The endpoint at470–471 requires completed named outpost, five real people,
+spent.food25, and at least20 actual wood receipts into that store. The receipt
+ledger at290–301 verifies a gathered d4 load, real completed receiver edge and
+physical return phase; its running amount must equal the eastern store's entire
+wood stock at335. Construction cargo, transfer output and held wood cannot satisfy
+the useful wood requirement. This is substantially stronger evidence of a useful
+policy choice than the old one-builder/three-idle comparison.
+
+The harness correctly does not require endpoint cargo to be drained. It retains
+per-actor orders, cargo and destinations; food extraction/receipt overshoot;
+remaining75F source; and excess eastern receipts. Elapsed, usable-depot, invitation
+and useful-wood milestones can therefore be interpreted with their actual finite
+inventory differences. There is no assertion forcing a preferred winner.
+
+Accounting and physical feasibility audit
+
+The mixed-work observer avoids the old harness's assumption that supply steps
+have no ordinary gathering receipts. Lines246–338 classify each actual actor
+transition, reconcile per-source extraction and per-store receipts/pickups, retain
+source reservation backing, and check global finite matter on every sampled save.
+It requires at most one0.1s simulation tick per observation; a zero-tick sample
+must be exactly unchanged. The80ms pulse is a source design choice whose actual
+clock behavior still needs Spark confirmation.
+
+Construction pickup/receipt is checked at named actual edges, in five-item loads,
+with the expected actor phase and origin. Sorted actor processing accounts for an
+earlier delivery enabling a later builder's work in the same tick. Final24-work
+cap and site disappearance are handled separately from receipt deltas. The final
+checks require16 pickups,16 site receipts, exact60W20S and exactly24 installation
+worker-seconds, both in aggregate and per-actor attribution. A tick cannot recruit;
+that must occur at the separately audited UI command. Movement is bounded at
+three cells per second. Named stores, global gathered counters and remaining
+deposits are independently reconciled after each mixed-work step.
+
+No obvious source-level infeasibility was found: initial material reserves cover
+the sole outpost, food75 exceeds the sole25-food invitation, the fifth person is
+below the eight-worker cap, and fixed scouted site22,11 does not spend food or
+require H2 systems. The split branch's assertion that the site remains unfinished
+at the food threshold is a reasonable fixture precondition, but remains something
+execution must establish. It should fail visibly rather than silently change the
+policy if that assumption is ever false.
+
+Interpretation limits and returned-artifact checks
+
+1. Per-worker category seconds at234–268 classify the pre-tick state, not exact
+   sub-tick productive labor. A final delivery can enable same-tick installation,
+   and completion can clear later workers. The harness discloses this and audits
+   actual installation contribution separately. Preserve that distinction when
+   presenting results; do not label all installationReady time as performed work.
+
+2. The elapsed ranking compares these three fixed policies. It does not prove a
+   globally optimal strategy or exclude other splits, recruitment counts or depot
+   positions. Do not convert a fastest-of-three result into a universal rule.
+
+3. Commands and evidence collection add no simulation time. These results can
+   support physical reachability and policy tradeoffs, not human reaction time,
+   real-time pacing, attention cost, fun or full-age balance. Standing-order
+   behavior and native return-first remain part of each measured policy.
+
+4. Verify the returned source/build binding, all three byte-identical starting
+   imports, checkpoint chain and exact recruitment debit before accepting the
+   report. The compressed journal retains native save bytes for every observation
+   and chained inputs; hashes alone do not authenticate its claims. Check endpoint
+   PNGs and a mixed food-receipt/supply-pickup boundary against their saved state.
+
+5. Runtime completion, clock granularity, browser-input reliability, bounds,
+   returned-artifact integrity and actual comparative outcomes remain pending.
+   A failure must remain attached to its exact run/commit, not be reinterpreted as
+   gameplay failure without locating its cause. No further product mechanism or
+   H2 content is justified by this static review.

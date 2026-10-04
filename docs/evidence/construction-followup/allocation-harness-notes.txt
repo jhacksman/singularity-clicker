@@ -1,0 +1,73 @@
+Supplementary allocation harness: source-authoring handoff
+
+Owned new repository file:
+  tests/browser/hearth-construction-allocation.cjs
+
+No existing file was edited by the allocation author. No M6 parser, Node process,
+browser, build, engine import, test or game execution was used. This is unexecuted
+source pending independent static review and the coordinator's separate Spark job.
+No commit was made. The old immutable bc12f3aa jobs remain separate.
+
+Spark launch contract:
+  Run from a newly pinned and built candidate with Node >=22 and the existing
+  Playwright 1.63/Chromium image. The browser launches chromiumSandbox:true and
+  uses only a local HTTP page. No runtime dependency download is needed.
+  Invocation: node tests/browser/hearth-construction-allocation.cjs
+  PLAYWRIGHT_MODULE may select the image's installed module, as in the main suite.
+  ALLOCATION_SOURCE_COMMIT may record the coordinator-pinned commit in the report.
+  Outer job: 900 seconds. Internal checks: 870 seconds; each branch <=600 game
+  seconds. Source and built-page SHA256s are included and exact engine/view source
+  inclusion in the built HTML is required.
+
+Protocol agreed directly with construction_gameplay_review and coordinator:
+  Fresh UI earns all of d0/d2/d1 and returns loads, scouts east, returns west.
+  One exported camp is 116W/70S/0F, original four idle at identical west positions,
+  d0/d1/d2 empty, d3=75F, d4=180W, no spent goods. All three branches natively
+  import the same exact raw Journey bytes. Fresh earning, setup Stop returns,
+  outbound scouting and west return are included in reported total since fresh.
+
+  A: four build east outpost (22,11), four gather d3, first Hearth food>=25 recruits
+     fifth, immediately all five gather d4.
+  B: u0 builds while u1-u3 gather d3, first Hearth food>=25 recruits fifth, u1-u4
+     immediately join that same site without changing u0; after completion all
+     five gather d4.
+  C: four gather d3 first, first Hearth food>=25 recruits fifth, immediately all
+     five place/build same east outpost; after completion all five gather d4.
+
+  Common endpoint is the first observed state with usable east outpost, five
+  villagers, actual 25F recruitment payment from Hearth, and >=20 newly gathered
+  wood received into that named eastern store. No branch Stop, empty-cargo barrier,
+  post-threshold waiting, idle fifth worker or forced endpoint returns. Native
+  return-first rules settle food loads after work changes. No winner is assumed.
+
+Evidence and audit:
+  artifacts/hearth-construction-allocation/report.json contains setup, all phases,
+  named-store/material/cargo snapshots, recruitment source receipt, source/build
+  hashes, per-actor work/travel/time categories, exact installation contribution,
+  overlap time for split work, food remaining and overshoot, 20W overshoot, endpoint
+  live cargo, and comparative times both after divergence and since fresh.
+  Native Journey downloads are saved at every construction pickup/site receipt,
+  ordinary food/wood store receipt, and policy boundary. PNGs are taken at phase
+  and policy boundaries after a paused draw frame.
+  observations.jsonl.gz contains exact native Pause-save strings and trusted input
+  event observations, chained from the artifact binding. Each row's sha256 is
+  SHA256(JSON.stringify(row without sha256)); previousSHA256 links rows. File hash,
+  row count and final chain hash are in report.json. Hashes bind bytes; they do not
+  independently authenticate the harness author's claims.
+  A combined per-actor ledger explains deposits, stores, delivered and spent every
+  <=0.1 game-second tick, including simultaneous food receipt and supply pickup.
+  It independently attributes five-unit source/site loads and actual adjacent
+  worker-seconds, respecting actor order when the final receipt enables work in
+  the same tick. East wood must be fresh d4 receipt, not construction or transfer.
+  80ms browser-clock pulses avoid treating an arbitrary 100ms RAF interval as
+  exactly one simulation tick. Zero-progress pulses are counted; observed game
+  deltas over0.100001 seconds fail. Shared fresh setup uses coarser 1s observations.
+
+Interpretation:
+  Review time together with food overshoot, remaining finite deposits and cargo.
+  Worker-time category intervals classify the pre-tick state; final completion
+  can clear later actors within that tick. Installation contribution is audited
+  separately. A fifth worker's useful command and actual travel are required;
+  the common endpoint does not wait for every actor to finish a final load.
+  The job establishes controlled mechanics only, not human pacing, enjoyment,
+  balance or full-campaign acceptance. No runtime pass is currently claimed.
