@@ -1,0 +1,131 @@
+Construction Spark036 — independent read-only failure diagnosis
+2026-10-04; /root/construction_final_verifier
+
+Disposition
+Both reported failures have concrete test-oracle/setup explanations. Neither
+failure establishes a construction/game accounting defect. This does not turn
+036 into a passing run: the Tools labor oracle and malformed-identity purity
+matrix remain incomplete and require corrected QA plus fresh Spark execution.
+No production fix is justified solely by either of these two failure records.
+Separate G01 gameplay work was not read or assessed by this diagnosis.
+
+Evidence and bounds
+Request descriptor: singularity-20261004-construction-unit-036.json.
+Frozen executed commit: bc12f3aa684ecd1092f665de11e80ed1dc147702.
+Engine SHA-256:
+9ba982384a05a1f45410b77c8c3a92acb7fc27a8892b2f9c5b83babec5aab388
+tests/hearth-construction.test.cjs SHA-256:
+f460a3a8dd6ec8325786b18ed13612e83bd25ba37e17a8c2546d88eaa4d6c937
+Log:
+/Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/logs/singularity-20261004-construction-unit-036.log
+Log SHA-256:
+26ac251cd49e4a6aa2bfe3e44e91a6d7cab7cbd7268d44d5f2e76c7e9d2d6bb2
+
+The log reports syntax PASS for40 files, then189 tests:187 pass,2 fail,0 skipped.
+The requested command joins syntax, tests and build with &&, so the failing
+unit suite prevents its later build step. The child failure identifies Node.js
+v24.20.0. I inspected frozen git objects, this exact log and request descriptor,
+plus official versioned Node comparator source as text. No application, parser,
+test, build or browser execution occurred on M6. I made no production/test edit;
+only this report was written. A delegated reader independently traced the Map
+failure and then checked the exact Node comparator path without execution.
+
+F01 — Tools018: failure is the setup eligibility assertion, not work arithmetic
+Log206–225 identifies test176 and assertion184, actual0 versus expected1.
+It does not identify assertion186, which compares the actual work increment.
+The test starts its count loop with1, so its four-artisan case was not reached.
+
+Frozen test178 first constructs and completes a workshop with all four workers.
+readyAtSiteEdges150–156 stops all workers, but moves only the selected prefix to
+fixed edge cells. For count1 it places u0 at(10,15), verifies zero cargo and exact
+coordinates, and leaves u1/u2/u3 wherever the completed workshop put them.
+It neither moves those actors away nor asserts that the selected edge is clear
+of them or their reserved destinations.
+
+The game makes an important distinction between Move and a subsequent work route:
+- Move383/411 plans the exact requested cell. blocked370 excludes terrain,
+  deposits and buildings, not workers, so an explicit Move can arrive at a cell
+  another stopped worker occupies.
+- beginKnapping436 pays once and commands Craft. command412/start385–400 then
+  calls route381 for workshop edges. freeTargets378 removes edges occupied within
+  .4 by another actor or reserved as another actor's path endpoint.
+- If an unselected former builder occupies(10,15), Craft routes u0 to a different
+  available edge. Phase can already be craft while u.path is nonempty. Movement
+  tick446 consumes travel and continues without contributing craft work461.
+- The immediate test filter183 requires !u.path.length. It therefore counts0
+  eligible artisans even though the valid Craft order has been accepted and paid.
+
+This is a concrete accepted-state path through the helper, not a speculative
+rate calculation. The logged0/1 matches it. The log does not record coordinates
+or identify the particular unselected actor sharing/reserving the edge, so I do
+not claim a logged position snapshot. Source also constrains this failure to
+the initial eligibility boundary: after a count1 iteration with no path starts,
+only u0 crafts; no other actor is active, and subsequent ticks preserve its
+eligibility until completion sets tools=true and exits the loop. There is no
+later rate comparison failure or completion timing measurement in this test.
+
+Bounded QA correction: use ordinary Move to park nonselected workers away from
+all measured workshop edges, finish those moves, then place selected workers at
+distinct edges. Assert actual Craft eligibility after assignment and retain the
+exact min(remaining,dt*eligibleCount) oracle, paid-cost checks, one/four-worker
+cases and capped final tick. Do not drop the eligibility assertion or infer work
+from final completion alone. Spark should retain setup positions/orders/paths
+if this still fails. The passing separate installation-work case in036 supports
+only its own outpost/workshop tests, not the interrupted Tools labor test.
+
+F02 — intrinsic purity: proven descriptor-comparator false positive mechanism
+The log's first malformed case is source identity["b0"]. Test551–553 maps
+intrinsic index20 to Map.prototype. Child eval14 invokes untouched immediately
+after valid(bad). It fails before checking accepted===false, before constructing
+new Camp(bad), and before testing subsequent identities or the pickup field.
+The printed actual/expected descriptions show no differing visible fields, but
+matching function names alone cannot establish reference identity or purity.
+
+The assertion defect is established from exact official Node v24.20.0 source:
+https://raw.githubusercontent.com/nodejs/node/v24.20.0/lib/internal/util/comparisons.js
+In objectComparisonStart265–273, descriptor tables pass their prototype check.
+Each table's own Symbol.toStringTag value is a fresh descriptor object, so290
+skips the ordinary-object branch. A descriptor table is not a Map instance.
+Fallback362 calls slowHasUnequalTag258–262, which compares the two defined tag
+values with !==. Separate descriptor snapshots contain different descriptor
+objects at that symbol even if Map.prototype never changed. Comparison therefore
+returns false before recursively comparing their fields. This deterministically
+explains failure at the first monitored intrinsic with that own symbol. It is
+a test-comparator incompatibility, not evidence of a Map.prototype write.
+
+Independent production-path check: validConstruction70 creates a local Map whose
+values are fresh resource vectors. The malformed first source is an array;
+liveStore72 short-circuits at typeof id==='string'. Source loop78 consequently
+returns false before Map.get/source resource accumulation. No Map.prototype
+assignment occurs in this inspected path. This source trace supports correct
+early rejection, but the interrupted036 runtime assertions do not confirm it.
+In particular the flawed comparator would also fail if an independent mutation
+were present: explaining its false positive does not prove the whole realm was
+unchanged. Constructor purity and all remaining malformed cases are still open.
+
+Bounded QA correction reviewed conceptually
+Snapshot and compare every monitored intrinsic's own keys (including symbols),
+prototype and extensibility. For each own property compare descriptor field
+presence, enumerable/configurable/writable flags, and value/get/set using
+Object.is. This keeps exact callable and object reference checks while avoiding
+the Node comparator's special handling of a descriptor bag's Symbol.toStringTag.
+Compare descriptor fields themselves; do not stringify function references or
+remove Map/Set/Promise from the monitored set to get a green result.
+
+Run an unchanged-snapshot self-check before valid() in every isolated child.
+Useful comparator controls use disposable local objects and independently show
+that adding/removing an own key, replacing a value/getter/setter reference,
+changing a descriptor flag, changing prototype, or changing extensibility is
+detected. Retain all source/pickup payloads, false-return and constructor-rejection
+assertions, exact input preservation, and separate child isolation. Then rerun
+the current-engine suite and the existing pinned vulnerable-engine controls.
+The latter still must fail at their named admission assertions, not at this
+unrelated comparator. No control or rerun is claimed performed in this report.
+
+Required follow-through
+Preserve036 as failed evidence. Freeze the QA corrections separately from any
+G01 production changes, run a new Spark request, and inspect the exact returned
+results. Confirm Tools work gain for1 and4 artisans through the cap, every source
+and pickup malformed identity's rejection and purity, and the intended C01/C02
+negative assertion locations. Until that succeeds, neither incomplete test can
+be treated as closed by the187 unrelated or partially related passing tests.

@@ -149,6 +149,10 @@ test('one Build assignment performs exactly sixteen outpost or fourteen workshop
 
 function readyAtSiteEdges(g, id, count) {
   stop(g); const b = building(g, id), selected = ids(g).slice(0, count);
+  const parked = ids(g).filter(worker => !selected.includes(worker)).map((worker, i) => ({ worker, x: 14 + i, y: 20 }));
+  parked.forEach(({ worker, x, y }) => { assert.equal(g.command([worker], { kind: 'move', x, y }), 1); });
+  until(g, () => parked.every(({ worker, x, y }) => { const u = g.s.units.find(u => u.id === worker); return u.phase === 'idle' && u.cargo === 0 && u.x === x && u.y === y; }), 'nonparticipants parked clear of the work edges');
+  parked.forEach(({ worker }) => { const u = g.s.units.find(u => u.id === worker); assert.equal(g.around(b).some(p => p.x === u.x && p.y === u.y), false); });
   const edges = [{ x: b.x - 1, y: b.y }, { x: b.x - 1, y: b.y + 1 }, { x: b.x + 2, y: b.y }, { x: b.x + 2, y: b.y + 1 }];
   selected.forEach((worker, i) => { assert.equal(g.command([worker], { kind: 'move', ...edges[i] }), 1); });
   until(g, () => g.s.units.filter(u => selected.includes(u.id)).every(u => u.phase === 'idle'), 'distinct adjacent worker positions');
@@ -551,8 +555,57 @@ test('source and planned-pickup identities reject coercible or inherited keys wi
     const intrinsics = [Object.prototype, Object, Object.prototype.toString, Object.prototype.valueOf, Function.prototype, Function,
       Array.prototype, Array, String.prototype, String, Number.prototype, Number, Boolean.prototype, Boolean,
       RegExp.prototype, RegExp, Date.prototype, Date, Error.prototype, Error, Map.prototype, Map, Set.prototype, Set, Promise.prototype, Promise];
-    const prior = intrinsics.map(value => Object.getOwnPropertyDescriptors(value));
-    const untouched = () => intrinsics.forEach((value, i) => assert.deepEqual(Object.getOwnPropertyDescriptors(value), prior[i], 'Intrinsic object ' + i + ' was mutated'));
+    const takeSnapshot = value => {
+      const keys = Reflect.ownKeys(value);
+      return { keys, descriptors: keys.map(key => Object.getOwnPropertyDescriptor(value, key)), prototype: Object.getPrototypeOf(value), extensible: Object.isExtensible(value) };
+    };
+    const assertUnchanged = (value, before, label) => {
+      const keys = Reflect.ownKeys(value);
+      assert.equal(keys.length, before.keys.length, label + ': own key count');
+      keys.forEach((key, i) => assert.equal(Object.is(key, before.keys[i]), true, label + ': own key identity/order ' + i));
+      assert.equal(Object.is(Object.getPrototypeOf(value), before.prototype), true, label + ': prototype');
+      assert.equal(Object.isExtensible(value), before.extensible, label + ': extensibility');
+      keys.forEach((key, i) => {
+        const current = Object.getOwnPropertyDescriptor(value, key), previous = before.descriptors[i];
+        for (const field of ['value', 'writable', 'get', 'set', 'enumerable', 'configurable']) {
+          assert.equal(Object.hasOwn(current, field), Object.hasOwn(previous, field), label + ': ' + String(key) + '/' + field + ' presence');
+          if (Object.hasOwn(previous, field)) assert.equal(Object.is(current[field], previous[field]), true, label + ': ' + String(key) + '/' + field + ' identity');
+        }
+      });
+    };
+    const prior = intrinsics.map(takeSnapshot);
+    const untouched = () => intrinsics.forEach((value, i) => assertUnchanged(value, prior[i], 'Intrinsic object ' + i));
+    untouched(); // Baseline no-op control must pass before any tested engine call.
+    const probe = Object.create(null), ownSymbol = Symbol('own probe key'), addedSymbol = Symbol('added probe key');
+    const initialGetter = () => 1, replacementGetter = () => 2, replacementSetter = () => {};
+    Object.defineProperty(probe, 'value', { value: 1, writable: true, enumerable: true, configurable: true });
+    Object.defineProperty(probe, 'accessor', { get: initialGetter, enumerable: true, configurable: true });
+    Object.defineProperty(probe, ownSymbol, { value: 2, writable: true, enumerable: true, configurable: true });
+    const probeBefore = takeSnapshot(probe);
+    const probes = [
+      ['own string addition', () => Object.defineProperty(probe, 'added', { value: 3, configurable: true })],
+      ['own symbol addition', () => Object.defineProperty(probe, addedSymbol, { value: 3, configurable: true })],
+      ['own string deletion', () => { delete probe.value; }],
+      ['own symbol deletion', () => { delete probe[ownSymbol]; }],
+      ['writable flag', () => Object.defineProperty(probe, 'value', { writable: false })],
+      ['enumerable flag', () => Object.defineProperty(probe, 'value', { enumerable: false })],
+      ['value replacement', () => Object.defineProperty(probe, 'value', { value: 99 })],
+      ['getter replacement', () => Object.defineProperty(probe, 'accessor', { get: replacementGetter })],
+      ['setter replacement', () => Object.defineProperty(probe, 'accessor', { set: replacementSetter })],
+      ['descriptor field presence', () => Object.defineProperty(probe, 'value', { get: replacementGetter })],
+      ['prototype replacement', () => Object.setPrototypeOf(probe, {})]
+    ];
+    for (const [label, mutate] of probes) {
+      assertUnchanged(probe, probeBefore, 'Probe before ' + label);
+      try { mutate(); assert.throws(() => assertUnchanged(probe, probeBefore, 'Probe ' + label), { code: 'ERR_ASSERTION' }, 'The oracle must detect ' + label); }
+      finally {
+        for (const key of Reflect.ownKeys(probe)) delete probe[key];
+        probeBefore.keys.forEach((key, i) => Object.defineProperty(probe, key, probeBefore.descriptors[i]));
+        Object.setPrototypeOf(probe, probeBefore.prototype);
+      }
+      assertUnchanged(probe, probeBefore, 'Restored probe after ' + label);
+    }
+    untouched(); // Probe controls may not change any true intrinsic.
     let accepted, failure;
     try { accepted = valid(bad); } catch (error) { failure = error; }
     untouched(); assert.equal(failure, undefined, 'Validation must return false for malformed identity'); assert.equal(accepted, false, rejectionMarker);

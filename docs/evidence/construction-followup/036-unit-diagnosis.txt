@@ -1,0 +1,156 @@
+Spark 036 unit failures — source/log diagnosis only
+2026-10-04
+
+Scope and preserved evidence
+
+The inspected run reports 189 tests, 187 passes and 2 failures. No failure is
+removed, relabelled as a pass, or overwritten. The original log remains:
+/Users/m6mini/Documents/Codex/2026-10-03/task-2/spark-ci/logs/singularity-20261004-construction-unit-036.log
+SHA-256 26ac251cd49e4a6aa2bfe3e44e91a6d7cab7cbd7268d44d5f2e76c7e9d2d6bb2
+
+Source was inspected at frozen commit bc12f3a, not inferred from the concurrently
+edited production working tree. Frozen source hashes:
+tests/hearth-construction.test.cjs
+f460a3a8dd6ec8325786b18ed13612e83bd25ba37e17a8c2546d88eaa4d6c937
+src/hearth-rts/engine.js
+9ba982384a05a1f45410b77c8c3a92acb7fc27a8892b2f9c5b83babec5aab388
+
+No runtime, parser, unit test, build, browser, network call, or remote dispatch
+was performed during this diagnosis. No test or production source was edited.
+An attempted additional independent diagnosis agent could not spawn because
+the team thread limit was reached. This report requires independent review
+before any proposed test correction is applied.
+
+Failure 1: Tools018 readiness fixture does not establish a free work edge
+
+Log lines 206–224 name the test starting at construction test line 176. Its
+failure is line 184, eligible.length actual 0 versus expected 1. It is not the
+work-delta assertion at line 186, the capped final tick, or a material assertion.
+The count of 1 identifies the first, single-artisan branch; the four-artisan
+branch has not been demonstrated by this run.
+
+Relevant source chain:
+* The test first finishes the workshop with all four villagers (line 178).
+  Therefore three unselected villagers may still occupy its work perimeter.
+* readyAtSiteEdges stops everybody but moves only the selected prefix. For
+  count=1 it puts u0 at (10,15), then checks only that selected worker's cargo
+  and coordinates (lines 150–156). It never establishes that another villager
+  does not already occupy (10,15).
+* Manual Move can reach an occupied target. route falls back to all targets
+  when its free-target subset is empty; the single-target Move can therefore
+  put u0 on top of an idle unselected builder.
+* beginKnapping creates the paid project and assigns Craft. Craft start routes
+  to the workshop perimeter through freeTargets. An edge occupied by another
+  actor is excluded while other free edges exist. The selected worker then
+  has a real path to a free edge and is correctly excluded by the test's
+  !u.path.length eligibility predicate.
+
+The source and assertion location support a fixture-readiness failure rather
+than demonstrated incorrect crafting speed. Exact coordinates of the other
+overlapping actor were not logged, so this report does not invent its identity
+or a runtime actor dump. The earlier selected-position assertion already passed;
+the missing condition is exclusive edge occupancy/readiness after admission.
+
+Proposed bounded correction, pending review:
+Move all nonparticipants to clear ground through ordinary Move commands and
+wait for those moves before arranging the selected artisans at distinct edges.
+Then assert each selected actor has no cargo, the exact intended location, and
+after Craft assignment no remaining path. Preserve the one- and four-worker
+oracles, dt=.13, gain=min(remaining,dt*eligible), the capped-final-tick check,
+the 12-worker-second total, and the paid 4W/8S assertions. Do not permit walking
+workers to count as active artisans or relax the expected work-rate assertion.
+
+Failure 2: descriptor-object deep comparison is an invalid intrinsic oracle
+
+Log lines 227–481 name the C02 test starting at construction test line 540.
+It fails in the first child, source identity ["b0"], on untouched() at child
+[eval]:14, before C02_SOURCE_ID_MUST_REJECT is evaluated. The parent failure
+at line 567 is the child exit status 1, rather than an accepted save assertion.
+Node in that child identifies itself as v24.20.0.
+
+Intrinsic index 20 is Map.prototype. The test snapshots each intrinsic using
+Object.getOwnPropertyDescriptors and later deepStrictEqual-compares an entire
+fresh descriptor object to the previous descriptor object (lines 551–558).
+The log's actual and expected trees show the same Map descriptor keys, flags,
+function labels, getter/setter labels and symbol descriptors; it does not show
+a wood/stone/food property or another newly written property.
+
+Map.prototype is the first object in this list with Symbol.toStringTag.
+Object.getOwnPropertyDescriptors copies that key onto the descriptor-container
+object; its value there is a newly allocated descriptor object, not the string
+"Map". Thus both snapshot containers carry their own Symbol.toStringTag values,
+and those values are distinct objects despite identical descriptor fields.
+Whole-container deep equality is sensitive to this special branding property.
+This matches the first failure occurring specifically at Map.prototype, after
+indices 0–19 passed, while the printed descriptor trees appear identical.
+
+Frozen production independently rules out the originally reported source-key
+write on this input: validConstruction uses a Map for reservations; liveStore
+first requires typeof id === 'string'; ["b0"] is rejected at that guard before
+any reservation get/update. The inspected engine has no write to Map.prototype.
+The failure therefore does not demonstrate continuing C02 pollution or a
+failed array-identity rejection in bc12f3a. Equally, because the oracle aborts
+first, this run is not a completed C02 positive-validation gate.
+
+Initial limit: this author did not execute or retrieve the internal Node
+comparison branch. Subsequent independent review supplied the exact official
+Node v24.20.0 source:
+https://raw.githubusercontent.com/nodejs/node/v24.20.0/lib/internal/util/comparisons.js
+Its slowHasUnequalTag compares Symbol.toStringTag values with !==. The two
+descriptor containers have distinct freshly allocated descriptor objects at
+that key, so the unchanged snapshots fail this comparison. The parent relayed
+the independent verifier's source confirmation and accepted the QA-only
+correction. This is independently sourced confirmation, not a claimed local
+runtime reproduction or an author network fetch.
+
+Proposed bounded correction, pending review:
+Keep every intrinsic, every isolated child, all malformed source and pickup
+identities, exact input-preservation checks, and both C02 rejection markers.
+Represent each intrinsic snapshot as a neutral array of own keys and descriptor
+fields, or compare Reflect.ownKeys and each descriptor's presence/attributes/
+value/get/set individually using Object.is for references. Do not compare an
+entire descriptor map carrying Symbol.toStringTag through deepStrictEqual.
+Checking keys as well as values is required to detect added resource properties;
+checking value/get/set identities is required to detect replaced functions.
+Optionally take and compare an untouched baseline before calling valid, so an
+oracle failure is explicitly separated from a production-validation failure.
+
+Authorized source-only corrections after independent review
+
+The parent confirmed two reviews of the Tools018 readiness diagnosis and the
+independent verifier's exact Node comparison diagnosis, then authorized only
+the bounded QA corrections. The existing 036 log and frozen commit are intact.
+
+readyAtSiteEdges now parks all nonparticipants at distinct clear points
+(14+i,20) using ordinary Move commands. It waits for their exact positions,
+idle phases and empty hands and verifies they are away from the work edges
+before positioning the selected group. The original eligible===count checks,
+the exact 24/32/12 worker-second oracles, dt=.13, capped final ticks, material
+costs and no-second-payment assertions remain.
+
+The C02 child oracle now uses neutral snapshots containing own keys, individual
+descriptors, prototype identity and extensibility. It compares each key and
+descriptor value/get/set/flag/presence using Object.is and exact scalar checks.
+All original intrinsic objects, Map/Set, malformed source and planned-pickup
+variants, isolated child processes and rejection markers remain in the test.
+A no-op intrinsic baseline runs before valid. Eleven independent mutations on
+a local probe exercise string/symbol additions/deletions, writable/enumerable
+flags, values, getters/setters, descriptor-field presence and prototype changes.
+Each probe is fully restored and rechecked; true intrinsics are not deliberately
+mutated and are rechecked after the probe controls. No mutations are warmed away.
+
+Corrected tests/hearth-construction.test.cjs SHA-256:
+d0cedefdc4253d4274208fc4f96aa72c5f0810329fea291fe67a6e6b6ecbebe3
+
+Only that owned test and this diagnosis report were changed in the authorized
+follow-up. The tracked test passes git diff --check. No runtime/parser/test/
+build/browser/network/dispatch was executed here. The corrected source is
+frozen pending independent review feedback.
+
+Next gate
+
+Independent reviewers should verify the actual corrected source against both
+accepted diagnoses. Then freeze a new candidate and rerun the full unit gate and the
+unchanged expected-failure negative controls on Spark. The 036 record remains
+failed evidence and must remain available. This report grants no execution,
+merge, deployment, or publication approval.
