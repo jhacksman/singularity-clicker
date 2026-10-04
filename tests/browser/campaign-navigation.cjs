@@ -256,6 +256,25 @@ async function checkPresentation(page, label) {
     await page.locator('#campaign-navigation [data-navigation-status]').waitFor();
   }
   async function openCompletion(page) { await page.locator('#event-action').click(); await readyNative(page); assert.equal(await page.locator('#modal').evaluate(node => node.open), true); }
+  async function nativeFocusState(page) {
+    return page.evaluate(() => {
+      const modal = document.getElementById('modal'), active = document.activeElement;
+      return {tag: active?.tagName || null, id: active?.id || '', action: active?.dataset.navigationAction || null, outerHTML: active?.outerHTML.slice(0, 240) || null, inside: !!active && modal.contains(active), open: modal.open, modal: modal.matches(':modal'), hasFocus: document.hasFocus()};
+    });
+  }
+  async function nativeFocusBoundary(page, key, expected, label) {
+    const steps = [];
+    // Native focus navigation may visit browser controls before re-entering the
+    // modal. Never infer that boundary from an empty element id alone.
+    for (let count = 0; count < 8; count++) {
+      await page.keyboard.press(key); const state = await nativeFocusState(page); steps.push(state);
+      fs.writeFileSync(path.join(output, 'native-focus-' + label + '.json'), JSON.stringify({key, expected, steps, events: await page.evaluate(() => window.__nativeFocusEvents)}, null, 2));
+      assert.ok(state.open && state.modal, 'The native modal must remain open throughout keyboard navigation');
+      if (state.inside) { assert.equal(state.hasFocus, true, 'Return requires actual document focus'); assert.equal(state.id, expected); return steps; }
+      assert.ok(!state.hasFocus && ['BODY', 'HTML'].includes(state.tag), 'Only an observed out-of-document boundary is allowed; background or unexplained in-document focus fails');
+    }
+    assert.fail('Keyboard focus did not return to the native modal within eight inputs');
+  }
   async function nativeExport(page, action, name) {
     const details = page.locator('#campaign-navigation details'); if (!await details.evaluate(node => node.open)) await page.locator('#campaign-navigation summary').click();
     const event = page.waitForEvent('download'); await page.locator('#campaign-navigation [data-navigation-action="' + action + '"]').click();
@@ -308,8 +327,37 @@ async function checkPresentation(page, label) {
   await integrated.keyboard.press('Shift+Tab'); assert.equal(await integrated.evaluate(() => document.activeElement.dataset.navigationAction), 'open-hearth');
   const focus = await integrated.locator('[data-navigation-action="open-hearth"]').evaluate(node => { const style = getComputedStyle(node); return {visible: node.matches(':focus-visible'), outline: style.outlineStyle, width: parseFloat(style.outlineWidth)}; });
   assert.equal(focus.visible, true); assert.notEqual(focus.outline, 'none'); assert.ok(focus.width >= 2);
-  await integrated.locator('#replay').focus(); await integrated.keyboard.press('Tab'); assert.equal(await integrated.evaluate(() => document.activeElement.id), 'modal-close');
-  await integrated.keyboard.press('Shift+Tab'); assert.equal(await integrated.evaluate(() => document.activeElement.id), 'replay', 'Native dialog traps focus in both directions');
+  await integrated.evaluate(() => {
+    window.__nativeFocusEvents = [];
+    const record = event => { const active = document.activeElement; window.__nativeFocusEvents.push({type: event.type, key: event.key || null, shift: event.shiftKey || false, trusted: event.isTrusted, target: event.target === window ? 'WINDOW' : event.target.tagName, id: event.target.id || '', activeTag: active?.tagName || null, activeId: active?.id || '', hasFocus: document.hasFocus()}); };
+    for (const type of ['focusin', 'focusout']) document.addEventListener(type, record, true);
+    for (const type of ['keydown', 'keyup']) document.addEventListener(type, event => { if (['Tab', 'Enter'].includes(event.key)) record(event); }, true);
+    for (const type of ['focus', 'blur']) window.addEventListener(type, record);
+  });
+  await integrated.locator('#replay').focus(); const boundaryStart = await nativeFocusState(integrated);
+  assert.ok(boundaryStart.inside && boundaryStart.hasFocus); assert.equal(boundaryStart.id, 'replay');
+  const forwardFocus = await nativeFocusBoundary(integrated, 'Tab', 'modal-close', 'forward');
+  const backwardFocus = await nativeFocusBoundary(integrated, 'Shift+Tab', 'replay', 'backward');
+  const inertProbes = await integrated.evaluate(() => {
+    const before = document.activeElement, modal = document.getElementById('modal');
+    return ['pause', 'focus-action', 'settings'].map(id => {
+      const target = document.getElementById(id); target.focus({preventScroll: true});
+      return {requested: id, retained: document.activeElement === before, actual: document.activeElement.id, inside: modal.contains(document.activeElement), open: modal.open, modal: modal.matches(':modal'), hasFocus: document.hasFocus()};
+    });
+  });
+  fs.writeFileSync(path.join(output, 'native-focus-background-probes.json'), JSON.stringify({scope: 'Programmatic focus probes, separate from real Tab boundary inputs', inertProbes}, null, 2));
+  for (const probe of inertProbes) { assert.ok(probe.retained && probe.inside && probe.open && probe.modal && probe.hasFocus); assert.equal(probe.actual, 'replay'); }
+  await integrated.keyboard.press('Shift+Tab'); const stayFocus = await nativeFocusState(integrated);
+  assert.ok(stayFocus.inside && stayFocus.hasFocus && stayFocus.modal); assert.equal(stayFocus.id, 'keep-flame');
+  const priorController = await integrated.evaluate(() => { window.__beforeKeyboardClose = window.__nativeMounts.at(-1).controller; return window.__nativeMounts.length; });
+  await integrated.keyboard.press('Enter'); await integrated.locator('#modal').waitFor({state: 'hidden'});
+  assert.deepEqual(await rawSources(integrated, Object.keys(integrationFixtures)), integrationFixtures);
+  await openCompletion(integrated);
+  assert.equal(await integrated.evaluate(() => window.__nativeMounts.length), priorController + 1);
+  assert.equal(await integrated.evaluate(() => window.__nativeMounts.at(-1).controller !== window.__beforeKeyboardClose), true);
+  assert.equal(await integrated.locator('[data-navigation-action="open-hearth"]').isEnabled(), true);
+  assert.deepEqual(await rawSources(integrated, Object.keys(integrationFixtures)), integrationFixtures);
+  nativeEvidence.push({case: 'native-keyboard-boundaries-inert-background-stay-and-reopen', setup: 'Programmatic Replay focus only before the first boundary; no focus resets during real Tab sequences', forwardFocus, backwardFocus, inertProbes, stayFocus, focusEvents: await integrated.evaluate(() => window.__nativeFocusEvents), keyboardStay: true, freshController: true});
   await integrated.screenshot({path: path.join(output, 'cave-native-route.png'), fullPage: true});
   await integrated.setViewportSize({width: 390, height: 844}); await integrated.locator('[data-navigation-action="open-hearth"]').scrollIntoViewIfNeeded(); await checkPresentation(integrated, 'cave-narrow');
   await integrated.screenshot({path: path.join(output, 'cave-narrow.png')}); await integrated.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
@@ -483,6 +531,6 @@ async function checkPresentation(page, label) {
 })().catch(async error => {
   const page = nativeDiagnosticPage;
   if (page && !page.isClosed()) await page.screenshot({path: path.join(output, 'native-failure.png'), fullPage: true}).catch(() => {});
-  const observed = page && !page.isClosed() ? await page.evaluate(() => ({url: location.href, body: document.body.innerText, lifecycle: window.__nativeLifecycle, closeEvents: window.__queuedCloseEvents, storageCalls: window.__nativeStorageObservation?.calls, mounts: window.__nativeMounts?.length})).catch(() => null) : null;
+  const observed = page && !page.isClosed() ? await page.evaluate(() => { const active = document.activeElement, modal = document.getElementById('modal'); return {url: location.href, body: document.body.innerText, lifecycle: window.__nativeLifecycle, closeEvents: window.__queuedCloseEvents, storageCalls: window.__nativeStorageObservation?.calls, mounts: window.__nativeMounts?.length, focus: {tag: active?.tagName || null, id: active?.id || '', outerHTML: active?.outerHTML.slice(0, 240) || null, inside: !!active && !!modal?.contains(active), open: modal?.open || false, modal: modal?.matches(':modal') || false, hasFocus: document.hasFocus()}, focusEvents: window.__nativeFocusEvents}; }).catch(() => null) : null;
   fs.writeFileSync(path.join(output, 'failure.json'), JSON.stringify({error: String(error), nativeEvidence, pageErrors: errors, observed}, null, 2)); console.error(error); process.exitCode = 1;
 }).finally(async () => { if (browser) await browser.close(); server.close(); });

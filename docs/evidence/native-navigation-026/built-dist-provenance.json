@@ -1,0 +1,30 @@
+{
+  "job": "singularity-20261004-navigation-026",
+  "commit": "82dc5ed120ff608cef977a33c77b6296185c3f4e",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 160460,
+      "sha256": "7ab8d9ad47781f51f392d7f0446c0e0c743e38a6edfd778d591aea20ab0beee4"
+    },
+    {
+      "file": "hearth.html",
+      "bytes": 83881,
+      "sha256": "a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93"
+    },
+    {
+      "file": "agriculture.html",
+      "bytes": 52583,
+      "sha256": "690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec"
+    },
+    {
+      "file": "hearth-rts.html",
+      "bytes": 85447,
+      "sha256": "50b7bf3cc96853975956e539cae82f73fe0b6eb5d4d0092ff74d6b3e7ca19bef"
+    }
+  ],
+  "rts_matches_verified_move025": true,
+  "review_only": true,
+  "published": false,
+  "archive_sha256": "2eeacb016e41181cda6fb9ce9dbf09d18d6e111b21fd712158ef322901f67618"
+}

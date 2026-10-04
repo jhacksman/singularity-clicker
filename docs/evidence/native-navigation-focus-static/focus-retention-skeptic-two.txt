@@ -1,0 +1,19 @@
+Fresh focus-trace retention disproof review — 2026-10-04
+Reviewer: /root/skeptic_two. Source-only; no runtime, parser, tests, build, lint, source edits or commits. No other review reports read for this conclusion.
+
+Inspected frozen hearth-navigation-focus/tests/browser/campaign-navigation.cjs.
+SHA-256 matches supplied identity: b8f2322779a124d4deb1b72a7d55ee827d2dead464b2571ece7a31b5ac8b6f54.
+
+Verdict: CONFIRMED, narrowly an evidence-retention gap. It does not establish a product bug or a behavioral false pass. If the intended evidence claim is a complete recorded focus/key trace through successful Stay, close and reopen, this source does not retain it.
+
+Attempted disproof and source evidence:
+- nativeFocusBoundary (265–276) writes the forward/backward JSON files on each boundary input. Each write obtains and serializes the current __nativeFocusEvents value; those files are snapshots, not a live reference to the growing browser array.
+- The recorder starts at 331–335. The last nativeFocusBoundary call is the backward boundary at 340. Thus the retained boundary files include recorded events through that call, but cannot include future events.
+- Actual behavior is asserted at 350–359: Shift+Tab reaches #keep-flame inside the modal with document focus; Enter hides the modal; raw saves stay equal; openCompletion reopens it; mount count increases, a different controller exists, and the forward action is enabled. This defeats the stronger claim that the behavior is merely represented by unearned booleans.
+- However, successful nativeEvidence at 360 stores forwardFocus/backwardFocus state probes, inertProbes, keyboardStay:true and freshController:true. It does not read or copy the final __nativeFocusEvents array. The separate background-probe file at 348 contains only the probes. Screenshots cannot recover the event sequence.
+- Later enterRTS at 372 navigates away. BFCache might temporarily retain the old document, but neither that possibility nor later Back supplies a persistence path: subsequent reload/context closure occurs, and report.json at 529 serializes only the previously stored nativeEvidence. No later success-path read of the event array exists.
+- The catch diagnostic at 534–535 can retain __nativeFocusEvents if a failure occurs while the relevant document is current. That is useful partial counterevidence, but it does not retain this successful group's final trace, especially after navigation or context replacement.
+
+Minimum correction: add a serializable snapshot obtained by await integrated.evaluate(() => window.__nativeFocusEvents) to the successful nativeEvidence group at 360, after its existing assertions and before subsequent navigation. No product, controls, ordering, event interception or behavior assertion changes are needed. This records the recorder's scope from its installation through successful reopen; it should not be described as tracing earlier keyboard checks that predate installation. If immediate standalone durability on later failures is desired, also write the same snapshot then; that is optional beyond the narrow requested correction, since nativeEvidence is included in both final success and failure reports.
+
+Alternative with no harness change: explicitly label the retained trace as boundary-only and describe Stay/close/reopen evidence as assertions plus success flags, without claiming its final event trace was persisted. No Spark result or runtime behavior is claimed by this static review.

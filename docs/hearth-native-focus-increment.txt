@@ -1,0 +1,34 @@
+Native navigation focus oracle — test-only follow-up to Navigation026
+
+Navigation026 source 82dc5ed120ff608cef977a33c77b6296185c3f4e passed all 124
+deterministic tests, four builds and browser smoke, but the campaign runner stopped
+at the assumption that one Tab from Replay immediately focuses modal-close.
+Only an empty activeElement.id was recorded. The host uses native showModal and
+has no custom Tab trap. This behavior predates the navigation integration.
+
+An independent critic and two fresh disproof reviewers found the single-key wrap
+assumption overstrict and no demonstrated product focus regression. The actual
+empty-ID destination remains unresolved. The HTML sequential focus algorithm
+permits a user-agent focus boundary; the failed run did not observe or identify it:
+https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation
+
+The follow-up changes only the browser oracle and diagnostics. It records active
+tag/id, a bounded HTML excerpt, containment, :modal/open state, document focus and
+focus/key events. Real Tab and Shift+Tab sequences must return to the expected
+modal endpoint within eight inputs, without an intervening test-side focus reset.
+Only BODY/HTML with observed loss of document focus is allowed as an intermediate
+out-of-document boundary. Anonymous interactive controls and unexplained focused
+body state fail. Return requires both the expected element and document focus.
+
+Background-control focus probes must retain the exact current Replay focus in
+the still-modal dialog. A real Shift+Tab reaches Stay and Enter must close it,
+preserving saved sources. Reopening through native completion must create a fresh
+controller and complete its ready path; the remaining suite uses its real controls.
+Actual actions, observations and event traces remain distinct from programmatic
+setup/probes. No product focus trap or other application behavior is changed.
+
+All original later navigation cases remain. Navigation026 stays failed and its
+unrun cases stay unrun; a new exact-source Spark campaign gate is required.
+No broad native-device, screen-reader or all-UX acceptance follows from this test.
+The deterministic/build/smoke evidence from unchanged product source is retained
+under docs/evidence/native-navigation-026/ with exact provenance and failure limits.

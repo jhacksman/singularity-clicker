@@ -1,0 +1,24 @@
+{
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'' !== 'modal-close'\n",
+  "nativeEvidence": [
+    {
+      "case": "successful-native-mount-refresh-export-zero-writes",
+      "mutationCalls": 0,
+      "forwarding": "original Storage receiver/arguments/result preserved; no mutation blocked"
+    }
+  ],
+  "pageErrors": [],
+  "observed": {
+    "url": "http://127.0.0.1:41059/index.html",
+    "body": "◈\nSINGULARITY\nC L I C K E R\nTHE HUMAN STORY\n00 / The cave\nⅡ\nPause\n01 →\n?\n⚙\nFood\nplant 18 · animal 0\n18.0\n/ 60\nWater\nfresh supply\n18.0\n/ 60\nComfort\nbare ground\n0\n/ 100\nTHE FIRST EMBER\nA different kind of dawn.\n\nThe cave is no longer cold.\n\nSTAGE 00 COMPLETE\nWe kept the fire.\n\nFor the first time in this cave, the warmth belongs to us. Everything after this begins here.\n\nSee this journey\n00:00 this generation · 3 actions\nWITH THE OTHERS\nTry a sound. Try a sign.\n◌\nGrunt 1\n−2 food · −1 water\n+2\ninnovation\n⋮\nGesture 2\n−1 food · −2 water\n+2\ninnovation\nCAMP RHYTHM\nThe group gathers around the flame.\n—\n✧\n\nThe world is cold. The cave is home.\n\nINNOVATION\n✧\n1,200.0\n\nLearning opens new possibilities.\n\nYOUR NEXT MOVE\nForage\n\nGather edible roots, nuts, and berries.\n\n+6 plant food\n−1 food · −1 water\nForage\nHold to repeat\n\nSomething outside has changed.\n\nDiscoveries\n0 learned\n\nWork with what is here.\nBetter ways will follow.\n\n◇\nSaved on this device\nClick the cave · hold an action to repeat\nJOURNEY COMPLETE\n00:00\n×\nSTAGE 00 COMPLETE\nWe kept the fire.\n\nFrom the work of staying alive to a flame the group can tend together.\n\nFirst journey, all generations\n00:00\nThis generation\n00:00\nActions this generation\n3\nTradition carried\n0 / 3\n\nNext: the Hearth opening. Gather finite supplies, build an eastern outpost, and establish a workshop. This is the opening preview of the next age.\n\nStage 0’s provisional first-run target is 12–15 minutes. Clever upgrades can shorten it. Your completed camp is preserved if you replay.\nYour journey\n\nYour fire is ready. Continue your saved Hearth opening.\n\nContinue the Hearth opening\nReturn to the Cave\n\nThe Hearth opening uses a separate saved game. Opening it keeps any existing Cave save; people and supplies do not carry over.\n\nSaved games and backups\nStay by the fireReplay the cave",
+    "lifecycle": [
+      {
+        "type": "pageshow",
+        "persisted": false,
+        "trusted": true
+      }
+    ],
+    "storageCalls": [],
+    "mounts": 1
+  }
+}

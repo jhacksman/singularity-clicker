@@ -1,0 +1,51 @@
+Independent Navigation026 focus disproof triage
+
+Verdict: the returned evidence does not demonstrate a product focus regression. It demonstrates that the browser oracle's immediate same-document Replay-to-Close wrap expectation failed. That expectation is stronger than the native modal behavior guaranteed by the platform. The actual destination of focus remains unresolved because the diagnostic records only an empty active-element ID. A bounded test/diagnostic correction is justified; adding a custom product Tab trap is not justified by this record alone.
+
+This was independent static/evidence review. No other new focus reports were read. No app, JavaScript parser, tests, builds, lint, or browser execution occurred on M6. No app/test source was edited; only this report was written. The separately frozen touch CSS candidate is unaffected.
+
+Identity and observed execution
+
+- Exact repository HEAD: 82dc5ed120ff608cef977a33c77b6296185c3f4e in task-3/hearth-navigation-native.
+- src/view.js SHA-256 2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be.
+- tests/browser/campaign-navigation.cjs SHA-256 4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841.
+- Returned failure.json SHA-256 4acc5805bb3240f3aafcb69dc32aacd53a89f5b00932e8b680c0e88be7d074f5.
+- Navigation026 result JSON SHA-256 06d20c96a1e3a8cff72c88a2495ef9c10f0aa5c1f979312b8de9e52e4f2dc6d4.
+- Navigation026 log SHA-256 6e36d31719192f46a20f55105b2ce93831c32233a297ef4e1024c33e44f9962f.
+
+The approved manifest runs syntax, deterministic tests, build, smoke, then campaign-navigation in a sequential && command. The returned log records33 syntax inputs passed,124 tests passed with zero failures/skips/cancellations, four builds, and the smoke PASS. Campaign-navigation then throws at line311: actual '' versus expected 'modal-close'. The result identifies the same commit, execution exit1, no executor error, and verified cleanup absent. This is a failed campaign browser gate, not an overall pass or infrastructure abort.
+
+The failure record has no page errors and contains one completed native evidence item: successful native mount/refresh/export with zero Storage mutation calls. Its observed URL remains index.html, the completion modal content is present in body text, the lifecycle list has the initial nonpersisted pageshow, and mount count is one. Those data do not identify the active element or establish current focus containment.
+
+Exact test and source behavior
+
+campaign-navigation.cjs:307–308 first focuses the forward control and checks Tab to the Cave control and Shift+Tab back. Line310 checks a visible focus outline. Execution reaching line311 supports those preceding assertions for this run. Line311 then programmatically focuses #replay, sends one Tab, and requires document.activeElement.id to equal 'modal-close'. That single ID assertion fails. Line312's reverse-wrap assertion never executes.
+
+The host calls native dialog.showModal() in view.js:137; the shell uses a real <dialog id="modal"> with a Close button before the content. Completion at line152 puts Stay and Replay after the helper. Host keydown at115–122 returns while dialogPauses is set and contains no Tab handler. The helper preserves focus on refresh within its own container but has no Tab handler, no custom trap, and no reason to replace the Replay node when it is focused. The baseline4e391c2 host already used native showModal with Replay at the completion panel's end. Thus there is no newly added scripted same-document-wrap guarantee, and source comparison provides no causal evidence that this failure is a new product regression. That comparison is not an executed old-versus-new focus control.
+
+Platform counterevidence
+
+The WHATWG HTML Standard's sequential focus navigation algorithm permits the browser to transfer focus to its own controls when navigation reaches the top-level boundary. Native modal behavior separately makes the document's other nodes inert. It therefore does not follow that one Tab from the last dialog control must immediately focus its first control. Sources checked during this review:
+https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation
+https://html.spec.whatwg.org/multipage/interaction.html#modal-dialogs-and-inert-subtrees
+
+This is a standards-based counterexample to the oracle's universal requirement, not evidence that Navigation026 actually moved focus into browser chrome. The failure lacks activeElement.tagName, navigation-action/focus attributes, modal containment, document.hasFocus(), and focus/blur events. An element with no ID inside the dialog, a document-level focus representation, or loss of document focus cannot be distinguished from the recorded ''. Do not label BODY, browser chrome, or any outside control as the observed destination.
+
+Disproof limits
+
+- An empty ID does not prove background focus leakage, but also does not prove correct containment or useful keyboard recovery.
+- Passing adjacent-control Tab navigation and focus-visible styling supports some keyboard behavior; it does not close end-of-dialog traversal, reverse traversal, Escape, or actual action reachability.
+- Native showModal source and the inertness contract argue against inventing a custom trap merely to satisfy a browser-specific assertion. They do not replace browser evidence that the native behavior works in this built page.
+- If stronger diagnostics later identify a focusable background game control receiving focus or an inability to reach/activate dialog controls, that is a separate concrete product candidate requiring fresh triage. It should not be pre-dismissed as browser chrome.
+
+Minimal useful correction and diagnostics
+
+Keep the existing real dialog and keyboard checks. Replace the exact one-Tab ID wrap requirement with a bounded native-modal contract check, recording focus before and after each actual key. Record at least: active tag/id and navigation-action/focus attributes; whether it is inside the modal; modal.open and native :modal status; document.hasFocus(); and a short focusin/focusout/window-focus/window-blur trace. Capture the failure-time snapshot at the failing step, rather than relying only on a later screenshot/catch read.
+
+The revised oracle should reject any observed focus on a background interactive game control, retain actual in-dialog forward/reverse traversal checks, and demonstrate bounded keyboard return/re-entry and activation of a native dialog control. Distinguish a recorded document-focus departure from merely seeing an empty ID. Do not change the expected value to '' or accept any missing ID unconditionally. A separate background focusability probe can support native inertness, but should be labeled separately from the actual keyboard traversal and must not manufacture focus recovery before that recovery is observed.
+
+No custom Tab interception, new navigation lifecycle behavior, or product focus mutation is requested by this triage. The exact revised browser oracle should receive source review and then execute in the authorized Spark environment with its diagnostics retained.
+
+Honest remaining gates
+
+All campaign code after the failed line311 is NOT RUN in Navigation026. This includes line312 reverse-wrap, the later narrow/large-text presentation path, native destination migration and import path, Back/BFCache cases, close/Stay/Escape/Replay/replacement cases, queued-close liveness case, late asynchronous disposal case, and later native admission/recovery cases. The earlier standalone/helper assertions and successful native zero-write window are not invalidated by this failure, but they do not substitute for the unexecuted native groups. The independent smoke pass remains a smoke pass. Full native campaign browser closure remains pending.

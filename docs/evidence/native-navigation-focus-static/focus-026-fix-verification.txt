@@ -1,0 +1,60 @@
+Independent actual-source verification — Navigation026 focus oracle correction
+
+Verdict: the core corrected oracle matches the reviewed invariant and removes the unsupported immediate one-Tab wrap assumption without accepting unexplained empty IDs. No product defect or behavioral false-pass mechanism found in the bounded change. One narrow success-artifact retention limit is recorded below: the persisted boundary event traces stop before the subsequent Stay/Enter/reopen sequence. This should qualify any claim that the complete sequence's event trace is retained. Runtime closure remains pending.
+
+Reviewed frozen source
+
+Repository: task-3/hearth-navigation-focus.
+HEAD/base: 82dc5ed120ff608cef977a33c77b6296185c3f4e.
+tests/browser/campaign-navigation.cjs SHA-256 b8f2322779a124d4deb1b72a7d55ee827d2dead464b2571ece7a31b5ac8b6f54.
+Plan: navigation-review/focus-026-correction-plan.txt SHA-256 23ea1719fe50f5528759b0aaf6f9f796346d40e2a35b5f1412efa30000630941.
+
+The exact Git diff against82dc5ed changes only campaign-navigation.cjs:51 insertions and3 deletions. No host, widget, engine, shell, CSS, or other product change is included. This report reviews that frozen diff and its surrounding native helpers. It does not review the separate P3 harness. No app/test source edits, runtime, parser, tests, builds, lint, or browser execution occurred on M6. Only this report was written.
+
+Boundary oracle
+
+nativeFocusState at259–264 reads the active tag, ID, navigation action, short outerHTML, modal containment, open/:modal state, and document.hasFocus(). nativeFocusBoundary at265–277 sends actual page.keyboard.press inputs, then samples state. It writes each growing step list and observed event trace to its labeled JSON artifact before asserting that sample. There is no wait/sleep or focus() call inside the loop.
+
+Every sampled state must retain an open native :modal. An in-modal state immediately requires document.hasFocus()===true and the expected endpoint ID. It cannot count a retained activeElement while the document lacks focus as a successful return. An outside state is accepted only when document.hasFocus() is false and the active tag is BODY or HTML. A nameless interactive target, body-with-document-focus, closed dialog, or nonmodal dialog fails. The loop is bounded to eight inputs and fails if no endpoint appears. The allowed intermediate observation is accurately described as loss of document focus with a document sentinel, not proof of a specific browser-chrome control.
+
+This still intentionally expects the first in-modal return to be the appropriate boundary control, rather than allowing arbitrary in-modal targets. A future unexpected platform outcome will produce the fuller diagnostic and fail; the patch does not silently broaden acceptance merely because an ID is absent.
+
+Input continuity and background inertness
+
+After the unchanged adjacent-control Tab/Shift+Tab and focus-visible checks, telemetry is installed at330–336. The sole focus setup before boundary traversal is locator('#replay').focus(). Its resulting state must be inside the modal, have actual document focus, and identify Replay. The forward helper ends on modal-close; the backward helper starts directly from that result and ends on Replay. Neither sequence has a test-side reset.
+
+The three later programmatic background probes explicitly target Pause, the ordinary action, and Settings. They retain the exact pre-probe active element and require every observation to remain Replay, inside the open native modal, with document focus. They cannot silently move to some other in-modal control and then manufacture the Stay traversal from an altered starting point. Their artifact labels them programmatic probes, separate from keyboard evidence.
+
+Then a real Shift+Tab must reach keep-flame with true document focus and native modality. A real Enter must close the visible modal. The test does not invoke closeModal, dispatch a synthetic click on Stay, or focus Stay directly. Source bytes are compared with the same original fixtures after closure.
+
+Native reopening and later usability
+
+The test records the old controller and mount count before Enter, reopens using the actual completion control, waits through the existing native ready helper, then requires exactly one additional mount, a different controller object, enabled forward DOM, and unchanged source bytes. Native openModal replaces the completion content, so it is not simply reusing the old helper status node.
+
+New controller identity/ready/enabled DOM alone would not prove a controller remains live. Here the subsequent retained native flow actually clicks that replacement forward control through enterRTS at372, waits for the destination URL and actual RTS units, validates migrated state, and checks preserved sources/backups. Thus a full suite pass must still demonstrate actual replacement-controller use. A failure before that point must not be described as proving destination usability merely because the earlier nativeEvidence record says freshController:true.
+
+Retained scope and history
+
+All original native admission, lifecycle, backup, presentation, delayed-disposal, queued-close and destination assertions remain after the new focus block. The successful no-Storage-mutation observation remains scoped before these interactions and is not restarted by reopening: its mount flag was consumed at the first mount. The correction does not introduce a custom product Tab handler or focus override, change native navigation behavior, or change save semantics.
+
+The failure catch now adds active-element description, containment, native modality, document focus, and collected focus events. This materially improves the prior empty-ID-only diagnostic. The preserved026 exit1 and its unexecuted later groups remain historical facts; static review does not convert them into passes.
+
+Narrow diagnostic-retention limit sent to root before this report
+
+Successful native-focus-forward.json and native-focus-backward.json are rewritten from inside nativeFocusBoundary at271. The last such write happens at the backward return to Replay. The later background probes, Shift+Tab to Stay, Enter closure, and reopen append events only to window.__nativeFocusEvents. The success nativeEvidence item at360 stores boundary step arrays, probes and outcome booleans, but not those later events; the final success report at529 also does not copy them. Later destination navigation replaces the document. The failure catch can retain the events when a failure occurs while that document is still current, but that is not full successful-sequence trace retention.
+
+This is a limited evidence-retention discrepancy, not an identified false pass of the explicit Stay/closure/reopen assertions. If the requirement is to persist the full trace through Stay and reopen, the sole owner should append a scoped final artifact before destination navigation, then freeze and verify the new hash. Otherwise describe the saved traces precisely as the forward/backward boundary traces and keep the later outcome assertions distinct. No reviewer edit was made.
+
+Remaining gate
+
+The corrected exact-source suite must run on the authorized Spark environment. Review its per-step focus observations, truthful document-boundary classification, actual keyboard Stay closure, native reopen/entry, and all previously unexecuted native groups. Do not treat BODY/HTML plus hasFocus=false as evidence of a named browser UI control, and do not claim physical keyboard/device or full accessibility coverage from the headless Chromium gate.
+
+Follow-up closure — final frozen source3e7d631a
+
+The preceding b8f232 observations are retained as historical review of that exact candidate. Root reported two additional independent confirmations of the Low trace-retention omission, then made the sole follow-up correction. I independently inspected the resulting source without reading those reviewers' reports.
+
+New tests/browser/campaign-navigation.cjs SHA-256:3e7d631a2e5273bffd5452f7f7576126f8ac0cf639f5a5fbd1f5ae1b6e60cd14. The only change from reviewed b8f232 is adding stayFocus and focusEvents: await integrated.evaluate(() => window.__nativeFocusEvents) to the successful nativeEvidence item at line360. As a byte-level cross-check, removing exactly that inserted text in a read-only stream reproduces the prior b8f2322779a124d4deb1b72a7d55ee827d2dead464b2571ece7a31b5ac8b6f54 hash. No product files or other oracle predicates changed.
+
+The copy occurs after actual keyboard Stay activation, observed modal closure, native ready reopen, new-controller identity/mount-count checks, and source-preservation assertions. It precedes the later destination navigation at372. page.evaluate returns serializable event data into the harness process, so the nativeEvidence item retains a copy rather than a reference to the soon-to-be-replaced browser document. The success report serializes nativeEvidence at529; a subsequent failure also serializes nativeEvidence at535. Thus the already-observed Stay state and scoped event history through ready reopen survive either later navigation or a later failure.
+
+The narrow success-trace retention gap is source-closed. The intermediate allowed focus states, eight-input bound, true-document-focus endpoints, background probes, and real keyboard actions are unchanged. Final source verdict: no unresolved issue from this bounded review. This is still static verification, not a runtime pass; Spark execution and returned evidence review remain required. Only this report was edited by the reviewer.

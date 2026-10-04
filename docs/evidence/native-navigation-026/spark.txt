@@ -1,0 +1,154 @@
+Syntax gate: checking 33 source, script and test files
+PASS syntax gate: 33 files; application code not executed
+Agriculture first surplus: 374 simulated seconds
+✔ Agriculture allocations and repeated crop orders cannot invent workers or reset growth (1.86613ms)
+✔ crop choices trade food yield for soil recovery and apply after the current harvest (1.133867ms)
+✔ zero grain, seed and water recover through assigned work with no resets (0.560213ms)
+✔ invalid saves and future schemas are rejected; completed Hearth handoff is non-destructive (57.268341ms)
+✔ crop and construction state resume identically; ten seconds equals ten one-second ticks (0.282563ms)
+✔ ordinary farm decisions reach dependable surplus across refreshes without boosted resources (2.255511ms)
+✔ self-contained builds work in encoded paths and retain stage navigation (42.243824ms)
+✔ Cave fire states gate the intended RTS route; development preview is explicit (5.487942ms)
+✔ only a validated completed Cave baseline survives replay as entry evidence (0.892873ms)
+✔ raw bytes and source-kind identity are preserved; reserialized lookalikes do not merge (24.562659ms)
+✔ legacy completed archives retain their actual unversioned array envelope without certifying members (23.238757ms)
+✔ current RTS v4 and explicit v1/v2/v3 projections share a key without changing raw identity (3.356817ms)
+✔ real import-backup namespaces are inspected and lookalike keys remain excluded (0.565158ms)
+✔ naturally gathered current-v4 Move and held checkpoints remain exact sources during inspection (6.981685ms)
+✔ all seven backup families preserve supported raw versions and numbered copies without playable validation (5.84425ms)
+✔ backup discovery accepts only exact namespaces and positive canonical suffixes (1.271133ms)
+✔ backup raw contents never substitute for the live RTS source or waive compatibility rows (5.277348ms)
+✔ recognized unreadable backups block entry even when the live save is valid (3.975559ms)
+✔ host admission repairs explicit legacy residue fixtures on clones while v4 negative work stays rejected (5.185315ms)
+✔ constructor admission rejects input-valid legacy worlds that fail post-migration obligations (1.945236ms)
+✔ preview completion, legacy Hearth completion and Agriculture surplus never become full-age proofs (7.505338ms)
+✔ missing, empty, malformed, future, unavailable-validator and unreadable sources differ safely (1.58352ms)
+✔ size limits and ill-formed UTF-16 retain sources without assigning ambiguous identity (4.665502ms)
+✔ hostile validators cannot mutate caller input and inspection failures cannot grant entry (0.852345ms)
+✔ only inspected immutable snapshots can create navigation plans; retries mint nothing (0.931081ms)
+Actual-engine median actions / seconds at 1 action per second: [ 764, 493, 530 ]
+✔ A depleted camp recovers without resets or emergency experience (0.80732ms)
+✔ Unaffordable searches are atomic, reserve the worst case, and do not reroll RNG (0.467237ms)
+✔ Stone tools reduce gathering costs, wear exactly once, and hand over to the next tool (0.142098ms)
+✔ Food origins use FIFO and output caps reflect supply expenditure (0.601734ms)
+✔ Bedding and responsive signals multiply learning; innovation is never spent (0.210306ms)
+✔ Routines run at boundaries, check full output, and never create manual experience (0.139777ms)
+✔ Prestige grants each milestone once, resets the camp, and retains first-journey time (0.129137ms)
+✔ Fire depends on innovation alone, survives saves, is free, and preserves the completed baseline (0.224498ms)
+✔ Saving preserves exact random sequence and full camp state (0.378292ms)
+✔ The actual game completes ordinary, efficient, and optional-prestige playthroughs (33.64126ms)
+✔ completed drying racks conserve camp food without changing water or creating food (36.782442ms)
+✔ drying reduces actual mountain and gathering-party food provisions, not free migration (1.583376ms)
+✔ exhausted side fences open a cardinal enclosure; a missing corner alone does not (7.457674ms)
+✔ repair cannot seal a worker inside an enclosure without a gate (17.44262ms)
+✔ knapping practice improves tool work beyond the initial discovery (12.65286ms)
+✔ partial and full gathered loads move on the next tick, preserving work, then hold beside storage (35.823713ms)
+✔ loaded transfer Move holds original custody beside receiver until explicit Stop receipt (98.576892ms)
+✔ Stop during loaded Move recovers a transfer at nearest hearth without production or stale Move replay (104.187859ms)
+✔ isolated old rounded-home control strands the same earned fractional transfer load (43.291658ms)
+✔ automatic transfer rerouting near its receiver keeps a physical final approach (16.076334ms)
+✔ work reassignment after loaded Move still returns first and cannot replay the replaced Move (24.028109ms)
+✔ Move releases only its pending share of an uneven group before pickup (66.468751ms)
+✔ a loaded actor can leave a transfer while a peer retains its unpicked allocation (19.335759ms)
+✔ Move cancels a queued transfer behind gathered cargo without changing the gathered resource (8.695846ms)
+✔ active repeated Move is identical to one command while a different Move redirects mid-segment (16.37581ms)
+✔ a new Move overrides an identical queued v3 Move while migration itself preserves the old return plan (27.706401ms)
+✔ fractional same-rounded-cell and zero-distance Moves reach their exact destination without early arrival (5.627016ms)
+✔ near-final-node movement uses its exact tick budget and every arrival boundary roundtrips (2.989741ms)
+✔ rejected Move commands preserve complete pending, carried, moving and held state (21.471827ms)
+✔ a valid Move target reachable by only one selected actor rejects the whole group atomically (3.774182ms)
+✔ new construction reroutes manual cargo toward the same target without a home detour (34.324034ms)
+✔ a building over the Move target creates reloadable holding and cancellation never resumes it (38.232873ms)
+✔ paid construction and knapping progress remain at their jobs when their workers Move (59.604747ms)
+✔ active loaded Move rejects forged working states, disconnected paths, bad targets and false custody (10.355413ms)
+✔ v3 local custody, partial paid jobs and pending/loaded transfers migrate only the outer version (989.329896ms)
+✔ loaded Move and hold preserve exact every-tick reload continuation and typed totals (165.361947ms)
+✔ Stop with unreachable storage holds a moved transfer load safely until a reachable return is requested (30.160393ms)
+✔ fresh local custody preserves the accepted uncapped opening and item totals (20.719612ms)
+✔ completed outposts own real gathering receipts; transfers reserve, pick up and deliver one finite load per worker (89.297118ms)
+✔ repeated active transfer orders preserve the exact job, path, pickup reservation and receipt count (39.114912ms)
+✔ two groups cannot reserve or spend the same last stored items (17.804415ms)
+✔ Stop before pickup releases only that worker allocation and prunes finished history (260.483376ms)
+✔ Stop after pickup keeps the load with its actor until a physical receipt without new production (61.238522ms)
+✔ a transfer queued behind gathered cargo preserves its origin and Stop releases its future reservation (8.634901ms)
+✔ queued transfer returns original gathered cargo once then carries only its reserved resource (17.251433ms)
+✔ invalid transfers and invalid reassignment are atomic for existing orders and reservations (4.421932ms)
+✔ recruitment spends hearth food after actual food transfer from an eastern drop-off (37.077517ms)
+✔ local crafting cannot spend a remote supply and each reservation refunds its original source (39.868616ms)
+✔ opening construction may combine stores, while later construction names a local source and refunds exact custody (27.707201ms)
+✔ v1 and v2 migration preserves every legacy world field and the exact uncapped aggregate once (3.814197ms)
+✔ save/reload at reservation, pickup and receipt preserves exact obligations and progression (74.567148ms)
+✔ malformed current ownership, reservations and transfer obligations fail closed (26.057744ms)
+✔ a funded site with no reachable work edge is rejected without spending or advancing its ID (23.151956ms)
+✔ workshop funding searches reachable perimeter edges at the top-left map corner (0.376628ms)
+✔ uneven group allocations release exactly the stopped share and never strand the other load (44.233715ms)
+✔ migration rejects unpaid legacy construction without mutating the legacy payload (0.857113ms)
+✔ fractional legacy holdings remain owned while transfers carry only whole items (12.629068ms)
+✔ a transfer save cannot give the same worker held cargo and another pending allocation (3.05059ms)
+✔ transfer admission and pickup require a continuous actor-to-store-to-receiver path (11.139006ms)
+✔ recruitment selects a reachable hearth edge instead of an isolated empty pocket (40.878194ms)
+✔ one hundred paused build/cancel cycles retain bounded payment history and exact original custody (62.01677ms)
+✔ paid unfinished v1/v2 construction migrates once with exact progress and original-source refund (26.064624ms)
+✔ paid partial v2 knapping migrates its progress and resumes without another material charge (16.655508ms)
+✔ construction cannot seal the final access edge of a stocked completed outpost (46.315751ms)
+✔ transfer cargo cannot import into a working, walking or pickup phase and change resource type (12.695357ms)
+✔ valid transfer cargo survives Stop and Gather return-first reassignment with typed conservation after reload (148.803478ms)
+✔ blocked idle transfer cargo remains reloadable and can recover without loss or conversion (9.262267ms)
+✔ finite deposits conserve stock, cargo and spent resources through depletion and refresh (88.391331ms)
+✔ repeated gather commands cannot accelerate extraction or teleport carried loads (94.271468ms)
+✔ construction consumes its displayed cost exactly once and cancellation refunds once (129.393861ms)
+✔ workers path through the ford and an eastern outpost shortens return trips (19.909347ms)
+✔ invalid/future saves fail closed; unknown orders and unreachable sites cannot corrupt saves (0.607046ms)
+✔ a selected group reserves distinct gathering positions around a deposit (1.673216ms)
+✔ final deliveries reserve distinct drop-off positions without losing cargo (53.0738ms)
+✔ workshop knapping reserves once, retains interrupted work and completes through assigned workers (157.812716ms)
+✔ crafted tools improve extraction without creating resources or increasing cargo capacity (130.521616ms)
+✔ RTS v1 migrates without changing world, cargo or orders and future formats are rejected (2.625594ms)
+✔ earned tools remain strictly saveable through every extraction tick, carried return and repeated roundtrip (299.501322ms)
+✔ current v4 subtraction negative control remains invalid and explicitly unrepaired (3015.297229ms)
+✔ pinned v3 subtraction naturally produces an invalid earned-tools save and repair changes only its residue (3071.03431ms)
+✔ explicit work-residue recovery preserves v1/v2/v3 world state before normal migration (1.142187ms)
+✔ work-residue repair rejects material negatives, unrelated work, transfer cargo and otherwise malformed saves (4.459611ms)
+✔ autonomous workers return loads and serialized progress round trips (39.247341ms)
+✔ empty supplies preserve people and always permit a normal neighboring migration (5.431589ms)
+✔ ordinary recovery gathering still works without food or water (4.767663ms)
+✔ protected trees remain untouched and clearing slows regrowth (30.270358ms)
+✔ high elevation sees two away and another ridge blocks the middle (1.642384ms)
+✔ outlines reserve no materials; assigned builders complete and migration preserves them (2.982813ms)
+✔ gathering routes debit provisions, deliver actual resources, and recall safely (16.996917ms)
+✔ a plow needs a prepared field and trained team; prestige preserves completed state (15.927243ms)
+✔ malformed saves are rejected before replacing the running journey (24.07329ms)
+Command-only Hearth completion with periodic save restoration: 5195 simulated seconds
+✔ repeated assignments preserve deterministic work across refreshes (103.840209ms)
+✔ changing jobs or resting carries an existing load home before depositing (24.311308ms)
+✔ fractional payment tolerance never writes a negative balance or invalid save (19.685487ms)
+✔ locked practices and unaffordable payments are atomic (9.013767ms)
+✔ v1 saves preserve both stages; unknown versions are rejected without migration guesses (39.533712ms)
+✔ Cave rejects contradictory completion flags that strand the fire encounter (0.363011ms)
+✔ herders explain missing animal provisions instead of claiming the herd is settled (1.100123ms)
+✔ an ordinary Hearth policy completes with recurring save restoration and no boosted state (767.0187ms)
+ℹ tests 124
+ℹ suites 0
+ℹ pass 124
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11935.398242
+Built self-contained cave: 0.15 MB
+Built self-contained hearth: 82 KB
+Built self-contained Agriculture slice: 51 KB
+Built self-contained Hearth RTS core: 83 KB
+PASS browser smoke: Cave actions/refresh, fixture-based native completion route to fresh RTS v4 with earlier raw saves preserved, separate previous Hearth repeated orders/refresh/map, failed-save export, unknown-version preservation, safe depleted-camp migration; no page errors
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'' !== 'modal-close'
+
+    at /work/tests/browser/campaign-navigation.cjs:311:95 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '',
+  expected: 'modal-close',
+  operator: 'strictEqual',
+  diff: 'simple'
+}

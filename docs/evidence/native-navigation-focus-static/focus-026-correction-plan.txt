@@ -1,0 +1,42 @@
+Navigation026 focus oracle — bounded correction proposal
+
+Preserve exact 82dc5ed and its exit-1 result. No game/host/widget correction is
+justified by the available record: only an empty activeElement.id was observed.
+Native showModal predates this integration and no custom Tab trap exists.
+
+The immediate one-Tab wrap assumption will be replaced only after independent
+critic and both fresh disproof reviews agree. The HTML Standard sequential focus
+algorithm permits focus to pass to user-agent controls at a document boundary:
+https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation
+This does not prove that browser chrome caused the particular 026 failure.
+
+Root owns a harness-only correction in isolated hearth-navigation-focus from
+82dc5ed. P3 CSS/harness work stays in hearth-touch-status. Neither frozen original
+will change, and all later 026 cases remain not-run until a new exact-source gate.
+
+Proposed oracle
+1. Record the actual active tag/id/navigation action, short outerHTML, whether it
+   lies in the modal, modal.open, modal.matches(':modal'), document.hasFocus(), and
+   native focus/blur/focusin/focusout observations for every tested Tab boundary.
+   Persist diagnostics before assertions and in failure output.
+2. Starting from Replay, use real Tab inputs and require eventual first-control
+   return within a small bounded sequence. No test-side focus reset is allowed
+   during that sequence. Each in-document focus target must be in the still-open
+   modal. Only an observed loss of document focus with its body/html sentinel may
+   be accepted as an out-of-document boundary. An anonymous interactive target or
+   unexplained body-with-document-focus is not silently waived.
+3. From the returned first control, use real Shift+Tab to demonstrate equivalent
+   backward return to Replay with the same checks and detailed observations.
+4. Probe ordinary background Cave controls while the modal remains open; attempted
+   focus must not move to those inert controls. Distinguish programmatic focus
+   probes from actual keyboard sequence evidence.
+5. After the backward sequence, reach Stay using real Shift+Tab and activate it
+   with Enter. Verify actual closure and unchanged saved sources, then reopen
+   through the native completion control and require a fresh usable controller.
+6. Keep exact existing native admission/lifecycle/backup cases and presentation
+   checks. No arbitrary sleeps, swallowed assertion, custom Tab handler, production
+   focus override or inferred full accessibility pass.
+
+If the new evidence shows unexplained in-document background focus, preserve that
+failure and investigate it; do not broaden the allowed set to get a pass. Separate
+verification of the concrete harness change precedes parent-owned Spark execution.

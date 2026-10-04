@@ -1,0 +1,39 @@
+Fresh narrow source disproof — focus trace retention
+2026-10-04, /root/skeptic_one
+
+Reviewed only focus-026-correction-plan.txt and the relevant new harness source.
+Harness SHA256 matched:
+b8f2322779a124d4deb1b72a7d55ee827d2dead464b2571ece7a31b5ac8b6f54
+Path: hearth-navigation-focus/tests/browser/campaign-navigation.cjs
+No other fresh review read; no source edits or runtime/parser/tests/builds.
+P3 files remain frozen and untouched.
+
+Verdict: confirmed Low evidence-retention gap, not a behavioral false-pass claim.
+
+Attempted disproof: native-focus-forward.json and native-focus-backward.json
+already persist the complete event array. They do, but only as serialized copies
+at each nativeFocusBoundary call (lines265–276). The final call is at340, before
+the later actual Shift+Tab to Stay at350, Enter close at353, and reopen at355.
+Appending to window.__nativeFocusEvents afterward cannot retroactively update
+either JSON file. The background-probe file at348 contains only probe results.
+
+Attempted disproof: report.json or failure output retains the remainder anyway.
+The success nativeEvidence entry at360 contains boundary snapshots, inert probes
+and summary booleans, but no later event array or stayFocus snapshot. report.json
+at529 serializes that evidence. The catch at534 includes the current page's event
+array only on failure; it is not a successful-run retention path and can concern
+a later page after navigation has discarded the original document.
+
+The actual Stay focus, keyboard closure, unchanged saves and fresh-controller
+assertions do exist at350–359. This finding does not weaken or replace them, does
+not establish a product defect, and does not claim that either required boundary
+trace is missing. The plan explicitly requires persisted boundary diagnostics;
+retaining the rest is the narrow way to make the successful artifact explain its
+whole additional Stay/reopen sequence rather than just its boolean result.
+
+Minimum correction: when building the success nativeEvidence entry at360, append
+a serialized snapshot from await integrated.evaluate(() => window.__nativeFocusEvents)
+after reopen. Including the already-read stayFocus snapshot is also useful but
+not needed to preserve the full event list. Keep the existing actions, assertions,
+event recorder, product behavior, and focus-boundary policy unchanged. No new
+runtime/control scenario or broadened focus allowance is justified by this item.

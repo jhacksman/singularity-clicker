@@ -1,0 +1,5 @@
+{
+  "scope": "before original native mount through completed ready, visible refresh and actual export; stopped before host close/pagehide/Replay or destination writes",
+  "active": false,
+  "calls": []
+}

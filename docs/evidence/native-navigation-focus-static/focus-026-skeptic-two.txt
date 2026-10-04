@@ -1,0 +1,38 @@
+Navigation026 focus failure — fresh disproof review
+Reviewer: /root/skeptic_two. Date: 2026-10-04.
+
+Verdict
+The evidence does NOT establish a product focus regression. The line 311 oracle is brittle for a native showModal dialog: it requires one Tab from #replay to land immediately on #modal-close. Native sequential focus navigation can instead transfer to browser controls at the document boundary. The actual destination in this run remains UNRESOLVED; an empty activeElement.id is not evidence that an interactive background element received focus. Do not label this a confirmed browser-chrome transition, silently accept every empty ID, or add a custom application Tab trap solely to satisfy this assertion.
+
+Scope and provenance
+Read-only review of frozen hearth-navigation-native HEAD 82dc5ed120ff608cef977a33c77b6296185c3f4e, its host/modal/widget/test source, returned Spark026 log/result/failure JSON, and the actual native-failure.png. No application execution, parser, tests, builds, lint, browser session, source edits, or commits on M6. No other new focus-review reports were read before this conclusion. I previously authored adapter compatibility additions and widget recovery labels; this is a fresh disproof review of the focus finding, not an independent verification of those earlier authored changes.
+
+Inspected identities (SHA-256)
+- tests/browser/campaign-navigation.cjs: 4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841
+- src/view.js: 2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+- failure.json: 4acc5805bb3240f3aafcb69dc32aacd53a89f5b00932e8b680c0e88be7d074f5
+
+Evidence locations, relative to /Users/m6mini/Documents/Codex/2026-10-03
+- task-2/spark-ci/results/singularity-20261004-navigation-026.json
+- task-2/spark-ci/logs/singularity-20261004-navigation-026.log
+- task-2/spark-ci/results/singularity-20261004-navigation-026-evidence/artifacts/campaign-navigation/failure.json
+- task-2/spark-ci/results/singularity-20261004-navigation-026-evidence/artifacts/campaign-navigation/native-failure.png
+
+Disproof reasoning
+1. Host src/view.js:137 opens the real dialog with showModal(); src/shell.html:60 supplies the dialog and #modal-close. completion() at view.js:152 places #replay last after the helper and Stay button. The host keydown handler does not implement Tab wrapping. The widget uses ordinary DOM controls and only restores focus during its own rendering; it has no Tab trap. The test therefore asserts a browser boundary behavior that the application does not implement itself.
+
+2. The HTML Standard distinguishes document modality from browser controls. showModal makes the connected document outside the dialog inert. Sequential focus navigation step 8 permits transfer to the user agent's own controls when there is no next document candidate; it does not require immediate DOM wrap. This supplies a concrete counterexplanation to the claimed product failure, not proof of what this run did. Sources: https://html.spec.whatwg.org/multipage/interaction.html#modal-dialogs-and-inert-subtrees and https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation (read 2026-10-04). The directly relevant WHATWG discussion also documents this distinction: https://github.com/whatwg/html/issues/8339 . No WCAG or cross-platform accessibility compliance conclusion is made here.
+
+3. At campaign-navigation.cjs:307–310 the internal forward/backward keyboard order and visible focus outline assertions completed before the failure. Line 311 explicitly focuses #replay, presses Tab, then checks only document.activeElement.id against 'modal-close'. Its actual '' does not identify a tag, ancestor, navigation action, or document focus state. The widget has legitimate ID-less controls inside the dialog. BODY/HTML or another ID-less node would also produce this string. The catch at lines 483–487 records URL, body text, lifecycle, storage calls, and mount count, not activeElement identity, containment, or document.hasFocus(). Body text containing background content does not prove background focus or operability.
+
+4. The screenshot shows the completion dialog over a dimmed/blurred backdrop. It does not show browser chrome and does not establish which element has focus. No observed background interactive focus, activation, unintended navigation, or page error appears in the returned diagnostic. Conversely, the screenshot and empty pageErrors array cannot establish that focus behavior was correct.
+
+Bounded correct oracle and next Spark diagnostic
+- First verify #replay actually owns focus before the boundary key. Record per keypress: active tag/id/short outerHTML, data-navigation-action, dialog.contains(activeElement), document.hasFocus(), modal.open and matches(':modal'), plus focusin/focusout and window focus/blur events with related targets. Capture immediate and settled observations without suppressing an intervening background-focus event.
+- Retain exact order and focus-visible checks between known adjacent dialog controls. At document boundaries, verify that the modal remains modal and that no interactive background document control receives focus or activation. Distinguish an ID-less element inside the dialog from BODY/HTML or an identified background control.
+- For an apparent browser/viewport transition, use bounded additional native Tab/Shift+Tab steps and event evidence to demonstrate keyboard re-entry to usable dialog controls. Do not programmatically refocus during this observation, because that could conceal the failure. An unexplained empty ID is diagnostic ambiguity, not an automatic pass. If the platform cannot identify or return from the transition, report that limitation explicitly.
+- Include a deliberately modeless/background-focus negative control so the revised containment oracle proves it rejects a real interactive focus escape. Keep this isolated to the test fixture; it is not an application change proposal.
+- A confirmed interactive background focus escape would justify a product finding. A characterized native browser-control transition with preserved modality and keyboard re-entry would justify correcting the current test assumption. This artifact alone cannot choose between all actual destinations.
+
+Execution coverage and remaining gate
+Returned Spark026 evidence records 33 syntax checks, 124 passing tests, four builds and smoke passing, followed by campaign failure at line 311 on commit 82dc5ed. This review did not rerun any of them. The successful native mount/refresh/export observation before line 311 recorded zero Storage mutation calls. The reverse-boundary assertion at line 312 was NOT reached. Later narrow/large-text native presentation, migration/import/back-navigation and later lifecycle/queued-close campaign groups were NOT reached in this campaign run. Prior smoke coverage does not substitute for those unrun groups. Navigation026 remains failed pending a bounded diagnostic/oracle correction and a full Spark rerun; no broad navigation or accessibility pass is claimed.

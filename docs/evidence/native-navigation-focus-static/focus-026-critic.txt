@@ -1,0 +1,139 @@
+Navigation026 focus failure — independent bounded triage
+2026-10-04. Read-only returned evidence, frozen source and official documentation.
+No app/harness edit, parser, runtime, build, test, lint or local browser execution.
+Only this assigned report was written. Frozen Navigation026 and P3 remain separate.
+
+Verdict: the exact one-Tab wrap assertion is overstrict for the native showModal
+implementation. Treat this as a candidate Medium harness-oracle defect, not a
+demonstrated background-focus escape or product focus trap failure. The precise
+runtime focus destination is unmeasured in the returned diagnostics. Browser-UI
+focus is a supported explanation, not a fact established by activeElement.id==''.
+Correct the oracle only after the parent's fresh disproof gate and retain real
+focus-containment/actionability checks. Navigation026 remains an exit1 failed run;
+later native cases were not reached and cannot inherit a pass from this triage.
+
+Evidence identity
+
+Exact source: 82dc5ed120ff608cef977a33c77b6296185c3f4e
+Current frozen hearth-navigation-native HEAD matches that commit.
+  tests/browser/campaign-navigation.cjs SHA-256
+    4efd108bd2cc3cd55cee9b50bf0311c7f1f5b0dcefe0924ef6e1b64d7930a841
+  src/view.js SHA-256
+    2f72fe1c6daeb87212086f9cee8b455c0b529cd960518ec0ea8362e9c1a5d6be
+Returned result task-2/spark-ci/results/singularity-20261004-navigation-026.json
+  SHA-256 06d20c96a1e3a8cff72c88a2495ef9c10f0aa5c1f979312b8de9e52e4f2dc6d4
+Returned log task-2/spark-ci/logs/singularity-20261004-navigation-026.log
+  SHA-256 6e36d31719192f46a20f55105b2ce93831c32233a297ef4e1024c33e44f9962f
+Returned campaign-navigation/failure.json under the matching evidence/artifacts
+  SHA-256 4acc5805bb3240f3aafcb69dc32aacd53a89f5b00932e8b680c0e88be7d074f5
+Also read native-successful-storage-observation.json and viewed the returned
+native-failure.png at original detail. No video was watched. This is a targeted
+failure review, not a fresh end-to-end archive/provenance audit.
+
+What actually ran and failed
+
+The result names gb10-02 and the exact source above, exit_code1 and completed
+execution, with cleanup verified absent. The log records syntax pass for33 files,
+124 passing deterministic tests (zero failed/skipped/cancelled), four builds and
+the smoke browser PASS. The campaign harness then stops at line311: actual ''
+versus expected 'modal-close'.
+
+At :311 the harness programmatically focuses #replay, sends a real Playwright Tab
+key press, and immediately requires document.activeElement.id==='modal-close'.
+Its next Shift+Tab assertion at :312 and all subsequent native cases are unreached.
+Earlier checks did establish forward/backward movement between the two navigation
+controls and a visible focus outline (:307–310), because this serial runner reached
+:311 without throwing. The native failure record has no page errors, one mount
+and a normal initial pageshow. The successful native mount/refresh/export storage
+observation contains zero mutation calls. Those are bounded earlier observations,
+not an overall navigation acceptance result.
+
+The failure JSON contains URL, body text, lifecycle, storage calls and mount count.
+It does NOT contain activeElement.tagName, outerHTML, dialog containment,
+document.hasFocus(), modal.open/:modal or focusin/focusout/window blur history.
+The empty ID therefore cannot distinguish an anonymous element in the dialog,
+body/document-element focus representation, an unfocused document, or another
+focus target. The screenshot shows the rendered modal/backdrop but cannot locate
+focus in browser chrome or repair those missing diagnostics. A visually absent
+focus ring alone is not identification of the active target.
+
+Relevant frozen product behavior
+
+src/shell.html:60 uses a real dialog with #modal-close before #modal-content.
+completion() appends Stay and Replay at the end of that content. openModal() at
+view.js:137 uses showModal(); there is no custom endpoint Tab loop. The document
+keydown handler at :115–122 returns while dialogPauses and does not implement Tab
+wrapping even outside that guard. Widget handlers implement click/refresh behavior,
+not keyboard Tab interception. Thus the exact required endpoint is a harness
+assumption about native UA traversal, not an application promise implemented by
+some overlooked Tab handler.
+
+Official behavior checked independently
+
+HTML's sequential focus navigation algorithm permits the UA to transfer focus
+to its own controls when the document has no next candidate. That boundary is
+distinct from modal background inertness: showModal makes connected document
+nodes outside the topmost modal inert. Native modality does not establish the
+harness's exact single-key last-to-first wrap.
+https://html.spec.whatwg.org/multipage/interaction.html#sequential-focus-navigation
+https://html.spec.whatwg.org/multipage/interaction.html#inert-subtrees
+
+MDN documents that activeElement can be body/documentElement when no element is
+focused, and that an active element does not itself prove the document has focus;
+hasFocus supplies that separate observation. Neither an empty ID nor these API
+rules identifies the actual destination in this failed run.
+https://developer.mozilla.org/en-US/docs/Web/API/Document/activeElement
+https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
+
+Attempted disproof and calibration
+
+- Perhaps the assertion proves a background interactive element received focus.
+  No: an ID string is not an element identity. There is no captured background
+  target, trusted focus event, click or resulting background action.
+- Perhaps native dialog semantics require immediate DOM endpoint wrap, making
+  this an unambiguous product defect. The authoritative UA navigation boundary
+  contradicts that blanket assumption; native modality and browser controls are
+  different scopes. A custom always-in-document loop would be an additional UX
+  decision, not a correction demanded by this failed assertion alone.
+- Perhaps the empty ID is sufficient to declare an ordinary URL-bar hop and
+  mark the run successful. Also no: the identifying fields were not recorded.
+  That causal attribution must remain provisional until an instrumented run.
+- Perhaps removing endpoint assertions is sufficient. It would hide genuine
+  background escape/actionability regressions. Replace the brittle endpoint
+  assumption with stronger observed-state checks, not an unconditional exemption.
+
+Minimum bounded evidence and correction
+
+1. Before the boundary key press, assert Replay really is the active element and
+   the dialog is open and matches :modal. Record a focus snapshot after each real
+   Tab/Shift+Tab: tag, ID, action/focus dataset, relevant outerHTML or stable node
+   identity, whether body/html, whether within #modal, document.hasFocus and modal
+   state. Capture trusted focusin/focusout and window focus/blur events with order.
+   Write the diagnostic record before assertions so another failure is useful.
+2. Retain in-modal sequential navigation and visible-focus assertions. Require
+   every ordinary focused document control to remain in the modal. Reject any
+   background button/link/input or other interactive target even if it has no ID.
+   Do not whitelist every empty ID. A permitted out-of-document boundary needs
+   affirmative diagnostics (for example body/html sentinel plus hasFocus false),
+   and should be labeled out-of-document, not definitively URL-bar focus.
+3. Use subsequent real keyboard navigation to establish bounded return to the
+   modal and access to its controls in both directions. Do not programmatically
+   refocus the expected endpoint to manufacture successful return evidence. Keep
+   native Enter/Space activation and Escape/close/reopen results where applicable;
+   absence of background focus alone does not prove useful keyboard operation.
+4. If the recorded behavior instead shows a background interactive target while
+   :modal remains active, preserve that as a separate concrete product/browser
+   finding for disproof and fixing. If it shows an allowed external-focus boundary
+   with working return, the bounded fix belongs solely to the harness/report.
+   Do not add an unsolicited custom product Tab trap merely to satisfy line311.
+5. Preserve026 result/log/artifacts unchanged. Create a distinct corrected harness
+   source identity, review it and run the full affected gate on Spark; this early
+   failure left queued-close, actual Back, narrow presentation and later loaded
+   native admission cases unexecuted. No later result may be fabricated from the
+   already-passed syntax/unit/build/smoke prefix.
+
+This revises the prior static review's acceptance of this specific exact-wrap
+oracle. Those earlier reports were static, not runtime evidence, and remain
+preserved rather than rewritten. The two B01/B02 findings and their corrections
+remain separate;026 reached the B02 storage observation but not the later B01
+queued-close case. P3 selected-card CSS and its upcoming harness remain isolated.
