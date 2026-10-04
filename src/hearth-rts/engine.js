@@ -21,7 +21,7 @@ function validCarryMove(s,u){
  const first=u.path[0],last=u.path.at(-1);return clear(first)&&dist({x:Math.round(u.x),y:Math.round(u.y)},first)<=1&&last.x===u.order.x&&last.y===u.order.y&&u.path.every((p,i)=>clear(p)&&(!i||dist(u.path[i-1],p)===1));
 }
 function valid(s){
- if(s&&s.version<5&&(s.reclaim!==undefined||s.buildings?.some(b=>b.retiring!==undefined)||s.units?.some(u=>u.reclaim!==undefined)))return valid(withoutReclaimAuthority(s));
+ if(s&&s.version<5&&(s.reclaim!==undefined||Array.isArray(s.buildings)&&s.buildings.some(b=>b?.retiring!==undefined)||Array.isArray(s.units)&&s.units.some(u=>u?.reclaim!==undefined)))return valid(withoutReclaimAuthority(s));
  const n=v=>Number.isFinite(v)&&v>=0&&v<1e7,point=p=>p&&n(p.x)&&n(p.y)&&p.x<W&&p.y<H;
  if(!s||![1,2,3,4,5].includes(s.version)||!n(s.time)||!n(s.nextId)||!n(s.depleted)||typeof s.complete!=='boolean')return false;
  if(!['stock','spent','delivered'].every(k=>s[k]&&['wood','stone','food'].every(r=>n(s[k][r]))))return false;
@@ -58,7 +58,7 @@ const canonicalDeposits=[['wood',5,6,48],['wood',10,5,48],['stone',12,10,60],['f
 const integer=v=>Number.isInteger(v)&&v>=0&&v<LIMIT;
 const vector=v=>v&&RESOURCES.every(r=>integer(v[r]))&&Object.keys(v).every(r=>RESOURCES.includes(r));
 const sameCost=(a,b)=>a&&Object.keys(a).every(r=>RESOURCES.includes(r))&&RESOURCES.every(r=>integer(a[r]||0)&&(a[r]||0)===(b[r]||0));
-function withoutReclaimAuthority(s){const copy=structuredClone(s);delete copy.reclaim;for(const b of copy.buildings||[])delete b.retiring;for(const u of copy.units||[])delete u.reclaim;return copy;}
+function withoutReclaimAuthority(s){const copy=structuredClone(s);delete copy.reclaim;if(Array.isArray(copy.buildings))for(const b of copy.buildings)if(b&&typeof b==='object')delete b.retiring;if(Array.isArray(copy.units))for(const u of copy.units)if(u&&typeof u==='object')delete u.reclaim;return copy;}
 function canonicalReason(s){
  if(s.units.length<4||s.units.some((u,i)=>u.id!=='u'+i||!integer(u.cargo)))return 'The original four to eight villagers and integer cargo are required';
  if(!integer(s.nextId)||s.nextId<1||s.buildings.some(b=>!/^b(?:0|[1-9]\d*)$/.test(b.id)||Number(b.id.slice(1))>=s.nextId||!Number.isInteger(b.x)||!Number.isInteger(b.y)))return 'Building identities or the next identity are outside the canonical profile';
@@ -66,7 +66,7 @@ function canonicalReason(s){
  if(s.buildings.some(b=>b.kind!=='hearth'&&(b.id==='b0'||!sameCost(b.cost,COST[b.kind]))))return 'A structure has a noncanonical material bill';
  if(canonicalDeposits.some(([kind,x,y,initial],i)=>!s.deposits.some(d=>d.id==='d'+i&&d.kind===kind&&d.x===x&&d.y===y&&d.initial===initial&&integer(d.amount)&&d.amount<=initial)))return 'A finite source differs from the canonical map';
  if(!['stock','spent','delivered'].every(k=>vector(s[k]))||!integer(s.depleted))return 'Material counters must be bounded integers';
- if(s.storage&&(!integer(s.storage.nextId)||s.storage.nextId<1||!vector(s.storage.transferred)||Object.values(s.storage.stores).some(v=>!vector(v))||s.storage.payments.some(p=>p.sources.some(v=>!integer(v.amount)))))return 'Store identities and payment materials must be bounded integers';
+ if(s.storage&&(!integer(s.storage.nextId)||s.storage.nextId<1||!vector(s.storage.transferred)||Object.values(s.storage.stores).some(v=>!vector(v))||s.storage.payments.some(p=>p.sources.some(v=>!integer(v.amount)))||Object.values(s.storage.reservations).some(v=>v.sources.some(p=>!integer(p.amount)))))return 'Store identities, payment and refundable-source materials must be bounded integers';
  if(s.depleted+s.deposits.filter(d=>d.amount>0).length>=LIMIT||RESOURCES.some(r=>s.delivered[r]+s.deposits.filter(d=>d.kind===r).reduce((n,d)=>n+d.amount,0)+s.units.filter(u=>u.resource===r&&!u.transfer&&!u.reclaim).reduce((n,u)=>n+u.cargo,0)>=LIMIT))return 'Gathering counters lack room for the remaining finite resources';
  const totals={wood:416,stone:220,food:225};
  if(RESOURCES.some(r=>s.stock[r]+s.spent[r]+s.units.filter(u=>u.resource===r).reduce((n,u)=>n+u.cargo,0)+s.deposits.filter(d=>d.kind===r).reduce((n,d)=>n+d.amount,0)!==totals[r]))return 'The declared world does not conserve the original finite material budget';
@@ -101,13 +101,15 @@ function sourceLabel(s){let h=2166136261;for(const c of JSON.stringify(s))h=Math
 function validReclaim(s){
  const a=s.reclaim;if(!a||a.profile!==RECLAIM_PROFILE||typeof a.sourceIdentity!=='string'||a.sourceIdentity.length>100||!Array.isArray(a.claims)||a.claims.length>29||!vector(a.recovered)||!vector(a.settled)||!integer(a.settledSites)||!integer(a.closedPayments)||canonicalReason(s)||paymentReason(s))return false;
  if(!Number.isInteger(s.storage.nextId)||s.storage.nextId>=LIMIT||!sameCost(a.settled,{wood:a.settledSites*60,stone:a.settledSites*20,food:0}))return false;
+ if(a.closedPayments+s.storage.payments.length>=LIMIT||RESOURCES.some(r=>s.storage.transferred[r]+s.storage.transfers.filter(j=>j.resource===r).reduce((n,j)=>n+j.remaining+s.units.filter(u=>u.transfer===j.id).reduce((m,u)=>m+u.cargo,0),0)>=LIMIT))return false;
  const ids=new Set();
  for(const c of a.claims){
+  if(!c||typeof c!=='object')return false;
   const b=s.buildings.find(b=>b.id===c.buildingId&&b.kind==='outpost');
   if(!b||c.id!==b.id||ids.has(c.id)||!vector(c.unreleased)||!vector(c.receipted)||!Array.isArray(c.assigned)||c.assigned.length>8||new Set(c.assigned).size!==c.assigned.length||!c.basis||!['legacy-state-consistency','paid-construction'].includes(c.basis.rule)||!['payment-origin-unrecorded','recorded-payment'].includes(c.basis.origin)||!Array.isArray(c.origin)||c.origin.length>90)return false;
   if(c.basis.sourceIdentity!==a.sourceIdentity||c.basis.recipe!==RECLAIM_PROFILE)return false;
   ids.add(c.id);
-  if(c.origin.some(p=>!/^b(?:0|[1-9]\d*)$/.test(p.storeId)||Number(p.storeId.slice(1))>=s.nextId||!['hearth','outpost'].includes(p.kind)||!Number.isInteger(p.x)||!Number.isInteger(p.y)||p.x<0||p.x>=W||p.y<0||p.y>=H||!RESOURCES.includes(p.resource)||!integer(p.amount)||p.amount<=0))return false;
+  if(c.origin.some(p=>!p||typeof p.storeId!=='string'||!/^b(?:0|[1-9]\d*)$/.test(p.storeId)||Number(p.storeId.slice(1))>=s.nextId||!['hearth','outpost'].includes(p.kind)||!Number.isInteger(p.x)||!Number.isInteger(p.y)||p.x<0||p.x>=W||p.y<0||p.y>=H||!RESOURCES.includes(p.resource)||!integer(p.amount)||p.amount<=0))return false;
   if(c.basis.origin==='recorded-payment'&&RESOURCES.some(r=>c.origin.filter(p=>p.resource===r).reduce((n,p)=>n+p.amount,0)!==(COST.outpost[r]||0))||c.basis.origin==='payment-origin-unrecorded'&&c.origin.length)return false;
   if(RESOURCES.some(r=>c.unreleased[r]+c.receipted[r]+s.units.filter(u=>u.reclaim?.claimId===c.id&&u.resource===r).reduce((n,u)=>n+u.cargo,0)!==(COST.outpost[r]||0)))return false;
   if(!b.retiring&&(c.assigned.length||!sameCost(c.unreleased,COST.outpost)||!sameCost(c.receipted,{}))||b.retiring&&!b.done)return false;
@@ -116,12 +118,16 @@ function validReclaim(s){
  if(s.buildings.some(b=>b.kind==='outpost'&&!ids.has(b.id)||b.retiring!==undefined&&(b.retiring!==true||b.kind!=='outpost'))||s.buildings.filter(b=>b.retiring).some(b=>s.storage.stores[b.id]))return false;
  if(s.buildings.some(b=>b.retiring&&b.x>20)&&!s.buildings.some(b=>b.kind==='outpost'&&isStore(b)&&b.x>20))return false;
  if(RESOURCES.some(r=>a.recovered[r]!==a.settled[r]+a.claims.reduce((n,c)=>n+c.receipted[r],0)))return false;
+ const active=a.claims.filter(c=>s.buildings.some(b=>b.id===c.id&&b.retiring));
+ if(a.settledSites+active.length>=LIMIT||RESOURCES.some(r=>a.recovered[r]+active.reduce((n,c)=>n+c.unreleased[r],0)+s.units.filter(u=>u.reclaim&&u.resource===r).reduce((n,u)=>n+u.cargo,0)>=LIMIT))return false;
  const paid=paidVector(s,a.claims);if(!paid||RESOURCES.some(r=>paid[r]!==s.spent[r]))return false;
  return s.units.every(u=>{
   const c=u.reclaim&&a.claims.find(c=>c.id===u.reclaim.claimId),assigned=a.claims.find(c=>c.assigned.includes(u.id));
   if(u.reclaim&&(!c||!s.buildings.some(b=>b.id===c.id&&b.retiring)||u.transfer||!u.cargo||!['return','carryMove','idle'].includes(u.phase)||u.phase==='idle'&&u.path.length))return false;
   if(u.phase==='reclaimPickup'&&(!assigned||u.cargo))return false;
   if(u.order.kind==='reclaim'&&!assigned||u.next?.kind==='reclaim')return false;
+  if(assigned&&(u.cargo?u.reclaim?.claimId!==assigned.id||!['return','idle'].includes(u.phase):!['reclaimPickup','idle'].includes(u.phase)||u.dropoff!==undefined))return false;
+  if(assigned&&u.phase==='idle'&&u.path.length)return false;
   return !assigned||s.buildings.some(b=>b.id===assigned.id&&b.retiring);
  });
 }
@@ -187,7 +193,7 @@ class Camp{
   const q=this.reclaimQuote(ids,id);if(!q.ok)return{error:q.reason};if(q.repeated)return{id,assigned:q.assigned};
   const b=this.s.buildings.find(b=>b.id===id),c=this.reclaimClaim(id);
   b.retiring=true;delete this.s.storage.stores[id];this.syncStock();
-  for(const u of this.s.units.filter(u=>ids.includes(u.id)).sort((a,b)=>a.id.localeCompare(b.id))){this.releaseTransfer(u);this.releaseReclaim(u);c.assigned.push(u.id);u.order={kind:'reclaim',target:id};u.next=null;this.start(u);}c.assigned.sort();this.pruneTransfers();this.updateGoal();return{id,assigned:q.assigned};
+  for(const u of this.s.units.filter(u=>ids.includes(u.id)).sort((a,b)=>a.id.localeCompare(b.id))){this.releaseTransfer(u);this.releaseReclaim(u);c.assigned.push(u.id);u.order={kind:'reclaim',target:id};u.next=null;delete u.dropoff;this.start(u);}c.assigned.sort();this.pruneTransfers();this.updateGoal();return{id,assigned:q.assigned};
  }
  releaseReclaim(u){if(!this.s.reclaim)return;for(const c of this.s.reclaim.claims)c.assigned=c.assigned.filter(id=>id!==u.id);if(u.order.kind==='reclaim')u.order={kind:'idle'};}
  reclaimPickup(u){
