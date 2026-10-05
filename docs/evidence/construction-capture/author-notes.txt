@@ -1,0 +1,63 @@
+Construction057 capture correction — source-only author notes, 2026-10-05
+
+Only edited candidate source: tests/browser/hearth-construction.cjs
+Frozen SHA256: 66691cfd25851102ca426a1b5ad968523a940b20522ada467c5195194bb2ba47
+No execution, parser, test, build, browser, CI, network or commit on M6.
+git diff --check passed. Independent source review and actual Spark evidence
+are still required; this authoring note makes no runtime or pixel acceptance.
+
+Observed056 basis
+Read the owner/visual reviews and both independent failure critics, the current
+harness/view/styles sources, and viewed the actual056 outpost PNG. That PNG is
+already unarmed and its Canvas still draws the fresh camp despite the correctly
+imported earned header/native state. The next ordinary Cancel click timed out.
+Screenshot-triggered lifecycle cancellation is source-supported inference;
+056 did not record the triggering resize/blur/visibility event. No product fix
+is established. Original053 and056 remain FAILED, with056 completing zero of
+the four residual scenarios.
+
+Bounded correction
+- For each guidance kind, select workers and download the ordinary native
+  before checkpoint. Require exact accepted053 raw bytes, source time and Resume.
+  Advance the controlled clock by a fixed120ms with the simulation paused, check
+  Resume and unchanged saved state, then download a render-settled checkpoint.
+  Require exact raw equality and unchanged simulation time before any arming.
+- Keep the existing1440x1100 viewport. Scroll the build/help/Cancel controls into
+  view before arming. Capture the existing viewport with fullPage:false.
+- Immediately before and after the screenshot, atomically observe public DOM
+  plus the native saved state. Require the same Place outpost/workshop guidance
+  with24/32 worker-seconds, exactly that build button aria-pressed, enabled
+  Cancel, Resume, visible document and exact unchanged source state/time.
+  Both the complete guidance and Cancel rectangles must fit inside the actual
+  viewport with positive size, visible styles and no clipped scroll content.
+  After capture, require the entire help string, viewport/scroll values and
+  guidance/Cancel bounds to equal their pre-capture observations.
+- Only after those checks, click ordinary enabled Cancel. Require disabled
+  Cancel, cleared build aria-pressed and neutral guidance. Native after-Cancel
+  Journey bytes and simulation time must exactly equal the original source.
+  The report records the viewport PNG hash, both observation markers and the
+  before/render-settled/after-Cancel native checkpoint references.
+- Passive resize, blur, focus, focusin/out, visibility and visualViewport
+  resize/scroll observations include public guidance/Cancel/build state,
+  viewport, visibility and bounds. They go to lifecycleDiagnostics, separately
+  from trusted gameplay inputs. Collection is enabled only during the two
+  guidance captures (and retained on failure), then disabled before physical
+  scenarios to avoid per-tick diagnostic/report overhead. No production
+  listener is removed, suppressed or replaced.
+
+No rearm, force-click, conditional Cancel skip, extra scope, timeout increase,
+material sampling change, source-state mutation or game edit. The four required
+remaining cases,875-second cap,80ms/<=.100001 material sampling, exact053/035
+input admission, full-mode assertions and residual-only success label remain.
+The added evidence qualifies desktop armed guidance only; it cannot qualify
+touch preview/confirmation, human pacing or campaign acceptance.
+
+Coordinator invocation and read-only inputs are unchanged from056:
+node scripts/check-syntax.cjs && node build.mjs && CONSTRUCTION_GATE=remaining CONSTRUCTION_PRIOR_DIR=/tmp/construction-prior-053 OLD_BASE_DIR=/tmp/construction-witness-035/old-source LEGACY_CONSTRUCTION_WITNESS=/tmp/construction-witness-035/legacy-unfinished-v5.json LEGACY_CONSTRUCTION_WITNESS_REPORT=/tmp/construction-witness-035/report.json node tests/browser/hearth-construction.cjs
+
+Root owns independent review and immutable commit/package/request manifests.
+The shared Spark coordinator alone admits, stages, leases and dispatches.
+Return the complete artifacts/hearth-construction-remaining tree and job
+receipt. Reviewers must inspect actual24/32 guidance pixels and the settled
+earned Canvas, then verify all four scoped endpoints; DOM hashes alone do not
+establish visual acceptance or turn any older failed run into a pass.

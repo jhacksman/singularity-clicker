@@ -1,0 +1,118 @@
+Independent skeptic 1 — actual remaining gate 056 failure
+
+Reviewer: /root/construction_053_timeout_skeptic_one
+Verdict: 056 remains FAILED, with zero completed residual scenarios. Two QA
+capture defects are demonstrated: the supposedly armed PNG is already unarmed,
+and its Canvas still displays the fresh camp instead of the imported earned
+camp. No production save, construction, order or resource defect is established.
+No app/parser/test/build/browser/queue execution or source edits were performed.
+Returned tar/JSON/hash data was read; its two PNGs were viewed at original size.
+
+Exact evidence binding
+Job: singularity-20261005-construction-remaining-056
+Candidate: 0d49f1669f48fe43e6bdaae8a09646ab8f60320f
+Source archive SHA256:
+97f26dbe548362caf3075bf68073d187584d01c0a609e2c9a3e6a73c0f8c20d3
+Exact dispatched tests/browser/hearth-construction.cjs SHA256:
+cae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb
+Report source hashes match all six corresponding clean candidate files.
+Reported built hearth-rts.html SHA256:
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report binding:
+ce9ee4c80669f017c6b7bac47763495d4f83a134c9aa373ff867f31ac5c89280
+
+Under task-2/spark-ci, exact job files have SHA256:
+approved/*.json:
+55c2ee2570c903b5fe04e4274c0f7a62575c8652c42e358014d8460d78ee4c5f
+results/*.json:
+c7c71aba97128dba49e520c247c51231328afc35fa647491f41035da3344cce4
+logs/*.log:
+94a37a079519870b584cd49a4f90d6c4bde31064144d2eb4b7e336ee5b9f9225
+logs/*.container.json:
+0eac05d57682e24297de71132407fdbde0219ac8e0de210a7d0e32a2edd22cc3
+results/*-artifacts.tar (430080 bytes):
+976f65034e82549893cced54d5010feeb34a518b2b6d55423bc182863ceb74bb
+
+Directly read members under artifacts/hearth-construction-remaining/:
+report.json, 43571 bytes:
+46503361426d68b6088b2e7ca062c29dcb1007615b4526d9a739086974f433df
+desktop-armed-outpost-guidance.png, 180406 bytes, 1440x1307:
+2473b11c72c3fa4f159b79407826a8f26a52126a6727fb899fd066a0326baae5
+failure.png, 180404 bytes, 1440x1307:
+b778ca7f46b5134053c16a9ee0dc658f126ba504fa4b689753ac4a7dbff876fe
+Both 00001 imported-earned-start and 00002 desktop-outpost-guidance-before
+JSONs are 4931 bytes, identical to accepted053 checkpoint00016:
+312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+failure.lastSaved exactly equals that decoded state (time90.6, stock116W70S0F).
+
+Earliest observed failure and source explanation
+Fresh syntax gate checked42 files and passed; all four builds completed. The
+browser failed after about8.109s, exit1/completed, no executor error, cleanup
+verified absent. This is not another875s suite-budget failure.
+
+armedGuidance line459 times out5000ms attempting to click disabled#command-cancel.
+Earlier lines451-456 successfully armed Outpost, checked visible help includes
+"After delivery: 24 worker-seconds to install.", checked enabled Cancel, checked
+Resume, and checked unchanged saved camp. The next operation is fullPage:true
+screenshot at458. The returned PNG ALREADY shows generic unarmed command-help
+and visibly disabled Cancel, not the checked24-worker-seconds guidance. The
+failure PNG/body agree. A remaining toast saying "Place outpost" is historical
+feedback, not evidence that the command is still armed.
+
+There are31 recorded input events. The final three are trusted pointerdown,
+pointerup and click on the build BUTTON. No Journey, Cancel, world or key input
+occurs afterward. The logger omits resize, blur, visibilitychange and focus
+events, so it cannot identify the actual cancellation event.
+
+view.js208-211 clears commands for relevant focus/pointer state, blur, hidden
+visibility and resize; commandUI230 disables Cancel when no command/placement/
+gesture remains. Full-page capture is the only intervening awaited operation
+after the successful armed assertions; it produces1440x1307 from a1440x1100
+viewport. A screenshot-triggered layout/resize cancellation is a strong source-
+consistent explanation, NOT directly proven because lifecycle events were not
+captured. Do not claim exact browser resize causality or change production
+cleanup behavior on this evidence alone.
+
+Earlier visual mismatch: no paused render settlement after import
+Both PNGs also show fresh western timber48W/48W, stone60S and villagers beside
+the Hearth, while the header/export correctly shows earned116W70S, exhausted
+d0/d1/d2 and the scouted worker positions. These are not merely changed labels:
+the Canvas frame is stale relative to the successfully imported native state.
+open() pauses the controlled clock BEFORE native import. Import at view.js337
+replaces game, calls ui(), and remains paused; it does not call draw(). draw(now)
+is reached from requestAnimationFrame in frame()340, even while paused, but that
+clock has not been advanced after import. This directly supports a QA render-
+settlement correction. It is not evidence of corrupted resources or lost save.
+Fresh post-fix runtime/pixel evidence is still required to confirm the remedy.
+
+Bounded correction for author review
+1. Before arming, settle rendering with a small fixed p.clock.runFor interval
+   while Pause reads Resume. Perform this after the native earned import and
+   before any placement command. Assert Resume and exact source simulation time
+   before/after; ordinary Journey exports before/after settlement must retain
+   exactly the original bytes. These exports occur before arming because Journey
+   intentionally cancels commands. Do not run the simulation or edit Canvas.
+2. Keep the guidance within the actual viewport and capture fullPage:false (or a
+   bounded viewport clip containing the whole guidance/Cancel area). Check its
+   actual on-screen bounds and readability. Do not expand viewport while armed.
+3. Immediately before AND after each PNG, require the same kind's24/32 guidance,
+   enabled Cancel, armed button/state, Resume and unchanged saved camp/time.
+   Then use the ordinary enabled Cancel click and retain the exact post-cancel
+   Journey equality. No forced click, rearm-after-capture, skipped Cancel or
+   weaker conditional pass; a cleared capture must fail at its own boundary.
+4. Add passive lifecycle/viewport observations around capture: resize, blur,
+   visibilitychange and relevant focus, with command/help/Cancel and viewport
+   observations. These diagnose recurrence without invoking production handlers
+   or synthesizing game state. Native trusted inputs remain the action evidence.
+5. Keep the875s cap,80ms/<=.100001 material sampling, exact053/035 input binding,
+   all four required residual cases and strict completion checks unchanged.
+
+Acceptance boundary
+The outpost24 text was checked transiently before capture but its PNG is invalid
+as armed G02 evidence; workshop32 was never reached. desktopArmedGuidance=[],
+completedScenarios=[], completedResidualScopes=[], transitions=[], workProgress=[]
+and residualStatus=failed. No construction placement/material scope ran. All
+partial-work cancellation/recovery, reclaim relocation and both genuine-v5
+completion/refund scenarios remain outstanding. No residual or G02 acceptance
+can be inferred from056. Preserve its failure and require separately reviewed
+immutable QA correction plus actual Spark execution and independent pixels.

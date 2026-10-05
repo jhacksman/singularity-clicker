@@ -1,0 +1,41 @@
+{
+  "job": "singularity-20261005-construction-remaining-056",
+  "commit": "0d49f1669f48fe43e6bdaae8a09646ab8f60320f",
+  "archiveSHA256": "976f65034e82549893cced54d5010feeb34a518b2b6d55423bc182863ceb74bb",
+  "archiveBytes": 430080,
+  "members": [
+    {
+      "member": "artifacts/hearth-construction-remaining/00001-earned-cancel-partial-work-imported-earned-start.json",
+      "bytes": 4931,
+      "sha256": "312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f"
+    },
+    {
+      "member": "artifacts/hearth-construction-remaining/desktop-armed-outpost-guidance.png",
+      "bytes": 180406,
+      "sha256": "2473b11c72c3fa4f159b79407826a8f26a52126a6727fb899fd066a0326baae5"
+    },
+    {
+      "member": "artifacts/hearth-construction-remaining/failure.png",
+      "bytes": 180404,
+      "sha256": "b778ca7f46b5134053c16a9ee0dc658f126ba504fa4b689753ac4a7dbff876fe"
+    },
+    {
+      "member": "artifacts/hearth-construction-remaining/00002-earned-cancel-partial-work-desktop-outpost-guidance-before.json",
+      "bytes": 4931,
+      "sha256": "312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f"
+    },
+    {
+      "member": "artifacts/hearth-construction-remaining/report.json",
+      "bytes": 43571,
+      "sha256": "46503361426d68b6088b2e7ca062c29dcb1007615b4526d9a739086974f433df"
+    }
+  ],
+  "viewedPNGFiles": [
+    "desktop-armed-outpost-guidance.png",
+    "failure.png"
+  ],
+  "viewedPNGCount": 2,
+  "nativeBeforeEqualsImported": true,
+  "failureLastSavedDeepEqualsImported": true,
+  "nativeAfterCancelExists": false
+}

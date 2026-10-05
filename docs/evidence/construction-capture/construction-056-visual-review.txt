@@ -1,0 +1,97 @@
+Independent construction residual visual review — FAILED056, no visual acceptance
+
+Reviewer: /root/construction_runtime_visual
+Job: singularity-20261005-construction-remaining-056
+Candidate: 0d49f1669f48fe43e6bdaae8a09646ab8f60320f
+Verdict: FAILED BEFORE ALL FOUR REMAINING FLOWS; GUIDANCE PIXELS INSUFFICIENT.
+
+The run ended after8.109seconds with a native click timeout on disabled
+#command-cancel at armedGuidance line459, caller556. It had completed42-file syntax
+and all four builds. The first desktop outpost guidance screenshot was written,
+but it does not visually show the requested armed24-worker-second guidance.
+No workshop guidance image, after-Cancel native export or remaining gameplay
+endpoint exists.056 provides no residual-flow or G02 visual acceptance. The
+frozen053 overallFAILED/partial-visual verdict remains unchanged.
+
+Exact identity and custody
+Source archive SHA256:
+97f26dbe548362caf3075bf68073d187584d01c0a609e2c9a3e6a73c0f8c20d3
+Harness SHA256:
+cae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb
+Submitted manifest SHA256:
+9c69cf8f1b3f75155cc6b49c21e99ebf8b4fe8948b16af5a93fe15580a502cc8
+Report source/build manifest matches these expected inputs and unchanged engine,
+view, art/build; built hearth-rts.html SHA256:
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report binding:
+ce9ee4c80669f017c6b7bac47763495d4f83a134c9aa373ff867f31ac5c89280
+Actual archive430080bytes SHA256:
+976f65034e82549893cced54d5010feeb34a518b2b6d55423bc182863ceb74bb
+Result JSON SHA256:
+c7c71aba97128dba49e520c247c51231328afc35fa647491f41035da3344cce4
+Log SHA256:
+94a37a079519870b584cd49a4f90d6c4bde31064144d2eb4b7e336ee5b9f9225
+Result records gb10-02,exit1,completed,no executor error,cleanup verified/absent.
+Report43571bytes SHA256:
+46503361426d68b6088b2e7ca062c29dcb1007615b4526d9a739086974f433df
+
+All five regular archive members were extracted by explicit parent/path checks
+into task3/construction-056-visual-evidence, retaining exact bytes. No symlink or
+nested unexpected member was followed. Per-member names/sizes/hashes and viewed
+image names are in construction-056-visual-member-bindings.json, SHA256:
+d00b8d21d743f19fc6778f7365d6a53c09036895c7d6a290713aaeed2ee38e02
+
+Actual viewed pixels
+- desktop-armed-outpost-guidance.png,180406bytes,SHA256
+  2473b11c72c3fa4f159b79407826a8f26a52126a6727fb899fd066a0326baae5
+- failure.png,180404bytes,SHA256
+  b778ca7f46b5134053c16a9ee0dc658f126ba504fa4b689753ac4a7dbff876fe
+
+Both frames show paused state,116free wood,70stone,0food,4idle and4selected workers.
+The Outpost construction button is visually highlighted/focused; this does not
+establish an armed command. The bottom command tray's Cancel button is dimmed,
+and its help has already returned to neutral "Select villagers, then choose a
+command" text. Neither image displays "After delivery:24worker-seconds to
+install." No32-worker-second workshop image exists. The map toast and sidebar
+history still say Place outpost/touch previews/Confirm site; those historical
+notices cannot establish current command state.
+
+The canvas depicts western deposits48W,48W and60S with workers next to the hearth,
+while the top resource header reflects the earned imported state. The two native
+Journey files both hash312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+(4931bytes), exactly matching the pinned053 earned/scouted input. They record all
+three western deposits exhausted and actors at6,16 /7,16 /6,17 /7,17, time90.6.
+The failure.lastSaved object is deeply equal to those native states. Thus the
+pictured map and the saved camp are visibly out of sync at capture. A stale
+paint under the frozen test clock is one plausible explanation, but the pixels
+alone do not establish when or why the mismatch occurred or prove a product
+persistence failure. Separate critics own the resize/blur/screenshot causality
+trace; this reviewer has not executed a reproduction.
+
+The source sequence before the screenshot asserts the complete24-second help,
+enabled Cancel, paused state and unchanged saved camp. Failure after that point
+shows that those earlier assertions did not preserve the intended screenshot
+state. The report appends desktopArmedGuidance only after successful Cancel and
+export, so it contains no completed guidance record. No retained native
+post-Cancel download exists; equality of failure.lastSaved does not substitute
+for that missing required action and download.
+
+Scope boundary
+Report status:failed; gate:remaining; scope:residual-only.
+Selected scenarios:partial-work cancellation,reclaim relocation,genuine035v5
+completion,genuine035v5cancel. Only the first scenario was opened, and both
+completedScenarios and completedResidualScopes are empty. No partial-work site
+was yet placed, cancelled or recovered. No relocation or legacy migration was
+run. G01 remains prior053 evidence, and neither desktop G02 nor touch-preview
+qualification follows from056. No human-pacing,physical-device,enjoyment or
+full-campaign claim is made.
+
+Visible prior caveats persist: the fixed bottom tray overlaps lower roster/card
+content; the historical placement notice differs from neutral current controls.
+This report does not invent a separate input failure from that overlap.
+
+No production/source,manifest,queue,approval,package,publication or deployment
+changes. Wrote only this report, selected-member bindings and exact returned
+local evidence copies. M6 work was source/evidence reading,hashing,JSON/tar data
+analysis and view_image on the two returned PNGs. No repository execution,
+parser/test/build/browser,media decode,remote dispatch,rerun or timeout changes.

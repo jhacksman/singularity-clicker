@@ -1,0 +1,147 @@
+Independent skeptic 2 — construction remaining 056 early failure
+
+Reviewer: /root/construction_053_timeout_skeptic_two
+Candidate: 0d49f1669f48fe43e6bdaae8a09646ab8f60320f
+Job: singularity-20261005-construction-remaining-056
+
+Verdict
+
+Keep 056 FAILED, with zero of four residual scenarios accepted. The armed
+outpost guidance screenshot is already neutral: its Cancel control is disabled
+and its guidance no longer displays the required installation text. The harness
+then attempts an ordinary click on that disabled control and times out. This
+is an evidence-capture assumption failure before any residual placement or
+construction. No production gameplay fix is established.
+
+The screenshot path has a concrete, pinned-source resize mechanism that could
+invoke the game's documented input cancellation. The actual run did not record
+resize, blur or visibility events, so the triggering lifecycle event cannot be
+declared directly proven. A narrow QA correction is justified: settle the paused
+import before arming, capture the existing viewport, and assert armed state both
+before and after capture. Preserve ordinary cancellation and exact save guards.
+
+Evidence read and inspected
+
+056 syntax checked 42 files and all four builds completed. Result records exit1
+after 8.108903408050537 seconds, no executor error, cleanup verified absent.
+Result SHA256:
+c7c71aba97128dba49e520c247c51231328afc35fa647491f41035da3344cce4
+Log SHA256:
+94a37a079519870b584cd49a4f90d6c4bde31064144d2eb4b7e336ee5b9f9225
+Artifact archive SHA256:
+976f65034e82549893cced54d5010feeb34a518b2b6d55423bc182863ceb74bb
+Returned report, 43,571 bytes, SHA256:
+46503361426d68b6088b2e7ca062c29dcb1007615b4526d9a739086974f433df
+Harness SHA256 recorded in report:
+cae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb
+Built RTS HTML SHA256 recorded in report:
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report source/build binding:
+ce9ee4c80669f017c6b7bac47763495d4f83a134c9aa373ff867f31ac5c89280
+
+Both actual returned PNGs were viewed at original resolution, directly from
+archive bytes copied into construction-056-skeptic-two-evidence/:
+desktop-armed-outpost-guidance.png, 180,406 bytes, SHA256
+2473b11c72c3fa4f159b79407826a8f26a52126a6727fb899fd066a0326baae5
+failure.png, 180,404 bytes, SHA256
+b778ca7f46b5134053c16a9ee0dc658f126ba504fa4b689753ac4a7dbff876fe
+
+Both exported checkpoints are 4,931 bytes and match the exact accepted053 input:
+312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+The report has one opened scenario, zero completed scenarios/residual scopes,
+two checkpoints, no material/work transitions, no page errors, and an empty
+desktopArmedGuidance array. No residual flow or G02 visual acceptance follows
+from the passed pre-screenshot DOM assertions.
+
+Precise early fault
+
+tests/browser/hearth-construction.cjs:446-468 arms outpost, verifies guidance
+contains the 24-worker-second text and Cancel is enabled, then checks the saved
+camp. Line458 takes a fullPage screenshot. Line459 subsequently tries Cancel
+and fails after its 5-second actionability wait. Those earlier assertions must
+have returned successfully to reach the reported failing line.
+
+The first PNG already contains neutral command guidance and disabled Cancel.
+Its visible placement toast is only a previous command message. The highlighted
+build control alone is not evidence that command mode remains armed. The failure
+PNG and body show the same neutral guidance. Neither screenshot shows the
+required 24-worker-second armed guidance; no workshop screenshot was reached.
+
+All31 recorded input events end at the trusted build-button click. There is no
+Cancel click or later Journey input. The event logger at line284 records only
+pointer/key/click/change events; it cannot exclude resize, blur or visibility
+cancellation. Game view.js:209-211 cancels input on those lifecycle conditions;
+line230 disables Cancel when no command/placement/pointer/Space state remains.
+
+Pinned screenshot implementation supports the resize explanation
+
+Playwright1.63 screenshotter.ts:196-205 distinguishes full-document captures from
+viewport captures. This returned image is 1440x1307, larger than the configured
+1440x1100 viewport. crPage.ts:273 passes captureBeyondViewport for that case.
+Chromium153 page_handler.cc:1414-1437 temporarily applies a 1x1 emulated view in
+that path, then reapplies parameters;1441 changes view size and1768-1772 restores
+it afterward. This connects the screenshot operation to the game's resize
+cancel listener, but is source-supported inference, not a captured056 event.
+
+Primary sources, read only:
+https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/src/server/screenshotter.ts#L196
+https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/src/server/chromium/crPage.ts#L273
+https://github.com/chromium/chromium/blob/153.0.8010.12/content/browser/devtools/protocol/page_handler.cc#L1414
+
+Second concern: paused imported canvas was stale
+
+Both PNGs draw the original nearby actors and western deposits labelled48W,
+48W and60S. The header and exact native imported checkpoint instead represent
+116W/70S earned stock, exhausted d0/d1/d2 and scouted/prepositioned actors.
+This is a real visual mismatch in the evidence; the screenshots cannot qualify
+the imported map state merely because the header is correct.
+
+The harness open():286-292 freezes the controlled clock before the native
+import. The import handler view.js:337 replaces game, keeps paused=true and
+calls ui(), but does not draw the canvas. Only frame():340 calls draw; drawing
+is unconditional while simulation ticking requires !paused. Freezing the clock
+without subsequent advancement can leave the canvas on the earlier initial frame.
+This source explains the actual mismatch without requiring a game-state fault.
+
+Bounded QA correction and controls
+
+1. Before arming, let a short bounded controlled-clock interval run with Resume
+   asserted and the Journey dialog closed. Do not toggle Resume or call hidden
+   game methods. Compare native export bytes and simulation time before/after
+   this settle; both must exactly match the accepted input. This permits normal
+   requestAnimationFrame drawing while requiring zero game progress.
+2. Establish the final viewport/scroll position before arming. Capture with
+   fullPage:false. Verify the guidance and Cancel bounds are inside that
+   viewport; isVisible alone does not prove that text is in the captured pixels.
+3. Immediately before and after the screenshot, require the expected placement
+   kind, exact24/32 text, enabled Cancel, matching build aria-pressed state,
+   Resume, unchanged simulation time and saved state. A cleared mode must fail
+   before any attempt to re-arm or cancel it. Do not re-arm to paper over a
+   screenshot that captured neutral state.
+4. Add passive resize/blur/focus/visibility logging and pre/post capture markers,
+   recording viewport size and public command/help state. Keep these diagnostics
+   separate from trusted gameplay-input requirements. Do not suppress listeners,
+   dispatch synthetic commands, force-click disabled controls, or increase waits.
+5. Complete a real Cancel click after a valid screenshot. Require disabled/neutral
+   state afterward and exact native Journey bytes equal to before arming. Record
+   and hash both kind-specific PNGs only alongside successful full assertions.
+6. Independent pixel review must actually see24 and32 guidance in those frames,
+   and the imported map should now show EMPTY western deposits and its actual
+   scouted state. A changed PNG hash or unchanged header alone is insufficient.
+
+False-pass risks to reject
+
+Skipping Cancel because it became disabled, force-clicking it, accepting the
+pre-screenshot help string as screenshot proof, checking only old placement
+toast/highlight, or re-arming after screenshot without recapturing would hide
+this failure. An ordinary export can stay byte-identical because transient
+command mode is not saved; raw-save equality alone does not establish that
+Cancel was exercised or that the screenshot contains armed guidance.
+
+The existing failed056 outcome is correct and must remain. After the bounded
+QA change, all four original residual scopes, their endpoint/custody/work and
+legacy checks, and independent artifact review remain required. Desktop armed
+guidance cannot qualify touch preview/confirmation. No source, test, browser,
+parser, build, remote execution or queue mutation was performed by this reviewer.
+Only local text/JSON/archive/hash review, PNG viewing and primary-source web
+reads were performed.

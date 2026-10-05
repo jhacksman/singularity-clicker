@@ -1,0 +1,38 @@
+Owner source review — 2026-10-05
+
+Read the entire frozen correction at harness SHA-256
+66691cfd25851102ca426a1b5ad968523a940b20522ada467c5195194bb2ba47,
+the actual 056 result/log/native bytes/visual review, and both complete failure
+critic reports. Directly viewed the returned armed-outpost PNG. It is unarmed
+and still depicts the pre-import canvas, matching the independent findings.
+
+The correction changes only guidance capture and separate passive diagnostics
+in tests/browser/hearth-construction.cjs. The new pre/post checks match actual
+commandUI text, aria-pressed state and Cancel behavior. CSS permits wrapped
+guidance and the button to fit in the existing viewport; actual readability
+still needs returned pixel review. A 120ms ordinary frame interval is gated by
+Resume and exact native save/time comparisons. No hidden draw/game method or
+synthetic state is introduced.
+
+The screenshot uses fullPage:false and preserves identical measured viewport,
+scroll, help and bounds. Cleared mode fails before Cancel, rather than rearming
+or force-clicking. The ordinary Cancel and exact native export remain required.
+Lifecycle diagnostics are passive and separate from trusted input events; their
+capture-phase snapshots may precede app handlers and must be interpreted in
+that order. Diagnostics are disabled before material scenarios.
+
+Separate final verification fab5f084a5de6f7600d77b31e80ea8dc3ff272ba40328291de24a7266c0b8558
+found no source blocker, with independent helper/lifecycle and CSS/geometry
+reviews. Root read that report in full. Root Git whitespace inspection also
+passed. No syntax parser, build, test, browser or benchmark ran on M6.
+
+No production, art, build, material sampling, timeout, input pin, scenario or
+endpoint was changed. All four residual flows and both guidance captures still
+require actual accepted Spark execution. Original 053 and 056 remain failed;
+056's actual input/mount/cleanup and syntax/build evidence remains separately
+attributed. 055 allocation stays held until the corrected residual run passes
+numeric/custody and independent pixel review.
+
+Root may freeze this source and submit a new reviewed:false request. The shared
+Spark coordinator alone admits, stages, leases and dispatches. No push, external
+publication, Library replacement, deployment or main merge is included.

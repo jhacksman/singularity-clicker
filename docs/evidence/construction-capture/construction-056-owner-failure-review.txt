@@ -1,0 +1,51 @@
+Independent actual returned-evidence review: construction remaining056
+2026-10-05 UTC. Read-only source/log/data/hash/tar review on M6; no execution.
+
+BLOCKER / VERDICT: FAILED. Job singularity-20261005-construction-remaining-056 returned exit1 after8.1089035 seconds. None of its four remaining scenarios completed. No G02 guidance acceptance or combined construction acceptance is granted.055 remains held. Preserve056 and original053 as failed attempts; their syntax/build/input evidence does not turn either whole browser gate into a pass.
+
+Actual failure and independently checked boundary
+Full log:42-file syntax gate PASS, then all four builds, then locator.click Timeout5000ms for #command-cancel, resolved disabled through its retry window. Stack: armedGuidance at pinned harness line459, caller556. Report statusfailed/residualStatusfailed, one opened earned-cancel-partial-work scenario, zero completedScenarios, zero completedResidualScopes, empty desktopArmedGuidance, no material/work transitions, and only two native checkpoints. This failure occurred before place() and before any remaining construction work, recovery or historical scenario.
+
+Pinned0d49 source establishes an enabled-Cancel assertion at line455, awaited fullPage screenshot at458, and attempted native Cancel click at459. Therefore the earlier enabled assertion cannot establish the button's post-capture state. A separate read-only source/log critic corroborated this sequence. The production view has blur, hidden-visibility and resize handlers that call cancelInput(true,true) and ui(); that clears mode/placement/pointer state and commandUI disables Cancel. Screenshot-induced resize is a plausible specific explanation, but the actual triggering event is not recorded: telemetry omits resize/blur/visibility. Ordinary focus movement alone is insufficient because the focus handler clears commands only with an existing pointer or open dialog. No event cause is asserted as proven.
+
+The separately assigned pixel reviewer viewed both actual returned PNGs and reported generic unarmed help, dim Cancel and no24-worker-second text; there is no workshop PNG. The first image also retains fresh-map deposit/worker pixels despite DOM116W70S and correctly imported earned bytes. This is an observed pixel/state mismatch, consistent with stale rendering under the frozen clock, but its exact cause is likewise not established here. The failure body is collected after a second fullPage screenshot and cannot retroactively authenticate the first capture. The stale Place outpost notification is not proof of currently armed mode. This review itself decoded no media.
+
+Separate visual report construction-056-visual-review.txt SHA7a0581218ba128f62b9415c5a794d1699ecac4be1478e8d5ac1733ebc953aaa7; its five-member artifact bindings construction-056-visual-member-bindings.json SHAd00b8d21d743f19fc6778f7365d6a53c09036895c7d6a290713aaeed2ee38e02. Both PNGs were viewed there; no native after-Cancel export exists.
+
+Limited earned-input/state evidence
+The only outputs before failure are imported-earned-start and desktop-outpost-guidance-before. Both are4931 bytes and independently hash312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f, exactly original053 checkpoint00016. They retain t90.59999999999913,116W/70S, zero spending/cargo/site ledger and four idle workers. The report lastSaved has the same shown finite state and no construction. These two native files show admission/import fidelity, not completion of a remaining mechanic. errors:[] is not a suite-pass signal.
+
+Source, admission and execution attribution
+- Commit0d49f1669f48fe43e6bdaae8a09646ab8f60320f; source archive3297280B/SHA97f26dbe548362caf3075bf68073d187584d01c0a609e2c9a3e6a73c0f8c20d3; exact harnesscae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb.
+- Pendingmanifest9c69cf8f1b3f75155cc6b49c21e99ebf8b4fe8948b16af5a93fe15580a502cc8 became approved55c2ee2570c903b5fe04e4274c0f7a62575c8652c42e358014d8460d78ee4c5f through only reviewed/approval_notes changes. Exact command/source/input groups are unchanged.
+- Root admission review SHA2a26b0b8e5ded0133f92d39164d5fabc1dbf552ae46ddd2039066a027b011ead; independent adapter/static review90fb00c267832f9c94ef55717ac0903c38e7c0dc5d13cdef03c7e4d2f4bbf5c3. Actual enabled adapter bytes rehash to reviewed runner07ae1449bf09cda3337392146852e8d1a74c2c4e0d7e652381ca01bfdded7c65 and dispatchere19945096f5c67446a7fd79dc0aab71589b5f9c5720c8224fdb1a55162ccd56f. Static admission did not guarantee browser success.
+- Hostgb10-02, image sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e. Result started1791160903.626022, finished1791160911.7349255; exit_code/execution_exit_code1, reason/execution_reasoncompleted, executor_errornull, cleanup_verifiedtrue, cleanup_stateabsent, cleanup_errors[]. Container records exited, Runningfalse, OOMKilledfalse, Pid0, ExitCode1 and Error empty. No OOM, global875s timeout or simulation softlock was reported.
+- Container command equals approved command: node scripts/check-syntax.cjs && node build.mjs && CONSTRUCTION_GATE=remaining CONSTRUCTION_PRIOR_DIR=/tmp/construction-prior-053 OLD_BASE_DIR=/tmp/construction-witness-035/old-source LEGACY_CONSTRUCTION_WITNESS=/tmp/construction-witness-035/legacy-unfinished-v5.json LEGACY_CONSTRUCTION_WITNESS_REPORT=/tmp/construction-witness-035/report.json node tests/browser/hearth-construction.cjs
+- Report source/build bindingce9ee4c80669f017c6b7bac47763495d4f83a134c9aa373ff867f31ac5c89280 matches candidate manifest values, including engineabfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b and viewa2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955. Prior053 records retain originalStatusfailed and original52d8dd56... binding; no prior G01/event data is relabeled current.
+
+Actual input custody
+Read all returned input-provenance receipt entries. Exactly25 files/13,367,224 bytes match the approved two groups and independently accepted original bytes: three053 files (failed report, earned00013, scouted00016), and the complete22-file035 historical tree. Original053 result SHA bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9/exit1 and035result4fbe0efe7c59b8e29c7d0311bd0f243e6ad1488d8c27ce01aefc9c87658cd5cf/exit0 are preserved. Both producer commits/sourcearchive hashes agree. No input omission or changed destination found.
+
+Actual container mount records independently identify private job paths inputs/0 -> /tmp/construction-prior-053 and inputs/1 -> /tmp/construction-witness-035, both ReadOnlytrue and RWfalse. Writable/work is a different private source directory. Thus the requested read-only boundaries are supported by actual mount metadata, not merely the self-described receipt. Inputs were not re-generated by this review. Full historical runtime assertions were not reached despite the files being supplied.
+
+Fresh build evidence, independently rehashed returned bytes
+index.html198536B:925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd
+hearth.html83881B:a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+agriculture.html52583B:690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+hearth-rts.html129904B:588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+The log proves fresh syntax and build commands completed; returned bytes match previous unchanged production builds. Browser gate remains failed.
+
+Immutable actual record hashes (task-2/spark-ci; prefix singularity-20261005-construction-remaining-056)
+results/<prefix>.json:c7c71aba97128dba49e520c247c51231328afc35fa647491f41035da3344cce4
+logs/<prefix>.log:94a37a079519870b584cd49a4f90d6c4bde31064144d2eb4b7e336ee5b9f9225
+logs/<prefix>.transport.log:e1a097a0d0d1a8e68dd9a3dbadfdcee200ea264e981b02da21e6cc4643660b5d
+logs/<prefix>.container.json:0eac05d57682e24297de71132407fdbde0219ac8e0de210a7d0e32a2edd22cc3
+results/<prefix>-artifacts.tar:976f65034e82549893cced54d5010feeb34a518b2b6d55423bc182863ceb74bb
+results/<prefix>-ci-output.tar:dbf272608e205dfa3a099aeecf444c8c9b6f370aa1b6d610a337216b079ca5ad
+results/<prefix>-artifact-members.json:51612dc33de211f01c984eec268f5cd4ed422c78028658510c7346685c44090b
+results/<prefix>-remote-provenance.json:71a398bfce6599dcb10eef4b2d89f61755615599abae718b33ba40ed8fca63f4
+results/<prefix>-built-dist-provenance.json:ae7b97ae169d5f8fd9c8cb599c69e2d92744295e67ec5f1cb978261f16384624
+Exact report member43571B:46503361426d68b6088b2e7ca062c29dcb1007615b4526d9a739086974f433df
+Exact input receipt member9335B:05ed2c03644296be454cce100366e0d860cb9ac06df9c8f95ac04cdf7dcfba2a
+
+Only exact inventoried JSON/receipt members were extracted to owned task3/construction-056-review; no script/import/parser ran. Remote-provenance reports16matching entries and no mismatches, but this is returned coordinator evidence rather than a new remote observation by this reviewer. Principal records, selected data and HTML were independently rehashed. Cleanup is accepted within returned result/container evidence, not through lease access. Any correction must be separately reviewed and submitted under a fresh immutable source/job; actual remaining gates, pixels and055allocation are still outstanding. No source/QA edit, rerun, larger timeout, duplicate dispatch, browser/media decode or publication occurred in this review.

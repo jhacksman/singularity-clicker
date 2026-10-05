@@ -92,7 +92,7 @@ fs.mkdirSync(DIR, {recursive: true});
     completedScenarios: [], completedResidualScopes: [],
     method: REMAINING ? 'Residual-only: native imports of fixed ordinary053 earned exports; partial-work cancellation/replacement, reclaim relocation and genuine035 v5 complete/cancel; controlled browser clock'
       : 'Trusted ordinary UI, fresh earned main journey, exact Journey imports for labeled comparisons, controlled browser clock',
-    scenarios: [], checkpoints: [], transitions: [], workProgress: [], toolWorkProgress: [], installationStatusTransitions: [], installationStatusWitness: null, events: [], legacyUnfinished: {status: 'pending',
+    scenarios: [], checkpoints: [], transitions: [], workProgress: [], toolWorkProgress: [], installationStatusTransitions: [], installationStatusWitness: null, events: [], lifecycleDiagnostics: [], legacyUnfinished: {status: 'pending',
       reason: 'Supply LEGACY_CONSTRUCTION_WITNESS, LEGACY_CONSTRUCTION_WITNESS_REPORT and OLD_BASE_DIR from a separate ordinary pinned-v5 Spark run'}, limits: [
       'No human pacing, enjoyment, physical device or full-campaign acceptance claim',
       'Detailed current/legacy fault fixtures live in bootstrap, recovery and navigation browser suites',
@@ -166,7 +166,11 @@ fs.mkdirSync(DIR, {recursive: true});
     assert.equal(sha(fs.readFileSync(process.env.LEGACY_CONSTRUCTION_WITNESS_REPORT)), WITNESS_035.reportSHA256);
     return {earned, sameStart};
   }
-  async function events(p) { report.events.push(...(await p.evaluate(() => window.__constructionInputs.splice(0))).map(e => ({binding, scenario: active.label, ...e}))); }
+  async function events(p) {
+    const rows = await p.evaluate(() => ({inputs: window.__constructionInputs.splice(0), diagnostics: window.__constructionLifecycle?.splice(0) || []}));
+    report.events.push(...rows.inputs.map(e => ({binding, scenario: active.label, ...e})));
+    report.lifecycleDiagnostics.push(...rows.diagnostics.map(e => ({binding, scenario: active.label, ...e})));
+  }
   async function exported(p, label = 'sample') {
     guard(); if (!await p.locator('#dialog').evaluate(d => d.open)) await p.locator('#journey').click();
     const waiting = p.waitForEvent('download'); await p.locator('#export').click();
@@ -282,6 +286,35 @@ fs.mkdirSync(DIR, {recursive: true});
     const context = await browser.newContext({viewport: {width: 1440, height: 1100}}); contexts.push(context);
     context.setDefaultTimeout(5000);
     await context.addInitScript(() => { window.__constructionInputs = []; for (const type of ['pointerdown', 'pointerup', 'click', 'contextmenu', 'keydown', 'keyup', 'change']) document.addEventListener(type, e => window.__constructionInputs.push({type, target: e.target.closest?.('[data-unit]')?.dataset.unit || e.target.id || e.target.tagName, key: e.key || null, button: e.button, trusted: e.isTrusted}), true); });
+    if (REMAINING) await context.addInitScript(() => {
+      // Passive public-DOM observations only; these never count as gameplay inputs.
+      window.__constructionLifecycle = []; window.__constructionCaptureDiagnostics = false; let sequence = 0;
+      const box = selector => {
+        const node = document.querySelector(selector); if (!node) return null;
+        const r = node.getBoundingClientRect(), css = getComputedStyle(node);
+        return {left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
+          visible: css.display !== 'none' && css.visibility === 'visible' && Number(css.opacity) > 0,
+          clientWidth: node.clientWidth, clientHeight: node.clientHeight, scrollWidth: node.scrollWidth, scrollHeight: node.scrollHeight};
+      };
+      window.__constructionObserve = (type, target = null, nativeEventTrusted = null, marker = null) => {
+        const row = {sequence: ++sequence, type, target, nativeEventTrusted, marker, clockMilliseconds: performance.now(),
+          visibility: document.visibilityState, hasFocus: document.hasFocus(), activeElement: document.activeElement?.id || document.activeElement?.tagName || null,
+          viewport: {width: innerWidth, height: innerHeight, outerWidth, outerHeight, devicePixelRatio, scrollX, scrollY,
+            visual: window.visualViewport ? {width: visualViewport.width, height: visualViewport.height, offsetLeft: visualViewport.offsetLeft,
+              offsetTop: visualViewport.offsetTop, pageLeft: visualViewport.pageLeft, pageTop: visualViewport.pageTop, scale: visualViewport.scale} : null},
+          help: document.querySelector('#command-help')?.innerText || null, cancelEnabled: document.querySelector('#command-cancel')?.disabled === false,
+          pause: document.querySelector('#pause')?.innerText || null,
+          pressedBuilds: [...document.querySelectorAll('[data-build][aria-pressed="true"]')].map(b => b.dataset.build),
+          bounds: {help: box('#command-help'), cancel: box('#command-cancel')}};
+        window.__constructionLifecycle.push(row); return row;
+      };
+      const observe = e => { if (window.__constructionCaptureDiagnostics) window.__constructionObserve(e.type,
+        e.target?.id || e.target?.tagName || (e.target === window ? 'window' : 'document'), e.isTrusted); };
+      for (const type of ['resize', 'blur', 'focus']) window.addEventListener(type, observe, {capture: true, passive: true});
+      for (const type of ['visibilitychange', 'focusin', 'focusout']) document.addEventListener(type, observe, {capture: true, passive: true});
+      if (window.visualViewport) for (const type of ['resize', 'scroll']) visualViewport.addEventListener(type,
+        e => { if (window.__constructionCaptureDiagnostics) window.__constructionObserve('visualViewport-' + e.type, 'visualViewport', e.isTrusted); }, {passive: true});
+    });
     const p = await context.newPage(); active = {label, page: p}; p.on('pageerror', e => report.errors.push({scenario: label, error: e.message}));
     await p.clock.install({time: new Date('2026-01-01T00:00:00Z')}); await p.goto('http://127.0.0.1:' + server.address().port + '/hearth-rts.html');
     await p.locator('[data-unit="u0"]').waitFor(); if (await p.locator('#pause').innerText() === 'Pause') await p.locator('#pause').click();
@@ -445,27 +478,60 @@ fs.mkdirSync(DIR, {recursive: true});
   }
   async function armedGuidance(p, source) {
     report.desktopArmedGuidance = [];
+    await p.evaluate(() => { window.__constructionCaptureDiagnostics = true; });
+    async function observed(kind, marker, expected) {
+      const result = await p.evaluate(({key, marker}) => ({dom: window.__constructionObserve('capture-marker', null, null, marker),
+        saved: JSON.parse(localStorage.getItem(key))}), {key: KEY, marker: kind + '-' + marker});
+      const dom = result.dom;
+      assert.ok(dom.help?.startsWith('Place ' + kind + ' at ')); assert.ok(dom.help.includes('After delivery: ' + WORK[kind] + ' worker-seconds to install.'));
+      assert.equal(dom.cancelEnabled, true); assert.deepEqual(dom.pressedBuilds, [kind]); assert.equal(dom.pause, 'Resume');
+      assert.equal(dom.visibility, 'visible'); assert.deepEqual(result.saved, source.s, 'Armed capture preserves the exact paused imported camp');
+      assert.equal(result.saved.time, source.s.time); assert.equal(dom.viewport.width, 1440); assert.equal(dom.viewport.height, 1100);
+      for (const [name, rect] of Object.entries(dom.bounds)) {
+        assert.ok(rect?.visible && rect.width > 0 && rect.height > 0, 'Visible armed ' + name);
+        assert.ok(rect.left >= 0 && rect.top >= 0 && rect.right <= dom.viewport.width && rect.bottom <= dom.viewport.height,
+          'The complete armed ' + name + ' is inside the captured viewport');
+        assert.ok(rect.scrollWidth <= rect.clientWidth && rect.scrollHeight <= rect.clientHeight, 'No clipped armed ' + name + ' content');
+      }
+      if (expected) {
+        assert.equal(dom.help, expected.help, 'Screenshot preserves the complete same-kind armed guidance');
+        assert.deepEqual(dom.viewport, expected.viewport, 'Screenshot retains the established viewport and scroll position');
+        assert.deepEqual(dom.bounds, expected.bounds, 'Screenshot retains the full guidance and Cancel bounds');
+      }
+      return dom;
+    }
     for (const kind of ['outpost', 'workshop']) {
       await all(p); const before = await exported(p, 'desktop-' + kind + '-guidance-before');
-      assert.equal(before.raw, source.raw); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      assert.equal(before.raw, source.raw); assert.equal(before.s.time, source.s.time); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      // Let the ordinary frame loop draw the imported camp while the simulation stays paused.
+      await p.clock.runFor(120); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      assert.deepEqual(await saved(p), source.s);
+      const settled = await exported(p, 'desktop-' + kind + '-guidance-render-settled');
+      assert.equal(settled.raw, before.raw, 'Paused rendering retains exact native Journey bytes'); assert.equal(settled.s.time, before.s.time);
+      assert.equal(await p.locator('#pause').innerText(), 'Resume'); assert.deepEqual(p.viewportSize(), {width: 1440, height: 1100});
+      // Establish all scrolling before arming; no viewport adjustment is allowed during capture.
+      await p.locator('[data-build="' + kind + '"]').scrollIntoViewIfNeeded(); await p.locator('#command-help').scrollIntoViewIfNeeded();
+      await p.locator('#command-cancel').scrollIntoViewIfNeeded();
+      await p.evaluate(kind => window.__constructionObserve('capture-marker', null, null, kind + '-viewport-established-before-arm'), kind);
       await p.locator('[data-build="' + kind + '"]').click();
-      await p.locator('#command-help').scrollIntoViewIfNeeded(); assert.equal(await p.locator('#command-help').isVisible(), true);
-      const help = await p.locator('#command-help').innerText();
-      assert.ok(help.includes('Place ' + kind)); assert.ok(help.includes('After delivery: ' + WORK[kind] + ' worker-seconds to install.'));
-      assert.equal(await p.locator('#command-cancel').isEnabled(), true); assert.equal(await p.locator('#pause').innerText(), 'Resume');
-      assert.deepEqual(await saved(p), before.s, 'Arming desktop guidance does not change the saved camp or simulation time');
+      const beforeCapture = await observed(kind, 'before-screenshot');
       // Journey clears input, so the armed DOM and PNG are captured directly first.
-      const filename = 'desktop-armed-' + kind + '-guidance.png'; await p.screenshot({path: path.join(DIR, filename), fullPage: true});
+      const filename = 'desktop-armed-' + kind + '-guidance.png'; await p.screenshot({path: path.join(DIR, filename), fullPage: false});
+      const afterCapture = await observed(kind, 'after-screenshot', beforeCapture);
       await p.locator('#command-cancel').click(); assert.equal(await p.locator('#command-cancel').isDisabled(), true);
+      assert.equal(await p.locator('[data-build="' + kind + '"]').getAttribute('aria-pressed'), 'false');
+      assert.ok(!(await p.locator('#command-help').innerText()).startsWith('Place '));
       const after = await exported(p, 'desktop-' + kind + '-guidance-after-cancel');
       assert.equal(after.raw, before.raw, 'Cancel command retains the exact Journey bytes after armed guidance');
       assert.equal(after.s.time, source.s.time); assert.equal(await p.locator('#pause').innerText(), 'Resume');
-      report.desktopArmedGuidance.push({binding, scenario: active.label, kind, help, workerSeconds: WORK[kind],
-        screenshot: {file: filename, sha256: sha(fs.readFileSync(path.join(DIR, filename)))},
+      report.desktopArmedGuidance.push({binding, scenario: active.label, kind, help: beforeCapture.help, workerSeconds: WORK[kind],
+        screenshot: {file: filename, sha256: sha(fs.readFileSync(path.join(DIR, filename))), fullPage: false}, beforeCapture, afterCapture,
+        pausedRenderSettle: {requestedClockMilliseconds: 120, before: before.file, after: settled.file, simulationTime: settled.s.time},
         prior053Checkpoint: source.file, prior053InputSHA256: sha(source.raw), before: before.file, afterCancel: after.file,
         simulationTime: source.s.time, scope: 'Desktop armed guidance only; no touch placement preview or confirmation qualification'});
       await events(p); persist();
     }
+    await p.evaluate(() => { window.__constructionCaptureDiagnostics = false; });
   }
   async function close(p) { await events(p); await p.context().close(); if (REMAINING) report.completedScenarios.push(active.label); persist(); }
   try {
