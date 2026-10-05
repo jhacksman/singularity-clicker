@@ -1,0 +1,76 @@
+Construction residual gate authoring notes — source-only, 2026-10-05
+
+Changed only tests/browser/hearth-construction.cjs in the candidate repository.
+Frozen SHA256: cae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb
+No runtime, parser, browser, test, build, CI or network execution on M6; no commit.
+This is authored QA pending independent source review and the coordinator's Spark run.
+
+CONSTRUCTION_GATE=remaining runs exactly four scenarios, requiring both selected
+and completed case arrays plus their specific end checkpoints before success:
+  earned-cancel-partial-work
+  earned-west-reclaim-relocate
+  genuine-v5-unfinished-complete
+  genuine-v5-unfinished-cancel
+The partial-work branch physically supplies an Outpost, cancels after positive
+unfinished installation work, recovers through Stop/resume/reload, then physically
+supplies and uses its replacement. The reclaim branch completes an Outpost,
+returns capital to actual storage, then supplies and uses a relocated Outpost.
+Legacy cases consume the exact accepted035 ordinary v5 witness through native
+file import, retaining the existing producer/source/checkpoint/PNG verification.
+
+The original full mode and its assertions remain available when the mode is
+unset or explicitly full. An empty or unknown mode fails the allowlist. The
+875-second guard, requested 80ms material sampling and <=.100001-second material
+delta assertions are unchanged. No fresh-main, allocation comparison, or already
+completed reserved-only/carried/onsite cancellation branch is replayed in remaining.
+
+The input directory is read only to the harness; it writes only the separate
+artifacts/hearth-construction-remaining output tree. Admission pins byte counts,
+SHA256s, original report binding, old QA source hash, required prior checkpoints,
+input inventories and unchanged earned/scouted ledgers. The entire original
+production/build manifest must equal the current manifest, with only the exact
+old harness hash exempted. It requires the fixed accepted035 raw/report hashes.
+Missing or mismatched evidence fails before browser scenarios begin.
+
+The new report records scope=residual-only, original053 status=failed and its
+failure, binding, manifest, accepted prior scopes and same-worker witness as a
+prior reference. Success is passed-residual-only, never a fresh whole-suite pass.
+The archived053 report is neither modified nor promoted to pass. The same-worker
+Waiting/Installing witness is not recaptured or counted as a fresh measurement.
+
+Optional G02 addition is included: on the exact paused scouted import, ordinary
+UI arms Outpost then Workshop, captures visible #command-help and direct PNGs
+before explicit Cancel command, and proves exact Journey-byte equality before
+and after each cancel, paused state and unchanged simulation time. The report
+labels these as desktop armed guidance only, not touch preview qualification.
+
+Coordinator staging (read-only inputs; do not substitute reconstructed states):
+  /tmp/construction-prior-053/report.json
+    11645523 bytes; ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+  /tmp/construction-prior-053/00013-fresh-main-earned-west-116w70s.json
+    3728 bytes; 6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d
+  /tmp/construction-prior-053/00016-fresh-main-same-earned-scouted-start.json
+    4931 bytes; 312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+Stage the entire accepted035 hearth-construction-legacy artifact tree separately
+at /tmp/construction-witness-035, retaining its old-source directory, producer,
+report, seven Journey JSONs and seven PNGs. Its final raw SHA256 is
+584a073cd5779901e2cb8d560c30ef72a991b15f39197f39aff69bd840c72a03;
+report SHA256 is 630e9b2fd54368d1beefd1892cc1a539d13f3d7bd84766aebab476737a8624cf.
+
+Exact Spark command from the immutable candidate repository (using the
+coordinator's existing Playwright installation/module configuration):
+
+node build.mjs
+CONSTRUCTION_GATE=remaining \
+CONSTRUCTION_PRIOR_DIR=/tmp/construction-prior-053 \
+OLD_BASE_DIR=/tmp/construction-witness-035/old-source \
+LEGACY_CONSTRUCTION_WITNESS=/tmp/construction-witness-035/legacy-unfinished-v5.json \
+LEGACY_CONSTRUCTION_WITNESS_REPORT=/tmp/construction-witness-035/report.json \
+node tests/browser/hearth-construction.cjs
+
+The build command must succeed before the harness command is dispatched.
+Return the whole artifacts/hearth-construction-remaining tree and job receipt.
+The local M6 dist is stale and does not match053; it was not rebuilt or executed.
+Spark must rebuild from the unchanged production sources. The prior-manifest
+gate requires built HTML SHA256
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e.

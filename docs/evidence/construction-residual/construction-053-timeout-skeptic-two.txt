@@ -1,0 +1,176 @@
+Independent skeptic 2 — actual construction journey 053 deadline failure
+
+Reviewer: /root/construction_053_timeout_skeptic_two
+Scope: read-only source and returned-evidence review. No app, repository parser,
+test, build, browser, benchmark or remote command was executed. Python standard
+library was used only to read/hash JSON and archive metadata. No production,
+harness, timeout, manifest, queue or approval file was edited.
+
+Verdict
+
+053 remains FAILED. The demonstrated failure is exhaustion of one cumulative
+875-second wall-clock budget. The returned evidence does not demonstrate a game
+stall at the partial-work cancellation predicate. It demonstrates continuing
+physical progress until that global deadline. Do not change production logic or
+increase the global timeout based on this result. A bounded, explicit residual
+scenario run using exact accepted earned inputs is justified; a replay of the
+already completed full journey is not.
+
+This verdict does not establish that the unfinished scenarios will pass. Their
+actual runtime evidence and independent acceptance remain required.
+
+Immutable evidence binding
+
+Job: singularity-20261004-construction-journey-053
+Commit: 3ab7817fba4729fcd5f3d24422048d894d6d6b66
+Result: exit 1; 876.3293805122375 seconds; executor_error null;
+cleanup_verified true; cleanup_state absent.
+Result SHA256:
+bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9
+Log SHA256:
+744ae30547c5a87c16fe8691936c3118d3cf44697cec721652ffd72a949ba115
+Artifact archive: 84,981,760 bytes; SHA256:
+b8d769a6da40c4658d0e067b91e6e23a99363464e25abd180766fce20e57e66f
+Returned report: 11,645,523 bytes; SHA256:
+ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+Source harness SHA256:
+1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Built hearth-rts.html SHA256:
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Harness source/build binding:
+52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535
+
+All six reported source hashes match the currently inspected immutable candidate
+files. All 351 Journey checkpoint raw byte counts and SHA256 hashes match both
+the report and the coordinator's archive-member inventory. Report and final
+failure/boundary PNG hashes were also checked against that inventory. This is
+not a claim to have visually reviewed all screenshots or independently executed
+the harness assertions.
+
+Failure mechanism and actual progress
+
+tests/browser/hearth-construction.cjs:65 creates one started/deadline pair for
+the entire suite. Line 80 guards that cumulative deadline. The actual stack is
+guard:80 -> tick:113 -> physicalUntil:312 -> partial-work predicate:461.
+The separate physicalUntil predicate timeout at line 313 did not fire.
+
+The final scenario starts with imported earned camp time 90.6 and reaches 95.2.
+The last seven checkpoints advance every 0.1 simulation second; source pickups
+and site receipts continue. The final snapshot has:
+- Active b1 outpost at (11,11), work 0/24.
+- Actual hearth stock 66 wood / 70 stone; free stock 56 wood / 50 stone.
+- Source-reserved 10 wood / 20 stone; onsite 45 wood; cargo 5 wood.
+- Aru and Nara fetching wood, Tavi delivering five wood, Uma fetching wood.
+- Spent remains zero, and all four workers retain the build assignment.
+
+The material partition is 60 wood = 10 reserved + 45 onsite + 5 carried;
+20 stone remains source-reserved. Work zero is required, not a stalled-work
+symptom. Engine receiveSupply:230-233 physically stages received goods and
+startSupply:214-222 assigns the next source or installation trip. Engine
+tick:450-451 consumes pickup/delivery turns; tick:462 permits installation
+only after the entire site's cost is staged. The actual final sequence is
+consistent with those rules.
+
+Final raw checkpoint:
+00351-earned-cancel-partial-work-partial-paid-work-before-cancel-boundary.json
+5,953 bytes; SHA256:
+70bc0e96e5264ab1e16d4feb6886753f7e67d781d11b25f63c65de6907bfadb0
+It equals report.failure.lastSaved exactly as parsed data.
+failure.png and that checkpoint's boundary PNG are byte-identical:
+288,771 bytes; SHA256:
+db64f3322a3122754ef4f2da822a82e175ee78f9f707a4a82b2c7f1600357636
+The failure body also describes those same counters and Resume/paused state.
+
+Archive member mtimes, at one-second resolution, show checkpoint spans:
+  fresh-main                       221 seconds; 102 checkpoints
+  earned-allocation-1               259 seconds;  38 checkpoints
+  earned-allocation-4                77 seconds;  35 checkpoints
+  earned-cancel-reserved-only        84 seconds;  42 checkpoints
+  earned-cancel-carried             122 seconds;  61 checkpoints
+  earned-cancel-onsite               96 seconds;  52 checkpoints
+  earned-cancel-partial-work         13 seconds;  21 checkpoints
+These are checkpoint write spans, not profiler measurements of each operation.
+The first-to-last checkpoint span is 874 seconds. The last branch began only
+about 14 seconds before the guard expired, not 875 seconds before it.
+
+The suite recorded 12,753 trusted Pause clicks, 351 Journey checkpoints,
+246 checkpoint PNGs, 247 material transitions, and 705 work-progress rows.
+tick:113-115 performs two trusted Pause clicks and a saved-state read for each
+80 ms requested interval. materialStep:303-306 performs inspect/supply assertions,
+ordinary export, screenshot, event collection and full growing-report rewrite
+at each material boundary. This is substantial repeated browser/evidence work.
+No operation timing exists to assign an exact fraction of total cost to clicks,
+screenshots, JSON writes or simulation; do not claim a proven dominant hotspot.
+
+The earlier fresh main reaches useful hauling, exact paused reload and close;
+both comparison cases and reserved/carried/onsite cancellation branches reach
+completed, used replacements and close. Those are candidates for scoped
+independent acceptance, not a rewrite of the failed whole-job result. The
+partial-work branch, reclaim-relocate branch, genuine-v5 complete/cancel branch
+and final aggregate assertions were not completed by 053. The final report
+has no page errors, but that cannot make the unfinished coverage pass.
+
+Bounded correction recommendation
+
+Add explicit residual-only scenario selection to the QA harness, or a narrowly
+scoped follow-up QA harness sharing the reviewed checks. Keep production and
+art byte-identical. Run no passed fresh-main/comparison/reserved/carried/onsite
+branch again merely to reach the unfinished tail.
+
+1. Partial-work cancellation and useful replacement: ordinary import of exact
+   accepted 053 same-earned-scouted-start, then the existing partial-work branch
+   beginning with new ordinary placement. Repeating this incomplete branch is
+   appropriate; its cancellation/recovery/replacement never ran in 053.
+2. Reclaim-relocate: ordinary import of exact accepted 053 earned-west input,
+   then the currently unrun west construction/reclaim/reuse/useful-haul branch.
+3. Genuine legacy paid completion and cancellation: reuse the exact accepted
+   035 historical witness/report/source tree; do not regenerate or project it.
+
+Prefer separate bounded scopes if needed for predictable admission. Preserve
+the existing wall ceiling rather than silently extending it. Do not speed the
+engine, skip required material samples, remove trusted Pause inputs, seed hidden
+state, edit saved data, or replace the original controller with engine calls.
+Source review and coordinator admission must precede the new Spark execution.
+
+Exact earned inputs available for admission:
+00016-fresh-main-same-earned-scouted-start.json
+4,931 bytes; SHA256:
+312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+00013-fresh-main-earned-west-116w70s.json
+3,728 bytes; SHA256:
+6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d
+The failed producer status must remain explicit. Inputs can be approved only
+through a separate acceptance of their actual completed producing scope,
+source/build binding, raw bytes, ordinary control provenance and inventories.
+
+Controls and acceptance requirements
+
+- Strict allowlist of selected scenarios; reject unknown/empty selection and
+  missing or mismatched input/report/source hashes before executing cases.
+- Explicit expected/completed scenario set and per-scenario completion records;
+  no success from merely registering a scenario or skipping its body.
+- Native Journey import must export the identical raw accepted input. Retain
+  per-tick global material conservation and actual store/cargo/site custody.
+- Retain actual delta <= .100001 for materialStep, five-item capacity, 3 cells/s
+  displacement ceiling, named physical source/receipt store changes, no spend
+  before completion, and exact independently counted adjacent worker-seconds.
+- Partial-work cancellation must actually observe work > 0, preserve work after
+  cancellation, release only unpicked reservations, physically recover all
+  staged/carried goods, preserve reload state, then finish and use a replacement.
+- Reclaim reuse must actually recover capital into stores, fund/supply/install a
+  distinct new site, and deliver a useful fresh load to it.
+- Legacy cases retain the full accepted 035 chain checks, only empty-ledger v6
+  adoption, exact old backup, paused reload, no second bill/delivery, and full
+  original refund on cancellation.
+- Do not invent a local G01 witness to satisfy a global assertion when a residual
+  case does not naturally produce one. Accept that completed 053 witness only
+  through its separate actual-artifact review, or keep it explicitly required
+  in a scope capable of observing it. Likewise, do not claim unexecuted gather,
+  move or command-cancel inputs in a legacy-only residual result.
+- A joined acceptance record must name the failed 053 job, individually accepted
+  completed scopes, new immutable source commit and passing residual job IDs.
+  It must not mutate 053 to passed or claim its original final aggregate checks
+  executed. G02 active-placement visual evidence remains a separate limitation.
+
+No production bug or need for a production fix is established by this failure.
+No runtime acceptance is granted for the still-unrun residual scenarios.

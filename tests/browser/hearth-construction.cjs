@@ -5,17 +5,35 @@
  * every material boundary is cross-checked with an ordinary Journey download.
  * Replays use the exact ordinary earned Journey file through the import control.
  * Clock-controlled results establish mechanics, never human pacing or enjoyment.
+ * CONSTRUCTION_GATE=remaining with CONSTRUCTION_PRIOR_DIR=/readonly/053 consumes
+ * the exact failed053 report and its two pinned earned exports. This separate gate
+ * runs only partial-work cancellation/replacement, reclaim relocation, and both
+ * accepted035 legacy cases. Its result never changes053 into an overall pass.
  */
 'use strict';
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const crypto = require('node:crypto'), http = require('node:http'), {once} = require('node:events');
 const playwright = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const ROOT = path.resolve(__dirname, '../..'), DIR = path.join(ROOT, 'artifacts/hearth-construction');
+const ROOT = path.resolve(__dirname, '../..'), GATE = process.env.CONSTRUCTION_GATE ?? 'full', REMAINING = GATE === 'remaining';
+const DIR = path.join(ROOT, REMAINING ? 'artifacts/hearth-construction-remaining' : 'artifacts/hearth-construction');
 const KEY = 'singularity-clicker.hearth-rts.v1', PROFILE = 'accepted-opening.physical-construction.v1';
 const RES = ['wood', 'stone', 'food'], TOTAL = {wood: 416, stone: 220, food: 225};
 const COST = {outpost: {wood: 60, stone: 20, food: 0}, workshop: {wood: 40, stone: 30, food: 0}};
 const WORK = {outpost: 24, workshop: 32}, sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const SAMPLE_MS = 80;
+const REMAINING_SCENARIOS = ['earned-cancel-partial-work', 'earned-west-reclaim-relocate', 'genuine-v5-unfinished-complete', 'genuine-v5-unfinished-cancel'];
+const PRIOR_053 = {
+  job: 'singularity-20261004-construction-journey-053', commit: '3ab7817fba4729fcd5f3d24422048d894d6d6b66',
+  report: {file: 'report.json', bytes: 11645523, sha256: 'ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd'},
+  binding: '52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535',
+  harnessSHA256: '1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130',
+  earned: {file: '00013-fresh-main-earned-west-116w70s.json', label: 'earned-west-116w70s', bytes: 3728,
+    sha256: '6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d'},
+  scouted: {file: '00016-fresh-main-same-earned-scouted-start.json', label: 'same-earned-scouted-start', bytes: 4931,
+    sha256: '312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f'}
+};
+const WITNESS_035 = {rawSHA256: '584a073cd5779901e2cb8d560c30ef72a991b15f39197f39aff69bd840c72a03',
+  reportSHA256: '630e9b2fd54368d1beefd1892cc1a539d13f3d7bd84766aebab476737a8624cf'};
 const LEGACY_BASE = '4c3ac2f6c16ce58563f0300f286040a7aae0a963';
 const LEGACY_HASHES = {
   'src/hearth-rts/engine.js': '416b35153c781eb56a045848afaa6bb92daa0c93447b18a4e51f2d9a580f58d5',
@@ -70,7 +88,10 @@ fs.mkdirSync(DIR, {recursive: true});
   for (const file of ['src/hearth-rts/engine.js', 'src/hearth-rts/view.js']) assert.ok(html.includes(fs.readFileSync(path.join(ROOT, file), 'utf8')), 'Built page must contain exact candidate source: ' + file);
   const binding = sha(JSON.stringify(manifest));
   const report = {status: 'running', manifest, binding, bounds: {wallSeconds: 875, requestedSampleMilliseconds: SAMPLE_MS, maximumMaterialSampleSeconds: .100001},
-    method: 'Trusted ordinary UI, fresh earned main journey, exact Journey imports for labeled comparisons, controlled browser clock',
+    gate: GATE, scope: REMAINING ? 'residual-only' : 'full', selectedScenarios: REMAINING ? [...REMAINING_SCENARIOS] : null,
+    completedScenarios: [], completedResidualScopes: [],
+    method: REMAINING ? 'Residual-only: native imports of fixed ordinary053 earned exports; partial-work cancellation/replacement, reclaim relocation and genuine035 v5 complete/cancel; controlled browser clock'
+      : 'Trusted ordinary UI, fresh earned main journey, exact Journey imports for labeled comparisons, controlled browser clock',
     scenarios: [], checkpoints: [], transitions: [], workProgress: [], toolWorkProgress: [], installationStatusTransitions: [], installationStatusWitness: null, events: [], legacyUnfinished: {status: 'pending',
       reason: 'Supply LEGACY_CONSTRUCTION_WITNESS, LEGACY_CONSTRUCTION_WITNESS_REPORT and OLD_BASE_DIR from a separate ordinary pinned-v5 Spark run'}, limits: [
       'No human pacing, enjoyment, physical device or full-campaign acceptance claim',
@@ -80,6 +101,71 @@ fs.mkdirSync(DIR, {recursive: true});
   const persist = () => write('report.json', report), guard = () => assert.ok(Date.now() < deadline, '875-second bounded browser job exceeded');
   let browser, active, server, sequence = 0, pendingStatusWitness = null;
   const contexts = [];
+  function prior053Inputs() {
+    assert.ok(process.env.CONSTRUCTION_PRIOR_DIR, 'Residual-only gate requires the readonly exact053 report and two earned exports');
+    const inputRoot = path.resolve(process.env.CONSTRUCTION_PRIOR_DIR), relativeOutput = path.relative(inputRoot, DIR);
+    assert.ok(relativeOutput.startsWith('..' + path.sep) || path.isAbsolute(relativeOutput), 'Residual output must be outside the readonly prior-input directory');
+    const pinnedRead = expected => {
+      const bytes = fs.readFileSync(path.join(inputRoot, expected.file));
+      assert.equal(bytes.length, expected.bytes, 'Exact053 byte count: ' + expected.file);
+      assert.equal(sha(bytes), expected.sha256, 'Exact053 source artifact: ' + expected.file); return bytes.toString('utf8');
+    };
+    const prior = JSON.parse(pinnedRead(PRIOR_053.report));
+    assert.equal(prior.status, 'failed', 'The original053 overall failure is immutable');
+    assert.match(prior.failure.message, /875-second bounded browser job exceeded/);
+    assert.equal(prior.binding, PRIOR_053.binding); assert.equal(sha(JSON.stringify(prior.manifest)), PRIOR_053.binding);
+    assert.equal(prior.manifest.source['tests/browser/hearth-construction.cjs'], PRIOR_053.harnessSHA256);
+    const expectedPriorManifest = {source: {...manifest.source, 'tests/browser/hearth-construction.cjs': PRIOR_053.harnessSHA256}, build: manifest.build};
+    assert.deepEqual(prior.manifest, expectedPriorManifest, 'Only this explicitly pinned QA harness may differ; production and built page must match053 exactly');
+    assert.deepEqual(prior.bounds, report.bounds); assert.deepEqual(prior.errors, []);
+    const checkpoint = (scenario, label) => {
+      const rows = prior.checkpoints.filter(c => c.scenario === scenario && c.label === label);
+      assert.equal(rows.length, 1, 'One retained053 checkpoint: ' + scenario + '/' + label);
+      assert.equal(rows[0].binding, PRIOR_053.binding); return rows[0];
+    };
+    const input = expected => {
+      const raw = pinnedRead(expected), s = JSON.parse(raw), c = checkpoint('fresh-main', expected.label); matter(s);
+      for (const field of ['file', 'bytes', 'sha256']) assert.equal(c[field], expected[field]); assert.equal(c.time, s.time);
+      assert.deepEqual(s.stock, {wood: 116, stone: 70, food: 0}); assert.deepEqual(s.spent, zero());
+      assert.deepEqual(s.delivered, {wood: 96, stone: 60, food: 0}); assert.equal(s.depleted, 3);
+      assert.deepEqual(s.construction.sites, []); assert.equal(s.buildings.length, 1); assert.equal(s.buildings[0].id, 'b0');
+      assert.equal(s.units.length, 4); assert.ok(s.units.every(u => !u.cargo && u.phase === 'idle' && u.order.kind === 'idle' && !u.next && !u.supply && !u.supplyPickup));
+      return {raw, s, file: expected.file};
+    };
+    const earned = input(PRIOR_053.earned), sameStart = input(PRIOR_053.scouted);
+    assert.ok(sameStart.s.time > earned.s.time); assert.ok(sameStart.s.seen.includes(15 * 36 + 29));
+    for (const field of ['stock', 'spent', 'delivered', 'deposits', 'buildings', 'storage', 'construction', 'reclaim']) assert.deepEqual(sameStart.s[field], earned.s[field]);
+    const acceptedPriorScopes = [];
+    const completedMain = checkpoint('fresh-main', 'main-complete-useful-supply-line'), reloadBefore = checkpoint('fresh-main', 'complete-main-reload-before'), reloadAfter = checkpoint('fresh-main', 'complete-main-reload-after');
+    assert.equal(completedMain.sha256, reloadBefore.sha256); assert.equal(reloadBefore.sha256, reloadAfter.sha256);
+    acceptedPriorScopes.push({scope: 'fresh-main-through-useful-tools-haul-and-reload', checkpoints: [completedMain, reloadAfter]});
+    for (const workers of [1, 4]) {
+      const scenario = prior.scenarios.find(s => s.label === 'earned-allocation-' + workers); assert.ok(scenario?.comparison);
+      assert.equal(scenario.binding, PRIOR_053.binding); assert.equal(scenario.inputSHA256, PRIOR_053.scouted.sha256);
+      assert.equal(scenario.comparison.sameStartSHA256, PRIOR_053.scouted.sha256); assert.equal(scenario.comparison.workers, workers);
+      const end = checkpoint(scenario.label, 'comparison-usable'); assert.equal(end.time, scenario.comparison.endTime);
+      acceptedPriorScopes.push({scope: scenario.label, checkpoints: [end]});
+    }
+    for (const mode of ['reserved-only', 'carried', 'onsite']) {
+      const scenario = 'earned-cancel-' + mode, end = checkpoint(scenario, 'replacement-used');
+      assert.equal(prior.scenarios.find(s => s.label === scenario)?.inputSHA256, PRIOR_053.scouted.sha256);
+      acceptedPriorScopes.push({scope: scenario, checkpoints: [end]});
+    }
+    assert.equal(prior.checkpoints.some(c => c.scenario === 'earned-cancel-partial-work' && c.label === 'cancel-accepted'), false,
+      'No unexecuted partial-work cancellation is admitted as prior completion');
+    const witness = prior.installationStatusWitness; assert.ok(witness); assert.equal(witness.binding, PRIOR_053.binding);
+    for (const file of [witness.before, witness.after]) assert.equal(prior.checkpoints.filter(c => c.binding === PRIOR_053.binding && c.file === file).length, 1);
+    report.prior053 = {job: PRIOR_053.job, commit: PRIOR_053.commit, report: PRIOR_053.report, binding: PRIOR_053.binding,
+      originalStatus: prior.status, originalFailure: {message: prior.failure.message, stack: prior.failure.stack},
+      originalManifest: prior.manifest, reusedInputs: [PRIOR_053.earned, PRIOR_053.scouted], acceptedPriorScopes,
+      sameWorkerWitness: {evidenceRole: 'prior053 reference only; not a measurement by this residual run', witness},
+      disposition: 'Original053 remains failed. These completed scopes are prior evidence; no full-suite fresh pass is claimed.'};
+    assert.ok(process.env.LEGACY_CONSTRUCTION_WITNESS && process.env.LEGACY_CONSTRUCTION_WITNESS_REPORT && process.env.OLD_BASE_DIR,
+      'Residual-only gate requires the complete accepted035 witness tree; missing historical scopes cannot be skipped');
+    assert.equal(sha(fs.readFileSync(process.env.LEGACY_CONSTRUCTION_WITNESS)), WITNESS_035.rawSHA256);
+    assert.equal(sha(fs.readFileSync(process.env.LEGACY_CONSTRUCTION_WITNESS_REPORT)), WITNESS_035.reportSHA256);
+    return {earned, sameStart};
+  }
   async function events(p) { report.events.push(...(await p.evaluate(() => window.__constructionInputs.splice(0))).map(e => ({binding, scenario: active.label, ...e}))); }
   async function exported(p, label = 'sample') {
     guard(); if (!await p.locator('#dialog').evaluate(d => d.open)) await p.locator('#journey').click();
@@ -174,6 +260,7 @@ fs.mkdirSync(DIR, {recursive: true});
     }
   }
   async function captureWaitingInstallation(p, s, id) {
+    if (REMAINING) return; // Prior053 same-worker witness is referenced separately, never re-labelled as fresh.
     if (report.installationStatusWitness) return;
     const b = building(s, id), c = site(s, id), waiters = waitingInstallers(s, id);
     if (!waiters.length) return;
@@ -273,7 +360,7 @@ fs.mkdirSync(DIR, {recursive: true});
     }
     if (!next && building(after, id)?.done && b.kind === 'outpost') expectedStores[id] = zero();
     assert.deepEqual(after.storage.stores, expectedStores, 'Each load changes only its named actual source or return store');
-    if (delta > 0 && prior.state === 'active' && next?.state === 'active' && afterBuilding && !afterBuilding.done && afterBuilding.work > b.work) {
+    if (!REMAINING && delta > 0 && prior.state === 'active' && next?.state === 'active' && afterBuilding && !afterBuilding.done && afterBuilding.work > b.work) {
       const deliveries = readySiteDeliveries(before, id);
       // Match the engine's sorted actor turns without trusting its reason string:
       // an earlier final receipt may fund a later waiting worker in the same tick.
@@ -356,19 +443,47 @@ fs.mkdirSync(DIR, {recursive: true});
       'Cumulative item intervals agree with the extraction rate without charging travel as extraction');
     await capture(p, label + '-actual-extraction', s); return samples;
   }
-  async function close(p) { await events(p); await p.context().close(); persist(); }
+  async function armedGuidance(p, source) {
+    report.desktopArmedGuidance = [];
+    for (const kind of ['outpost', 'workshop']) {
+      await all(p); const before = await exported(p, 'desktop-' + kind + '-guidance-before');
+      assert.equal(before.raw, source.raw); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      await p.locator('[data-build="' + kind + '"]').click();
+      await p.locator('#command-help').scrollIntoViewIfNeeded(); assert.equal(await p.locator('#command-help').isVisible(), true);
+      const help = await p.locator('#command-help').innerText();
+      assert.ok(help.includes('Place ' + kind)); assert.ok(help.includes('After delivery: ' + WORK[kind] + ' worker-seconds to install.'));
+      assert.equal(await p.locator('#command-cancel').isEnabled(), true); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      assert.deepEqual(await saved(p), before.s, 'Arming desktop guidance does not change the saved camp or simulation time');
+      // Journey clears input, so the armed DOM and PNG are captured directly first.
+      const filename = 'desktop-armed-' + kind + '-guidance.png'; await p.screenshot({path: path.join(DIR, filename), fullPage: true});
+      await p.locator('#command-cancel').click(); assert.equal(await p.locator('#command-cancel').isDisabled(), true);
+      const after = await exported(p, 'desktop-' + kind + '-guidance-after-cancel');
+      assert.equal(after.raw, before.raw, 'Cancel command retains the exact Journey bytes after armed guidance');
+      assert.equal(after.s.time, source.s.time); assert.equal(await p.locator('#pause').innerText(), 'Resume');
+      report.desktopArmedGuidance.push({binding, scenario: active.label, kind, help, workerSeconds: WORK[kind],
+        screenshot: {file: filename, sha256: sha(fs.readFileSync(path.join(DIR, filename)))},
+        prior053Checkpoint: source.file, prior053InputSHA256: sha(source.raw), before: before.file, afterCancel: after.file,
+        simulationTime: source.s.time, scope: 'Desktop armed guidance only; no touch placement preview or confirmation qualification'});
+      await events(p); persist();
+    }
+  }
+  async function close(p) { await events(p); await p.context().close(); if (REMAINING) report.completedScenarios.push(active.label); persist(); }
   try {
+    assert.ok(['full', 'remaining'].includes(GATE), 'CONSTRUCTION_GATE must be full or remaining');
+    let earned, sameStart;
+    if (REMAINING) ({earned, sameStart} = prior053Inputs());
     server = http.createServer((req, res) => { if (req.url.split('?')[0] !== '/hearth-rts.html') { res.writeHead(404); return res.end(); } res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'}); res.end(html); });
     server.listen(0, '127.0.0.1'); await once(server, 'listening'); browser = await playwright.chromium.launch({headless: true, chromiumSandbox: true});
+    if (!REMAINING) {
     const p = await open('fresh-main'); let s = (await exported(p, 'fresh')).s;
     assert.deepEqual(s.stock, {wood: 20, stone: 10, food: 0}); assert.equal(s.buildings.length, 1);
     await select(p, ['u0']); await p.locator('#gather').click(); await clickMap(p, 5.5, 6.5);
     const beforeToolExtraction = await extractionProbe(p, 'ordinary-pre-tools', .60);
     for (const id of ['d0', 'd2', 'd1']) s = await gather(p, id, v => v.deposits.find(d => d.id === id).amount === 0, 'earned-' + id);
     assert.deepEqual(s.stock, {wood: 116, stone: 70, food: 0});
-    const earned = await capture(p, 'earned-west-116w70s', s);
+    earned = await capture(p, 'earned-west-116w70s', s);
     await moveAll(p, 25, 13); await moveAll(p, 6, 16);
-    const sameStart = await capture(p, 'same-earned-scouted-start');
+    sameStart = await capture(p, 'same-earned-scouted-start');
     await all(p); await p.locator('[data-build="outpost"]').click(); await p.locator('#command-cancel').click();
     assert.equal((await exported(p, 'placement-command-cancelled')).raw, sameStart.raw, 'Cancelling the armed placement command preserves the complete earned camp');
     // One first carrier isolates the visible five-wood/work-zero state; three peers
@@ -433,10 +548,12 @@ fs.mkdirSync(DIR, {recursive: true});
     report.allocationComparison = {sameStartSHA256: sha(sameStart.raw), cases: allocations,
       singleMinusFourElapsedSeconds: allocations[0].elapsedIncludingPrepositionTravelSupplyAndWork - allocations[1].elapsedIncludingPrepositionTravelSupplyAndWork,
       interpretation: 'Parallel construction speed with one versus four workers from the same earned camp; the other three workers are idle in the one-worker case. Common gathering/scouting/prepositioning and total clocks are retained. This does not measure an allocation opportunity cost, an alternative depot placement, or human pacing.'};
+    }
 
     // Earned interruption/cancellation branches, exact input exported by fresh-main.
-    for (const mode of ['reserved-only', 'carried', 'onsite', 'partial-work']) {
+    for (const mode of REMAINING ? ['partial-work'] : ['reserved-only', 'carried', 'onsite', 'partial-work']) {
       const q = await open('earned-cancel-' + mode, sameStart.raw), ids = mode === 'partial-work' ? ['u0', 'u1', 'u2', 'u3'] : ['u0'];
+      if (REMAINING) await armedGuidance(q, sameStart);
       const placed = await place(q, 'outpost', 11, 11, ids, 'cancel-' + mode); let state = placed.after;
       if (mode === 'carried') {
         state = await physicalUntil(q, placed.b.id, v => !!actor(v, 'u0').supply, 'carried-before-move'); const old = clone(actor(state, 'u0'));
@@ -459,6 +576,8 @@ fs.mkdirSync(DIR, {recursive: true});
         await move(q, 2, 3); state = await physicalUntil(q, placed.b.id, v => actor(v, 'u0').phase === 'idle', 'held-again-before-cancel');
       } else if (mode === 'onsite') state = await physicalUntil(q, placed.b.id, v => site(v, placed.b.id).staged.wood === 5, 'onsite-before-cancel');
       else if (mode === 'partial-work') state = await physicalUntil(q, placed.b.id, v => building(v, placed.b.id).work > 0, 'partial-paid-work-before-cancel');
+      if (REMAINING) assert.ok(building(state, placed.b.id).work > 0 && building(state, placed.b.id).work < WORK.outpost,
+        'Residual cancellation starts from actual incomplete installation work, not reserved or staged-only state');
       const beforeCancel = clone(state); await inspect(q, placed.b); await q.locator('#site-cancel').click(); const cancelled = (await exported(q, 'cancel-accepted')).s;
       assert.deepEqual(cancelled.stock, beforeCancel.stock, 'Cancellation releases reserved goods without adding store stock'); assert.deepEqual(cancelled.spent, beforeCancel.spent);
       if (mode === 'reserved-only') assert.equal(building(cancelled, placed.b.id), undefined);
@@ -479,18 +598,20 @@ fs.mkdirSync(DIR, {recursive: true});
       const replacement = await place(q, 'outpost', 22, 11, ['u0', 'u1', 'u2', 'u3'], 'resumed-replacement');
       state = await complete(q, replacement.b.id, 'resumed-replacement');
       await gather(q, 'd4', v => v.storage.stores[replacement.b.id].wood >= 5, 'replacement-useful-haul'); await capture(q, 'replacement-used'); await close(q);
+      if (REMAINING) report.completedResidualScopes.push('partial-work-cancellation-and-useful-replacement');
     }
 
     // Existing reclaim capital joins actual storage, then the new physical supply path.
     const q = await open('earned-west-reclaim-relocate', earned.raw); await moveAll(q, 6, 16);
     const west = await place(q, 'outpost', 11, 11, ['u0', 'u1', 'u2', 'u3'], 'west-investment'); await complete(q, west.b.id, 'west-investment');
     await all(q); await inspect(q, west.b); await q.locator('#outpost-reclaim').click();
-    const reclaimed = await until(q, v => !building(v, west.b.id), 'existing-reclaim-to-stores', 300, 100);
+    const reclaimed = await until(q, v => !building(v, west.b.id), 'existing-reclaim-to-stores', 300, REMAINING ? SAMPLE_MS : 100);
     assert.deepEqual(reclaimed.stock, {wood: 116, stone: 70, food: 0}); assert.deepEqual(reclaimed.reclaim.recovered, COST.outpost);
     await capture(q, 'reclaimed-capital-in-actual-store', reclaimed); await moveAll(q, 25, 13); await moveAll(q, 6, 16);
     const relocated = await place(q, 'outpost', 22, 11, ['u0', 'u1', 'u2', 'u3'], 'reclaimed-newsite');
     await complete(q, relocated.b.id, 'reclaimed-newsite'); await gather(q, 'd4', v => v.storage.stores[relocated.b.id].wood >= 5, 'relocated-useful-haul');
     await capture(q, 'reclaimed-relocated-and-used'); await close(q);
+    if (REMAINING) report.completedResidualScopes.push('reclaim-to-store-and-useful-relocation');
 
     // SUPPLEMENTARY migration, from genuine separately earned pinned-v5 bytes.
     // Never project current schema into a historical source or seed the main journey.
@@ -561,7 +682,7 @@ fs.mkdirSync(DIR, {recursive: true});
         assert.equal(await l.evaluate(key => localStorage.getItem(key + '.import-before-v6'), KEY), raw, 'Exact old paid source remains downloadable after adoption');
         await reload(l, 'genuine-v5-unfinished-reload');
         if (action === 'complete') {
-          adopted = await until(l, v => building(v, unfinished.id)?.done, 'genuine-legacy-paid-completion', 100, 100);
+          adopted = await until(l, v => building(v, unfinished.id)?.done, 'genuine-legacy-paid-completion', 100, REMAINING ? SAMPLE_MS : 100);
           assert.deepEqual(adopted.stock, old.stock); assert.deepEqual(adopted.spent, old.spent);
           assert.ok(adopted.units.every(u => !u.supply && !u.supplyPickup)); assert.deepEqual(adopted.construction.sites, []);
           assert.equal(building(adopted, unfinished.id).work, WORK[unfinished.kind]);
@@ -572,19 +693,45 @@ fs.mkdirSync(DIR, {recursive: true});
           assert.deepEqual(adopted.construction.sites, []); assert.ok(adopted.units.every(u => !u.supply && !u.supplyPickup));
         }
         await capture(l, 'genuine-v5-' + action + '-without-second-bill', adopted); await close(l);
+        if (REMAINING) report.completedResidualScopes.push('genuine035-v5-' + action);
       }
       report.legacyUnfinished = {status: 'passed', sourceCommit: LEGACY_BASE, rawSHA256: sha(raw), reportSHA256: sha(proofRaw), builtSHA256: sha(oldHTML), producerSHA256: sha(producer), producerBinding: proof.binding,
         checkedCheckpointChain: expectedChain, independentCoordinatorArtifactReview: 'Required separately; hashes bind the returned files and do not authenticate self-authored reports', buildingId: unfinished.id};
     }
     assert.ok(report.events.some(e => e.trusted && e.type === 'pointerdown' && e.target === 'world'));
     for (const id of ['gather', 'move', 'stop', 'pause', 'command-cancel']) assert.ok(report.events.some(e => e.trusted && e.target === id), 'Required real UI input: ' + id);
-    assert.ok(report.installationStatusTransitions.length > 0 && report.installationStatusWitness, 'Observe and capture at least one actual same-worker Waiting-to-Installing UI transition');
-    assert.deepEqual(report.errors, []); report.earnedJourneyStatus = 'passed'; report.status = report.legacyUnfinished.status === 'passed' ? 'passed' : 'pending-legacy-witness';
+    if (REMAINING) {
+      assert.deepEqual(report.selectedScenarios, REMAINING_SCENARIOS);
+      assert.deepEqual(report.scenarios.map(s => s.label), report.selectedScenarios);
+      assert.deepEqual(report.completedScenarios, report.selectedScenarios, 'Every selected residual case completed its full asserted flow');
+      assert.deepEqual(report.completedResidualScopes, ['partial-work-cancellation-and-useful-replacement', 'reclaim-to-store-and-useful-relocation', 'genuine035-v5-complete', 'genuine035-v5-cancel']);
+      for (const [scenario, labels] of [
+        ['earned-cancel-partial-work', ['cancel-accepted', 'cancel-settled', 'resumed-replacement-usable', 'replacement-used']],
+        ['earned-west-reclaim-relocate', ['reclaimed-capital-in-actual-store', 'reclaimed-newsite-usable', 'reclaimed-relocated-and-used']],
+        ['genuine-v5-unfinished-complete', ['genuine-v5-complete-without-second-bill']],
+        ['genuine-v5-unfinished-cancel', ['genuine-v5-cancel-without-second-bill']]
+      ]) for (const label of labels) assert.equal(report.checkpoints.filter(c => c.scenario === scenario && c.label === label).length, 1,
+        'Completed residual evidence: ' + scenario + '/' + label);
+      for (const id of ['site-cancel', 'site-recover', 'outpost-reclaim']) assert.ok(report.events.some(e => e.trusted && e.target === id));
+      assert.deepEqual(report.desktopArmedGuidance.map(g => g.workerSeconds), [24, 32]);
+      assert.deepEqual(report.installationStatusTransitions, []); assert.equal(report.installationStatusWitness, null);
+      assert.equal(report.prior053.originalStatus, 'failed'); assert.equal(report.legacyUnfinished.status, 'passed');
+      assert.equal(report.legacyUnfinished.rawSHA256, WITNESS_035.rawSHA256); assert.equal(report.legacyUnfinished.reportSHA256, WITNESS_035.reportSHA256);
+      report.earnedJourneyStatus = 'not-rerun; completed portions referenced from failed053';
+      report.residualStatus = 'passed'; report.status = 'passed-residual-only';
+    } else {
+      assert.ok(report.installationStatusTransitions.length > 0 && report.installationStatusWitness, 'Observe and capture at least one actual same-worker Waiting-to-Installing UI transition');
+      report.earnedJourneyStatus = 'passed'; report.status = report.legacyUnfinished.status === 'passed' ? 'passed' : 'pending-legacy-witness';
+    }
+    assert.deepEqual(report.errors, []);
     report.wallSeconds = (Date.now() - started) / 1000; guard(); persist();
-    if (report.status !== 'passed') process.exitCode = 2;
-    console.log(report.status.toUpperCase() + ' physical construction: fresh earned 16/14-load supply, source and onsite custody, work-zero Canvas PNG pair, Tools018/useful haul, cancellation/replacement and reclaim reuse. Binding ' + binding);
+    if (!['passed', 'passed-residual-only'].includes(report.status)) process.exitCode = 2;
+    console.log(report.status.toUpperCase() + (REMAINING
+      ? ' physical construction: partial-work cancellation/replacement, reclaim relocation, genuine035 v5 completion/refund and desktop armed guidance. Original053 remains FAILED; earlier scopes are prior references only. Binding '
+      : ' physical construction: fresh earned 16/14-load supply, source and onsite custody, work-zero Canvas PNG pair, Tools018/useful haul, cancellation/replacement and reclaim reuse. Binding ') + binding);
   } catch (error) {
     report.status = 'failed'; report.failure = {message: String(error), stack: error.stack};
+    if (REMAINING) report.residualStatus = 'failed';
     if (active?.page && !active.page.isClosed()) {
       await active.page.screenshot({path: path.join(DIR, 'failure.png'), fullPage: true}).catch(() => {});
       report.failure.body = await active.page.locator('body').innerText().catch(() => null); report.failure.lastSaved = await saved(active.page).catch(() => null); await events(active.page).catch(() => {});

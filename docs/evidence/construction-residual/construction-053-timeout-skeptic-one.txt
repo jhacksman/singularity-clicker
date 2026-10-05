@@ -1,0 +1,130 @@
+Independent skeptic 1 — actual construction journey 053 timeout
+
+Reviewer: /root/construction_053_timeout_skeptic_one
+Verdict: 053 remains FAILED. Evidence supports exhaustion of the combined
+browser suite's global wall budget while the game was progressing. It does not
+support a production softlock, order/route fix, or merely increasing the timeout.
+This is a read-only source/artifact review, not a new runtime result. No game,
+test, browser, build, parser or remote job was executed; no source was edited.
+Only standard-library JSON/tar/hash data inspection was used on returned files.
+
+Exact binding
+Job: singularity-20261004-construction-journey-053
+Commit: 3ab7817fba4729fcd5f3d24422048d894d6d6b66
+Harness: tests/browser/hearth-construction.cjs
+SHA256 1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Source archive SHA256:
+1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da
+Returned HTML SHA256 (report manifest):
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report binding:
+52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535
+
+Evidence root: task-2/spark-ci/results/
+Returned artifacts tar SHA256:
+b8d769a6da40c4658d0e067b91e6e23a99363464e25abd180766fce20e57e66f
+Artifact-members JSON SHA256:
+c5d800f83db03ae544f478f31db0f06ccb03fcc303c09c73a3d45605a26ae82d
+Result JSON SHA256:
+bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9
+Log SHA256 (task-2/spark-ci/logs/):
+744ae30547c5a87c16fe8691936c3118d3cf44697cec721652ffd72a949ba115
+Container JSON SHA256:
+602d96fc5272183d04141f08b608c280ccc8c62ba43d8cd20b86f4cee078e808
+Approved manifest SHA256:
+1f0721a3707626c23a015d4370bcd887d2b347be185d33db17c6b0be93240ba9
+artifacts/hearth-construction/report.json: 11645523 bytes, SHA256
+ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+All 351 downloaded checkpoint JSON files match their report bytes/hashes and
+returned inventory. Report, last checkpoint, earned scouted input and completed
+main reload bytes were also compared directly with their actual tar members.
+All six source files in the report manifest match the current clean candidate.
+
+Failure and mechanism
+The log fails at guard:80 -> tick:113 -> physicalUntil:312 -> caller:461,
+"875-second bounded browser job exceeded". Caller 461 is the partial-work case's
+wait for building.work > 0, BEFORE its cancellation click. This is not the
+450-simulation-second "Physical transition timeout" assertion. The global
+deadline is created once at line 66, before all fresh/replay branches.
+Result: exit 1, reason completed, executor_error null, cleanup verified absent.
+Container: no OOM; started 23:39:58.679Z, finished 23:54:34.365Z.
+
+The final saved state equals checkpoint 00351 exactly:
+00351-earned-cancel-partial-work-partial-paid-work-before-cancel-boundary.json
+5953 bytes, SHA256
+70bc0e96e5264ab1e16d4feb6886753f7e67d781d11b25f63c65de6907bfadb0
+Its scenario advanced from t90.6 to t95.2. The outpost has work 0, with 45 wood
+onsite, 5 wood carried, and 10 wood/20 stone still source-reserved. Actual stores
+contain 66 wood/70 stone. All four workers retain build b1 orders: two are at
+source edges ready to pick up, one is moving to a source edge, and Tavi carries
+5 wood toward the site. Source/receipt boundaries continue at t94.9, 95.0, 95.1,
+95.2. Installation is correctly not yet allowed before all 60 wood/20 stone
+arrive. No stalled route or persistent no-progress interval is shown.
+
+Tar member mtimes provide coarse scheduling evidence, not a performance trace:
+fresh-main 221s; one-worker comparison 259s; four-worker comparison 77s;
+reserved-only 84s; carried 122s; onsite 96s; partial-work only 13s. Partial-work's
+first exported input is at 23:54:20Z, near the global deadline. Earlier cases
+therefore consumed almost the entire budget. The report contains 12753 trusted
+Pause clicks, 351 downloads and 246 full-page checkpoint screenshots. Each
+80ms material sample takes two ordinary Pause clicks plus clock/save operations;
+each material change also exports, screenshots and rewrites the growing report.
+Those are concrete serial workload facts. No per-operation trace establishes
+which individual operation dominated wall time, so "slow screenshot" or
+"Playwright actionability" must remain hypotheses, not diagnosed root causes.
+
+Reached assertions (bounded completed portions, not a whole-suite pass)
+- Fresh main reached checkpoint 00102 after physical outpost and workshop,
+  exactly 16/14 five-item pickup and receipt records, source/store custody checks,
+  Tools018 payment/repeat prevention/labor, actual extraction timing and useful
+  hauling. Main completion and paused reload exports 00100/00101/00102 share
+  SHA256 bc7547b4f6bfa81c594014f26f0a4a1212ed2479af512597a4770b0a678b2600.
+- Same actor u0 Waiting -> Installing transition is captured at t136.0 ->136.1,
+  work0 ->0.4, in checkpoints 00051/00052, with card/title/selected-text runtime
+  assertions. Independent pixel review remains a separate responsibility.
+- One- and four-worker comparisons completed at 178.8s and 49.1s construction
+  elapsed from identical earned input. Idle peers are explicitly disclosed;
+  this is not allocation opportunity-cost evidence or a human pacing claim.
+- Reserved-only, carried and onsite cancellation cases each reached settled
+  custody, actual replacement completion and useful replacement hauling. The
+  carried branch additionally passed repeated loaded Move, next-tick movement,
+  held reload, Stop/return/re-reservation, manual idle preservation and refetch.
+- In partial-work, import/placement/reservation and all material samples through
+  00351 passed. Positive installation work and cancellation have NOT been reached.
+
+Remaining acceptance
+1. Partial-work delivery through actual work >0, then cancellation, recovery,
+   repeat prevention, reload, exact returned stock/spent and useful replacement.
+2. Earned-west-reclaim-relocate branch: build/reclaim to actual stores, then
+   physical relocation/build and useful haul.
+3. Genuine separately earned v5 witness checks, adoption/reload, legacy paid
+   completion and full refund without a second bill.
+4. Terminal suite assertions/report pass. These statements never executed after
+   the timeout; earnedJourneyStatus is absent, legacyUnfinished remains pending.
+The report has errors=[] and contains required trusted controls, but these facts
+do not turn the failed whole suite into a pass. G02 placement guidance is still
+outside this harness's screenshot coverage.
+
+Supported bounded repair for author review
+Partition the remaining independent cases into named, bounded continuation jobs
+instead of replaying already completed fresh/comparison/cancel branches or
+raising the 875s cap. Keep 80ms material samples and all per-transition, DOM,
+ordinary-export, screenshot and terminal case assertions. The repeated native
+Pause/action path must not be replaced by hidden engine mutation to gain speed.
+
+Use exact ordinary 053 bytes with manifest-bound hashes/provenance and native
+Journey import: checkpoint 00016 (same earned/scouted start) for a complete
+partial-work case from its normal start; checkpoint 00013 (earned western stock)
+for reclaim/relocate. Do not author a synthetic mid-supply save. The v5 branch
+must keep the separately accepted full 035 witness tree and original checks.
+00016 SHA256:
+312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+00013-fresh-main-earned-west-116w70s.json SHA256:
+6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d
+Each continuation must truthfully name its subset and reused input job; reject
+unknown/missing mode or unbound input, and assert that all requested cases ran.
+Preserve 053 overall FAILED and accept its completed portions only by explicit
+independent review. Combine separate evidence only in a closure record, never
+by relabeling 053 or copying earlier report events to make a new job look full.
+No production patch is justified by this failure evidence. The proposed QA
+partition itself needs source review and fresh Spark execution before acceptance.

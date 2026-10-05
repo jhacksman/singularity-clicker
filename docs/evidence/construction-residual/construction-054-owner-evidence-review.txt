@@ -1,0 +1,52 @@
+Independent returned-evidence review: construction reclaim 054
+Written 2026-10-05 UTC; read-only source/data/hash review on M6.
+
+Verdict: ACCEPT within the controlled-clock desktop reclaim, persistence and navigation scope actually completed by job singularity-20261004-construction-reclaim-054. No blocker found in its numeric/custody evidence. This does not accept failed journey 053 or the held allocation 055.
+
+Execution and immutable attribution
+- Candidate: 3ab7817fba4729fcd5f3d24422048d894d6d6b66.
+- Source archive: 1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da.
+- Image: sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e; host gb10-02.
+- Approved command: node build.mjs && LEGACY_RECLAIM_WITNESS=/tmp/reclaim-witness-030/legacy-exhausted-v4.json LEGACY_RECLAIM_WITNESS_REPORT=/tmp/reclaim-witness-030/report.json node tests/browser/hearth-reclaim.cjs
+- The actual result records exit_code/execution_exit_code 0, execution_reason completed, no executor error, cleanup_verified true, cleanup_state absent, and no cleanup errors. Started 1791157530.7744007; finished 1791157970.9477305 (440.1733298 seconds). Container inspection records exited, Running false, OOMKilled false, Pid 0, ExitCode 0, Error empty, and the exact approved command/image.
+- The full log records all four fresh builds, then the candidate reclaim PASS covering genuine rescue, observed loads, held custody, eastern construction, fresh relocation, persistence faults and native navigation. Report status is passed, failure null, pageErrors [], elapsedWallSeconds 438.706. This is actual runtime completion, not a source-only inference.
+
+Read-only historical input custody
+- Actual input receipt names prior job singularity-20261004-reclaim-witness-030 and QA commit 3bbd169b1e1573b921c415ebc9425261eed78d52. Its prior result is 497 bytes, SHA f1a581a99b46dc581f8ff8a323d3051ebe079c455a708cfd0a5ffe554c43c979, exit 0.
+- Receipt says private copy mounted read-only at /tmp/reclaim-witness-030. Actual container mount independently records ReadOnly true / RW false; it is distinct from writable job work.
+- Raw input: 7029 bytes, SHA 3da66efe63c483506f0e92d9a48633251150684138ba0cbdd7791bb039ee1082. Provenance report: 1186790 bytes, SHA 9d707ad60ca5c15bb14d5374dc1837481cae749e9f9ae859479406836749ee55. The returned genuine-legacy-input.json independently hashes to the raw input. The actual suite report repeats both input hashes.
+- Earlier independent baseline verification is frozen in construction-053-054-baseline-input-verification.txt, SHA 2892a27a220abfaa08fac1eb28a624c00a102b5b01428363a44b50899efb41bf. No historical witness was synthesized or rerun by this review.
+
+Numeric and assertion-completion review
+- A separate read-only numeric reviewer independently counted report contents: 23 scenarios, 16 checkpoints, 64 transitions. In each of primary and fresh recovery there are 12 wood plus 4 stone pickups AND matching receipts, all exactly 5 units: 60 wood / 20 stone per recovery. All 32 receipts identify actual store b0.
+- Primary final-held state has idle u0 at (5,16) carrying 5 stone. Retiring b6 and its claim remain; unreleased material is zero, recovery is 60 wood / 15 stone, and settledSites is zero. Actual final receipt at b0 at time 844.300... precedes removal of b6, clearing of cargo/claim, and settledSites 1. A load held away from the store is not credited or treated as footprint clearance.
+- Primary recovered endpoint: stock 76W/90S, spent 340W/130S, gathered 396W/210S. Eastern outpost completed endpoint: stock 16W/70S, spent 400W/150S, same gathered totals. Completed b8 at (22,11) has work 24 and an actual store.
+- Fresh relocation endpoint: stock 16W/20S, spent 100W/50S, gathered 96W/60S; former western outpost removed, eastern b2 at (22,11) and workshop b3 at (12,16) complete, recovered 60W/20S, actual hearth stock 16W/20S, no cargo and no active construction sites. These finite endpoints conserve inventory.
+- Five reload before/after pairs were byte-identical. All eight failed-import exports were byte-identical to their outgoing-live counterparts. Certified navigation exports matched primary complete / carryMove originals. Each of three read-only navigation observation windows contained 243 getItem calls and zero setItem/removeItem/clear calls.
+- Pinned harness SHA db57e9c85d25450fcc3b0f2e0ca9b8068a653079010310075960269e32941302 retains physical adjacency, separate pickup/receipt, <=0.100001 simulation samples, actual-store credit, held custody, footprint clearance, persistence fault and destination assertions before setting passed. Source hashes in the actual report match candidate engine abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b and view a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955.
+
+Returned build identity (independently rehashed, no local build)
+index.html: 198536 bytes / 925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd
+hearth.html: 83881 bytes / a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+agriculture.html: 52583 bytes / 690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+hearth-rts.html: 129904 bytes / 588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+
+Evidence SHA-256 (under task-2/spark-ci; prefix singularity-20261004-construction-reclaim-054)
+approved/<prefix>.json: a2a573ce1d55fe00c8797fbacfd16ef96334fadd93305cf482056d11ff628816
+results/<prefix>.json: c359c4dac2532eda95a46a0e74428fbf1cacb0d9703119cdcded6d6d44a771e6
+logs/<prefix>.log: a5ad31f0f3653d43e8a658cd3e833606a89f9865a3ebcbdfba25e9642ddd8ea7
+logs/<prefix>.container.json: 7906e4daa5c00fb7c7734fe904f7cd0c31c16c1d7a5082285496f7c76ae16422
+results/<prefix>-artifacts.tar: d93e07c0a2edcf966b5637a65f88cbda45a281bd73fa7f68a58b64984e55b0b2
+results/<prefix>-ci-output.tar: 5617f0cdef77ad517c3141bb5eda8083ee6f2af035122c2710da91a7e882922e
+results/<prefix>-artifact-members.json: 0ee4cdd96c611eb4fe8bb4ddb3e15656683c39b480b3a0612e0a02adf445adb7
+results/<prefix>-remote-provenance.json: 5858ca6af5c97214618670ebef02f57eb824948812412a676805bb3139813598
+results/<prefix>-built-dist-provenance.json: c607bda6b90d16b06bd34d24df24d8c67d634525157a750e0299e7a709940c5a
+results/<prefix>-evidence/ci-output/input-provenance.json: 1b1d2b23c38e3981ca90f78607adb54393243283802fe2ba8d834b7f39eb5102
+results/<prefix>-evidence/artifacts/hearth-reclaim/report.json: d1a9e459cfdbbef5a869fd0ba9e1f2dbca261e53c674841ffad8dbb422f4390e (6566752 bytes)
+Selected raw checkpoint hashes, independently compared against exact original tar members:
+primary recovered: 80a924c26a8f7d50daba7cb61eafbee49e4ba6e6054ce6b49f4d662111faec53
+primary eastern built: 29571620c03e0d5c9066ff23077182581b1bf07dca61f9be5d2f99c1215d05c9
+fresh complete: d789c4209e3f72da8cea507280e178b5e5b1820daed43ffa4855d555ee6e8891
+
+Limits
+The returned remote-provenance record reports 308 matching entries; this review rehashed principal records, required inputs, returned HTML and selected data, not every media member, and made no fresh remote observations. Cleanup is supported by returned result/container evidence, not a local lease inspection. Numeric reviewer did not recompute every intermediate state. This review decoded no media and does not supply independent pixel acceptance. Controlled-clock headless desktop mechanics and labeled Storage/navigation fixtures do not prove human pacing, enjoyment, usefulness, physical device/accessibility support, L01-C/H2/First Furrow, or full-campaign completion. No parser, application/test/build/browser/dispatcher execution, source edit, rerun, host modification or release occurred on M6.

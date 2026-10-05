@@ -1,0 +1,258 @@
+{
+  "job": "singularity-20261004-construction-journey-053",
+  "commit": "3ab7817fba4729fcd5f3d24422048d894d6d6b66",
+  "reportSHA256": "ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd",
+  "members": [
+    {
+      "file": "00020-fresh-main-east-empty-work0.json",
+      "sha256": "894154aed4bcefb55dd5b70659ad4669d993936cab20409c47cef18a8d87d1d8",
+      "bytes": 5518,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00020-fresh-main-east-empty-work0.png",
+      "sha256": "36ae804e70990b2451628175e11b31084361d6484e955ee478c450aeb9796665",
+      "bytes": 276880,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00020-fresh-main-east-empty-work0-site.png",
+      "sha256": "50925bc31072ef4e379c2e8857910a301dbe7fe16084f5cc812dd8b7dc4abe99",
+      "bytes": 4917,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00024-fresh-main-east-five-wood-work0.json",
+      "sha256": "c4b89e988c4b246019b4200d9af6e4c4390af84b4d18ac59bd6101a7272a5d32",
+      "bytes": 5740,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00024-fresh-main-east-five-wood-work0.png",
+      "sha256": "d76170ae54394102d71fc1cbfea5f137b380a1910aae98c284ae5ddc60e89758",
+      "bytes": 278829,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00024-fresh-main-east-five-wood-work0-site.png",
+      "sha256": "4191261ac8ce575d11ffdf45caed07817f9b14f34c085e9809eae464d7d84b02",
+      "bytes": 5791,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00049-fresh-main-waiting-before-installation.json",
+      "sha256": "8ceebdf0276e9898248aa16b2b3a29a0d8cef77d6e6141d4c30141d23f085447",
+      "bytes": 5665,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00049-fresh-main-waiting-before-installation.png",
+      "sha256": "7b8d5e0ec7a6ebf13618efce31737bc72b3c11ac4e45eec085f5ceca54ad249d",
+      "bytes": 266084,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00051-fresh-main-waiting-before-installation.json",
+      "sha256": "33b1a73299b7c3cfe2a4de202a0ae48f7ffae1ca04e21faf33efd72062e06c67",
+      "bytes": 5535,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00051-fresh-main-waiting-before-installation.png",
+      "sha256": "5db374707a79dec05a1323a89c76e7c91b229918db0156871e7450f70233f28c",
+      "bytes": 265336,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00052-fresh-main-previous-waiter-now-installing.json",
+      "sha256": "b885903175459212b24090e7be0d005dfb4ab9ed200bb8b494e389c4e88c4b59",
+      "bytes": 5516,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00052-fresh-main-previous-waiter-now-installing.png",
+      "sha256": "a5dac7ab8e8554caa3c9957912b2d58a2ccdd4c02726dc22d758771ad37728d9",
+      "bytes": 267840,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00053-fresh-main-east-outpost-usable.json",
+      "sha256": "b7681f72b897360c569e285c8f1241a96ab65fdf0619fcf9948694adf5fb6ddc",
+      "bytes": 5588,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00053-fresh-main-east-outpost-usable.png",
+      "sha256": "c01f065aa7ded4b248fcdad40b11c14ecd2013180d8b1957c1523d9a9bd502db",
+      "bytes": 257706,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00089-fresh-main-east-workshop-usable.json",
+      "sha256": "0bde754672f26afd5fc68d0c92712ee61d99b6399ce02b6cc8f4deaea62f9896",
+      "bytes": 6130,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00089-fresh-main-east-workshop-usable.png",
+      "sha256": "8cdba4aecf20d3bf739da3a6f1cde3ae78fdab13cb20932aaef614fd9ac56a00",
+      "bytes": 282829,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00100-fresh-main-main-complete-useful-supply-line.json",
+      "sha256": "bc7547b4f6bfa81c594014f26f0a4a1212ed2479af512597a4770b0a678b2600",
+      "bytes": 6203,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00100-fresh-main-main-complete-useful-supply-line.png",
+      "sha256": "a516ebedaabad23b9d6c7945d900e372c9390e834bfc7062422408b335c48575",
+      "bytes": 258414,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00217-earned-cancel-reserved-only-replacement-used.json",
+      "sha256": "0a4ddef0a7d6231209d44be3c91f36c4efe4213c0859284e122a2822dc23b058",
+      "bytes": 5798,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00217-earned-cancel-reserved-only-replacement-used.png",
+      "sha256": "641ef296c7467182fcb44b51502d24f6f931a427a2027d9296dd4499d1523ac4",
+      "bytes": 251983,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00234-earned-cancel-carried-cancel-recovery-world-cue.json",
+      "sha256": "ccc3116c810023db8d559b3e0137d5d8795a9a3d70f0347b4b6d283c6ea2a131",
+      "bytes": 5419,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00234-earned-cancel-carried-cancel-recovery-world-cue.png",
+      "sha256": "bed9f9033808bd6ac686c4a9e4c50ad6159f3b3feee56076e02fd05c69251b0b",
+      "bytes": 277589,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00234-earned-cancel-carried-cancel-recovery-world-cue-site.png",
+      "sha256": "a9fe3798742eaaa76405df5aa187724a5d71c1ece840040726b360cde41b27e8",
+      "bytes": 6206,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00278-earned-cancel-carried-replacement-used.json",
+      "sha256": "2655f01c325eaf0ff9b16145343bb82ccdf8b4fee5d2a205d868c08e8fa9198e",
+      "bytes": 5819,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00278-earned-cancel-carried-replacement-used.png",
+      "sha256": "fa954f9448fb2152be15ae478dcd81cbb58fff0d2b4a77c480cc6e246eadf59f",
+      "bytes": 252756,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00286-earned-cancel-onsite-cancel-recovery-world-cue.json",
+      "sha256": "ca046735f70be2b1767f0aa86d74e30d7b20bc83b5a54305cda6f1717640a08a",
+      "bytes": 5397,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00286-earned-cancel-onsite-cancel-recovery-world-cue.png",
+      "sha256": "d94964215993b057d1d589b23059a6f03d767ec9c83785c59a66540ddb12a109",
+      "bytes": 280788,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00286-earned-cancel-onsite-cancel-recovery-world-cue-site.png",
+      "sha256": "d6ffcd1345f5222e85ce6d5c2f3f7952abfd8bb2e0720941dd411810d44a4d32",
+      "bytes": 6902,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00330-earned-cancel-onsite-replacement-used.json",
+      "sha256": "c1b4dd396642005f0539ddbd9c76c0104af0c8a60125000d2b0364f34c3fa7c9",
+      "bytes": 5822,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00330-earned-cancel-onsite-replacement-used.png",
+      "sha256": "78323bdbeb0c942dba308ffe7c77f2008f3eef15809157e053e7cc625390ea5e",
+      "bytes": 252565,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "failure.png",
+      "sha256": "db64f3322a3122754ef4f2da822a82e175ee78f9f707a4a82b2c7f1600357636",
+      "bytes": 288771,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00350-earned-cancel-partial-work-partial-paid-work-before-cancel-boundary.json",
+      "sha256": "0d515e5e9077d8f68a507cf8e3ad924d74ee1438d268966e8a2800b8873bf5a3",
+      "bytes": 6051,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    },
+    {
+      "file": "00351-earned-cancel-partial-work-partial-paid-work-before-cancel-boundary.json",
+      "sha256": "70bc0e96e5264ab1e16d4feb6886753f7e67d781d11b25f63c65de6907bfadb0",
+      "bytes": 5953,
+      "matchesReport": true,
+      "matchesReturnedDisk": true
+    }
+  ],
+  "viewedPNGFiles": [
+    "00020-fresh-main-east-empty-work0.png",
+    "00020-fresh-main-east-empty-work0-site.png",
+    "00024-fresh-main-east-five-wood-work0.png",
+    "00024-fresh-main-east-five-wood-work0-site.png",
+    "00051-fresh-main-waiting-before-installation.png",
+    "00052-fresh-main-previous-waiter-now-installing.png",
+    "00053-fresh-main-east-outpost-usable.png",
+    "00089-fresh-main-east-workshop-usable.png",
+    "00100-fresh-main-main-complete-useful-supply-line.png",
+    "00217-earned-cancel-reserved-only-replacement-used.png",
+    "00234-earned-cancel-carried-cancel-recovery-world-cue.png",
+    "00234-earned-cancel-carried-cancel-recovery-world-cue-site.png",
+    "00278-earned-cancel-carried-replacement-used.png",
+    "00286-earned-cancel-onsite-cancel-recovery-world-cue.png",
+    "00286-earned-cancel-onsite-cancel-recovery-world-cue-site.png",
+    "00330-earned-cancel-onsite-replacement-used.png",
+    "failure.png"
+  ],
+  "viewedPNGCount": 17,
+  "note": "Other members were byte/hash verified only. No media decode or application execution."
+}

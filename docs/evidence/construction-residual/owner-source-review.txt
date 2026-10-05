@@ -1,0 +1,39 @@
+Owner source review —2026-10-05
+Reviewed tests/browser/hearth-construction.cjs SHA256
+cae2720150086f7ff7063ebe751b5c1eca57954be9531a55522da1c5f69533bb
+against immutable3ab7817. Only this QA file and new evidence documents change.
+
+The actual053 failure has two completed independent skeptic reports. Both show
+that the global875s budget expired during continuing delivery after earlier
+completed branches. Root reviewed the original result/log/report, final raw
+checkpoints, failure PNG and independent numeric/visual reports. No production
+change or timeout increase is supported by this evidence.
+
+The residual gate preserves the actual material/work oracle,80ms sampling,
+<=.100001 material deltas and875s ceiling. It retains the original four missing
+scenario bodies: partial-work cancellation/useful replacement, recovered-capital
+relocation, and genuine035legacy completion and cancellation. Distinct selected,
+opened, completed and endpoint assertions precede passed-residual-only. The
+original full mode remains available; its original053 attemptedcombinedrun
+remains failed and is not described as a successful current CI command.
+
+Root traced fixed report/input hashes, exact prior/current production/build
+manifest equality, native import paths, before-browser input checks and explicit
+035requirements. Actual00013/00016 satisfy idle-worker/currentinventory/seen-tile
+checks. Prior report remains failed and only references historically completed
+scopes; no old events/measurements are copied into currentfresh arrays. G01
+same-worker assertions/collection are explicitly prior-only in this continuation;
+material custody and independently calculated installation labor stay active.
+
+The optional desktoparmed Outpost/Workshop guidance capture uses ordinary
+controls while paused, asserts24/32worker-seconds, captures before inputclear,
+and compares exact Journey bytes after Cancel. It does not qualify touchpreview.
+Root compared these selectors and help text with current view.js. The only
+root-requested source adjustment was nullish mode defaulting: missing mode keeps
+full; explicitly empty or unknown values fail. The author applied that change.
+
+Root read/accepted bounded054reclaim/persistence/navigation evidence and the
+separate053earned-input-producing scope. This source review does not pass the
+remaining runtime cases or fairallocation055. A separate source verifier and
+coordinator immutablejob review remain required before execution. No M6app,
+parser,test,build,browser,remote dispatch or originalartifact mutation byroot.

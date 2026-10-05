@@ -1,0 +1,136 @@
+Independent construction journey visual review — partial evidence from FAILED053
+
+Reviewer: /root/construction_runtime_visual
+Job: singularity-20261004-construction-journey-053
+Candidate: 3ab7817fba4729fcd5f3d24422048d894d6d6b66
+Verdict: SCOPED PIXELS SUPPORTED; OVERALL JOB FAILED AND MILESTONE NOT ACCEPTED.
+
+053 stopped at its875-second internal guard during setup for partial-work
+cancellation, before that Cancel action. It did return useful evidence of fresh
+physical construction, the same-worker installation status transition, and three
+completed cancellation/replacement branches. The final state was still receiving
+supplies. This review does not identify a demonstrated gameplay softlock and does
+not accept the unrun partial-work, reclaim/relocate or genuine-v5 migration scopes.
+
+Custody and exact identity
+Source archive SHA256:
+1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da
+Harness SHA256:
+1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Built hearth-rts.html SHA256, matching expected immutable source:
+588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report binding:
+52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535
+Report SHA256:
+ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+Returned artifacts.tar:84981760bytes, SHA256
+b8d769a6da40c4658d0e067b91e6e23a99363464e25abd180766fce20e57e66f
+Result JSON SHA256:
+bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9
+Log SHA256:
+744ae30547c5a87c16fe8691936c3118d3cf44697cec721652ffd72a949ba115
+Result records gb10-02, exit1, no executor error, cleanup verified/absent.
+
+33 selected PNG/raw members were independently compared between exact tar member,
+returned extracted file and report hash where one exists; all matched. Failure
+PNG has no report image hash and was bound directly tar-to-disk. The adjacent
+construction-053-visual-member-bindings.json enumerates every member and the17
+PNGs actually viewed. Its SHA256 is
+ df9fc31c0a3334fb4c819e99475f70a0fca4e904e104d3b654196af685bc2f51.
+The additional00049 pair was hash-checked but its PNG was not visually inspected;
+051/052 are the final exact-boundary witness. No unchecked image is called viewed.
+
+Observed pixels and their paired state
+1. The same eastern site b1 at22,11 is visibly empty in00020, labeled0/80ONSITE,
+   then has a small drawn log and5/80ONSITE in00024. Both full-page inspectors say
+   work0.0/24. The independent site crops show the difference directly, beyond a
+   changed hash; the second also contains the arrived actor, so the entire pixel
+   difference is not attributed solely to the log. Raw state records onsite0→5W,
+   work0→0, actual source116→111W and reserved60→55W. Free stock stays56W50S,
+   correctly distinguishing held reservations from source inventory and onsiteWIP.
+   This supports the contract's five-delivered-wood-at-zero-work visual criterion.
+
+2. Exact pair00051→00052 shows the same Aru/u0 beside b1 at21,11. Before, the
+   Selected text spells out Waiting for site supplies; Aru's card shows the same
+   status with an ellipsis. After, both card and Selected text show Installing
+   outpost. The site goes0.0→0.4/24work. Raw times135.99999999999656→
+   136.09999999999656, unchanged actor position, zero cargo and fully staged60W20S
+   bind the actual next-tick transition. The after frame selects Aru/Nara/Tavi;
+   Aru is still present and is not the final carrier Uma/u3. The title attribute
+   is covered by the executed DOM assertion, not by a visible native tooltip in
+   these PNGs. This supports the same-worker G01 status fix within failed053.
+
+3.00053 shows the drawn completed eastern outpost and its real local-store table
+   (empty initially), with the eastern-outpost goal checked. Raw state has work24,
+   done:true, empty new b1store and no remaining site ledger.00089 shows the drawn
+   completed workshop, all three opening goals checked, and visible Tools018
+   offer funded by Outpost1store:4W8S/12worker-seconds. Its raw workshop work is32.
+   00100 shows both completed structures, timber reduced to101/180 and stock91W60S.
+   Paired raw state records tools:true, complete:true, spent104W58S, and actual
+   eastern-store35W10S. The images support the buildings and displayed state;
+   transport, labor, payment, repeat-action and extraction-rate claims require
+   the recorded runtime transitions and complementary numeric review. The final
+   frame inspects timber, so it does not independently show the completed-tools
+   inspector or visually measure the0.60→0.45 extraction interval.
+
+4. Carried-cancel frame00234 and its crop show RETURN SUPPLIES above the western
+   footprint. Aru remains at the player's remote held position carrying5W;
+   inspector says0assigned,55W20Sreleased,5Wenroute and none onsite. The disabled
+   Supplies returning button and explicit Resume supply recovery control are
+   visible. Onsite-cancel00286 instead retains the drawn5Wlog at the site and
+   inspector shows5Wonsite,55W20Sreleased, with Aru ready to recover at the edge.
+   Paired raw state agrees in both cases. These frames clearly distinguish held
+   cargo from onsite material and do not imply an instant refund of either.
+
+5. Replacement-used00217(reserved-only),00278(carried) and00330(onsite) each show
+   the replacement eastern outpost, no old western footprint, all four actors
+   ready and the eastern timber stand reduced180→160. Each paired raw state has
+   b2done/work24, no physical site ledger, b2actualstore20W and totalstock76W50S.
+   These are reached post-replacement endpoints. Their pictures alone do not
+   prove the intervening walks, receipts or conservation; those rely on the
+   native checkpoints/events and complementary numeric review.
+
+6. Failure.png agrees with final00351: active western site45/80ONSITE; inspector
+   reserved10W20S, carried5W, onsite45W, work0/24, four assigned. The prior00350
+   at95.1s has40Wonsite and two5Wcarriers;00351 at95.2s has45Wonsite, u3's5W
+   delivered/cargo cleared, and u2 moving y14→13.7 while still carrying5W.
+   Thus the last saved interval contains a real receipt and movement. Work0 is
+   expected before all80items arrive. The captured evidence supports global
+   harness-budget exhaustion while progress continued, not a demonstrated
+   progress softlock. It does not predict completion of the unrun remainder.
+
+Unreached or visually unestablished
+- Partial-work cancellation itself, its recovery/replacement, west reclaim and
+  relocation, and genuine-v5 unfinished-site adoption/completion/refund were not
+  reached. No new-candidate PNGs exist for those outcomes; no acceptance inferred.
+- G02 active placement guidance remains UNESTABLISHED.053 captures after site
+  reservation; its arm/cancel operation has no precommit/touch-preview frame.
+- Controlled-clock desktop screenshots are not physical-device, human-pacing,
+  enjoyment, animation-quality or full-campaign acceptance. No video was decoded.
+
+Visible limitations retained
+The fixed bottom command tray overlaps the lower roster/card region in these
+full-page desktop captures. Status lines used above remain readable, although
+long waiting/fetch labels are ellipsized; full site Selected text supplies detail.
+In the completed-outpost frame, the same fixed tray overlaps the lower sidebar
+recruitment region. Western site labels visually mingle with the nearby EMPTY
+resource label. Historical notices such as Return planned · starts on Resume
+remain visible in completed/idle frames; current cards and checkpoints differ
+from those historical notices. These are recorded layout/status caveats, not
+invented proof of interaction failure from screenshots alone.
+
+Legacy baseline viewed separately, not new-candidate acceptance
+Accepted035 legacy-unfinished-v5.png,203072bytes, SHA256
+6685f1b3cec3a2a320416944b4468ee74fbc31f1d3cca7220735a04251c76ebb
+shows the paused drawn camp, selected Aru, unfinished western outpost,56W50S and
+Cancel site · full refund. Its raw version5 records b1work0.1/24 and spent60W20S.
+This is only the pre-v6 visual baseline. construction_final_verifier owns full
+053/054 numeric/custody review and baseline-input verification; its baseline
+report SHA2892a27a220abfaa08fac1eb28a624c00a102b5b01428363a44b50899efb41bf
+is separate from any unrun053 legacy adoption outcome.
+
+No production/source, manifest, queue, approval, deployment or package edits.
+Only this report and the selected member-binding data were written by this
+reviewer. M6 operations were read-only source/evidence inspection, hashing and
+JSON/tar data analysis plus view_image on returned PNGs. No repository execution,
+parser/test/build/browser or media-decoder execution, remote dispatch or rerun.

@@ -1,0 +1,52 @@
+Independent returned-evidence review: construction journey 053
+Written 2026-10-05 UTC; read-only source/data/hash review on M6.
+
+BLOCKER / VERDICT: FAILED. Preserve singularity-20261004-construction-journey-053 as exit 1. The full journey and final acceptance assertions did not complete. Partial-work cancellation, the later construction reclaim/relocation branch, and both genuine-v5 completion/cancellation branches remain unverified by this attempt. Allocation 055 is held by this failed prerequisite. No rerun or larger time limit is approved by this review.
+
+Failure diagnosis, separately corroborated
+The actual report and full log identify AssertionError: 875-second bounded browser job exceeded, through guard line 80 -> tick line 113 -> physicalUntil line 312 -> caller line 461 in pinned hearth-construction.cjs. This is the global Date.now wall budget, started before the whole browser journey. It is not physicalUntil's simulated-time timeout assertion at line 313. At line 461 the partial-work cancellation setup awaits site work > 0; the subsequent Cancel action at line 462 was never reached.
+
+A separate source/log failure critic traced the same boundary and final raw checkpoints. This scenario began at simulated t90.6 and reached t95.2, only 4.6 simulated seconds. At t95.0 staged material was 40 wood; t95.1 contains another source pickup; t95.2 contains an actual five-wood site receipt, increasing staged wood to 45. Final state contains 45 wood staged, 5 wood carried, 10 wood plus 20 stone reserved, and work 0. The outpost still needs 15 wood and 20 stone delivered before installation may start. Workers retain active pickup/delivery routes. Zero work is expected for incomplete funding. The last tick therefore shows continuing material progress, not a demonstrated frozen simulation.
+
+The observed failure is the overall harness wall-budget expiry. Earlier scenarios, UI actions, export I/O, screenshots and persistence all consume that shared budget. Their individual wall cost is not measured here; no specific performance bottleneck, game defect, absence of every possible later defect, or eventual completion is proven. errors: [] is only the page-error array and cannot convert this failed suite to a pass.
+
+Partial completed evidence, explicitly short of overall acceptance
+- Fresh main reached main-complete-useful-supply-line (00100) and exact complete-main reload checkpoints (00101/00102). Before those reached checkpoints the pinned harness asserts actual outpost 16 source pickups plus 16 site receipts, workshop 14 plus 14, every amount 5 and exact respective costs; useful eastern-store gathering and that store supplying the workshop; opening completion; Tools018 payment once (4 wood / 8 stone), unchanged repeat, canonical work 12; and post-Tools actual hauling. Actual report records 20 wood hauled with travel in 11 simulated seconds and extraction intervals .60 -> .45. These are reached assertions/records, not a new independent recomputation of every intermediate tick.
+- Both same-earned-start one/four construction comparisons completed. Same input SHA 312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f. Common start time 90.6; total endpoints 269.4 / 139.7; construction elapsed 178.8 / 49.1. Other three peers were idle in the one-worker case. This is parallel construction speed, not a fair alternative-resource-allocation/opportunity-cost result or human pacing.
+- Reserved-only, carried and onsite cancellation branches each reached replacement-used checkpoints 00217, 00278 and 00330. Reached source assertions include release of unpicked reservations, exact custody/return, recovery reload, stock/spent restoration and actual replacement-store wood receipt. The carried branch also passed immediate/repeated Move preservation, held reload, Stop return and refetch setup. The fourth partial-work branch is incomplete.
+- The same prior waiter witness records actor u0, site b1, work 0 -> .4 at t136.0 -> 136.1 in checkpoints 00051/00052, with card small/title and site Selected assertions. Independent pixel review is separate: construction-053-visual-review.txt SHA 774f98a2b880b817768675ace0f9f57510030459cdf01d71986a9498ecea40ce. Its 33 selected member bindings SHA df9fc31c0a3334fb4c819e99475f70a0fca4e904e104d3b654196af685bc2f51. It viewed 17 PNGs; full waiting text is visible in Selected, the card is ellipsized, and title is supported by the reached DOM assertion rather than a visible tooltip. No G02 precommit-placement visual acceptance.
+- legacyUnfinished.status remains pending because that branch was never reached. Its generic report reason is not proof that the input mount was absent: actual input custody evidence below shows the required tree was supplied.
+
+Immutable execution and input custody
+Candidate 3ab7817fba4729fcd5f3d24422048d894d6d6b66; archive SHA 1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da; image sha256:b8df542f0badff9f0829d97146c2adc5b193041a276b42a220f9eab5f7df8a0e, host gb10-02.
+Approved and actual container command: node build.mjs && OLD_BASE_DIR=/tmp/construction-witness-035/old-source LEGACY_CONSTRUCTION_WITNESS=/tmp/construction-witness-035/legacy-unfinished-v5.json LEGACY_CONSTRUCTION_WITNESS_REPORT=/tmp/construction-witness-035/report.json node tests/browser/hearth-construction.cjs
+Result started 1791157198.5535574, finished 1791158074.882938, elapsed 876.3293805 seconds; execution_exit_code 1, executor_error null, cleanup_verified true, cleanup_state absent, cleanup_errors []. Container records exited, Running false, OOMKilled false, Pid 0, ExitCode 1, Error empty. This is an application harness assertion before the approved 900-second outer bound, not a reported OOM/container kill.
+
+Actual input receipt names prior witness035, QA commit e1d5c858b9d97a8528dd12b6ab726ea38d3dfc85, a 501-byte prior exit-0 result SHA 4fbe0efe7c59b8e29c7d0311bd0f243e6ad1488d8c27ce01aefc9c87658cd5cf, and the private read-only /tmp/construction-witness-035 directory. Container independently records ReadOnly true / RW false. Receipt enumerates all 22 required original files: seven JSON/PNG pairs, report, producer and six old-source files. Raw v5 witness is 4570 bytes / 584a073cd5779901e2cb8d560c30ef72a991b15f39197f39aff69bd840c72a03; report 110942 bytes / 630e9b2fd54368d1beefd1892cc1a539d13f3d7bd84766aebab476737a8624cf; producer 11781 bytes / f8a4c31c3da1ee71ed6a0b97c3732b0e3ff6794caeab61718b630327cd7d569b. All 22 original files were independently checked in frozen baseline report construction-053-054-baseline-input-verification.txt, SHA 2892a27a220abfaa08fac1eb28a624c00a102b5b01428363a44b50899efb41bf. This proves supplied input attribution, not execution of unreached migration assertions.
+
+Fresh builds and source binding
+Full log records four successful builds before the failure. Independently rehashed actual returned bytes:
+index.html 198536B: 925ec97c3d0ad6a740ca3a467d542cab458b9edae927a58de0e0f0caf2c3dabd
+hearth.html 83881B: a824d46d3b38d3b8bf7477a279033b58ec18a43fb9161a1287f4e9a9fe55bc93
+agriculture.html 52583B: 690cbc8e61972722450220ed27a7bd7d05c1a2de034c21c14d9ce7fd3646a5ec
+hearth-rts.html 129904B: 588cf08256c89fa291f6a16b7ddd3084bc7ab72f06553ab5aa31300d3f4b456e
+Report manifest matches engine abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b, view a2428fdd59c16c37a8188ce3e814e2cee59fbf2956cd5f85f96005cfd0433955, build cc3a45bc20f08dff82c01aceadefe3e4b7c2c5ea924aaba5da3561c05b119d47, and main harness 1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130. Source/build binding in report/checkpoints is 52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535. Material maximum .100001 and requested 80ms pulses remain unchanged.
+
+Evidence SHA-256 (under task-2/spark-ci; prefix singularity-20261004-construction-journey-053)
+approved/<prefix>.json: 1f0721a3707626c23a015d4370bcd887d2b347be185d33db17c6b0be93240ba9
+results/<prefix>.json: bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9
+logs/<prefix>.log: 744ae30547c5a87c16fe8691936c3118d3cf44697cec721652ffd72a949ba115
+logs/<prefix>.container.json: 602d96fc5272183d04141f08b608c280ccc8c62ba43d8cd20b86f4cee078e808
+results/<prefix>-artifacts.tar: b8d769a6da40c4658d0e067b91e6e23a99363464e25abd180766fce20e57e66f
+results/<prefix>-ci-output.tar: 61f99bfaa066d1c50589db2f45912308999468a4ace975a659c6a249852536ae
+results/<prefix>-artifact-members.json: c5d800f83db03ae544f478f31db0f06ccb03fcc303c09c73a3d45605a26ae82d
+results/<prefix>-remote-provenance.json: 7ca6c48c09d9cf86cfd5d802267512d887fa6441f5fc14d86bd5200a4e65f501
+results/<prefix>-built-dist-provenance.json: d6e5228e727e4e5254d73d43d4d1b2f674f68ddede79da74a243a6ec16d4ce63
+results/<prefix>-failure-notice.json: c223e09121d9a5f73d290465561d197ecd8af3208fbb69857d6e7bd3c62e29d3
+results/<prefix>-evidence/ci-output/input-provenance.json: 40cf76f06b51550eea3ff950c4a81262d660d7890e79e0bdbb9ed40c969d6d5a
+results/<prefix>-evidence/artifacts/hearth-construction/report.json: ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd (11645523 bytes)
+Last 00351 raw checkpoint: 70bc0e96e5264ab1e16d4feb6886753f7e67d781d11b25f63c65de6907bfadb0
+Report and input receipt were independently byte-compared with their exact original tar members. Remote-provenance record reports 614 matching entries; it is returned evidence, not a fresh remote inspection by this reviewer.
+
+Limits and remaining gates
+No local parser, test, build, browser, media decode, remote dispatch, lease access, source/QA edit or rerun. Selected numeric/checkpoint evidence and pinned assertion flow were reviewed; not every recorded intermediate state was independently recomputed. Cleanup is supported by returned result/container records. Controlled-clock evidence is not human pacing/enjoyment, physical device/accessibility or full-campaign acceptance. 054's separate pass cannot fill 053's unreached construction/v5 branches. G02 placement pixels and the separate fair A/B/C allocation gate remain outstanding. Failed053 and its original evidence must remain immutable.

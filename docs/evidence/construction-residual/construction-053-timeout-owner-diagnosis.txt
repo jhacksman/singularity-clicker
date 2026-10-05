@@ -1,0 +1,51 @@
+053 actual failure and bounded continuation decision —2026-10-04
+Candidate3ab7817fba4729fcd5f3d24422048d894d6d6b66
+Original source archive1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da
+
+053 remains FAILED: exit1, execution1, completed876.329s, cleanupverifiedabsent.
+Log assertion is the job-wide875s guard at tick113/physicalUntil312/line461,
+before partial-work cancellation's Cancel click. It is not its450simsecond
+predicate bound. No timeout increase, duplicate fullrun or game edit is planned.
+
+Root read actualreport/lastcheckpoint and viewed actualfailure.png. Final state
+is ongoing supply: t95.2,45wood onsite,5wood carried,10wood+20stone reserved,
+0/24work. Adjacent final checkpoints advance0.1simsecond and record real pickup
+or receipt. Root visual matches those counters; a still does not prove motion.
+Independent skeptics1and2 agree the cumulative harness exceeded its wall budget
+while the last branch was progressing. Tar timings show this branch received
+only~13s after earlier work used~859s. No production softlock supported by this
+failure. Exact runtime costs of individual browser operations are not profiled;
+source shows two trusted Pause clicks per80ms sample and full Journey/PNG/report
+writes at material boundaries. No unmeasured bottleneck is asserted as sole cause.
+
+Completed assertions/checkpoints exist for freshmain supply16/14loads,
+Tools018/usefulhaul/refresh, one-vs-four construction, and reserved-only/carried/
+onsite cancellation through a useful replacement. These need explicit scoped
+independent acceptance; they do NOT make overall053PASS. Partial-workcancel,
+reclaim-relocate and genuine035v5completion/cancellation were not completed.
+G01same-worker PNG pair and 0vs5onsite work0pair have independent visual review
+in progress. G02active-placement screenshot remains unestablished.
+
+Authoring decision after two independent skeptic findings:
+QAowner adds an explicit residual-only mode to the existing harness. It will
+reuse the exact two earned053Journey files through ordinary import, with fixed
+hash/binding/source/report guards, and execute only the missing paths. It keeps
+875swalllimit,80msrequested pulses, <=0.100001actualsamples and custody/labor
+assertions. Existing035entire witness is reused, not regenerated. No game edits.
+Original053status and prior-scope attribution remain visible; no copied prior
+report is advertised as fresh evidence. Separate review follows the source edit
+before immutablecommit/manifest submission. Coordinator remains execution owner.
+
+Inputs proposed for a new job (not a dispatch approval):
+report.json11645523B
+ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+00013-fresh-main-earned-west-116w70s.json3728B
+6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d
+00016-fresh-main-same-earned-scouted-start.json4931B
+312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+Prior report binding52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535
+
+054 separately returned exit0 with fullreclaimPASS; independentfinalcustody
+review pending.055allocation stays held until combinedaccepted053scopes plus
+newresidualgate close; do not replace that prerequisite with053overallPASS.
+Private package remains.pending. No M6execution,publication,deployment ormerge.

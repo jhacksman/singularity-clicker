@@ -1,0 +1,24 @@
+Independent acceptance of exact earned input bytes from FAILED journey053
+2026-10-05 UTC; read/hash/text/byte comparison only on M6.
+
+ACCEPT ONLY the input-producing scope and three files below for a separately reviewed remaining-branches job. Original job singularity-20261004-construction-journey-053 remains FAILED, exit1; this is not acceptance of its full journey or any unreached branch. Its completed partial scope and failure are frozen in construction-053-owner-failure-review.txt SHA dbf66ac1bbddfe5fac9c2aec14dc7cbdefcf2cb124fbb997b15f0244c375b591.
+
+Source candidate: 3ab7817fba4729fcd5f3d24422048d894d6d6b66
+Source archive SHA: 1b2dd44b24cc0f104c329687386cdf2a316a02b8666c3f18dffc287e202b82da
+Producer harness SHA: 1037d3f60501fb7c8057e0eb34d1a3b0c8f13e10cec0606f08f6f480e30ed130
+Source/build binding: 52d8dd56af0a8f3a33d3e27f488afe2e8e9e7378f6aa2b18578f0b6719ac6535
+Original result SHA: bdd0638a7f366eb427bebc5fc17fc3791819ae88f69cd372ec8172aca9e44cb9
+Original artifacts.tar SHA: b8d769a6da40c4658d0e067b91e6e23a99363464e25abd180766fce20e57e66f
+
+Exact accepted files under task-2/spark-ci/results/singularity-20261004-construction-journey-053-evidence/artifacts/hearth-construction/:
+1. report.json -- 11645523 bytes -- ad50b419a7729d66d1e1a2a9c3d760bd85e737e2c21f8067c427ad42c27ac6bd
+2. 00013-fresh-main-earned-west-116w70s.json -- 3728 bytes -- 6f47c071e3a6197be883c45111630686f7470bb0dd9a0c0df119a2ce2e28a73d
+3. 00016-fresh-main-same-earned-scouted-start.json -- 4931 bytes -- 312d55543952d2029e000f4f0e17d2b5b4b497e005bd4e88192e6c4bacd3473f
+
+All three were independently rehashed and byte-compared to their exact original artifacts/hearth-construction/<filename> tar members. Both checkpoint hashes, sizes, labels and source/build bindings are recorded in the exact failed report. Neither input is an authored fixture or a snapshot manufactured from a historical schema.
+
+Producer scope traced against immutable3ab source: a fresh ordinary UI session begins with 20W/10S and one hearth; actual gathering exhausts d0/d2/d1, then asserts 116W/70S before capturing00013 at t71.60000000000021. Ordinary Move sends all villagers east and back, then captures00016 at t90.59999999999913. The latter was subsequently imported unchanged for both completed one/four comparisons and the cancellation branches. Their inputSHA256 records match312d5554... . Both input-producing operations happened before completed main, comparisons and three cancellation/replacement branches, long before the later875s guard failure.
+
+Direct raw-state reading confirms both files are version6, toolsfalse, knappingnull; actual hearth b0 contains116W/70S; delivered96W/60S; d0/d1/d2 exhausted; one hearth only; four idle zero-cargo workers; no spending, construction sites, storage payments/transfers/reservations or reclaim claims/recovery.00016 differs through legitimate scouting/Move history (time, seen tiles and positions6,16 /7,16 /6,17 /7,17), without changing finite inventory. It is the appropriate original same-earned input for partial-work cancellation.00013 is the original earned.raw input used by the still-unreached west-reclaim/relocate branch. Passing the inputs does not claim either later branch passed.
+
+Staging boundary: preserve original bytes and names in a private read-only input directory, including exact original report statusfailed. Verify all hashes at admission and inside the new harness; preserve original result and source/archive attribution separately from the new candidate. Keep the035 legacy whole-tree input and provenance separate; these current-v6 inputs cannot stand in for the historical witness. No completed-path replay or new source execution occurred during this acceptance. New source review and actual runtime gates are still required.
