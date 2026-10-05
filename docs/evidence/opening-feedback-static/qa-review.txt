@@ -1,0 +1,89 @@
+Independent static QA review — Tools and a better trip
+Reviewer: /root/tools_feedback_qa/qa_contract_critic
+Date: 2026-10-05 UTC
+Disposition: STATIC REVIEW ACCEPTED for the bounded candidate, with runtime
+acceptance still pending on Spark. This is not a test execution or gameplay pass.
+
+Reviewed artifacts
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-tools-feedback
+tests/hearth-feedback.test.cjs
+SHA-256: 1ad0277d5742975b545dd3803eb981ff2bdd1f9cbc956aa9543f5f5dabd06ded
+tests/browser/hearth-feedback.cjs
+SHA-256: d49652b452b74edc9236020ed2951d11a330e7784639b8dc218281a4ac0ccb17
+Both hashes were independently recomputed with shasum during this final review.
+The accepted specification and gameplay critic were read earlier in this review.
+Engine, feedback observer, view and control markup were compared with the tests.
+
+Method and limits
+Static reads, searches and file hashing only. No repository application, parser,
+tests, builds, browser, remote job, benchmarks or other runtime was executed.
+This reviewer changed no game or test files. This review record is the only file
+written by the reviewer. Final reinspection was bounded to the changed helpers,
+the remaining click/tap call sites and the corresponding source enablement rules.
+
+Corrections identified in the earlier review
+1. The browser timestamp parser formerly required the text to end immediately
+   after the source remainder. The UI adds Current/Earlier camp layout. The
+   parser now consumes and asserts that visible qualifier rather than discarding
+   it, and the route checks distinguish old and current layout observations.
+2. The partial-final-load test formerly compared complete sample objects before
+   and after source exhaustion. Depletion legitimately changes currentLayout.
+   The test now preserves the historical measurement fields and explicitly
+   requires currentLayout=false after exhaustion.
+3. Added tests cover a no-tick Stop/notice/Gather interruption with identical
+   restored actor bytes, earned completed-Tools restoration without visit history,
+   and unobserved or pre-tools partial first-item work. These use real engine
+   progression and explicit witness conditions. The browser's isolated storage
+   read fault checks a durable unreadable-save warning without manufacturing camp
+   resources or saved gameplay progress.
+
+Important correction to this review's own prior disposition
+My prior static pass missed a definite disabled-control problem. A separate
+custody critic found that inspectSource unconditionally clicked command-cancel
+after ordinary Gather had already cleared command arming. Source commandUI
+disables this button when mode, placement, pointer and Space state are empty;
+the old helper would wait for an enabled button and could time out. The earlier
+statement that no further definite static blocker was found was incomplete.
+
+The corrected inspectSource now clicks command-cancel only when enabled. It
+then requires move/gather/assign-build aria-pressed=false and hidden placement
+controls before the unarmed map tap. It retains the exact native-save equality
+assertion and requires the deposit feedback panel to appear. This directly
+addresses the reported disabled-button failure without bypassing input rules.
+The placement helper now also requires any visible Confirm site button to be
+enabled before clicking it, so an invalid site fails with a specific assertion.
+
+Other click/tap checks in the final bounded reread
+Gather, Move and construction helpers select workers before arming. Stop is used
+in the ordinary unblocked scenario. Shortage and no-selected-worker craft clicks
+are intentional: workshopUI disables crafting only when blocked or completed,
+so these inputs reach the existing validation without spending. Paid resume
+occurs before Tools completion. The completed-tools flow does not click the
+disabled completed craft button. The isolated unreadable-save flow checks Export
+is disabled and never clicks it. Its initial Pause label is Resume, so open()
+does not try to toggle the blocked camp. Journey remains an available recovery
+control. No additional definite disabled-control mismatch was found in this
+bounded reread; actual control reachability remains a browser verification gate.
+
+Evidence strength and remaining coverage gap
+The browser plan earns finite resources normally, demonstrates aggregate
+affordability with an empty named local store, funds that store, and verifies
+the exact once-only Tools debit and paid interruption/resume. Measured route
+cycles isolate one gatherer and require removed full cargo, the actual store
+credit and produced-counter credit. The newest displayed timestamp and phase
+parts are cross-checked against bracketed ordinary ticks. Refresh/import use
+native Journey exports and preserve exact camp bytes while requiring visit
+observations to restart. The long/short route comparison retains the same worker
+and finite source and labels the changed receiver/layout descriptively.
+
+Simultaneous ordinary receipts mixed with transfer, reclaim or construction
+operations in the same tick remain a targeted coverage gap. Existing checks
+isolate the measured worker or exercise those operation types separately. This
+does not demonstrate a source defect, and this review does not claim that mixed
+tick attribution has been independently tested by the new harness.
+
+Spark execution must still establish test results, browser timing, valid actual
+placement, narrow-layout reachability, visible rendered labels and screenshots.
+Artifacts must be bound to the immutable executed candidate. Static acceptance
+does not authorize dispatch, a lease, deployment, merge or Library replacement.
+Physical devices, uncoached discovery, human pacing and enjoyment are unmeasured.

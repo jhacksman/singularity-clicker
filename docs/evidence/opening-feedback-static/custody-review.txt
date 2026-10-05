@@ -1,0 +1,180 @@
+Tools feedback — independent static custody review
+
+Reviewer: /root/tools_feedback_custody_review
+Repository: task-3/hearth-tools-feedback
+Accepted base: 1af1ab97babceb302eed0769ae1a6f740dbc6286
+Scope: feedback.js against unchanged engine.js; view/shell/styles/build wiring;
+new deterministic feedback tests. Source was actively being edited during review.
+No application execution, parsing, tests, builds, browser, benchmark or remote job
+was performed. Findings below are static reasoning, not runtime verification.
+
+Initial disposition: HOLD for two concrete feedback regressions.
+
+F1 — First-item partial work misattributed to Tools (fixed in current source).
+Original feedback.js seeded load provenance at cargo 0 -> 1. A gatherer can have
+cargo=0 and work>0 while tools=false; another worker finishes Tools before that
+first item is credited. The first credit then sees tools=true at both tick ends,
+so the original observer marked the entire subsequent receipt producedWithTools.
+The same false inference occurred when a new session began partway through a
+first item's work. This violates the promised entirely observed post-Tools load.
+The unchanged engine accumulates extraction work before testing its interval and
+does not discard existing gathering work when Tools completes (engine.js:460-461).
+Smallest fix: seed from an observed empty load with zero first-item work before
+extraction, retain provenance across every observed tick and taint on Tools change.
+Root implemented that condition and removed first-credit seeding. Static re-review
+of feedback.js SHA256 c06cdff73acd6151c8e548ef368fd4d2064f3aa715b6e5a9b9b49ba8bf332c82
+accepts this fix. QA owner was asked for real-engine negative witnesses covering
+partial first-item work and a mid-item imported/new observer, in addition to the
+already present older carried-load test.
+
+F2 — Narrow layouts hide the retained history after acknowledgments expire.
+The preexisting <=720px CSS sets #log {display:none}. New toast expiration after
+seven seconds therefore removes the last command acknowledgment from narrow/touch
+UI entirely, while the newly added RECENT COMMANDS label remains visible without
+content. This conflicts with retained visible historical commands in the spec.
+Smallest fix: make the history visible on narrow layouts and group label/content
+into one coherent responsive grid child. Root was notified. Re-review pending.
+
+Positive static checks
+- Receipt candidacy matches the real return/empty-path/cargo-removal branch,
+  actual eligible store identity, the engine's adjacency epsilon and its ordinary
+  production counter. Transfers, reclaim and construction-supply returns are not
+  ordinary gathered receipts. Aggregate-counter comparison handles simultaneous
+  ordinary receipts without relying on net store inventory affected by pickups.
+- Full-cycle timing begins at a first full receipt and requires the next full
+  receipt with matching worker/source/store/Tools/topology. Movement is classified
+  before extract-phase work; the engine also advances a nonempty path before any
+  phase action. Phase durations partition the actual observed tick interval.
+- Identical live Gather orders are engine no-ops and do not invalidate a window.
+  Changed unit state between observed ticks clears its interval/provenance. Manual
+  Move/held loads, Stop, reassignment and partial final loads do not become full
+  cycles. Topology/Tools changes invalidate active intervals while retained
+  samples remain explicitly historical.
+- Observer snapshots clone state and neither before/after nor exposed cloned
+  sample results mutate Camp. nextStep uses read-only visibility/funding queries.
+- New inspection shortcut changes inspection and input arming; it does not call
+  worker commands, purchase actions, save or pause. Original project workshop is
+  preferred when a paid project exists. Existing purchase action remains sole payer.
+- View brackets every ordinary .1 Camp tick. Paused, hidden and dialog-open time
+  is excluded. Successful import replaces Session; failed import retains the old
+  camp/session. Fresh page load creates a new Session. No schema change is needed.
+- Build injects ENGINE then FEEDBACK then VIEW in the RTS shell. Both global names
+  match their consumers. Other three page injection paths are unchanged. Existing
+  syntax collector and deterministic test glob discover the new module/test file.
+
+Test review caveats
+- At initial review, the test named 'restored complete Tools save' used observed()
+  on a fresh camp without Tools. It proved generic history reset, not the stated
+  completed-Tools case. QA owner was told to use earned Tools and assert the fresh
+  next-step opportunity plus no fabricated post-Tools receipt.
+- New tests exercise real Camp ticks and check complete serialized-state neutrality,
+  which is stronger than merely checking an economy subtotal. They have not run.
+- Browser history visibility, actual visible samples and source-bound screenshots
+  remain Spark acceptance work; this review does not infer those results.
+
+Gameplay observations routed to the independent gameplay critic
+Tool-state sample rows need truthful context when worker/store/layout differs;
+all-finite-sources-exhausted guidance must not promise another gathered load; old
+camp command history must be cleared or explicitly identified after successful
+import. The gameplay critic owns adjudication of those product-contract issues.
+
+Source re-review — both original findings closed
+
+F2 is statically fixed: shell now groups the label and log in .command-history;
+the later .command-history #log {display:block} has higher specificity than the
+old narrow #log {display:none}. Root also clears old history/toast on successful
+import. Actual narrow screenshot verification is still required on Spark.
+
+Session.notice(s), invoked by ui(), reconciles after each visible command. This
+closes the same-tick Stop -> Gather edge that could otherwise restore identical
+unit bytes before the next tick and conceal an interruption. An unchanged ui()
+inspection does not alter active intervals. notice reads/clones Camp only.
+
+Samples now label whether their topology matches current camp topology; the view
+retains the last two rows with expandable earlier history. Deposit panel caching
+preserves the details element across unchanged renders. Successful import clears
+the details-open set. Depleted-known/all-depleted guidance has explicit scout or
+stored-supplies paths and no longer promises an impossible gathered load.
+
+Reviewed production bytes (pre-commit working tree; no runtime claim):
+feedback.js f7cf2cbc2de4ffe61ec47991f48a23fa40ce9de024ed9efa8b2675755a658691
+view.js d3dceabdde9e857bfe98473437f48735d77d141fab8c734b1e229f567779a837
+shell.html 36b1c47822130555327d4aa6a21b3ffce4fd8bffe4afee1c1d02e3403a9086ce
+styles.css 3929ead2a0d6642af76008fb8a88e65661c44058024c7d20e73b0e45a7f978ba
+build.mjs 27df9ffcbea3b0a197310a869d8a37d19e3b96150a7a7b0bb7a31db36d737e24
+engine.js abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+Git diff confirms no engine, package, navigation, prior-stage or asset changes.
+
+Production disposition at these bytes: STATIC ACCEPT for Spark candidate work.
+This is not approval of a completed runtime milestone or Library replacement.
+
+QA follow-through
+New earned completed-Tools restore and partial-first-item tests were read at
+tests/hearth-feedback.test.cjs SHA256
+341c6c43f1d45c78ba7609782fc3770d2a588625544624f5e8051fe0d672a2f0.
+They use actual engine commands/ticks and would distinguish old first-credit
+provenance from the fixed behavior. Two final test changes remain with QA owner:
+- Exercise notice neutrality and Stop -> Gather between ticks.
+- Existing partial-final-load deepEqual must exclude currentLayout when comparing
+  retained evidence, then explicitly assert currentLayout false after exhaustion.
+  Its intended historical-label change otherwise yields a predictable test failure.
+The initial completed-Tools test misnaming was corrected, and a separate earned
+Tools restore case now verifies the actual intended behavior.
+
+Final immutable candidate binding and final test-review disposition are pending
+the root/QA owner's finishing edits. No Spark dispatch or result is claimed here.
+
+Final production and deterministic review — STATIC ACCEPT
+
+Re-read root's stopped production edits. F1/F2 remain fixed. Queued craft assignment
+count now agrees in the promoted opportunity and workshop inspector. Completed
+Tools says its materials were already used. Native summary controls participate
+in the existing Space key ownership logic, avoiding camp pause from disclosure
+activation. Exhausted no-history status now includes d.amount===0 in its render
+cache key, so an inspected deposit becoming empty updates the visible guidance.
+
+Final reviewed view.js:
+b65988bd29f0cb8abdcb54f5449f55f813c87a5ce33c20234d1612bb6a89be93
+Other production hashes remain the f7cf2c/36b1c4/3929ea/27df9f/abfe12 hashes above.
+
+Read all 16 deterministic tests at final SHA256:
+1ad0277d5742975b545dd3803eb981ff2bdd1f9cbc956aa9543f5f5dabd06ded
+Both last QA caveats are closed: the partial-final-load test compares evidence
+without currentLayout and asserts the changed historical label separately;
+the Stop -> identical Gather test witnesses exact actor-state restoration while
+notice invalidates the previous interval, then demands two new receipts. It also
+checks notice's serialized-state neutrality. No additional deterministic test
+blocker was found statically. These tests have not been executed here.
+
+Final browser harness review found one dispatch blocker, sent directly to QA:
+tests/browser/hearth-feedback.cjs SHA256
+7df0b34c5afe9a2f3323745f4285e9736b30c25ff04fe22489a30b05f9dbfeef
+inspectSource() unconditionally clicks #command-cancel. Successful Gather clears
+the armed command and disables Cancel; the first measured trip then reaches this
+helper with that button disabled, causing a Playwright action timeout. Minimal fix:
+click only if enabled, or use ordinary Escape. Preserve native saved-byte equality.
+Browser candidate should not dispatch until this small harness fix is included.
+
+The browser harness otherwise binds source/build hashes, acts through visible UI,
+uses native export/Pause-save state, checks exact receipt source/worker/store and
+phase partitions, records command events and saves screenshots. This static read
+does not validate executable syntax, clock behavior, exact timings, physical touch,
+human enjoyment or screenshot content. Those remain coordinator-owned Spark gates.
+
+Final harness correction — closed; overall STATIC ACCEPT for Spark dispatch
+
+Independently read the exact QA change: inspectSource now clicks Cancel only when
+enabled, asserts all command controls unarmed and no placement visible, then keeps
+the exact native-state equality assertion around map inspection. Placement Confirm
+also asserts enabled before clicking when visible. The definite disabled-action
+timeout is closed without weakening inspection's behavioral contract.
+
+Final reviewed browser harness SHA256:
+d49652b452b74edc9236020ed2951d11a330e7784639b8dc218281a4ac0ccb17
+Rehashed all production/test files: unchanged from final bindings above.
+
+No remaining concrete static blocker in this review's source, custody, startup or
+new-test scope. Root may freeze these reviewed bytes into its immutable candidate
+and request the coordinator's existing Spark gates. This review is not a runtime
+pass; no tests/builds/browser work was executed on M6 or elsewhere by this reviewer.
+The accepted 1af milestone remains preserved and unchanged.

@@ -17,3 +17,10 @@ body{padding-bottom:170px}
 @media(max-width:520px){body{padding-bottom:290px}#action-tray .command-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#action-tray button{font-size:11px;padding:6px 8px}#action-tray button small{font-size:9px}#action-tray p{font-size:10px}#action-tray #cargo-command-note{font-size:9px}#placement-controls{gap:8px}.build-tools{min-width:0}.unit-card{min-height:44px}#selection .selection-title button{min-height:32px;padding:4px 8px}}
 /* Keep the selected villager's state and load readable beside the other cards. */
 @media(max-width:720px){.unit-card[aria-pressed=true]{flex-basis:140px;min-width:140px}.unit-card[aria-pressed=true] small{clear:both;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}}
+
+/* One current opportunity; retained opening requirements remain inspectable. */
+.mission #progress-inspect{width:100%;font-size:12px}.mission details{margin-top:15px;color:var(--muted);font-size:11px}.mission summary{cursor:pointer;padding:8px 0}.mission summary span{float:right;font-variant-numeric:tabular-nums}.mission ol{margin-top:7px}
+#camp-warning{padding:10px 13px;border:1px solid var(--gold);border-radius:5px;color:var(--ink);background:#382f20;font-size:12px}#camp-warning[hidden],#toast[hidden]{display:none}
+#trip-feedback{margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line);border-bottom:0}#trip-feedback h4{font-size:13px;margin:0 0 6px;color:var(--ink)}#trip-feedback p{margin:6px 0;overflow-wrap:anywhere}#trip-feedback [data-trip]{margin:12px 0;padding-left:10px;border-left:2px solid #668568}#trip-feedback .trip-title{color:var(--ink)}#trip-feedback .trip-parts{font-variant-numeric:tabular-nums;color:var(--gold)}#trip-feedback .trip-when,#trip-feedback .small-note{font-size:10px;line-height:1.5}
+
+.command-history #log{display:block}.command-history{margin-top:10px}#trip-history summary{font-size:11px;color:var(--muted);cursor:pointer;padding:8px 0}#trip-history{margin-top:10px}

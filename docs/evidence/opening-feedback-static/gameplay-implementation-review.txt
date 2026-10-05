@@ -1,0 +1,139 @@
+Independent gameplay implementation review — final static disposition
+Reviewer: next_progression_gameplay_critic
+Date: 2026-10-05 UTC
+Disposition: ACCEPT the bounded source candidate for immutable packaging and
+coordinator-owned Spark verification. No remaining source-review blocker found.
+This is not runtime, visual, human-gameplay or delivery acceptance.
+
+Identity and method
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-tools-feedback
+Base HEAD: 1af1ab97babceb302eed0769ae1a6f740dbc6286.
+Source remained uncommitted at this review; the file hashes below identify the
+candidate precisely and must match the eventual immutable commit.
+Frozen spec: next-progression-spec.txt / packaged static/spec.txt, accepted under
+SHA-256 20efc1fe1e8fbf13506316da0617ddcf1ccfb0fa9edb8ca5c4fd339b26183fa7.
+The concise current guide docs/hearth-opening-feedback.txt is a separate document,
+not a replacement of the frozen spec. It explicitly says verification pending.
+
+Final SHA-256 bindings
+src/hearth-rts/feedback.js
+f7cf2cbc2de4ffe61ec47991f48a23fa40ce9de024ed9efa8b2675755a658691
+src/hearth-rts/view.js
+b65988bd29f0cb8abdcb54f5449f55f813c87a5ce33c20234d1612bb6a89be93
+src/hearth-rts/shell.html
+36b1c47822130555327d4aa6a21b3ffce4fd8bffe4afee1c1d02e3403a9086ce
+src/hearth-rts/styles.css
+3929ead2a0d6642af76008fb8a88e65661c44058024c7d20e73b0e45a7f978ba
+build.mjs
+27df9ffcbea3b0a197310a869d8a37d19e3b96150a7a7b0bb7a31db36d737e24
+src/hearth-rts/engine.js (unchanged)
+abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+docs/hearth-opening-feedback.txt
+4a76b75d79e61251df97425e6288e59d49c7db5ce51f1b22e93d39ced8623e46
+tests/hearth-feedback.test.cjs (authored, not run here)
+1ad0277d5742975b545dd3803eb981ff2bdd1f9cbc956aa9543f5f5dabd06ded
+tests/browser/hearth-feedback.cjs (authored, not run here)
+7df0b34c5afe9a2f3323745f4285e9736b30c25ff04fe22489a30b05f9dbfeef
+
+Reviewed text/Git/file hashes only, including the full feedback module, view diff,
+shell/styles/build wiring, changed funding/receipt/history/input handlers, the
+new deterministic cases and relevant browser QA source. Git diff --check produced
+no whitespace errors. No repository application, parser, test, build, browser,
+installer, benchmark, media decoder or remote dispatch was executed. This agent
+wrote review files only. Engine, schema, drawn-art logic, assets, old stage engines
+and navigation adapter have no candidate diff.
+
+Closure of the initial implementation findings
+F1 CLOSED. The funding guidance now says to gather supplies or use Stores to send
+carriers. It no longer promises that a Move deposits carried goods. Existing Move
+and Stop/Return behavior remains unchanged.
+
+F2 CLOSED. nextStep distinguishes known-source exhaustion needing scouting from
+complete finite-source exhaustion. The latter offers inspection of actual stored
+supplies and promises no resource grant. The new trip-panel empty-history text
+also distinguishes an exhausted source and explains that a small remaining source
+may not supply a full measured cycle. Its renderKey now includes d.amount===0,
+so a still-open empty-history panel refreshes when that source becomes exhausted;
+it does not rebuild on every resource decrement.
+
+F3 CLOSED. Only successful import replaces Session, clears trip-history disclosure
+state, clears messages/log and old toast, then shows the new restored-camp notice.
+Failure/cancel paths keep the current camp and its observation history. Exact raw
+backup/save behavior is unchanged. New visit-local history cannot accidentally
+contain prior-camp command acknowledgments after successful replacement.
+
+F4 CLOSED at source level. Entirely Tools-produced provenance begins from an
+observed empty load with work===0, not merely the first 0->1 cargo transition.
+An imported partly-worked first item never receives that seed. A Tools change
+during the observed work taints the load. The following fresh complete load can
+qualify. This agrees with the independent custody critic's required distinction
+between cargo possession and the complete extraction history.
+
+F5 CLOSED for actual visible command paths. Session.notice performs the same
+read-only reconciliation and is called at the start of ui(). Accepted Stop and
+subsequent Gather each synchronously render before the next input can restore
+earlier actor bytes. The intermediate Stop therefore invalidates active cycles
+and loads. An identical-Gather no-op changes no actor stamp and retains the
+ongoing window. I read the action handlers: actual command/build/transfer/craft/
+reclaim/recruit changes reach ui or feedback->ui. Failed no-change commands need
+no invalidation. Direct external callers of Session still own the documented
+notice/before/after invocation boundary; this is not hidden engine instrumentation.
+
+Presentation corrections CLOSED at source level
+- Only the latest two samples are expanded; older retained samples remain in an
+  explicit Earlier observed trips disclosure. A stable deposit container and
+  render key avoid rebuilding unchanged history on every ui frame.
+- Open state is retained per deposit. When genuine sample changes replace the
+  panel, summary focus is restored to the corresponding summary. Return/import
+  behavior does not write observation state into the save.
+- Every sample says current or earlier camp layout and remains explicitly
+  historical. The view presents descriptive records, not a paired controlled
+  tool-effect result or forecast. Different receivers/layouts are not silently
+  attributed to Tools. The eight-record per-source retention is a bounded recent
+  history; it is not a permanent performance archive.
+- Recent commands is grouped with its heading and explicitly visible at narrow
+  widths; the new heading is no longer orphaned by hidden mobile log content.
+- Native summary elements share semantic control ownership with buttons, so
+  Space/Enter act on the disclosure rather than arm map Space/pause. Existing
+  repeat and consumed-key safeguards also apply. Browser input evidence remains
+  necessary; reading this branch does not prove browser default-event behavior.
+- Workshop assigned count includes queued craft after returning cargo, matching
+  the promoted step. Completed Tools says its materials were already used;
+  interrupted paid work still says reserved. No duplicate purchase is implied.
+
+Core product/source judgment
+The revised implementation remains coherent as a bounded opening follow-through:
+the usable workshop leads to the exact existing paid Tools investment, then actual
+useful delivered goods and truthful observed trip information. The original
+workshop is targeted for an already-paid project. The next-step inspection spends
+nothing, selects no worker, changes no order and does not resume the simulation.
+Funding stays local to the actual named source and free stock.
+
+The observer brackets the ordinary simulation and owns no production, savings,
+paid-work or custody state. Its interval classification counts movement before
+extract phase; real receipt boundaries and the production counter exclude
+transfer/reclaim/construction receipt credit. Existing completed samples survive
+route changes only as historical records. Visit reset, partial/interrupted loads,
+finite remainder and unknown prior work are not presented as fabricated progress.
+The three opening predicates, Tools018 4W/8S/12-work costs and .60->.45 effect,
+five-item cargo, support-free opening and existing schema are preserved.
+
+QA status and remaining limits
+The prior falsely named completed-Tools restore case has been narrowed, and a
+separate genuine earned completed-Tools restore scenario now exists. New authored
+cases also cover imported partial first-item work, Tools completing during first-
+item work, source switching and the byte-identical Stop/Gather boundary. They are
+source evidence of intended tests, not passing results. The browser owner supplies
+the complete harness review and immutable execution request; I did not execute it.
+
+Next gate: package the exact reviewed bytes in an immutable candidate, then use
+the existing Spark coordinator for deterministic checks, syntax/four builds,
+ordinary long/short same-source deliveries, named funding, crafting interruption,
+actual observations, refresh/import, narrow touch and native disclosure input.
+Independently inspect returned source-bound state/trace/screenshots. Text wrapping,
+scroll/tray reachability and focus behavior are still browser/visual evidence gaps.
+No automated result can certify human discovery, pacing or enjoyment.
+
+This static ACCEPT authorizes no dispatch/lease, production deployment, hosted CI,
+GitHub push, main merge or Library replacement. The accepted delivered1af milestone
+remains preserved. No H2, First Furrow, full Hearth or Agriculture handoff claim.

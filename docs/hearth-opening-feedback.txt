@@ -1,0 +1,41 @@
+Opening follow-through — source candidate, Spark verification pending
+
+Accepted base: 1af1ab97babceb302eed0769ae1a6f740dbc6286. This candidate makes the
+existing workshop/tool investment and physical deliveries easier to follow.
+It adds no recipe, stock, cost, skill multiplier, population, save field or age gate.
+Original engine rules and drawn artwork are unchanged.
+
+How to use it
+Gather and scout, then construct the eastern outpost and a workshop. The current
+opportunity offers Inspect workshop without selecting villagers, issuing an order
+or paying. Its funding note names the actual store and local shortage. Use normal
+gathering or Stores/carriers to fund the workshop, then select villagers and use
+Reserve materials & assign. Interrupted paid work resumes at the original workshop.
+
+After useful edges are crafted, gather again. Only a load whose complete extraction
+was observed with tools qualifies for the visit-local payoff message. Inspect a
+finite deposit to see actual full-cycle samples. A full cycle lies between two
+five-item deliveries by the same worker from the same source to the same store;
+movement is classified before extraction phase. Travel, extraction and handling
+sum to the observed simulation interval. Pause contributes no work time.
+
+The latest two samples are visible; earlier samples expand without issuing orders.
+Each records worker, receiver, tools, timestamp and source remainder, and identifies
+an earlier camp layout. These are descriptive observations, not a throughput
+forecast or a controlled tool comparison. Crowding/routes can differ. First
+approaches, partial loads, interrupted assignments, transfers, construction returns
+and recovered capital cannot become full gathering cycles. A partial first item's
+old work cannot be attributed retroactively to new tools. Observations never enter
+save data; reload/import starts a new visit while retaining the actual tools/world.
+
+All three original opening requirements remain in Opening checklist. This is a
+bounded opening follow-through, not H2, First Furrow, full Hearth or an Agriculture
+handoff. Full-age fiber/water/support/equipment and shared-person campaign contracts
+remain separate integration work. No human pacing or enjoyment result is claimed.
+
+Validation status
+The frozen specification has independent gameplay acceptance. Source and new QA
+have static reviews under docs/evidence/opening-feedback-static. Tests and builds
+have NOT been executed for this candidate. All execution must use the parent's
+existing Spark coordinator; exact immutable commit and commands are in the external
+handoff/request. Accepted Library preview v5 and its source/package stay unchanged.

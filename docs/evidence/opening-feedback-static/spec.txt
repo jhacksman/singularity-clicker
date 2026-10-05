@@ -1,0 +1,100 @@
+Tools and a better trip — bounded H1 follow-through, final scope for gameplay verification
+
+Base: accepted and delivered 1af1ab97babceb302eed0769ae1a6f740dbc6286.
+Isolated branch codex/hearth-tools-feedback in task3/hearth-tools-feedback.
+No implementation before independent gameplay-spec review. All runtime checks
+belong to the existing Spark coordinator; no M6 tests/build/parser/browser.
+
+Problem and useful result
+The opening checklist ends at a workshop. The paid tool craft is discoverable
+only by inspecting that building. Delivery investment has a real payoff but the
+player sees no completed-trip evidence or clear follow-through. Historical
+command acknowledgments can remain on the map after work completes.
+This milestone makes the existing workshop -> paid tools -> actual subsequent
+delivery a visible playable sequence and lets players observe the haul bottleneck.
+It does not claim H2/full Hearth, new recipes, human enjoyment or Agriculture entry.
+
+Authority
+Repo docs/hearth-mechanic-inventory.txt establishes useful funded tools followed
+by carrying/logistics choices. Canonical ALL14 v3 level01 requires measured or
+projected throughput and at most two promoted goals. H2 adds support/fiber/water
+and per-worker recipes together; these prerequisites are absent. Preserve the
+Tools018 profile (4wood/8stone,12worker-seconds,.60->.45 extraction,capacity5).
+Task13 integration backlog forbids silently changing that earned profile or
+copying people/stores into Agriculture. Thus use the existing H1 economics now.
+
+Product contract
+1. Keep all three opening requirements and their completion predicates intact.
+   Put the full checklist in an expandable Opening checklist, with a visible
+   completion count. Promote one current opportunity and at most one constraint.
+   Once a usable workshop exists, visibly offer the existing Tools action through
+   Inspect workshop. Inspection changes only view/command arming, never selection,
+   worker orders, payment or pause. Existing Reserve materials & assign remains
+   the sole purchase action. Name the exact funding store and shortage, distinguish
+   unfunded/purchased/interrupted/completed tools, and show current paid progress.
+   Never imply another payment after work is reserved or silently choose workers.
+   If a paid project exists, Inspect workshop targets its original workshop, never
+   a second workshop. The shortcut may cancel arming; it never arms a new order.
+2. After tools, promote using them on a finite deposit. Show an actual post-tools
+   ordinary gathered receipt when observed; transfer/reclaim/construction returns
+   do not qualify. Label this observation 'this visit'. Reloaded completed-tools
+   camps retain tools and get an opportunity to observe another delivery; no new
+   persistent achievement, gate, reset, rewards or progression requirement.
+3. Deposit inspector shows session observations from complete ordinary gathering
+   cycles. Only two consecutive full5 receipts by the same worker from the same
+   source to the same actual store, with unchanged tools and map topology and no
+   intervening work switch/held cargo/Stop/reassignment, qualify as a full cycle.
+   Capture before/after each ordinary simulation tick, not autosave intervals.
+   Source receipt must remove carried goods and increase the true production
+   counter. Record the observed cycle's simulated elapsed time and phase duration:
+   extracting vs traveling/other. Classify nonempty-path movement BEFORE phase: an
+   extract-phase worker can be walking outbound. Paused/hidden/dialog time is
+   excluded naturally. A post-tools payoff receipt must be observed extracted
+   entirely with tools; cargo already carried at craft completion does not count.
+   A single receipt can show '5wood delivered to Outpost1' but not a cycle rate.
+   No extrapolated camp production, future guaranteed rate, nominal3cells/s claim,
+   or automatic recommendation that faster tools always beat a shorter haul.
+4. Keep the latest fully observed cycle per worker/source/store/tools/topology,
+   with the observed source remaining and timestamp. Display recent observed
+   figures as historical samples. Tool before/after is shown only when source,
+   worker, store and topology match; label differences descriptive, not a controlled
+   causal experiment. Otherwise show one observation and the truthful mechanical
+   effect: extraction only, walking and five-item loads unchanged. Clearly exclude
+   first approaches, partial final loads and interrupted cycles. Measurement is
+   read-only/session-only; recreating/importing a camp starts a new observer.
+5. Historical command notices remain in Recent commands with clear identity.
+   Map acknowledgments expire after a short visible interval; important blocked
+   save/recovery/other-tab notices remain visible while blocked or unreadable;
+   Journey alone is not a persistent visible status panel. Live goal,
+   worker and construction status derives from current state. No notification
+   claims work completed merely because an order was accepted.
+
+Implementation ownership
+Root owns only this isolated branch. New pure read-only feedback module plus
+bounded RTS view/shell/styles wiring; build injection for the new module only.
+Do not edit engine rules, schema, original art, navigation adapter, prior stages,
+existing source snapshots or task10-13 work. Independent critic owns review files.
+No new runtime/library/software; current Node/Chromium are Spark-only.
+
+Acceptance requested through parent/coordinator after immutable commit
+A. Deterministic feedback tests using real Camp ticks: exact receipt custody;
+   first/second full-load measurement; same-order repeats; interruption, partial
+   loads, held/manual cargo, transfers/recovery excluded; tool/config change and
+   session reset; measurement leaves complete serialized camp bytes unchanged.
+B. Existing deterministic suite, syntax and four builds on Spark. Existing core
+   browser progression/regression where affected, with exact original attribution.
+C. Bounded new actual-control browser flow: earn workshop, observe named-source
+   shortage and fund it normally, inspect via next-step action without order
+   changes, reserve tools once/interruption/resume, observe real post-tool receipt
+   and two cycles, inspect full-load feedback, exact paused refresh/import. Earn
+   actual long-vs-short deliveries from the SAME finite source by adding a real
+   receiving outpost; keep the route samples descriptive, not causal tool proof. Show
+   before/after visible samples at desktop and narrow emulated touch. Preserve
+   unmeasured state labels and no manufactured save boosts.
+D. Independent static implementation review before dispatch; independent source-
+   bound observation/PNG review after actual result. Failed jobs remain recorded.
+   Functional data cannot establish natural human enjoyment/pacing. Human session
+   remains a later formative observation, not invented from automation timing.
+
+No hosting, GitHub push/main merge or Library replacement before a verified new
+milestone. The accepted1af source and deliveredv5/ZIP stay available unchanged.

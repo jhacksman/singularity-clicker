@@ -1,0 +1,167 @@
+Independent gameplay specification review — next opening progression
+Reviewer: next_progression_gameplay_critic
+Date: 2026-10-05 UTC
+Status: ACCEPT final bounded specification after independent review.
+No runtime or human gameplay acceptance.
+Accepted spec: next-progression-spec.txt
+SHA-256: 20efc1fe1e8fbf13506316da0617ddcf1ccfb0fa9edb8ca5c4fd339b26183fa7
+
+Scope and evidence
+Static reads only. Current source: hearth-physical-construction, delivered
+1af1ab97babceb302eed0769ae1a6f740dbc6286; src/hearth-rts/engine.js, view.js,
+shell.html and current delivery/allocation record. Requirements: task-11/
+singularity-economy-conformance/spec/levels/01-hearth.md and COMMAND-CONTRACT.md.
+Planning reference: task-13/CAVE-HEARTH-AGRICULTURE-IMPLEMENTATION-GAPS-AND-BACKLOG.md.
+That backlog audits an older immutable source and deliberately excludes then-
+active storage work. Its gap claims must not be repeated as current-source facts.
+Its distinction between opening continuation and full-age campaign remains useful.
+No repository application, parser, test, build, browser, media decoder, installer,
+remote dispatch, or other runtime was executed. No game source was edited.
+
+Product judgment
+The coherent small milestone is: finish a usable workshop, discover and fund its
+existing Tools project at the actual supplying store, then use the tool-equipped
+workers and see what limits a real delivered load. This turns the existing
+workshop from an apparent endpoint into a comprehensible investment with a
+visible consequence. The current UI stops its three promoted goals at workshop;
+Tools exist only in its contextual inspector. That is a concrete player-facing
+gap, not an absent recipe that needs inventing.
+
+Accept this as meaningful completion of the opening's decision/feedback loop,
+provided it includes an actionable path and actual useful delivery evidence.
+Adding a fourth checkbox or a theoretical percentage alone is merely polish.
+This patch does not add a new economic system or restore full Hearth depth. Do
+not call it H2 completed, full-age progression, or an Agriculture handoff. The
+canonical H2 includes fiber, water, prospective support, individual equipment,
+ordinary/basket/sharp tradeoffs and practice. Those are incompatible with a
+silent reinterpretation of the paid global Tools018 profile. Existing 4 wood /
+8 stone / 12 worker-seconds and 0.60 -> 0.45 extraction stay intact.
+
+The smallest stronger form within the same nonoverlap scope is a visible
+"Use the workshop, then improve a supply trip" sequence. It should surface the
+actual project, identify its named supplying store and shortfall, and present a
+completed gathering loop's breakdown so the player can choose between closer
+drop-off, existing tool investment, or another gatherer. It must leave those
+choices optional; no newly compulsory outpost/recruitment bill is warranted.
+No basket, support meter, invented reward or campaign transition is needed.
+
+Measurement contract needed in the final specification
+1. Use measured simulation time for actual receipt-to-receipt full-load cycles.
+   No path-length/3 projection: the .1 tick movement loop discards per-cell
+   remainder, so nominal speed does not directly predict a long trip.
+2. The start and end must be actual ordinary gathered-goods receipts for the
+   same worker, finite source and receiving store, with a complete five-item
+   load and unchanged Tools state throughout. Total stock delta is insufficient:
+   other workers, construction, transfers and reclaim can change it concurrently.
+3. Classify movement before phase. phase='extract' also persists during outbound
+   movement. Stationary extraction ticks are distinct from walking and receipt
+   handling. Sum displayed parts to the same measured full cycle; call residual
+   time handling/other rather than inventing a narrower cause.
+4. Reject interrupted, partial/depleted, blocked, transferred, reclaimed,
+   construction-supply, Move/Stop/new-order, redirected receiver, tool-transition
+   and changed-topology windows. A reissued identical Gather must not create a
+   better sample or accelerate production. Pause/wall-clock waiting contributes
+   zero simulated time. Selection/inspection alone must not erase a valid cycle.
+5. Before/after rows are two observed trips, not proof that the entire difference
+   was caused by tools. Equal worker/source/store/topology still permits different
+   perimeter choices, peers and rounding. State the known extraction rule and
+   preserve actual travel/handling difference. Do not claim a constant 33.3%
+   delivery gain, guaranteed payback, globally optimal allocation, or scalable
+   per-worker rate from one sample.
+6. Ephemeral feedback must say it was observed this visit. Reload/import clear
+   it and clearly invite another ordinary cycle. A persisted tools=true flag
+   proves crafting completion, not a historical post-tool receipt. Avoid a
+   sticky first-delivery completion claim without persistent evidence. This is
+   compatible with retaining the current save schema and exact completion flag.
+7. Source depletion changes walkable topology. Buildings/retirement/cancellation
+   and new stores also change routes. Stale route samples may remain only as
+   explicitly historical records; they cannot read as the current route quote.
+8. Show the source remainder and actual receiver beside the sample. Do not
+   count the same five delivered goods as a new reward. The feedback must not
+   mutate economy, orders, RNG, cargo, save contents, clock or replay behavior.
+
+Progression and funding contract needed in the final specification
+1. Keep at most two promoted major goals and one actionable constraint. Completed
+   opening steps can be compact history. Do not stack five compulsory-looking
+   objectives. Tools is an available continuation, not a rewritten H1 exit.
+2. A workshop-inspection shortcut is safe if it only selects the actual object
+   for inspection, preserves worker selection/orders and spends nothing. If a
+   project exists, point at its original workshop; a second workshop must not
+   imply a second project or re-purchase. Crafting still needs explicit ordinary
+   Reserve materials & assign or Assign selected villagers input.
+3. The quote must use knappingFunding's current named store and free holdings,
+   including its reservations and existing project state. Aggregate top-bar
+   resources cannot imply affordability at that store. A pending already-paid
+   project must show remaining labor, not a fresh 4W/8S shortfall.
+4. If materials are missing, identify the exact store/resource/amount and use
+   the already available gather/transfer flow. Inspection/help/Cancel cannot
+   change a worker's order or spend. Recruitment remains 25 food at the Hearth,
+   optional, and is not framed as automatically best for every route.
+5. For a finished/imported Tools save, show the completed investment and the
+   current optional gathering action immediately; do not demand crafting again.
+   Old paid/prepaid work, order semantics and raw backup retention stay as-is.
+6. Separate historical command notices from live selected-worker/job status.
+   Expiring a transient order toast is reasonable; saving failure, blocked input,
+   invalid target and unresolved funded shortage need durable visible recovery
+   or status. A blanket timeout must not hide the only warning/action.
+
+Required observable acceptance (future Spark execution only)
+A. Fresh ordinary path: earn actual finite goods, physically complete east
+   outpost/workshop, use visible continuation to inspect the workshop, verify
+   named funding, pay once, complete 12 worker-seconds, and obtain real useful
+   post-tools receipts into an actual store. Capture UI, native export and
+   trusted input trace at each change. The continuation must not require a
+   hidden selector or author's explanatory script to become visible.
+B. Show one complete pre-tools measured cycle and one complete post-tools cycle
+   on a compatible actual route. Cross-check each measured duration and all
+   displayed parts against tick/receipt evidence, and explicitly retain any
+   travel variation. A second long-haul/nearby-receiver comparison should support
+   the real placement decision if the UI claims to help make that comparison;
+   observed different routes are not a controlled tool-effect proof.
+C. Insufficient local funding despite adequate aggregate stores; already-paid
+   interrupted project; second workshop; no selected worker; finished Tools save.
+   Each shows an accurate actionable state without new payment/order on merely
+   inspecting, navigating or canceling help.
+D. Negative measurement controls: partial final load, transfer, recovery,
+   construction supply, loaded Move/Stop, changed receiver/topology, tool toggle
+   mid-loop, reload/import, repeated Gather and a paused wait. None may fabricate
+   a complete new sample; ordinary resumed gathering can establish a new one.
+E. UI continuation/live feedback at desktop and existing bounded touch sizes;
+   controls remain reachable, text is not behind the fixed tray, modal/Space/
+   placement semantics remain unchanged. Any changed semantic shortcut needs
+   actual keyboard and touch input checks, not dataset-only proof.
+F. Source and migration regression checks confirm unchanged save schema,
+   completion predicate, construction/Tools/recruitment costs, custody, art and
+   existing stage navigation. Tests/builds/browser flows belong on Spark only.
+
+Human verdict remains separate
+Automation can establish truthful feedback and a reachable sequence. It cannot
+establish whether an uncoached player notices the new continuation, predicts
+which investment helps, enjoys the timing, or wants the following stage. For
+that claim, observe an ordinary player complete the opening without authored
+instructions, ask them to explain the workshop payoff and their next allocation,
+and record confusion, idle waiting and chosen route plus owner Accept/Revise.
+No forced stopwatch target or enjoyment claim follows from virtual seconds.
+
+Compatibility and release boundary
+The delivered 1af1ab9 HTML/ZIP remains the accepted milestone while this work is
+reviewed. New code belongs in the owner's isolated branch. This review grants no
+Spark lease, repository push, hosted CI, main merge, deployment or Library update.
+Final specification disposition
+Read the full final next-progression-spec.txt and verified all four requested
+corrections: original paid workshop targeting, movement-before-phase timing,
+persistent unresolved save/recovery/other-tab visibility, and actual same-source
+long-versus-short receiver evidence. It also excludes preexisting cargo from the
+post-tools payoff by requiring the whole receipt's extraction to be observed
+with tools. Product4 retains completed historical samples by topology; only an
+in-flight window becomes invalid when routes/configuration change. This is
+consistent with showing an old long-haul observation beside the new receiver's
+observation without pretending they are a controlled tool-effect experiment.
+
+ACCEPT for bounded implementation against the pinned spec hash above. The result
+is an opening follow-through and a truthful decision-feedback improvement, not
+full H2, a new economic tier or full-age completion. The longer criteria above
+explain risks and required fidelity; they do not authorize expanding scope beyond
+the frozen spec. No code had been implemented at this review's signoff. Static
+implementation review and Spark source-bound functional/visual evidence remain
+required before delivery. Human discovery/enjoyment remains unmeasured.

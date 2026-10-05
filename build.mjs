@@ -18,6 +18,6 @@ const agriculture=read('src/agriculture/shell.html').replace('/*__CSS__*/',()=>r
 fs.writeFileSync(path.join(root,'dist/agriculture.html'),agriculture);
 console.log('Built self-contained Agriculture slice: '+(Buffer.byteLength(agriculture)/1024).toFixed(0)+' KB');
 
-const rts=read('src/hearth-rts/shell.html').replace('/*__CSS__*/',()=>read('src/hearth-rts/styles.css')).replace('/*__ENGINE__*/',()=>read('src/hearth-rts/engine.js')).replace('/*__VIEW__*/',()=>read('src/hearth-rts/view.js'));
+const rts=read('src/hearth-rts/shell.html').replace('/*__CSS__*/',()=>read('src/hearth-rts/styles.css')).replace('/*__ENGINE__*/',()=>read('src/hearth-rts/engine.js')).replace('/*__FEEDBACK__*/',()=>read('src/hearth-rts/feedback.js')).replace('/*__VIEW__*/',()=>read('src/hearth-rts/view.js'));
 fs.writeFileSync(path.join(root,'dist/hearth-rts.html'),rts);
 console.log('Built self-contained Hearth RTS core: '+(Buffer.byteLength(rts)/1024).toFixed(0)+' KB');
