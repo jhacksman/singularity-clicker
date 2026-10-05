@@ -1,0 +1,141 @@
+Local cultivation QA — independent bounded static review
+Reviewer: /root/tools_feedback_qa/cultivation_test_critic
+Date: 2026-10-05
+Worktree: /Users/m6mini/Documents/Codex/2026-10-03/task-3/hearth-local-cultivation
+Authority: task-3/next-stage-cultivation-proposal.md, frozen implementation contract.
+
+STATUS
+Final bounded static ACCEPT for the deterministic tests and final browser file,
+including PERSIST-01. No guaranteed blocker found in the reviewed scope. This is
+not a runtime pass, playable-milestone certification, or actual screenshot review.
+
+METHOD AND SCOPE
+Read the new tests against current cultivation engine.js, ledger.js, jobs.js and
+the relevant view.js/shell.html control and persistence contracts. Scope was
+guaranteed fixture/API errors, concrete numeric expectations and false-pass
+evidence; it was not a broad source, security or gameplay-design audit.
+Only read-only file/search/hash commands and this explicitly assigned report
+write were used. No repository runtime, Node/parser, test, build, browser, video,
+benchmark, queue submission or deployment was executed. No source file edited.
+
+DETERMINISTIC TESTS
+File: tests/hearth-cultivation.test.cjs
+SHA256: 906fad03dd3ea6d05d0fe230afe9d6c93e63ff618b26fb58dcf8246319baf442
+Twenty declared tests reviewed. No guaranteed fixture, API-shape or numeric
+expectation blocker identified by static inspection.
+
+The earned legacy setup gathers finite western inputs and eastern food, builds
+the workshop at (11,15) and eastern outpost at (22,11), and recruits four through
+eight residents from real food. New water received at the east store is physically
+transferred to b0. Additional outpost reclaim retains the opening's eastern store.
+The custody oracle uses fixed finite totals (416 wood, 220 stone, 225 food), actual
+store/stock/cargo/construction/plot/pantry ownership, six physical seed, accepted
+bounded water inflow, and independent persisted-third equations. It does not use
+economy()/summary()/valid() to calculate expected quantities; valid() is also
+asserted as a separate engine certification gate.
+
+Reviewed expectations include 900 labor slots for one pilot, one camp slot per
+active tick rather than per helper, distinct current/NEXT water, retained paid
+work and recipe identity, physical seed-first output handling and receipt unlock,
+bare fallback/resupply, recovery NEXT promotion, migration custody, and rejection
+of unsupported tuples. Two pilot batches plus one woodland correctly expect 12
+generated/receipted food, eight wood, ten consumed recipe water and six retained
+seed. This test is conservation/no-promotion evidence; the browser lane owns the
+causal proof that harvested outputs fund useful work.
+
+The staged cancellation case additionally Stops, assigns u1 to recover real staged
+seed, reloads while it is carried, and compares continued states through receipt.
+The prior legacy-Tools helper evidence limitation is closed at lines 445–455:
+ordinary Move commands position four actors at distinct valid workshop edges,
+then the test explicitly requires four zero-path, empty-handed craft actors
+before the finishing tick. Reverse selection order cannot hide a merely walking
+later helper. The already-paid original bill and exact allocated final slots are
+checked. No unresolved guaranteed blocker remains from this bounded critique.
+
+BROWSER BASELINE
+File: tests/browser/hearth-cultivation.cjs
+Reviewed baseline SHA256:
+f6a52900de29f4a04f970679ba7a7541945254fef549934d8ab64132d809d45b
+(Includes the seven-line first-food-receipt boundary addition.)
+
+Read the helper-critical ordinary-control, native-export, pause/clock, selection,
+map-coordinate, transfer, plot, import and scoped-fault paths against the current
+UI contract. No guaranteed selector/API/control-state blocker identified.
+The negative Tools purchase is actionable because current craft-knapping remains
+enabled when materials are insufficient; the test checks the unchanged native
+state after that actual rejected attempt.
+
+The common source is earned through controls; both investment orders import that
+same earned envelope rather than authoring stock or gameplay state. The report
+limits the comparison to two feasible orders. Physical seed/water collection and
+store transfers precede prospective support confirmation. Crop output is checked
+at tray, cargo and receipt. The first pilot now separately checks that carried
+retained seed does not unlock woodland, then exactly five receipted food unlock
+it with one food still in the same tray, before the final receipt checkpoint.
+
+The food-use witness begins with five earned food, preserves the four-food floor,
+leaves finite d3/d7 remaining amounts unchanged after that starting receipt, and
+requires support demand above the initial 3000 third-milli spendable food.
+Three pilot plantings (2700 slots), woodland work (500) and Tools completion (120)
+total 3320 slots; this supports the bounded harvested-food dependency claim.
+The wood-use witness physically transfers eligible old local wood away, observes
+an actual rejected local four-wood Tools purchase, receives eight harvested wood,
+then checks the four-wood/eight-stone debit at b0 and completes paid Tools work.
+The report correctly avoids claiming identifiable individual fungible items.
+
+Faults are limited to browser storage/Web Lock APIs. Reviewed paths preserve prior
+live/export state on failed import/adoption, exercise a real competing tab and
+stale nonowner, and report unsupported locks or unreadable storage honestly.
+Read-only localStorage observations and native downloads are evidence; no hidden
+Camp import or gameplay storage write is used by the harness.
+
+LIMITATIONS
+This is static review only. Fixture feasibility, timing, browser API behavior,
+actual lock lifecycle, accepted numeric states and all pass claims require Spark
+execution against an immutable candidate and verified returned evidence.
+Actual returned PNGs must be inspected before claiming visual clarity. No PNG
+was reviewed in this pass. Narrow Chromium is emulated touch-capable; the harness
+does not claim a physical-touch or touch-only playthrough. Controlled foreground
+time is not human discovery, enjoyment or pacing evidence. Source hashes here
+identify reviewed bytes; coordinator provenance and result checks remain separate.
+
+PERSIST-01 FINAL DELTA — REVIEWED
+Final browser file: tests/browser/hearth-cultivation.cjs (671 lines)
+Final browser SHA256:
+0f3a13346ab8ba1b59825d453a6a6b42c21e6c96ba9ed751df1e180067301dfa
+Final deterministic SHA256 remains:
+906fad03dd3ea6d05d0fe230afe9d6c93e63ff618b26fb58dcf8246319baf442
+Related current cultivation view.js SHA256:
+61ff6dd4927a95fd243258ced18b7a25f04e05a3d7cb09654bae6d7f7a8074fc
+Original RTS view.js SHA256:
+b65988bd29f0cb8abdcb54f5449f55f813c87a5ce33c20234d1612bb6a89be93
+
+Author-provided final browser hash was independently confirmed from the file.
+Read lines 108–112, 435, 580–643, and 646–655 and the corresponding current save
+initialization/export/import paths. No guaranteed blocker found in this delta.
+The harness binds the built original RTS HTML and its unchanged embedded scripts,
+serves the HTML bytes directly, and uses the original Journey import/export to
+install and verify this same run's actual earned v6 source. It asserts the new
+cultivation key is absent before navigation; it does not seed storage directly.
+
+Only the inherited old key's getItem is denied in the new page, scoped by browser
+window.name metadata. The setItem wrapper observes calls without suppressing or
+fabricating writes. The scenario requires the fault to have been encountered,
+no writes to either gameplay key during failure, absent new slot, disabled game
+mutation and export/import controls, and the persistent unreadable-save warning.
+It clears the metadata and restores only the wrapped APIs, verifies exact old
+bytes, then reloads normally. Recovery requires a playable v6 envelope matching
+the earned source state, exact sourceRaw and source export, and unchanged old key.
+The general checkpoint helper used for the recovered state does not require the
+old key to be absent; the saved() helper with that assertion is not used here.
+
+Current view.js marks readCompleted only after the inherited old-key read succeeds
+when the new key is absent. Therefore the scoped old-key exception reaches the
+unreadable-save branch, blocks save(), and prevents exporting a fallback camp as
+if it were the unread original. After fault removal the normal source-loading
+path preserves sourceRaw and keeps the old slot separate. This is static control-
+flow confirmation, not evidence that the browser scenario has executed.
+
+The added foodEvidenceLimit correctly states budget dependence with protected
+floor ownership rather than individual food-item provenance. No gameplay fixture,
+source HTML patch, source edit or runtime execution was introduced by this review.

@@ -1,0 +1,90 @@
+LOCAL CULTIVATION PERSISTENCE — BOUNDED STATIC REVIEW
+Reviewer: /root/hearth_exit_gap_audit
+Date: 2026-10-05
+Disposition: REVISE — one concrete fallback-read/export defect below.
+
+Reviewed source
+  hearth-local-cultivation/src/hearth-cultivation/view.js
+  SHA256 b6377020f542f7a3ac4deebbf483542b474d91f0d583b937b90001073e2313ca
+  Main scope: lines1–66, writeCandidate, adoption/applyCultivation, Journey
+  import/export and lock/storage/pagehide handlers at526–540.
+Authority: frozen next-stage-cultivation-proposal.md local preview contract.
+This is source inspection only, not executed persistence/browser evidence.
+No tests, parser, build, browser, or repository runtime ran on M6.
+No production source was edited by this reviewer.
+
+Blocking finding PERSIST-01: failed fallback read exports fresh placeholder
+  Trigger: the cultivation key does not exist; its getItem succeeds with null;
+  the subsequent read of HearthRTS.KEY throws (e.g. key-scoped read failure).
+  At48 readCompleted becomes true immediately after only the first read.
+  At51 the legacy read is outside its inner parsing try. The outer catch at59
+  therefore sets rejected=null, unreadableSave=false, game=new HearthRTS.Camp(),
+  blocked=true and paused=true. ui at484 disables current export only when
+  unreadableSave is true; handler528 consequently exports envelope() around the
+  fresh placeholder instead of recognizing that the former opening is unreadable.
+  Nothing overwrites the old key, but the visible current export is not a copy of
+  the unavailable user's opening and can be mistaken for recovery of that state.
+
+  Smallest fix: distinguish completion of all selected initialization reads from
+  completion of the new-key read. On absent cultivation slot, mark a thrown
+  legacy-key read as unreadableSave and disable current export until a successful
+  reload. Do not downgrade it to an absent/invalid optional legacy source. Keep
+  fresh creation available when BOTH reads succeed and both keys are absent.
+
+  Required bounded Spark regression: getItem(newKey) returns its actual null;
+  only getItem(oldKey) throws. Assert no key write, blocked orders, persistent
+  unreadable warning, current export disabled, original key unchanged. Remove
+  fault/reload and verify actual existing v6 opening is selected and its raw
+  source export is byte-exact. No invented gameplay state is needed: use the
+  browser's earned/exported v6 source from the current harness setup.
+
+Static checks without another blocking finding
+  * New persistence writes are only localStorage.setItem(KEY, raw) at37, where
+    KEY is HearthCultivation.KEY. HearthRTS.KEY is read-only in this view.
+  * The held exclusive Web Lock precedes initialization. ifAvailable contention,
+    missing locks and rejected lock acquisition set read-only reasons, block
+    orders and keep pause; frame advancement requires ownsLock and !blocked.
+    pagehide saves before releasing and then blocks the page. A bfcache-returned
+    page remains blocked and requires reload; automatic lock reacquisition is
+    not claimed by this implementation or this review.
+  * writeCandidate serializes and validates the full sourceRaw/state/archives
+    envelope, checks prior new-slot bytes under ownership, and calls synchronous
+    setItem before publishing candidate/sourceRaw/archives/lastSave references.
+    A failed candidate validation/read/write leaves those live references intact.
+    The compare is an additional stale-write guard, not the claimed writer lock.
+  * Cultivation commands use a cloned candidate through applyCultivation. Adoption
+    also creates its candidate before the write. The adopted current v6 snapshot
+    and previous exact raw source are retained without writing the original key.
+  * Imports parse and validate before confirmation; archive merge is bounded and
+    duplicate raw entries are deduplicated. Archive count/size/write/read failure
+    occurs before candidate publication. Successful import then clears view-only
+    selection/history and remains paused. No second source/world transfer exists.
+  * A readable unsupported current envelope is retained in rejected and exported
+    unchanged; unreadable current-key failure disables export. Existing exact
+    sourceRaw exports directly, and archives export without executing their text.
+  * Current export includes current live state and its source/history; failed
+    import leaves that export on the former live envelope. This review does not
+    claim acknowledged-command durability for inherited in-place legacy handlers,
+    IndexedDB/full-campaign authority, or hostile save authentication.
+
+Runtime gate remains pending on Sparks. Recheck the exact final source hash after
+PERSIST-01 is corrected; this report is not an immutable-candidate runtime pass.
+
+FINAL BOUNDED RECHECK — 2026-10-05
+Disposition: ACCEPT for this static persistence scope; PERSIST-01 corrected.
+Final reviewed view SHA256:
+  61ff6dd4927a95fd243258ced18b7a25f04e05a3d7cb09654bae6d7f7a8074fc
+Re-read lines40–64 only against the exact previously reviewed failure:
+  * New-key read at48 no longer marks initialization reads complete.
+  * With absent new key, readCompleted becomes true only after the old-key
+    getItem succeeds at51. A thrown fallback read now sets unreadableSave=true
+    in catch59, keeps orders blocked and disables the fresh placeholder export.
+  * With a readable nonnull new key, readCompleted becomes true at57 before
+    parseEnvelope. A readable unsupported envelope still exports its exact
+    rejected bytes, rather than being mislabeled as unreadable storage.
+  * If both reads succeed with absent keys, fresh creation remains permitted.
+The correction is appropriately bounded. No remaining concrete blocking issue
+identified in this reviewed scope. QA's corresponding Spark regression remains
+required and unrun here. This final static disposition supersedes the initial
+REVISE above, preserving its original finding/history. No source edit or runtime
+execution was performed by this reviewer.

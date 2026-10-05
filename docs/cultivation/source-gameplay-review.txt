@@ -1,0 +1,243 @@
+Local cultivation — independent source UX/gameplay review
+Reviewer: /root/next_progression_gameplay_critic
+Date: 2026-10-05
+Final disposition: STATIC UX/GAMEPLAY SOURCE ACCEPT for the final UI hashes below.
+Initial disposition was REVISE; the findings and successive correction reviews
+are retained below. Runtime, numeric/custody and actual visual gates remain open.
+
+This is a read-only review of a changing working tree, not an immutable candidate
+or runtime acceptance. Findings were sent promptly to root and the engine author.
+No source was edited and no game, test, build, browser, parser, screenshot, image
+processing or benchmark was executed. Only this report was authored.
+
+Scope reviewed
+Frozen next-stage-cultivation-proposal.md and new src/hearth-cultivation/
+view.js, shell.html, styles.css, engine.js, ledger.js and jobs.js. Focus: visible
+choices, quote/recovery honesty, active versus pending phases, inherited tools,
+opt-in/isolated histories and useful progression. Numeric/custody reviewers own
+the complete conservation and state-admission audit. Tests were not evaluated.
+
+Source hashes observed near completion of this first pass
+These locate the working files at a read point; authors were still self-reviewing
+and engine.js changed during my reads. They are NOT an immutable review approval.
+proposal 74dc866ad5c9581b8a98218f2f0cefff9f047db5d44254d9d06362e2e3ce4a63
+view.js 1fb4f9416b044fb57586218759f4e123262642b0765f0070549c3bd2e377edc5
+shell.html bc37c495a58825e8a5aa08b136f083eca5e7b7a60ce00ad7820f0efe550b17ee
+styles.css 981c93ea4bb81c19100730c7e7d29090262f4a2ce67de1268f1e561c8d92535f
+engine.js 2466068f17c27feefc28628f249797633c9fc91c2a01cb6742476e17d4202feb
+ledger.js 90695fb2733f7f7a96dcb179913101e68d3a832951bb485b5d8423fc3dddccb2
+jobs.js 7c86d469e35f91f4f7795932cfcb86098fcf5fac110b09dad7d5c0b00381ad39
+Git status contained new source/docs/tests and modified build.mjs; this is not
+accepted60772b7 with only a cosmetic patch.
+
+REQUIRED CORRECTIONS
+
+F1 — Cancelled plot supplies lack a UI recovery action after interruption.
+Observed view.js303–306 enables plot-resume only for supplying/planting/harvest.
+jobs.js26 supports resume for cancelling too, and jobs.js30/43 implements staged
+supply recovery. Concrete path: reserve a crop, deliver some inputs but do not
+begin planting, cancel, then Stop/reassign every recovery worker. The paid job
+remains cancelling with staged seed/water. The visible Resume button is disabled;
+Collect requires output; right-click a plot inspects it; Gather->plot calls Collect
+and rejects it. The player cannot assign another villager to perform the existing
+safe recovery operation. This can strand the bed and its seed until an out-of-UI
+action, despite the engine already having the necessary recovery command.
+Minimal correction: enable the existing resume operation for cancelling with the
+label "Recover planting supplies"; show staged/carried goods and the remaining
+recovery action. Preserve input/cargo and invalid-order semantics.
+Spark regression: cancel with staged supplies, Stop all involved workers, choose
+a different worker through actual controls, recover every staged load, reload
+mid-recovery, then show a new valid paid crop can begin with no duplicate seed.
+
+F2 — New decision paragraphs inherit light-on-light styling.
+styles.css sets #cultivation-panel background #dcd4b7 and panel color #263b30, but
+aside p already sets its own color #aab9a9. The panel paragraph rule does not
+override that explicit child color. #plot-quote/#support-status use the still
+lighter #e9e2c9 background with the same light paragraph text. Thus the exact
+support, shortage and recovery information is configured with very low contrast.
+This is a source-level readability defect, not a claim of viewed browser pixels.
+Set an explicit dark color for these paragraphs/statuses and inspect actual
+Spark PNGs. Also #recruitment-note uses #4d5b3b on the dark outer page; retain a
+legible muted-light color there rather than treating it as part of the light card.
+
+F3 — Missing resources are exposed in internal units, not player quantities.
+view.js259 directly formats q.missing.amount, resource, unit and location.
+ledger.quoteProvision/jobs.missing expose amounts in third-milli and location b0.
+For example9000 third-milli of water means3 water, not9000 collectible units.
+The current public quote would say internal large integers and "at b0" during the
+most important blocked decision. Convert them for display with a declared rounded
+precision and real store name; keep the exact values in the engine/evidence.
+Do not combine the whole-recipe shortage and support shortage so the same missing
+material is counted twice. Where whole-item collection must round up, say how
+many whole items to bring rather than implying a fractional physical item exists.
+
+F4 — Protected-water wording understates recipe obligations; NEXT shortage
+     disappears while a paid pilot batch owns the bed.
+jobs.summary currently returns protected from L.holds(), which covers support
+allowances only. NEXT's3 whole recipe water is separately subtracted in L.balance.
+view.js292 labels that support-only number "Protected support and recipe
+allowance", so a single NEXT can display0.3 water although3 additional whole
+recipe water are protected. Keep recipe water and support allowance explicit.
+For a normal first pilot, show the current and next crop obligation separately;
+the visible single-batch recipe/support line must not conceal the initial second
+reservation behind a generic note.
+
+summary also exposes nextMissing, but cultivationUI never renders it. After Plant
+protected recovery crop promotes NEXT to ACTIVE, a growing/planting/output pilot
+can coexist with NEXT unfunded. quotePlant exits early because the bed owns a job,
+so its quote contains no missing vector either. The user sees only "Restore ...
+with ordinary gathering or committed output", not the required quantities.
+Render the unfunded NEXT vector independently of the selected bed's phase, name
+the Hearth supplying store and give the real collection/transfer remedy. An
+empty/paid bed should not hide the binding funding constraint.
+
+F5 — Successful sidebar orders leave an earlier armed map command live.
+view.js327/329–331 call applyCultivation directly; applyCultivation commits and
+renders without clearing mode/placement. For example arm Move, then click Collect
+water: the villagers receive collection, but the tray still says Move and the
+next map tap can issue the earlier move instead of inspecting. dispatch's success
+path clears the command, but these newly added explicit actions do not.
+Clear arming/placement after a successful explicit new order. Preserve the armed
+state and previous orders for failed admission if that is the accepted contract.
+Inspection actions should remain neutral; clearCommand/cancelInput must not Stop
+the villagers. Include keyboard/touch cases in actual-control evidence.
+
+PRODUCT CLARITY CORRECTIONS / REQUIRED VISUAL CHECKS
+
+P1 — Narrow layout gives the whole new decision panel half a row.
+At max720px aside becomes a two-column grid; only .mission is full-span. There
+is no full-span rule for #cultivation-panel. At390px this places the new quotes,
+phase text, two-column actions and support details into roughly175px before
+panel padding. This is a predictable cramped layout risk even after contrast is
+fixed. Use a full-width cultivation panel at the narrow breakpoint, then inspect
+actual390x844 viewport PNGs for quote, recovery action and tray clearance. No
+static CSS review can certify the eventual full-page/viewport geometry.
+
+P2 — Inherited tools are described as an unconditional active speed.
+workshopUI retains "Toolset complete ·0.60→0.45 seconds per item" and the old
+unqualified extraction-benefit paragraph after adoption. In the new profile
+funding can fall back to.60 without losing the tool entitlement. Qualify the
+inspector as funded tool pace and state retained ownership/bare recovery plainly.
+The engine extraction branch does retain tools and switches intervals; this
+finding concerns the visible current meaning of the old benefit.
+
+P3 — Primary opportunity is static once support starts.
+nextOpportunity always promotes generic pilot/growth advice after activation,
+regardless of mature output, woodland harvest, interrupted cancellation or an
+unfunded NEXT. The lower panel has more detail, but the primary next-action
+shortcut does not follow the real constraint. Keep one actionable promotion:
+recover supplies, collect ready output, harvest woodland, resume funded work,
+or inspect the missing NEXT vector as applicable. Growing guidance is appropriate
+while growth actually runs; do not create a compulsory objective counter or an
+automatic new job to make this dynamic.
+
+WHAT THE SOURCE ALREADY GETS RIGHT
+- The opt-in dialogs say the original opening remains playable, exact source is
+  retained, support requires its own confirmation, and new invitations are
+  unavailable afterward. Inherited people remain. Journey names isolated
+  histories and states they cannot exchange people or goods. No First Furrow or
+  Agriculture eligibility is claimed. The witness count is not implemented as a
+  new progression gate in the inspected UI.
+- Proposal G1–G3 are concretely resolved in the frozen contract: separate fixed
+  beds without a false land tradeoff; woodland unlock after actual pilot food
+  receipt; workers released at growth; deterministic seed-first collection with
+  cargo5 and repeated collection until the tray is removed.
+- jobs.js complete/receive paths create output at the plot, carry it, and unlock
+  woodland on a food receipt. Growing begins by releasing planting actors, and
+  woodland has a distinct harvest phase/action. Plot inspection distinguishes
+  reserved, carried, staged and output quantities. Those are substantive mechanics,
+  not an unexplained refill button.
+- Support confirmation states rates and toll-free phases. The engine retains
+  .45 legacy entitlement while exposing "Recovery pace — waiting for support"
+  at.60. The exact arithmetic/finish guarantees still require the other review
+  and Spark; reading these branches is not execution evidence.
+- The new profile does not present unqualified before/after Tools trip statistics.
+  Its deposit panel explains the supported-versus-recovery distinction rather
+  than using the old global-tools observer to assert causality. The isolated v6
+  history retains the old observation path.
+- Plot inputs/jobs remain in phases after Stop/reassignment; repeated plant calls
+  retain the existing batch rather than re-paying it. Pending work is not marketed
+  as a completed harvest. Collection is explicit after unattended growth.
+- Original terrain/building/worker drawing code is retained and new source/plot
+  glyphs are drawn in the same canvas approach. No generated image was introduced
+  by the reviewed code. Actual appearance still awaits native PNG inspection.
+
+ACCEPTANCE STILL REQUIRED AFTER SOURCE CORRECTIONS
+Request an immutable candidate/hash after authors stop edits, re-read the fixes,
+then execute only via parent/coordinator on Spark. Evidence must cover source
+adoption, local funding, protected recovery crop, restored NEXT, cancelled staged
+input recovery with replacement workers, multi-load output+seed, hidden/pause,
+and storage/readonly boundaries through ordinary controls. Independent native
+PNG review must inspect readable quotes/actions at desktop and390x844, separating
+full-page from viewport captures and verifying command-tray clearance.
+
+No human pacing/discovery/enjoyment result follows from this source pass. Tree
+growth remains300 active seconds; a scripted fast path that leaves a long idle
+tail cannot be described as enjoyable play. Show useful ordinary work alongside
+growth and report remaining waits. The scope is a local cultivation preview,
+not full Hearth/H2, field plowing, resident routes, or an Agriculture handoff.
+
+FIRST CORRECTION RECHECK (working tree, still not immutable)
+Root's subsequent source edits were read directly. F1 now exposes Recover
+planting supplies in cancelling. F2's cultivation paragraph/status/summary colors
+are explicitly dark; P1 makes the mobile panel full-span and wraps the five-item
+header. F5 clears arming after successful applyCultivation while failed admission
+keeps previous orders. P2 now names funded.45 versus recovery.60 tool pace.
+F4 now renders nextMissing independently and separates protected work support
+from NEXT's3 whole recipe water. P3 routes recovery/output/woodland harvest and
+unfunded NEXT to corresponding inspectors. These are source corrections; actual
+runtime, layout and input behavior are still unverified.
+
+Three narrow follow-ups were sent to root before final source acceptance:
+R1. missingText converts rational units but now drops the distinction between an
+    overall water deficit and its whole recipe-water constraint. They can appear
+    as two additive-looking amounts at the same store even though collection
+    needs the larger requirement, not their sum. A positive sub.001 deficit can
+    also round to displayed0. Group/label the requirements and show the actual
+    whole-item remedy, or explicitly mark the whole recipe amount as included.
+    Never print zero for a positive blocking quantity.
+R2. A paid job can remain output while its tray is empty and all yield is carried.
+    nextOpportunity then says the plot "holds none" and Collect remains enabled
+    even though collect() rejects an empty tray. Distinguish remaining on-plot
+    yield from transit; state that held loads must reach a store and disable new
+    pickup when no tray goods remain. Do not restart/recall actual carriers.
+R3. The separate recruitment-note still uses dark #4d5b3b on the dark outer page.
+    Use a legible muted-light color for this required preview-boundary disclosure.
+
+FINAL NARROW CORRECTION RECHECK
+Read the actual final missingText, output-collection admission/primary opportunity
+and recruitment color. R1 now groups by resource/location, rounds positive
+requirements upward to whole physical units to bring, and takes the largest of
+overall/whole-recipe deficits rather than summing overlapping requirements. A
+positive blocking fraction cannot display as zero. Raw third-milli/b0 labels are
+absent from the player shortage rendering.
+R2 now disables Collect when the output tray is empty and promotes "Deliver the
+carried yield" with actual-store/Stop and Return guidance; carriers are not
+reassigned automatically. R3 overrides the recruitment note to muted-light
+#b7c6a8 on the dark page. This closes the remaining narrow findings in this scope.
+
+F1–F5 and P1–P3 are addressed in source, with the explicit limitation that these
+are static decisions/controls/layout changes. No definite remaining UI blocker
+was identified in this bounded pass. This does not certify every engine change
+that occurred while its author was self-reviewing; its arithmetic/custody owner
+must close their review independently.
+
+Final observed hashes
+proposal 74dc866ad5c9581b8a98218f2f0cefff9f047db5d44254d9d06362e2e3ce4a63
+view.js b6377020f542f7a3ac4deebbf483542b474d91f0d583b937b90001073e2313ca
+shell.html bc37c495a58825e8a5aa08b136f083eca5e7b7a60ce00ad7820f0efe550b17ee
+styles.css c13f5efad3e886650e2a335345dc9d6dcfa6e40c660070d6f807885b436249f3
+engine.js f28b81a688a0fa6717e969f51093fa9ade03e8fcc69ce87038fbca34526dfd45
+ledger.js aff71b07a7e767cc06220848fafbf86e95faf4bff13e8508905be316fe3ea954
+jobs.js be11b164e5edeb4cc4bd3a2ac4322f734e8912284547052a78a0b97153a91ff6
+
+The UI acceptance is bound to view/shell/styles above, not a later mutable file.
+The final engine/ledger/jobs hashes are recorded for handoff identity; they are
+not a substitute for the numeric/custody reviewer's completed review. A later
+change affecting these visible contracts needs a targeted source recheck.
+
+Remaining gates: immutable candidate packaging; approved Spark deterministic and
+actual-control browser evidence; cancellation/reassignment recovery and funding
+shortage regressions; independent native desktop/narrow viewport PNG review;
+clear report of pacing/idle time and separate human enjoyment limits. No tests,
+builds, browser, game execution or publication were performed by this reviewer.

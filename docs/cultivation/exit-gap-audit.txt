@@ -1,0 +1,250 @@
+NEXT HEARTH PROGRESSION — SOURCE AND EXIT GAP AUDIT
+Prepared 2026-10-05; read-only implementation/spec review, not execution evidence.
+Owner: /root/hearth_exit_gap_audit. Only this audit file was authored.
+
+Conclusion
+----------
+Recommend a bounded local H2 milestone, “Equip a working camp”: finite fiber,
+physically collected bounded water, explicitly activated prospective support,
+per-worker baskets and ordinary/sharp tool choices, plus the declared pilot-crop
+recovery path. The player should make a real carrying-versus-extraction investment
+and see its effect on the same finite route, while supporting that work through
+ordinary gathering/cultivation. This advances beyond opening feedback without
+pretending that First Furrow or Agriculture handoff is available.
+
+The first implementation decision is profile compatibility, not new gameplay:
+v6's earned global Tools018 benefit is not EM01's per-worker tool economy. Preserve
+that exact playable profile. A new EM01 local path must be explicitly identified
+as a new/adopted profile with an independently reviewed mapping, or an identified
+fresh full-age path with the declared seed. Do not silently replace a paid .45
+toolset with .48 ordinary tools, erase paid work, or grant four new per-worker
+tools from a generic completed-tools Boolean. The bounded milestone can leave
+cross-world authority and full-age completion unavailable.
+
+Read authority and provenance
+-----------------------------
+Inspected current accepted source at:
+  task-3/hearth-tools-feedback
+  commit 60772b76d3a5626a32f6fdac7f7c6ecd55916814
+Git status was clean at audit. No engine, UI, tests, generated output, other
+worktree, or frozen specification was edited. No test, build, parser, lint,
+browser, benchmark, runtime install, queue mutation, or remote execution ran.
+
+Approved reference package:
+  task-11/singularity-economy-conformance/spec/
+  frozen manifest 1a1d987bd4efefdeb4b5f6a9356784ad9973dc726e6ec3e6943e87498f1ebbbc
+Read README authority precedence; levels/00-cave.md, 01-hearth.md and
+02-agriculture.md; ECONOMY-MANIFESTS EM00/EM01/EM02; RULES-AND-BALANCE R2.1–R2.5;
+TECHNICAL-SPEC root/ownership/storage/compatibility requirements; the relevant
+VALIDATION-AND-DELIVERY acceptance rules. Also read task-13's
+CAVE-HEARTH-AGRICULTURE-IMPLEMENTATION-GAPS-AND-BACKLOG.md and
+ALL14-V3-REQUIREMENTS-ACCEPTANCE-CHECKLIST.md. Those implementation-gap documents
+predate v6: their physical-construction and manual-Move gaps are partly closed in
+current code and must not be repeated as current unimplemented facts.
+
+README says campaign owns identity/progression, technical owns atomicity/numerics,
+economy manifests own actual stock/recipes, experience owns useful choices, and
+levels integrate those contracts. D/H are selected implementation defaults and
+numeric hypotheses, not evidence of shipped acceptance. A conflicting contract
+requires a versioned correction; choose neither the cheaper nor easier text just
+to make a test pass. Existing Cave stays its accepted compatibility exception.
+
+What the actual current build does
+---------------------------------
+src/hearth-rts/engine.js:4–17 defines one 36x24 scene, four named workers, starting
+20 wood/10 stone/zero food, the exact finite west/east source stocks, three
+resources (wood/stone/food), hearth/outpost/workshop, recruitment and Tools018.
+The current constructor adopts the supported v6 physical-construction profile.
+Source arrays do not contain fiber, water as a resource, seed, provisions, animals,
+field plots, regions, residence assignments, or cross-world actor ownership.
+The engine's water(x,y) is an impassable terrain test, not a replenishing source.
+
+Current useful depth already exists: physical construction supply/install/cancel,
+certified outpost reclaim, actual local stores and carrier transfers, finite
+sources, immediate loaded Move retaining cargo, Stop and Return, paid resumable
+Tools018 work, and v6 observed gathering-cycle feedback. Do not rewrite those or
+reintroduce the older interface. Work-switch still openly returns held cargo
+before new work; it is not the full EM01 cache/on-route command contract. There
+is no separate Hold/shift queue/standing policy generation implementation.
+
+engine.js:293 updateGoal() sets complete to exactly:
+  depleted > 0 AND a usable outpost east of x20 AND any completed workshop.
+The predicate is recomputed; it is not the full-age sticky proof. It does not
+even require the Tools018 project. engine.js:322 uses this same opening flag to
+switch construction funding from opening pooled stores to local funding.
+Therefore renaming/reusing this Boolean for First Furrow would also change
+funding behavior. Preserve it as opening state and introduce a separate genuine
+versioned full-age proof when its requirements actually exist.
+
+view.js:334 and shell.html call these three predicates the Opening checklist.
+The shell still identifies RTS CORE / prototype. Journey exports/imports the
+separate RTS camp slot; it does not dispatch people to another age.
+src/campaign-navigation/adapter.cjs:39,78,101–112 explicitly sets handoff to
+unavailable/committed:false, treats state.complete as previewMilestone only,
+keeps completed:false for RTS, and rejects Agriculture/handoff actions. This
+truthful boundary is an asset to preserve, not an outstanding navigation defect.
+
+Existing src/agriculture/engine.js is a different legacy slice: it imports the
+old src/hearth engine, fromHearth copies population/traditions from a serialized
+old-Hearth archive, starts its own stock, uses anonymous workforce allocations,
+unlimited water/wood/clay/forage output, and flags five harvests + granary +
+irrigation + 40 grain. Its costs/crops differ materially from EM02. It cannot be
+used as the new finite Agriculture receiver merely by pointing an RTS link at it.
+
+Exact First Furrow exit: missing versus existing
+-----------------------------------------------
+Authoritative Level 1 line15 requires ALL of:
+1. One occupied supported hearth. Current b0 and villagers are present, but
+   there is no resident assignment/support activation, food/water work debit,
+   camp fuel, floor, or funded support certificate. A local outpost is not a
+   second regional resident camp.
+2. A completed prepared field. No field or removal job exists. EM01 preparation
+   removes eight field stones in 120 worker-seconds and puts eight actual stone
+   into physical custody/store; it is not a free Boolean or deleted obstacle.
+3. Installed yoke and plow. No such recipe/asset exists. Cost is 20 wood/6 stone/
+   4 fiber and 120 work; installation is distinct from owning raw ingredients.
+4. A trained draft team. No observed/managed/trained/resting animal state, care,
+   functional enclosure/gate, or training job exists. Care costs 4 food/4 water/
+   60 work; training costs 12 food/12 water/180 work; care allocation is real.
+5. Actual plowing completed. No operation exists. EM01 costs 4 food/4 water/
+   120 handler-seconds with the trained team, produces a visible changed field,
+   and leaves people/team at the field. Buying a plow or setting complete is
+   insufficient.
+6. A viable repeating support route with at least two delivered loads. Current
+   one-scene explicit transfers are real useful foundations, but there is no
+   named adjacent region route, threshold repeat, resident party, support/return
+   quote, physical regional transit, or associated route-delivery proof.
+7. Physical reserves of 20 food/12 water/20 wood sustained for 60 seconds of
+   functioning work. No protected vector or interval/proof exists. Pause/hidden
+   time cannot count. Do not append an idle wait after already functioning work;
+   Level1-P explicitly requires the useful field/route and no mandatory idle tail.
+8. Sticky completion with voluntary linger/advance. Opening state is separate;
+   no First Furrow proof/grant identity or capstone presentation exists.
+
+Optional fertile discovery, optional mountain pass improvement, a cart, and
+combat are NOT exit prerequisites. Cart/road and richer systems still belong to
+restored full-age content and acceptance, but must not be invented as extra
+mandatory First Furrow gates. No enemies, starvation, animal death, or absence
+punishment may be added.
+
+Agriculture handoff is a second, distinct missing contract
+--------------------------------------------------------
+Even a correctly performed First Furrow does not make today's pages one campaign.
+Technical §§1–5 require one authoritative root/clock, person and custody registry,
+versioned content/profile identity, atomic durable handoff, source archive,
+one-time destination grant, preserved history, and branch/replay isolation.
+The exact handoff key binds lineage/branch/sourceWorld/exitProof/destinationStage.
+Named people traveling are unavailable at both ends until arrival; old stores and
+tools stay at their physical location unless actually carried. Re-entry finds
+the same destination. None is supplied by the current read-only nav adapter.
+
+EM02's entry is six soil-60 plots, 12 seed/24 grain/12 water once, with shared
+Hearth residents/capital references and no free wood/stone. It has declared finite
+sources and river12/min into40. L02.exit.v2 then needs working granary+irrigation,
+three cycles including restorative rotation, eight installed manufactured copper
+fittings, useful destinations A+B or B+C, and a 120-active-second proof with
+at least60 grain (40 discretionary above protected20) and funded seed/finish/
+return obligations. Neither current Hearth 3/3 nor old Agriculture first surplus
+qualifies. Full Hearth release also needs P3+P4 ordinary/return/replay/checkpoint
+integration and a separate product-owner experience verdict; feature existence
+alone is not full-age acceptance (task13 A04/A05; Level1-I/K/P).
+
+Canonical next-milestone costs and behavior
+-----------------------------------------
+Use EM01, Level1 and R2.5 as data, not values copied from old Hearth:
+* Finite fiber40; discovered pilot seed cache6; water6 units/min into30, with
+  actual labor/hauling. Map discovery/reload never regenerates finite sources.
+* Ordinary per-worker tool: 4 stone/2 wood/1 fiber/30 work; .60→.48 sec/item.
+* Shaped head: 1 stone/10 work. Sharp tool: 2 heads/2 wood/1 fiber/20 assembly
+  work; .42 sec/item. Two heads plus assembly are40 total work and2 stone;
+  ordinary is30 work/4 stone. First funded six-node plan produces one head and
+  unlocks the recipe; a broken plan preserves its paid stone as unfinished work.
+  Mastered heads delegate normally. No repeat-puzzle output duplication.
+* Basket: 4 fiber/2 wood/30 work; one worker cargo5→8, not a global multiplier.
+* Support starts only at explicit “Provision this camp” after opening, with
+  disclosed prospective charges. Fuel1 wood per active demanding camp-minute;
+  food1 and water1 per300 demanding worker-seconds. No occupied-time drain.
+  Bare gathering, walking, hauling, retreat and rescue caching have no food toll.
+  Four residents protect4 food/4 water/4 wood plus the current obligation vector.
+  Shortage preserves equipped tools/order/cargo/work; standing gather proceeds
+  at .60 until support is funded. No unequip ritual or rescue stock.
+* Pilot crop: 2 seed/3 water/90 worker-seconds +90 growth seconds →6 food/2 seed.
+  K.treeplot after pilot: 2 seed/4 water/30 planting work +300 growth +20 harvest
+  work →8 wood/2 seed. Growth is active foreground, not wall-clock catch-up.
+  These are real recovery choices with land/work/seed cost, not refill buttons.
+* Shelter:20 wood/6 fiber/60 work, +2 newcomer berths. New invitation25 food,
+  temporary10-water reservation returned at complete/cancel, visible60-second
+  task; existing four and already-bought opening recruits are not charged again.
+
+Rack (12 wood/4 fiber/45 work; drying4 food/20 work→4 provisions) and cache
+(10 wood/4 fiber/30 work; +50 capacity) are valid next recipes. However, defer
+rack promotion until there is an actual expedition/packed-cargo consumer: merely
+turning food into another number with no useful destination is not substantive
+play. Provisions change expedition bulk to0.75 slot, not food quantity or yield.
+Capacity introduction must be separately explained; do not silently clamp old
+large stores to100 or discard held cargo/reservations.
+
+Full EM01 A/B budgets are authorizations, not duration targets: A272 wood/68 stone
+gross/34 fiber/64 food/62 water; B280 wood/84 stone/34 fiber/64 food/62 water.
+They exclude optional recruits; field returns8 stone. A includes sledge; B swaps
+cart and12 road cells. Existing finite stocks exceed the raw bill; initial
+constraint is local path/fiber allocation and west depletion, not a falsely
+claimed total-wood shortage. New optional purchases must not spend the last
+finish/return certificate. An extra outpost is reclaimable, not a dead end.
+
+Two bounded playable candidates
+-------------------------------
+A — Equip a working camp (recommended richer-Hearth step).
+  Freeze compatibility/content row first. Preserve accepted opening and earned
+  exact old profile. In the new explicitly identified EM01 path, gather finite
+  fiber/real water, quote and activate prospective support, craft/equip a basket
+  and ordinary tool on named workers, learn one funded sharp-head plan, and use
+  the same long haul to choose extraction investment versus cargo investment.
+  Include pilot crop and the protected next-cycle seed path so support has a
+  visible affordable recovery route. K.treeplot becomes available after pilot
+  under its exact contract. This is a substantial local economic loop, still
+  only a partial H2/Hearth implementation. Do not promote unused rack/cart/plow
+  placeholders or unlock Agriculture. Full root/cross-world writes stay gated.
+
+B — A tended supply patch (smaller, closer-to-Agriculture alternative).
+  Same explicit profile/support/source boundary, but prioritize discovered seed,
+  one actual pilot crop, repeat seed custody and competing funded tree plot.
+  Retain finite food gathering as a viable alternative; water collection and
+  named worker allocation make farming a decision rather than free growth.
+  Observe a complete planting→unattended foreground growth→harvest→second funded
+  planting cycle and one fuel-plot decision. Defer new tool recipes, animal
+  training, regional travel and plow. This advances cultivation before the age
+  capstone without claiming Agriculture or giving EM02's later grant early.
+  It has less transport depth than A; avoid calling it complete H2.
+
+Why not choose immediate regional travel or Agriculture now? Both are meaningful
+but require missing shared ownership, root persistence and safe return contracts.
+They are defensible later milestones, not a link or a cloned old-state shortcut.
+Why not another throughput panel? v6 already supplies the observation; the next
+milestone must change what the workers can physically do and what the player funds.
+
+Implementation/review stop conditions and evidence
+------------------------------------------------
+Resolve before coding the economy: exact profile choice/mapping; authored source
+and plot positions; support quantum/remainder representation and demand classes;
+finite recovery vector; output capacity/cargo behavior; new resource/save
+validation and raw-source retention. These are concrete implementation contracts,
+not requests to redesign the game. If explicit support/profile integration proves
+too broad, reduce to candidate B; do not keep a shallow collection of unconsumed
+recipes while describing H2 as finished.
+
+Spark evidence should independently demonstrate both investment orders on earned
+states; physical input/output conservation; named worker equipment; no global
+benefit leak; repeated actions/refresh/import during paid work; exactly-once
+head/crop yields; preserved seed succession; bounded water refill and finite fiber;
+prospective support/no retroactive debit; all-equipped support-floor fallback
+retaining order/cargo/work; pause/hidden/dormant no work or drain; optional spend
+rejection leaving a quoted funded recovery path; and unchanged exact Tools018
+continuation including partially paid craft. Browser actual controls must show
+the choice, physical outcome and reload, with independent screenshot review.
+Keep old-source negative controls bounded and identical where compatible.
+
+No new candidate runtime result is asserted by this audit. Submit immutable
+source and exact commands through the parent to Spark coordinator
+01a1025e-8b73-7302-b3f5-1264e649e0ea. No M6/GitHub execution, publication, deployment,
+main merge, art replacement or image generation is authorized here.

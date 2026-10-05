@@ -1,0 +1,145 @@
+Cultivation engine API — frozen B0 integration contract
+Owner: hearth_progression_architecture. 2026-10-05.
+Base60772b76d3a5626a32f6fdac7f7c6ecd55916814.
+Initial implementation authorization used proposal SHA256
+14c5dd275c9be300e3dc88618700e4e41bb93f6b5c20bd6e0d3a51d2224d578e.
+Final local-profile.md includes the reviewed paid-legacy-work clarification:
+74dc866ad5c9581b8a98218f2f0cefff9f047db5d44254d9d06362e2e3ce4a63.
+Source candidate is frozen for Spark verification; no execution is claimed.
+
+Files exclusively owned by engine author
+  src/hearth-cultivation/engine.js
+  src/hearth-cultivation/ledger.js (if split)
+  src/hearth-cultivation/jobs.js (if split)
+No edits to src/hearth-rts/engine.js, view/styles/shell/build or tests.
+UMD browser global HearthCultivation and CommonJS exports. If split, browser
+load order ledger -> jobs -> engine; the engine CommonJS entry requires siblings.
+
+Exports
+  Camp, adopt, quoteAdoption, valid, KEY, profiles, W, H, COST, WORK
+  KEY = singularity-clicker.hearth-cultivation.v1
+  profiles = Object.freeze({schema:7, engine:'local-cultivation.v1',
+    content:'local-cultivation-map.v1', numeric:'whole-pantry-slot100.v1'})
+  W=36, H=24; COST/WORK preserve existing opening recipes exactly.
+
+quoteAdoption(rawV6) -> {ok:boolean, reason:string|null, requirements:[string],
+  sourceVersion:6|null, sites:[{id,x,y,width,height}], profile:profiles}
+Pure. Accept an exact JSON string that the preserved validator accepts as v6,
+with opening checkpoint actually satisfied and new authored sites accessible/
+unobstructed. Reject unsupported/damaged content without changing it. Adoption
+does not require every old actor/job to settle. This does not itself activate
+support or issue stored seed/water. No mutation or storage inside this API.
+
+adopt(rawV6) -> Camp; throws Error with quoteAdoption.reason if unsupported.
+Returns an isolated copied v7 state with old IDs/positions/paths/orders/work/
+custody unchanged. Source water pool30, seed cache6 and new plot geometry are
+the declared new authored source profile. Exact original raw bytes remain the
+root-owned envelope archive; root commits archive + candidate in one value
+before publishing returned Camp. No writes occur in adopt.
+
+new Camp(state) -> validated isolated v7 Camp; throws if invalid/unknown tuple.
+valid(state) -> boolean, total nonthrowing predicate. Own closed v7 validator,
+not a fabricated/refunded v6 projection. `camp.s` is the authoritative state;
+serialize() returns its JSON string, not a persistence envelope. BigInt is used
+only inside arithmetic; wire values are canonical bounded decimal strings.
+The root-owned envelope carries exact sourceRaw alongside this state; envelope
+validation validates source separately and does not re-run adoption on reload.
+
+Old interface retained
+  s, serialize(), tick(.1), command(ids,order), build(kind,x,y,ids), cancel(id),
+  train(), beginKnapping(workshop,ids), reclaim(ids,id), reclaimQuote(ids,id),
+  transfer(ids,from,to,resource), quoteTransfer(...), stores(), store(id),
+  economy(), storageSummary(), funding(...), knappingFunding(...),
+  constructionSite(id), siteSupply(id), placement(kind,x,y), visible(x,y),
+  path/around/size/blocked and other old public geometry/quote helpers.
+Preserve old return shapes. New recruitment after provisioning returns a clear
+unsupported-preview reason without spending. Opening `complete` remains opening.
+Unknown future profiles never fall through legacy rules. New tick accepts .1
+only; old float work/movement use their pinned operators inside this exact slot.
+
+New commands and pure queries
+  provisionQuote() -> Quote
+  proVisionQuote() -> Quote             alias for initial parent spelling
+  provision() -> Result
+  inspectPlot(plotId) -> PlotSummary|null   PURE; no seed discovery mutation
+  discoverPlot(plotId) -> Result           explicit inspect/discovery action
+  quotePlant(plotId, ids=[]) -> Quote
+  plant(plotId, ids) -> Result
+  resume(plotId, ids) -> Result
+  collect(targetId, ids) -> Result
+  cancelPlot(plotId) -> Result
+  returnPantry(resource, wholeAmount) -> Result
+  summary() -> Summary
+
+Plot IDs are `pilot`, `woodland`. Collection targets are those plot IDs plus
+`water` and `seed`. collect('water',ids) is standing bare source collection;
+collect('seed',ids) requires pilot inspection discovery and finite cache source.
+collect(plotId,ids) assigns output hauling; woodland harvest uses resume(),
+whose quoted/visible action is `Harvest woodland` in that phase. Output collection
+has seed-first pickup; the order repeats until the current tray is emptied.
+An exhausted source/empty tray is a rejected command or a truthful idle state.
+New work commands retain old loaded-work-switch return-first semantics. Explicit
+Move with cargo and Stop/Return preserve each new custody tag.
+cancel(id) retains old building behavior; callers use cancelPlot for the new job
+to avoid ambiguous IDs. Started jobs cannot material-refund; stopping actors is
+ordinary command(ids,{kind:'idle'}). cancelPlot releases only unstarted owned
+obligations through actual recovery, never teleports carried/staged inputs.
+All failed new commands are atomic and have no actor/material/progress mutation.
+
+Quote common shape (all ordinary material counts are whole integers)
+  {ok, reason, action, plotId?, supportStoreId:'b0', ingredientSources:[...],
+   recipe:{seed,water}, workSlots, growthTicks, harvestSlots,
+   support:{foodThirdMilli:string, waterThirdMilli:string,
+            woodThirdMilli:string, fuelIsUpperBound:true},
+   missing:[{resource,location,amount,unit}], notes:[string]}
+Support strings are exact thirds of a milliunit, not float display amounts.
+They include existing rational liabilities in admission; root formats them.
+Result common shape: {ok:boolean, reason:string|null, repeated?:boolean,
+  plotId?:string, jobId?:string, assigned?:number}.
+Repeated successful commands return stable identity without additional payment.
+
+Summary draft (copied data, never live mutable references)
+  {profile, tick, active, supportStoreId:'b0', roster,
+   floors:{food:roster,water:roster,wood:4},
+   pantry:{food:Account,water:Account,wood:Account},
+   protected:{foodThirdMilli,waterThirdMilli,woodThirdMilli,seed},
+   sources:[{id:'water'|'seed',x,y,discovered,remainingWhole,
+             poolMilli?:string,capacityMilli?:string}],
+   plots:[PlotSummary], woodlandUnlocked:boolean,
+   receipts:{pilotFood:number,woodlandWood:number},
+   stageComplete:false, agricultureAvailable:false}
+  Account: {milli:string, consumedMilli:string, remainder:string,
+            effectiveThirdMilli:string}
+  PlotSummary: {id,label,x,y,width:2,height:2,unlocked,phase,jobId,
+    reserved:{seed,water}, carried:{seed,water}, staged:{seed,water},
+    workSlots,workTarget,growthTicks,growthTarget,harvestSlots,harvestTarget,
+    output:{seed,food,wood}, assigned:[id], blocked:string|null,
+    action:string, recipe:{seed,water}, canCancel:boolean}
+Phase vocabulary: empty, supplying, planting, growing, harvest, output,
+cancelling. Recipe output is physically located; summary is not production.
+The authoritative extension ledger layout is frozen in the modules below;
+UI/QA should consume summary/inspectPlot and ordinary exports, not mutate it.
+
+Integration boundary
+Root owns Web Lock, envelope parsing/version/size caps, exact source archive,
+save/import transactional publication, visibility/pause scheduler and displayed
+formatting. Engine advances only on tick(.1); no timers/DOM/storage/network.
+No tick when paused/hidden/unowned. Adoption preview and inspector queries
+advance nothing. Root should persist discoverPlot as a command because it marks
+the cache discovered; that action changes information only, never material.
+
+Frozen numeric refinements
+quotePlant.action is exactly "Plant protected recovery crop" when NEXT may fund
+the current pilot without its replacement. plant promotes that certificate
+atomically, sets nextFunded=false and protects remaining ACTIVE work. Optional
+tool-assisted extraction falls back to bare until NEXT is restored; new Tools,
+construction and woodland spending wait. Existing paid old jobs can settle or
+pause safely and are prospectively charged; no retroactive finish guarantee.
+summary includes nextFunded, nextMissing and supportReason. protected amounts
+are support-only third-milli; protected.nextRecipeWater is3 when NEXT funded
+and0 otherwise. All actual recipe source reservations remain in job.sources.
+inspectPlot action for cancelling is "Recover planting supplies"; resume accepts
+that phase to assign new recovery workers after Stop/reassignment.
+New wire layout is authoritative in the three owned source modules. Browser
+load order: preserved HearthRTS -> CultivationLedger -> CultivationJobs ->
+HearthCultivation. No old engine/profile is reinterpreted as cultivation.

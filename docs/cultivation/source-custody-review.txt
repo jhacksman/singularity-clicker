@@ -1,0 +1,203 @@
+Cultivation B0 source custody review
+Date: 2026-10-05
+Reviewer: tools_feedback_custody_review
+
+Disposition: STATIC ACCEPT for the three stopped engine-owned modules below.
+Four concrete issues found during mutable-source review are corrected in these
+anchors. No remaining definite custody/numeric source blocker was found within
+this bounded pass. This is not a syntax, test, build, browser, runtime or delivery
+acceptance. No repository code/parser/test/build/browser was executed on M6.
+No source/test files were edited by this reviewer; only this report was written.
+
+Reviewed implementation:
+task3/hearth-local-cultivation/src/hearth-cultivation/engine.js
+SHA256 f28b81a688a0fa6717e969f51093fa9ade03e8fcc69ce87038fbca34526dfd45
+task3/hearth-local-cultivation/src/hearth-cultivation/ledger.js
+SHA256 aff71b07a7e767cc06220848fafbf86e95faf4bff13e8508905be316fe3ea954
+task3/hearth-local-cultivation/src/hearth-cultivation/jobs.js
+SHA256 be11b164e5edeb4cc4bd3a2ac4322f734e8912284547052a78a0b97153a91ff6
+
+Engine author confirmed these owned files stopped at these hashes. They are
+file anchors, not a claim that the whole candidate/commit is already immutable.
+Base accepted commit:60772b76d3a5626a32f6fdac7f7c6ecd55916814.
+Authority read: frozen task3/next-stage-cultivation-proposal.md, including its
+ACTIVE/NEXT recovery correction and named whole-pantry-slot100 compatibility.
+Preceding numeric review:task3/next-stage-numeric-custody-review.txt.
+
+Read-only git diff against60772b7 for src/hearth-rts, src/campaign-navigation,
+and src/agriculture was empty during this pass. Engine author independently
+confirmed the old RTS engine still hashes
+abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b.
+Nothing here authorizes changing the accepted v6 runtime or old history.
+
+Findings corrected before the stopped anchors
+
+C1 — Partial physical-source loads rejected by the save validator (blocking).
+Trigger: ordinary water or seed extraction acquires item1-4 and remains in
+sourceExtract while collecting its five-item load. The original jobs.js source
+branch added cultivationCargo kind=source, but the tag validator accepted only
+return/carryMove/idle/cultivationDeliver. engine.valid therefore rejected a
+normal intermediate state and a reload of its export.
+Evidence: original jobs.js:39/:58; corrected jobs.js:40/:59.
+Correction read: sourceExtract is allowed specifically for source cargo with
+matching collectSource target/resource, no queued successor/path, cargo<5 and
+bounded partial work. Source extraction also checks actual source adjacency.
+This does not broadly permit input/output cargo in arbitrary work phases.
+Independent hearth_exit_gap_audit reviewer confirmed the initial finding.
+QA added source cargo1-4 export/reload assertions for both water and seed.
+
+C2 — Tools could consume support while NEXT was unfunded (blocking contract).
+Trigger: protected recovery planting promotes NEXT to ACTIVE, nextFunded=false.
+The initial engine extraction branch still called allocateSupport for inherited
+Tools018 whenever any discretionary balance existed, draining the replenishment
+path despite the frozen rule that discretionary Tools spending waits for NEXT.
+Evidence: engine.js:462 and ledger.js:29-31.
+Correction read: active&&!nextFunded prevents tool-assisted allocation at the
+extract branch and continues the same order/cargo/work at bare.60. It retains
+the earned global Tools018 entitlement and resumes.45 once NEXT is funded.
+Existing committed crafting/construction and named crop finish paths are not
+blanket-disabled by this check.
+
+C3 — Imported false activation could bypass support on an admitted job (high).
+Trigger: take a legal reserved pilot before first work (zero demand/camp slots)
+and flip active=false,nextFunded=false. Initial checks allowed that state with
+its paid job; allocate returned true without charging while inactive.
+Evidence: ledger.js:29/:36, engine.js:477; job material totals still conserved.
+Correction read: inactive states now reject admitted jobs, batch history,
+recipe-water consumption and demand/camp history. Legitimate bare source
+collection before Provision remains allowed. QA added the reserved-job
+deactivation import negative. Independently identified by exit-gap reviewer.
+
+C4 — Generated output was not bound to paid recipe/work history (high).
+Trigger: add one completed pilot count, generated.food=6 and six stored food
+to an active save while keeping recipeWaterConsumed=0 and demandSlots=0.
+The initial generated==finished*yield check and global generated RHS could
+balance those unsupported six food without any paid recipe/work history.
+Evidence: ledger.js:35-43 and its conservation equation.
+Correction read: recipeWaterConsumed equals completed batches plus current
+paid non-output job; completed/current paid work lower-bounds demandSlots;
+campSlots<=demandSlots<=campSlots*roster; receipts equal settled batches plus
+current output's actual receipted portion. Actual water collection is also
+bound by30000+admitted inflow-pool==1000*collected. These are structural save
+invariants, not cryptographic proof of the user's entire historical play.
+
+Additional resolved checks, not new open findings
+
+- Final engine.js:483 requires Ledger.funded(s,nextFunded) for EVERY active
+  state, including NEXT=false. Thus a recovery job cannot be imported with
+  its local ACTIVE finish/floor funds removed merely by clearing NEXT. An
+  earlier read missed this already-applied correction; it is not open.
+- Job/source lines, plots, cargo tags and pickup fields have closed new schemas
+  in jobs.js:55-60; unknown authority fields are not silently executable.
+- Placement excludes authored cells and additionally checks access to the
+  plots/intake/cache (jobs.js:48). Save validation rejects building overlaps
+  with those sites (engine.js:485). No relocation of imported old actors or
+  structures is used to make a map fit.
+
+Arithmetic and certificate reasoning
+
+ledger.js:14-31 keeps support in exact third-milli arithmetic. Effective owned
+pantry is3*milli-remainder; posted consumed and remainder are tied to aggregate
+demand/camp slots. Each demanding worker slot accrues1third-milli food/water;
+the first demanding slot per camp tick accrues5third-milli wood, controlled by
+engine._fuelPaid. Subsequent simultaneous actors do not debit camp fuel again.
+No posted-debit-zero slot is free: admission compares the rational prospective
+debit, not only its rounded posted milliunits. Whole pantry top-ups move1000
+milli per actual b0 item and do not increment legacy spent. Whole returns keep
+fractional residual/liability owned. The old paid capital equality stays separate.
+
+balance subtracts actual source reservations, roster floor, all ACTIVE remaining
+slot bounds, NEXT support and NEXT's separate three whole recipe water. Generic
+available() limits optional whole spending to whole amounts above that balance.
+The raw reservation functions retain material in source stock until actual
+pickup; they do not count a reservation as extra inventory.
+
+A named job's allocation releases only its own one-slot bound while checking
+the debit. With multiple workers, each successful work slot decreases remaining
+work; fuel is paid once and redundant conservative allowance becomes free only
+as justified by completed work. Bare collection, walking, receipt, growth and
+blocked work do not use allocateSupport. Tick resets the one-camp fuel flag;
+legacy completion stops later helpers from receiving work on the completed job.
+
+jobs.js:13-17 quotes normal ACTIVE+NEXT using a cloned candidate. If normal pilot
+funding fails but the existing NEXT can fund the same pilot, it quotes the
+explicit protected recovery action with nextFunded=false. The real admission
+installs those sources/job once; it does not require a replacement NEXT first.
+This implements the reviewed one-paid-continuation guarantee. refreshNext can
+restore NEXT only when local exact funding exists; it never fabricates water
+or food. Tree admission requires funded NEXT and its separate recipe/support.
+New construction and new Tools projects are refused while NEXT is unfunded;
+the corrected extraction path also respects that discretionary block.
+
+The current top-up loop does not explicitly subtract NEXT's three whole water
+before transfer, but its prior full rational balance/floor check leaves enough
+physical source water in the reviewed reachable cases. No definite siphoning
+case was found. QA was asked to assert independently on every witnessed step:
+when nextFunded, b0 water minus transfer, physical-build and cultivation input
+source reservations is at least three. This is a useful boundary witness, not
+a second claimed defect.
+
+Material jobs and exact-once boundaries
+
+jobs.js:25/:35-46 follows reserve -> physical pickup -> staged -> first paid
+work -> growing -> harvest/output -> physical receipt. Source lines remain in
+their actual stores until pickup. Carried input/recovery/output has a job tag
+and contributes once to the global material equation. First planting consumes
+recipe water once and moves the two staged seed into seedLot. At output it
+moves that same quantity to the output tray, not newly generated seed.
+Generated food/wood are recorded once at completion and reconciled with batch
+history. Output pickup is seed-first, one resource and at most5 per load.
+Output remains owned at the plot or by its carrier until a real store receipt.
+The woodland unlock follows a tagged pilot-food receipt, not maturation or seed.
+
+Stop and loaded Move retain tagged custody. Returning an interrupted input
+restores the source reservation at the actual receiving store. Cancel before
+paid planting releases unpicked source reservations and physically returns
+staged/carried inputs; started work is resumable and is not refunded into both
+supplies and a future output. Cancel repetition is inert. Repeated plant on an
+existing batch returns its identity without another reservation/bill. Complete
+plot removal waits until output/recovery is no longer staged/carried.
+
+ledger.js:47-52 counts legacy stock/spent/cargo/deposits/construction stage,
+new stage/output/seedLot, pantry plus posted support consumption, recipe-water
+consumption and the actual water pool once. The RHS is original finite totals,
+declared admitted water flow and typed food/wood outputs. Old payment/reclaim
+equalities in engine validBase/canonicalReason/validReclaim remain exact; no
+v6 validation projection disguises fractional consumption as free stock.
+
+Adoption and preserved semantics
+
+engine candidateAdoption clones the supplied valid v6 state, adds the explicit
+profile/cultivation block and extends required whole-resource vectors with
+zero water/seed. Existing IDs, arrays, positions, paths, cargo, paid Tools018
+progress, transfers, construction sources/staging/origins and reclaim claims
+remain in place. The quote requires the actual earned opening, checks authored
+site footprints/access and validates the resulting v7 candidate. Unsupported
+sources are refused, not settled/reset/refunded into an invented camp.
+Independent exit-gap reviewer found no definite loaded/pending-state loss.
+The original v6 validator is called for the source; the new state uses its own
+validator/profile row. Runtime duplication of the old Camp does not mean two
+worlds advance: this extension has one live Camp and one tick owner.
+
+The compatibility scheduler preserves old floating work/positions and uses
+explicit.1 activity slots; new job work/growth counts are integers. No tolerance
+migration erases imported partial work. This remains a local numeric profile,
+not the all14 root registry/transaction/fixed-point movement architecture.
+
+QA consultation and limitations
+
+I read the deterministic harness's fixture builders, independent custody
+equations, recovery/floor scenarios and final partial-Tools assertion. No
+definite setup/oracle blocker was found in that limited pass. QA owns the
+tests and added the reported regressions; this is NOT a full harness approval.
+Browser harness, UI commands/rendering, controller archive/envelope persistence,
+Web Lock handling, build binding and immutable packaging are outside this
+three-module acceptance. Their separate reviewers and Spark evidence remain
+required. In particular, engine adopt(raw) does not itself archive source bytes;
+that guarantee belongs to the controller's successful envelope transaction.
+
+No command replay, parser, unit test, integration test, build, browser or
+benchmark was run in this review. Numerical conclusions above are static code
+reasoning. Spark must verify every custody boundary and source-bound runtime
+artifact before playable/delivery claims. Subsequent edits invalidate the file
+anchors above and require a bounded follow-up for the changed paths.

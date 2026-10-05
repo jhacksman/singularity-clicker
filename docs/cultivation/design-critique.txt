@@ -1,0 +1,279 @@
+Next local Hearth progression — independent gameplay choice critique
+Reviewer: /root/next_progression_gameplay_critic
+Date: 2026-10-05
+Mode: read-only choice/spec review before implementation. No game code edited;
+no runtime, tests, builds, browser, benchmark, installation or publication run.
+
+RECOMMENDATION
+Choose B0, "A tended supply patch", as the smallest coherent next local milestone:
+physical water and discovered seed; a paid pilot crop and the canonical tree plot;
+prospectively activated support on the explicitly inherited Tools018 profile;
+actual food/wood/seed delivery and funded repeatability. Defer basket/fiber,
+shelter/new invitations and ordinary/sharp tools in this increment.
+
+This supersedes my initial preference for B once parent proposed B0's smaller
+scope. B remains the stronger later carrying-plus-cultivation increment. Basket
+is not essential for B0 to be substantive: paid land/work/water choices, crop
+phases, retained seed, actual harvesting/custody and repeatable support change
+what workers physically do. Merely adding support drains and a crop counter
+would not meet this recommendation.
+
+Disposition: CONDITIONAL SCOPE ACCEPT, not a final implementation-spec signoff.
+The exact local profile, numeric/support contract, physical crop phase/custody
+contract and authored sites must be resolved in the parent's proposal before
+coding. No full H2/Hearth, First Furrow, Agriculture, balance or human enjoyment
+acceptance is implied. The initial comparison preceded the concrete proposal;
+the appended review below binds the draft subsequently supplied by the parent.
+
+INPUTS AND CURRENT BASELINE
+Read next-stage-exit-gap-audit.txt and next-stage-architecture-review.txt in full;
+canonical Level1, EM00/EM01 and R2.2/R2.3/R2.5; authority README; relevant task13
+backlog context. Inspected current source definitions for Tools018, recruitment,
+resource closure and adapter completion. Git HEAD of hearth-tools-feedback is
+60772b76d3a5626a32f6fdac7f7c6ecd55916814, the delivered v6 milestone.
+The older task13 backlog predates its physical construction/control corrections;
+those historic gaps are not fresh findings against current source.
+
+Read-file SHA256 identities:
+next-stage-exit-gap-audit.txt
+2cef2aeb82c9f2f22da9e7fefab0683084927f2da8c34c97f34b58bc317c7eb4
+next-stage-architecture-review.txt
+7517939ddbffabb60652ab27a231793628e397f4da3a7b304da8b82a193d9171
+task11 spec/levels/01-hearth.md
+07c1c069327f7360d8dfc72af373871c2892be9fb8e83694608ff5137ae91c9c
+task11 spec/ECONOMY-MANIFESTS.md
+d859d037d9701a89760b81fd289ef58857931c733c6ca890e851ecdc4237d946
+task11 spec/RULES-AND-BALANCE.md
+a047295629482fe8c1a4674982445f54be1a0cdebe778464437400b2d89bf224
+Canonical root: /Users/m6mini/Documents/Codex/2026-10-03/task-11/singularity-economy-conformance/spec/
+
+CHOICE COMPARISON
+A — Provision and equip: fiber/water/support, basket, shelter/new invitations.
+Useful immediate choice: improve one carrier or buy housing/labor. A basket has
+an observable8-versus5 load, while a recruit is a new named actor with an actual
+job. This can be a coherent milestone and the architecture review's choice is
+reasonable. It is not the smallest complete support/recovery loop, however:
+new recruitment spends finite food and adds berth/roster/invitation custody while
+crop/fuel renewal stays missing. Shipping support before any cultivated recovery
+would require especially honest finite limits and preserved recovery funding.
+Do not claim recruitment is required for the canonical completion; EM01 says it
+is optional. Shelter without a functioning invitation is an unconsumed recipe.
+
+B — Provision, carry, grow: fiber/water/support, basket, pilot crop and tree plot.
+Stronger than A for recurring support: hauling investment helps collect supplies,
+and cultivation creates a funded alternative to depleting wild patches. It also
+has the largest implementation surface of these choices: every five-item cargo
+boundary, mixed-capacity reservations, equipment ownership and observer samples
+must change. Basket is an actual benefit, but it is separable from cultivation.
+
+B0 — A tended supply patch: water/seed/support, pilot crop and tree plot only.
+Smallest coherent scope because it keeps existing cargo5, selection, delivery,
+construction and named workers while adding a real production lifecycle. Its
+decision is immediate wild gathering versus planting a slower repeatable crop,
+then food replenishment versus a fuel plot using real water/seed/land/labor.
+It should be presented as local cultivation, not a completed H2 "better trip"
+or the ordinary/basket/sharp tool comparison. No universal efficiency advantage
+is promised: abundant nearby wild food/wood can rationally be the better choice.
+
+MINIMUM COHERENT B0 PRODUCT RESULT
+1. At the unchanged completed opening, the player can inspect the next opportunity
+   and the exact prospective support rules before activating them. Inspection
+   spends nothing or alters no orders. Retaining the exact opening profile is
+   a real option, with its existing recruits and Tools018 behavior intact.
+2. The player discovers the authored six-seed cache and physical water source,
+   uses existing workers to collect/haul, then funds a selected pilot crop.
+   Inputs, occupied patch, assigned worker and present phase are visible.
+3. Crop maturation continues only during active foreground simulation, without
+   an artificial assigned worker or support debit for unattended growth. Workers
+   can do useful gathering/building/hauling while the crop grows.
+4. Mature output is real food and retained seed at a named location. It is
+   collected/delivered once. The player can see those goods fund real support
+   or another useful action, rather than merely increment a completion counter.
+5. The first completed pilot makes the canonical tree plot usable in this local
+   preview. The exact unlock event must be frozen; an actual pilot harvest is
+   the clearest recommended event, not opening a panel. The tree's real wood
+   and retained seed are harvested/delivered and can fund fuel or construction.
+6. Two crop deliveries plus one actual tree harvest may define this local
+   milestone, provided they are useful delivered goods, not ceremonial counts.
+   A quoted next cycle remains funded. This record never aliases opening.complete
+   or First Furrow. The player may continue/stop freely after earning it.
+
+TWO FEASIBLE ORDERS, NOT TWO COSMETIC BUTTONS
+Demonstrate from the same authentic earned opening:
+- Plant food early, then perform useful wild gathering or a real local delivery
+  while it grows; use the first crop's output, run the second crop, then tree.
+- Gather wild food first to support immediate useful work; plant the pilot, then
+  invest in the unlocked tree before the second food crop. While wood matures,
+  workers perform remaining funded useful tasks, and food/seed funding remains
+  safe. If the authored patch geometry permits parallel beds, show their actual
+  distinct occupied land rather than overlapping output on one tile.
+Both orders ultimately meet the same two-crop/one-tree milestone. They should
+differ in support buffer, worker occupation, delivery timing and finite source
+use. Do not claim a land competition if the final layout gives each recipe an
+independent unconstrained site; describe the real water/seed/labor trade instead.
+
+The tree's300 growth-seconds are canonical but are a pacing risk in a small
+preview. It is acceptable as an unattended production choice with useful work
+alongside it. It is not acceptable to rush every other task then force a solved
+five-minute idle tail and call that substantive progression. Do not shorten or
+pad the canonical timer silently; choose a route/sequence with actual concurrent
+work and record any remaining wait honestly. Human pacing still needs a human
+verdict, distinct from deterministic progression.
+
+MUST RESOLVE IN THE LOCAL PROFILE BEFORE CODE
+P1 — Inherited paid benefit and explicit adoption.
+Current Tools018 costs4 wood/8 stone/12 worker-seconds and gives the global.45
+extraction interval. Preserve paid partial work at its original workshop and
+that earned entitlement. Do not silently turn it into canonical.48 ordinary
+tools, mint material toolsets for each worker, or refund materials that were
+never individually embodied. The proposed profile is an explicitly named local
+compatibility continuation, not pure EM01. Preserve exact source bytes and an
+unchanged continuation path before adoption. In the adopted profile, disclose
+that funded supported extraction uses the inherited.45 rate and a shortage uses
+the canonical.60 bare fallback; the entitlement is retained. Adoption and support
+activation are separate facts. Neither is a retrospective bill.
+
+P2 — Support behavior must be priced, not an undefined new tax.
+R2.5 fixes1 food+1 water per300 demanding worker-seconds and1 wood per active
+demanding camp-minute. Freeze which introduced phases are demanding, local store
+ownership, supported roster/floors for inherited4–8 people, exact quantum and
+remainder behavior, admission/finish obligations, and simultaneous allocation.
+Four-person4food/4water/4wood is a floor, not the full recovery certificate.
+Growth, bare gathering, walking, hauling, paused/hidden/dormant time are not
+silently demanding. A stalled worker cannot burn supplies while doing no work.
+All-equipped shortage must continue the same standing gather at.60, preserving
+source/order/cargo/partial work, then resume funded tools without an unequip
+ritual. Water collection itself must remain a reachable recovery action.
+
+P3 — Physical and finite content adoption.
+Water is6 units/minute into30, not stored starter water or an unbounded terrain
+resource. Freeze initial pool amount, source identity/location, reachability,
+collection rate and current-pool handling. Six seed are discovered at the
+cultivated patch, not repeatedly awarded by inspection or teleported to stores.
+Exactly-once content adoption must preserve old depletion, jobs and cargo.
+EM01 explicitly names a southern-region tree-plot site. A local-only B0 needs a
+declared authored local site/profile mapping; do not ship a tree unlock whose
+only usable site needs the unimplemented regional system. No new art generation.
+
+P4 — Exact crop phase and custody contracts.
+Pilot:2seed+3water+90 worker-seconds+90 growth-seconds ->6food+2seed.
+Tree:2seed+4water+30 planting worker-seconds+300 growth-seconds+20 harvest
+worker-seconds ->8wood+2seed. Do not turn pilot into Agriculture's grain recipe,
+add unquoted second90-work harvesting, or count retained seed as a new free cache.
+Freeze input delivery, planting start, pause/cancel/resume, growth, harvest work,
+physical output location, ordinary pickup and exactly-once receipts. An unfinished
+crop/tree retains its paid inputs/provenance/work; restarting cannot erase the
+last seed or duplicate output. Existing cargo5 must carry every new output safely.
+If current job/storage structures lack a legal field output owner, define that
+owner explicitly rather than teleporting yield into a distant store.
+
+P5 — Recovery must cover the selected ordinary continuation.
+Quote gross crop/tree inputs plus actual support, protected floor and safe
+delivery; output numbers are not net profit. Keep a viable food/fuel/seed path
+through the selected next cycle, including accessible water, labor, output
+custody and any in-flight obligations. The last viable two seed cannot be spent
+or stranded in an unrecoverable canceled job. Do not count the same seed/water
+as uncommitted while it is planted/reserved. Optional legacy construction or
+other spend must not consume the selected continuation certificate. Refusals
+name the protected amount and an affordable ordinary alternative.
+Old over-spent states that cannot meet a valid adoption certificate stay playable
+and exportable as their exact legacy profile; no emergency resource spawn.
+Renewable crops/trees are paid bounded jobs, not unlimited passive catch-up and
+not a promise of infinite mining/export. Full future First Furrow funding cannot
+be advertised merely because this local two-crop/one-tree certificate passes.
+
+P6 — Recruitment deferral is acceptable but must be explicit.
+Preserve every already-bought person and their inherited berth entitlement, and
+any pre-activation paid contract. In an adopted supported profile, leaving the
+old instant25-food recruitment button active would evade R2.5's shelter berth,
+temporary10-water reservation and visible60-second invitation. If those systems
+are deferred, show specific unavailable copy before opt-in and at recruitment:
+new shelter/invitations are outside this preview. The unchanged opening profile
+retains its existing behavior. This disclosed preview boundary is preferable to
+a silent incompatible recruitment loophole; no critical B0 goal may require a
+new recruit. Do not claim support for twelve people/two resident camps.
+
+P7 — Keep the promotion comprehensible.
+At most two major goals and one binding constraint. Name the source/plot/worker,
+local funding location, current phase, time/work remaining and next useful action.
+Show support costs before activation/purchase, then one bundled shortage. No
+stacked crop/fuel/water alert wall. Preserve passive inspection and touch command
+arming/cancel behavior. Feedback remains measured five-item cycles; invalidate
+history when rate/support state changes rather than using a false tools-causal
+comparison. B0 adds no basket, so no eight-item claim belongs in the UI.
+
+EXACT OBSERVABLE ACCEPTANCE TO REQUEST ON SPARK
+- Authentic v6 paid/partial Tools018,4/8 workers, held cargo, physical construction
+  and reservations survive exact adoption/reload. Repeat adoption/inspection
+  never re-grants seed or refills water. Unknown profiles preserve raw source.
+- Water visibly empties/refills only within its bounded pool, is collected and
+  delivered by actual workers, and stops during pause/hidden/dormant time.
+- Both investment orders above use real existing supplies, paid worker time,
+  physical crop/tree inputs and useful delivered outputs. Record actual useful
+  work during growth and any idle tail; do not replace it with accelerated claims.
+- Two ordinary crop cycles return exactly6food/2seed each; one tree returns
+  exactly8wood/2seed after its distinct work/growth/harvest phases. Stop/reload at
+  every custody boundary and duplicate actions cannot lose or multiply materials.
+- Delivered food supports actual funded work and tree wood reaches an actual
+  consumer/store with a funded next cycle. Show the local gain/cost, not only a
+  badge or accepted purchase. Do not impose an extra destructive demonstration
+  after all useful work is done just to tick a box.
+- Trigger food/water/fuel floor with all gatherers having inherited Tools018;
+  recover using ordinary paid/physical paths, retain order/cargo/work and resume
+  funded.45. No no-food deadlock, new resource grant or repeated equip action.
+- Reject an optional spend that would destroy the continuation; preserve its
+  exact state and show a reachable remedy. Verify no passive absence punishment.
+- Real desktop and touch/keyboard controls expose quote, activation, planting,
+  interruption/resume, harvest/delivery, next-cycle quote, export/reload, with
+  native screenshots independently inspected for readable decisions/constraints.
+- Negative assertions: opening.complete stays opening-only; local cultivation
+  does not enable First Furrow, Agriculture entry, copied people or starter grants.
+
+FIRST FURROW STILL MISSING AFTER EVERY SCOPE HERE
+Supported hearth alone is insufficient. Prepared field with8 recovered stones,
+installed yoke/plow, actual trained/cared draft team, performed plowing, viable
+repeating regional support route with two real loads, and20food/12water/20wood
+through60 seconds of functioning work remain required, followed by sticky proof
+and voluntary advance. This local cultivation milestone does not implement that
+exit, the shared campaign root/ownership/handoff, or finite EM02 Agriculture.
+Keep the adapter's unavailable handoff truthful. No combat or art replacement is
+needed for B0, and neither publication nor runtime execution on M6 is authorized.
+
+CONCRETE B0 PROPOSAL REVIEW — appended after reading the draft
+File: next-stage-cultivation-proposal.md
+Reviewed SHA256: aed2bae300c1cbdbfb5cedd84ebfce706a6ef743297455e52e2c330164d993f6
+
+The proposal selects B0, preserves v6 explicitly, names a bounded local tree-site
+mapping, defers new recruitment with disclosure, preserves physically carried
+seed/output, and protects a funded next food cycle. Those choices resolve the
+major product-scope questions. Two crop deliveries and one woodland output used
+are appropriate acceptance witness outcomes. The text explicitly says they are
+not a new arbitrary unlock timer/age-exit gate: retain that distinction. Do not
+later wire the witness count to recipe access, compulsory ending, handoff or a
+forced celebration. Woodland's own canonical earned unlock remains separate.
+
+Three concrete gameplay clarifications remain before freezing:
+G1. The opening paragraph claims food/wood renewal compete for land, but the
+    declared content has one fixed pilot plot and one separate fixed woodland
+    plot. That is not yet a land-allocation choice. Remove "land" from the
+    competition claim unless a genuine shared occupancy constraint is specified.
+    Labor, water and seed already provide sufficient meaningful competition;
+    no additional placement system is needed for this milestone.
+G2. Bind "after the first pilot crop" to one exact earned state/event. Recommend
+    the first real completed pilot output receipt/harvest, identified by its job,
+    not discovery, a reservation, button click, or opening a panel. Pick the
+    exact event once and give the UI/validator/test the same definition.
+G3. State how a player assigns planting, releases workers for unattended growth,
+    resumes interrupted paid work, and collects both resource types at maturity.
+    With current single-resource cargo5, six food/two seed or eight wood/two seed
+    needs multiple physical trips. A food-only collection action must not leave
+    retained seed invisibly blocking the next batch. The tray should explain
+    remaining items and the ordinary next collection action, while no offscreen
+    auto-assignment cancels another useful worker order. This needs an observable
+    interaction contract, not a new output-grant shortcut.
+
+The marked pending numeric quantum, pantry return, support allocation and source
+coordinates are real freeze blockers and remain with technical/custody review.
+Their presence is honest; this gameplay report does not choose them by accident
+or declare them implemented. Subject to G1–G3 and those technical decisions,
+the selected B0 is a coherent, bounded next playable progression milestone.

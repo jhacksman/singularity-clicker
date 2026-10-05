@@ -1,0 +1,80 @@
+Local cultivation B0 UI contract — frozen candidate hooks (2026-10-05)
+Base source60772. Root owns src/hearth-cultivation/view.js,shell.html,styles.css
+and build.mjs only. Engine owner owns new engine/ledger/jobs modules. QA owns only
+new cultivation tests. Old RTS engine/view/art/styles remain exact.
+
+Entry artifact: dist/hearth-cultivation.html, standalone embedded runtime.
+Retain #world, #move, #gather, #stop, #command-cancel, #pause, #command-help,
+#placement-confirm, #select-all, [data-unit="u0"] and ordinary Journey #journey,
+#export/#import/#file/#close. Existing explicit loaded Move, Space keyup/pan,
+passive touch inspection and armed-command/cancel contracts remain in force.
+Existing canvas uses32logicalpx/cell and actual camera transform; no dataset-only
+pan evidence. New plot art is direct canvas strokes/shapes in existing palette.
+
+Opening in this separate preview may play under preserved v6 behavior until earned
+opening. The UI discloses independent history; no material transfer back to old
+slot/campaign. Eligible existing saved v6 camp is shown paused before copying.
+Exact source bytes are archived with adopted state; user may explicitly import
+an earned v6 export instead. No adoption/provision happens merely by page load.
+
+#cultivation-panel is the calm continuation panel.
+#cultivation-status: concise profile/support/current binding constraint.
+#cultivation-adopt: "Explore cultivation" -> #cultivation-confirm-dialog.
+#cultivation-confirm: "Start separate continuation" makes the atomic saved adopt.
+#cultivation-confirm-cancel: "Keep opening camp"; makes no gameplay mutation.
+Disclosure names retained original, local preview, exact source archive,
+prospective support and unavailable new invitations after support activation.
+
+#cultivation-provision: "Provision this camp" opens #support-confirm-dialog.
+#support-quote shows b0 supply source, floor, next-cycle vector, active finish
+reservations, pantry and whole-material obligations before consent.
+#support-confirm: "Confirm support"; #support-cancel: "Keep planning".
+#support-status after confirmation shows standing b0-only pantry funding,
+actual support consumption, owned residuals, next-cycle protection, highest block.
+#pantry-return: "Return whole pantry supplies"; fractional balance remains owned.
+
+#plot-pilot, #plot-woodland are actual inspect buttons naming their sites.
+Inspection #plot-pilot reveals fixed physical seed cache only, never store stock.
+#water-inspect and #seed-inspect target existing physical source inspectors;
+#water-gather and #seed-gather command selected named workers, subject to ordinary
+return-first work-switch behavior. These are actual input commands, not grants.
+
+#cultivation-plot-details shows selected plot phase, source funding, assigned
+workers, work/growth remaining, staged/held/paid inputs, output tray, locked seed.
+#plot-quote shows recipe, full support bound, protected next-cycle and missing vector.
+#plot-start: "Plant pilot crop" / "Plant woodland". New named batch once; repeated
+click retains batch or explains existing work, never re-pays.
+#plot-resume: "Resume planting", "Harvest woodland", or "Recover planting
+supplies" based on actual phase. Released unstarted supplies still in transit or
+staged require physical recovery; the recovery action does not refund by teleport.
+#plot-collect: "Collect crop" / "Collect woodland yield"; seed-first single-type
+loads≤5, physical return and repeat until empty. No implicit whole-tray teleport.
+#plot-cancel: "Release unstarted planting" where actual state permits. Started
+work presents retained paid work and Resume, never a false full refund.
+
+Planting releases workers at growth; a plain status says "Growing — villagers are
+free for other work" and gives remaining foreground seconds. Woodland unavailable
+until an actual pilot-food receipt. Two crop deliveries/one woodland result is an
+acceptance witness only; UI has no new compulsory count or FirstFurrow badge.
+
+Journey export is exact standalone envelope (live state + source archives), read
+through browser download; import atomically replaces one history, never adds stock.
+#source-export exposes exact preserved opening bytes. Actual save error/readonly
+status stays visible. Lock owner alone can simulate/mutate/write; another tab or
+unsupported Web Locks has ordinary inspection/export only with clear reason.
+Journey #archives-export also exports retained history entries. The wire format is
+{format:'hearth-local-cultivation-envelope.v1',version:1,sourceRaw:string|null,
+ state:object,archives:[{kind:'camp-state'|'legacy-source',raw:string}]}.
+Before adoption state is supported v6; after adoption it is the exact schema7
+local profile and sourceRaw is required. Adoption and import validate and write
+this entire single-key envelope before publishing the candidate live state.
+Original HearthRTS.KEY is never written by this preview. If either selected
+startup storage read fails, unavailable state cannot be exported as a fresh camp.
+Pagehide releases the writer lock and blocks the page; a bfcache return requires
+reload. Inherited ordinary commands/ticks retain autosave durability, with visible
+pause/export recovery on save failure; this is not a full campaign transaction root.
+
+All screenshots/events use public controls and ordinary exported checkpoints.
+No helper injects resources/work/state. Controlled Spark foreground clock may
+advance within existing approved harness policy; record actual tick count and
+do not call it human pacing/enjoyment. Test/build execution remains Spark-only.

@@ -1,0 +1,564 @@
+Next H2 numeric and material-custody architecture review
+Date: 2026-10-05
+Reviewer: tools_feedback_custody_review
+Mode: static source/spec review only. No repository code, parser, tests,
+build, benchmark, browser, or simulation was executed. This report is the
+only file written. It is a recommendation, not implementation acceptance.
+
+FINAL B0 refinement (parent narrowing received during this review)
+
+Read task3/next-stage-cultivation-proposal.md. Parent now selects cultivation
+WITHOUT baskets/fiber/shelter/invitation. That is a substantive, smaller useful
+scope than the earlier two bundled candidates. Accept that narrowing; the
+equipment/invitation sections below are deferred architectural notes only.
+Implement exactly the pantry/v7 approach below, with these concrete freezes:
+
+1. Quantum: one100-ms activity slot. New cultivation work uses integer slots:
+   pilot900 planting slots +900 growth ticks; woodland300 planting slots,
+   3000 growth ticks,200 harvest slots. Each eligible worker can receive one
+   slot per tick, up to remaining work; growth does not allocate a worker.
+   Food/water per admitted worker slot =1/3milli; fuel for the camp tick =5/3
+   milli IF at least one demanding worker advances. Shared fuel is charged
+   once, not per job/worker. This fixes the union to a single full100-ms slot
+   and avoids introducing sub-tick interval machinery in this minimum.
+
+2. Legacy compatibility choice: preserve imported double work/positions
+   exactly. A legacy job with positive remaining work that can advance receives
+   a full100-ms activity slot and completes at that slot boundary under its
+   pinned legacy arithmetic/epsilon. Later actors in stable actor-ID order
+   cannot receive another slot for an already completed job. Bill the allocated
+   active slot, not float(newWork-oldWork). This may make the final active
+   slot longer than nominal remaining progress; disclose that bounded local
+   timing rule and use it in quotes. It changes no imported paid work and
+   rounds no material. Zero-progress completion bookkeeping is not demanding
+   work. Do not use a migration tolerance to snap11.999... to12 or assert that
+   arbitrary legacy residuals are exactly integer milliseconds. If the product
+   requires proportional sub-tick legacy charges, this decision is insufficient:
+   exact rational residual operators or explicit grandfathering are needed.
+   Choose the full-slot rule for this B0. The grandfather option discussed
+   later is an alternative, not an additional free-work rule to combine with it.
+
+3. Plan support eligibility and shared remaining job work before debit, in
+   deterministic order, using the actual legacy/new work operator. Preserve
+   current actor sequencing rather than accidentally making just-completed
+   Tools018 assist earlier actors in the same tick. A dry source, walk/arrival
+   tick, blocked job or full output has no demanding allocation. Reserve the
+   proposed full slot including rational liabilities before mutation; rejected
+   demand falls back to bare extraction or pauses the paid job intact. Do not
+   charge everyone whose phase says construct/extract before resolving their
+   actual positive advancement and final shared-work capacity.
+
+4. Pin the supplying store. Recommend b0's pantry for this one-resident-camp
+   B0: b0 cannot be reclaimed, and each other store must physically transfer
+   support goods there before use. All resident support draws from that owned
+   pantry; other outpost balances are never silently pooled. This is a local
+   camp policy, not a new range/radius system. Plot ingredient sourcing may
+   remain independently physical; quote both ingredient and support locations.
+   Confirm a standing pantry top-up authority at Provision. Fractional unused
+   balances/liabilities persist on pause/cancel/import; return only unencumbered
+   whole amounts. Floors and certificate holds follow the converted material
+   when a whole item moves from store to pantry; conversion must not release
+   its protection. Bare collection/return requires no support.
+
+5. Finish certificate must have a real reservation owner, not a UI floor.
+   For each unfinished planting/harvest, count remaining admitted work slots
+   once. Food and water each reserve remainingSlots/3 milliunits, with exact
+   accrued liability. For fuel, changing crew changes elapsed camp-active
+   time: a safe one-worker finish bound is5*remainingSlots/3 milliunits. Quote
+   it as an explicit upper bound, not exact realized fuel. E.g. one next pilot
+   reserves2seed +3whole recipe water +300milli food +300milli support water
+   +UP TO1500milli fuel wood, above its recovery floor and other obligations.
+   At concurrent job execution charge the one actual fuel debit to one named
+   funded authorization deterministically; never charge both reservations.
+   Unused reserved allowance releases on completion. A cheaper fixed-crew fuel
+   quote instead needs recertification before reassigning that crew; do not
+   quote four-worker fuel then allow one-worker work until funds disappear.
+   Gathering/tool work and optional buildings may spend only outside protected
+   finish/next-cycle allowance. Holding300milli of a whole food item must stop
+   a whole-item purchase from spending that same item; flooring unreserved
+   milli availability to whole purchasable items avoids that double use.
+
+6. Distinguish next-cycle obligations from active-crop material lineage. The
+   current crop's2seed can remain the protected future seed path while held in
+   its workpiece/output/cargo, but cannot simultaneously fund another planting.
+   Next-cycle3water is distinct from recipe water already consumed/staged for
+   this cycle. Define the exact recipe-consumption boundary: recommend once
+   all inputs are physically staged and planting first starts, water becomes
+   recorded recipe-consumed input; seed becomes the identifiable in-process
+   reusable seed lot. Interruption preserves it. Output returns those seed
+   units, not2new seed. Crop food/tree wood are declared typed new output.
+   Reserve one full output tray before starting; seed-first pickup, ordinary
+   delivery, and first actual pilot-food receipt are sound. Receipt unlock is
+   keyed to the pilot batch and exact food custody, never seed or a repeated
+   ordinary-food delivery. Tree admission may not consume the protected crop
+   lineage, water or support reserve.
+
+7. Fix save authority concretely. A v7 standalone key/envelope containing
+   exact archived v6 bytes and the candidate avoids making two localStorage
+   writes appear atomic and keeps the exact old runtime loadable. A single
+   active live slot in this local continuation is sufficient; no campaign root
+   is required. Acquire a supported exclusive writer lock for this key; freeze
+   nonowners/read-only sessions. The draft's 'stale source' test alone does not
+   establish a fence. Failed write must not install the candidate or lose the
+   currently playable v6/v7 state. One archive of source data is insufficient
+   without retaining the v6 executable/content that can play it.
+
+8. Candidate cells from parent: pilot(11,17)2x2; tree(14,17)2x2;
+   water(17,12); seed cache(10,18), source pool initially30. Walkable new plots
+   and sources avoid invalidating existing movement paths. Reserve those cells
+   against new building footprints; refuse existing footprint overlaps with
+   an accurate remedy (an unreclaimable workshop may mean remaining on v6).
+   Adoption must preserve each old path/order/cargo and verify source/worksite
+   access; do not use settlement-only migration to hide topology conflicts.
+   Depletion of renewable water is not a new permanent depleted-source count.
+   Seed depletion/crop unlock must not change opening.complete's old meaning.
+
+B0 disposition: conditional design ACCEPT with these named choices incorporated
+into the profile. No need for settlement-only migration or toleranced destruction
+of old partial work. Must-fix before code freeze are the exact slot billing,
+protected funded finish/next-cycle ledger, support-store/return policy, recipe
+input/output boundary, and durable writer/archive behavior. Remaining roster
+floor choice Nfood/Nwater/4wood is explicitly local and disclosed in the draft;
+it is not claimed to be canonical all14 scaling.
+
+Recommendation
+
+Use schema v7 with an explicit, separately pinned local compatibility profile,
+one live Camp state, and small resource/job/support modules. Preserve whole
+physical items for the existing stores, cargo, source extraction and material
+recipes. Put fractional support in a separately owned milliunit pantry, with
+persisted rational charge remainder and a strict bridge to whole stock. Give
+v7 its own closed validator. Keep the accepted v6 validator and playable bundle
+unchanged; never make v6 accept fractional balances or unknown resources.
+
+This is the smallest sound option for the bounded local milestone. It does NOT
+implement TECHNICAL-SPEC section 6's all-milliunit authoritative quantities,
+integer logical movement, canonical integer-string hashing, or the campaign
+root/registry/IndexedDB coordinator. It must be named a local compatibility
+numeric profile, not canonical all14 conformance. If that conformance is the
+actual next acceptance target, choose a genuine scaled-resource v7 instead;
+the whole-item/pantry bridge cannot satisfy it by relabeling fields.
+
+Prefer physical fiber/water, baskets, shelter/invitation and prospective support
+over basket plus pilot crop/tree plot for this minimum. The latter also needs
+seed ownership, land/work/growth/harvest phases and typed production balances.
+It is feasible with the same seams, but not a cheaper substitute for support.
+Do not enable Agriculture or rename the existing opening.complete as First
+Furrow. No campaign handoff, residents copy or entry grant belongs here.
+
+Source anchor and facts that constrain the implementation
+
+Accepted commit: 60772b76d3a5626a32f6fdac7f7c6ecd55916814
+Worktree: task3/hearth-tools-feedback (HEAD confirmed by read-only git).
+engine.js SHA256:
+abfe12a5dbc152cc4eca3314ded3d18fbe35f1525b4261a72d7e139c124ffd3b
+view.js:
+b65988bd29f0cb8abdcb54f5449f55f813c87a5ce33c20234d1612bb6a89be93
+feedback.js:
+f7cf2cbc2de4ffe61ec47991f48a23fa40ce9de024ed9efa8b2675755a658691
+campaign-navigation/adapter.cjs:
+55fdfe34fadcf86c4593dea36f7249335c9022447f8a8bfd432ff0bf320668a9
+
+1. engine.js:7,24-58,100-123,139-167 close resource vectors, exactly eight
+   deposits, whole cargo, capital costs and payment proofs. In v5/v6,
+   canonicalReason conserves 416 wood/220 stone/225 food, and validReclaim
+   requires paidVector == spent exactly. Spent includes paid legacy projects
+   and recruitment; it is not a generic consumption ledger.
+2. physicalSite at :9 and branches at :28,:40,:58,:110,:147,:326,:428 use exact
+   version===6. Simply changing the version to 7 can select instant-paid
+   construction or omit staged supplies/physical phases. This is a concrete
+   correctness hazard, not a reason to strip pending sites before migration.
+3. Transfer admission, reservations, gather, construction supply/recovery,
+   reclaim and save validation all embed capacity five. Larger gather cargo
+   alone would create invalid or unserviceable loaded states.
+4. :414 pay() increments spent and legacy payment records. :205 compacts
+   payments without understanding new kinds. New jobs must not enter this
+   path under a generic 'expense' string; paymentReason rejects such records.
+5. Construction source reservations remain in the source store until pickup;
+   staged/carry are real separate custody. Legacy paid reservations already
+   reside in spent. Released/returned/delivered/recovered are historical
+   counters, not additional inventories.
+6. :437 accepts arbitrary floating dt in (0,1]; the actual view :378 calls
+   .1. Imported positions, time and partial work remain doubles. Converting
+   these to new integer ticks by rounding is not a lossless schema migration.
+7. view.js writes the existing localStorage key; import backup checks are not
+   a transactional writer fence. adapter.cjs only declares RTS schemas 1-6
+   and intentionally blocks full-age handoff. Both need explicit v7 rows and
+   save routing, not a permissive future-schema fallback.
+
+Minimal module boundaries; no second running economy
+
+A. Keep an exact v6 compatibility implementation/validator entry. For v7,
+   extract reusable geometry and existing custody operations only where a
+   narrow profile parameter is necessary. Dispatch by an allow-listed tuple
+   (schema, engine profile, content profile, numeric profile). A generic
+   resources array by itself is not sufficient authority.
+B. Add a DOM-free local ledger module defining exact vector operations,
+   allowed new source kinds, capacity(worker), reservation availability,
+   payment categories and invariant checks. Add a paid-jobs module and a
+   support module. They receive the same state/candidate and cannot advance
+   clocks, save, or independently tick cloned workers.
+C. Camp remains the sole command/tick owner. A v7 command stages a candidate,
+   validates the complete debit/reservation/order change, then publishes it
+   once. Tick allocation must resolve support and contested final work before
+   mutating actors; do not run every old actor and subtract support afterward.
+D. Preserve existing v6 physical-construction/reclaim profile identities and
+   recipe meanings in v7. Use explicit capability/profile checks, not loose
+   version>=6 everywhere. Unknown future versions remain unsupported.
+E. Do not fabricate a v6 projection that credits new escrow back into a store
+   to get valid(v6) to pass. Such a projection can hide duplicate ownership,
+   unavailable refunds and new resource/path constraints. v7 validation may
+   share strict component predicates, but its global proof must be its own.
+
+Whole items plus exact support pantry
+
+Whole-item lanes remain bounded nonnegative safe integers: store piles, cargo,
+finite wood/stone/food/fiber amounts, recipe bills, legacy spent and source
+reservation lines. All legacy resource fields retain their value and unit.
+Add water whole items in stores/cargo; its source pool is separately milliunit
+storage. Physical pickup removes exactly 1000 pool milliunits per one water
+item and requires that whole amount. Less than one item remains at the source;
+it neither rounds up to cargo nor vanishes. Draw/pause/wait behavior must be
+explicit and must not busy-loop free successful extractions at an empty pool.
+
+Support state names the supplying store/camp and holds, per resource:
+pantryMilli, postedConsumedMilli, chargeRemainder, and the pinned denominator.
+Keep immutable opening/adoption identity plus bounded cumulative transfers
+and consumption, not an unbounded per-tick event log. Use checked BigInt
+arithmetic for the new ledger and decimal strings on its wire fields; validate
+legacy integers before converting them. Bounds apply before multiplication
+or addition. No Number float multiplication by a support rate, overflow clamp,
+epsilon balance check, or independent debit/credit rounding is acceptable.
+
+A transfer of one whole food from store b1 credits exactly 1000 food milliunits
+to b1's named pantry. It consumes nothing and changes no legacy spent. The
+unit is removed from the store, so builders, transfers and invitations cannot
+spend it again. A remote pantry is not spendable camp-wide cash. If multiple
+stores supply support, each has its own custody/obligation attribution and
+actual supported locality; never silently move fractional material between
+them. Starting with one declared support store is the smaller implementation.
+
+At one 100-ms demanding worker tick, food and water each accrue 1/3 milliunit.
+At one active demanding camp tick, wood accrues 5/3 milliunits ONCE for that
+camp, regardless of its number of workers. For each account compute:
+  numerator = old remainder + exact rate numerator * admitted activity
+  posted debit = numerator div denominator
+  new remainder = numerator mod denominator
+Debit postedMilli and credit postedConsumedMilli once. Save the remainder.
+For integer-millisecond partial allocations the equivalent denominators are
+300 for food/water and 60 for fuel, with activity in milliseconds. Aggregate
+camp fuel uses the UNION of active intervals, not summed worker milliseconds.
+Do not mix these two representations without a certified remainder mapping.
+
+The remainder is an accrued fractional liability. Effective pantry material
+is pantryMilli - remainder/denominator, and exact consumed support is
+postedConsumedMilli + remainder/denominator. This pair preserves the exact
+rational total. The posted integer conservation equation separately remains
+exact. Floors and next-quantum admission must include that liability, even
+when the next posted integer debit is zero. Otherwise two ticks at a floor
+can perform free demanding work before the third tick records a milliunit.
+Pause, reassign, reload, cancellation, profile views and support shortages
+must never erase, redistribute or multiply the remainder.
+
+Unspent pantry is still owned material. Unprovision/cancel may return only
+funded whole units to that same store; a residual fraction and its accrued
+liability remain explicitly owned and inspectable in the pantry. Never round
+999 milliunits to either zero or a free whole item. No cross-store refund or
+outpost reclaim may erase its pantry: recover/refund reachable whole amounts
+and retain/move the actual residual by an explicitly implemented custody
+operation, or refuse retiring that store with a precise explanation.
+
+The profile must quote when pantry transfer happens and how it is replenished.
+An explicit standing authorization to top up from eligible local free stock
+avoids requiring a manual refill each time; it creates no stock. A transfer
+batch must not impose an undisclosed extra whole-unit tax or unnecessarily
+block a feasible quantum. Protection/availability is calculated across local
+free whole stock plus effective pantry, minus obligations, so merely splitting
+one unit does not change affordability. Recipe payment still needs whole
+physical inputs; pantry fractions are not spare construction units.
+
+Conservation and validator layout
+
+Keep the legacy paid-material projection separate from new support and H2
+dispositions. Preserve s.spent's old meaning for old structures/Tools018 and
+legacy recruitment; persist the adopted legacy recruit identities so its food
+formula does not blindly count new invited workers again. New source vectors,
+new unfinished materials, completed equipment/shelter embodied inputs and
+new invitation-consumed food are separately typed. Their historical payment
+receipts certify those dispositions; the receipts are not second inventories.
+
+For each material, the v7 global invariant is exact milliunits:
+  1000 * (whole stores + whole cargo + finite source remaining
+          + legacy staged + legacy paid disposition
+          + NEW actual staged/WIP + NEW embodied/consumed whole disposition)
+  + water pool milliunits + pantryMilli + posted support consumedMilli
+  = declared initial material budgetMilli + actual admitted renewable inflow
+    + recipe-generated amountMilli - recipe-transformed inputMilli.
+Only applicable terms exist for each resource. Reserved-but-unpicked supplies
+are still in stores and counted once. Whole cargo includes ordinary, transfer,
+construction and reclaim cargo once regardless of tags. Legacy refundable
+paid reservations are already in legacy spent, not extra WIP. Reclaim's
+unreleased paid vector falls as cargo is physically generated. For the
+recommended first variant there is no crop transformation term at all.
+
+Preserve old equality strengths: legacy spent == its legacy paid projection;
+new job inputs == reserved + carried + staged + installed/released disposition
+under the job's state-specific equation; storage.stock == sum actual stores;
+per-transfer remaining == pending sum and amount == remaining + carried +
+delivered + recovered + cancelled. Do not replace equalities with <=, tolerance,
+or 'ignore unknown resources'. Resource sets/allowed keys remain closed for
+each recipe and profile. Counters, IDs, references and cardinalities remain
+bounded; reject inconsistent duplicates, unknown recipes and forged outputs.
+
+Water renewal is explicit inflow into a capped 30000-milliunit source pool.
+6/min gives 10 milliunits per live 100-ms tick. Credit only the amount admitted
+to the pool; record that actual inflow. At full capacity no stored backlog of
+missed water may emerge later. Any spill model must instead declare/count
+spill explicitly. Initial pool amount, source identity, location and when
+renewal first starts are content facts, never a hidden stored-water grant.
+Hidden/paused/dormant time does not refill it. New finite fiber40 is a named
+content source with one adoption identity, not 40 immediately stored fiber.
+
+Paid jobs, baskets and invitations
+
+Use unique H2 job IDs with recipe/content identity, fixed beneficiary, actual
+worksite/supplying store, reserved source lines, carried/staged inputs, paid
+work remaining and one completion/output identity. Selection changes never
+change who receives a paid basket. Prefer adapting physical construction's
+reserve -> pickup -> stage -> work -> completion/recovery protocol through
+a target accessor; do not pretend a basket is an outpost or call generic pay().
+Its output has one location (worksite, owner or explicit storage), embodied
+2 wood/4 fiber, and one equip ownership relation. A paid unfinished item stays
+resumable; Stop does not destroy it or repay the bill. Cancellation must name
+which still-owned inputs return and through which actual route. Refund no
+consumed support. One basket per worker changes 5 to 8, never 5+3 per click.
+
+capacity(worker) must govern validation, extraction, all pickup/recovery,
+loaded Move/Hold/Stop, transfer partitioning, rendering and measured receipts.
+Snapshot per-worker capacity at transfer/job admission; existing v6 pending
+five-item allocations stay five after adoption/equipment changes. New mixed
+groups allocate by their actual individual capacities, not ceil(amount/5).
+Do not unequip while carrying or owing a reserved load above bare capacity:
+defer removal until settled or reject it visibly. Refresh with 6-8 cargo must
+remain valid and preserve the exact order/custody tag. Feedback must bind
+load capacity, equipment and support-rate state; invalidate partial cycles
+on a changed profile and stop promising five-item receipts for eight items.
+
+Shelter uses its specified20 wood/6 fiber/60 worker-seconds and physical site.
+Record inherited berth entitlements and new resident allocation explicitly;
+never charge inherited people again. Invitation has a unique ID, berth hold,
+one25-food spend, temporary10-water reservation and60-second task. Water stays
+reserved and unavailable to support/other invitations; completion/cancel
+releases it exactly once at its real custody owner. Completion creates one
+new person only once. The eight-person opening cap stays eight in this local
+increment; second resident camps/twelve people are a separate feature.
+The cancellation disposition of the already paid25food and the exact berth
+capacity mapping must be stated before coding; R2.5 explicitly releases water
+but does not justify inventing a free food refund on every started invitation.
+
+Support allocation, old jobs and migration
+
+Use a local integer tick counter from adoption forward, separate from old
+floating time/work/positions. New jobs use integer work ticks/milliseconds.
+Do not derive support elapsed time from subtracting two floating s.time values.
+For each tick determine workers that can actually advance demanding work;
+blocked travel, empty pool/source, already-completed job, exhausted input,
+bare gathering and hauling contribute no demand. Deterministically reserve
+the admissible group, one camp fuel interval and protected obligation vector,
+then advance exactly that allocation. Final shared-job work must not charge
+all selected workers after the first worker finishes it. An actor may not
+advance both old and new job paths in one tick.
+
+The smallest fully funded support quantum should be explicitly the next
+100-ms admitted activity allocation, including food/water/fuel remainders and
+the protected finish/return vector. At shortage the same equipped gatherer
+continues bare .60 with its source/order/cargo/partial extraction intact, and
+automatically resumes Tools018's pinned .45 when funded. Retain the basket.
+Inspection and pausing make no economic change. The next quantum is not a
+whole pantry item and not an entire new optional project's material bill.
+
+Do not round imported fractional work/position to pretend everything has
+always used integer milliseconds. Preserve loaded/pending v6 contracts,
+paths, supply tags/origins, staged goods, reservations, recovery claims,
+Tools018 work and transferred counters. Already paid pre-activation legacy
+jobs need a declared prospective-support treatment. The safest small local
+compatibility rule is to let those named existing commitments finish under
+their pinned support-free contract, without gifting new jobs that exemption;
+new demanding activity after Provision is charged prospectively. This is a
+proposed compatibility exception requiring explicit profile wording, not an
+assertion that R2.5 already exempts every old project. If instead remaining
+legacy work is charged, specify exact partial-tick allocation without rounding
+away paid progress; do not infer it from arbitrary legacy double residues.
+
+Pure adoption can copy all these states without settling them first. New map
+features must not occupy an existing unit, path, site, access edge or required
+recovery route; use authored placement alternatives or leave this particular
+source on its exact v6 runtime. Never relocate old entities or reroll new
+resources to force migration. Mark extension adoption and support activation
+as separate facts. No support debit before explicit informed Provision.
+
+Settlement-only migration is an allowable temporary compatibility boundary,
+not a conservation requirement. If chosen, enumerate exactly the unsupported
+state and let ordinary v6 controls finish/cancel/return it while keeping v6
+playable and exportable. Do not auto-Stop everyone, erase fractional work,
+refund in-transit material directly to a store, require stopping every standing
+gatherer forever, or describe an arbitrary 'clean camp' reset as migration.
+Prefer per-feature admission restrictions over blocking all adoption for an
+unrelated held load. Legitimate depleted camps may fail the new certificate;
+keep their v6 history usable. No emergency grants, source refills, retrocharges
+or automatic fresh starts may repair that failure.
+
+Persistence, exact archive and executable continuity
+
+Use a distinct local v7 key/envelope containing the new state plus immutable
+exact incoming v6 bytes/hash and profile references. Leave the accepted v6
+key/bundle available as a distinct preserved history. Commit the envelope
+only after validation and archive readiness; publish/use the candidate only
+after durable write success. A single-key envelope makes archive and candidate
+one atomic localStorage value; two independent setItem calls are not a
+transaction. A failed quota/write keeps the old live state and exact export.
+Retain a pinned v6 engine+renderer artifact, not merely its JSON archive.
+
+An explicit local single-writer mechanism is still required for simultaneous
+tabs (for example a held Web Lock with a declared unsupported/read-only path
+when unavailable). Read-before-write is not CAS. This does not establish the
+all14 writer-token/IndexedDB root contract. Old and new playable histories
+cannot exchange/merge stock. Reimporting one save replaces/selects one history,
+never appends its fiber, seed, people or pantry to the current one. Unknown
+schema/profile remains preserved and unsupported, not silently adapted.
+
+Pilot crop/tree alternative: additional required ledger
+
+If selected, add the authored six-seed cache as a fixed discoverable source
+identity, not stored seed on confirmation. Pilot uses2seed/3water/90 work,
+then90 active growth seconds, producing6food and returning the SAME two seed
+custody units. Tree plot is unlocked after the pilot;2seed/4water/30 planting,
+300 active growth,20 harvest work ->8wood plus those2seed. A new planting
+cycle is required. Water consumed by the recipe is separate from support.
+Seeds held in soil/workpiece count toward seed custody and the certificate,
+not free store stock. Growth uses its own foreground integer clock, not
+worker labor or hidden-time catch-up. Harvested output first occupies an
+actual output location; an ordinary hauler delivers it. Food/wood conservation
+must include typed recipe production and inputs, not claim the original finite
+416/220/225 sources grew. Do not reuse the legacy unlimited Agriculture reducer.
+
+Decisions required in the bounded spec before implementation
+
+- Exact local numeric/profile IDs; source positions/initial water/renewal start.
+- Actual supplying store/camp, supported roster and 5-8 resident floor scaling.
+  Four-person4food/4water/4wood is specified; extending it by guess is not.
+- Pantry standing authorization, return/residual ownership and store-retirement
+  policy; exact quantum, protection vector and shortage reason.
+- Which work is demanding, including invitations, legacy Tools018 and paid
+  pending jobs; any grandfathered commitment rule must be disclosed and pinned.
+- Inherited berth mapping, invitation actor/task accounting and food-on-cancel.
+- Migration placement conflicts, supported loaded/pending states, no-grant
+  failure path, durable-write and concurrent-tab behavior.
+
+Necessary Spark acceptance witnesses (not run here)
+
+1. Exact v6 continued-play fixtures and v7 adoption of loaded Move, transfer
+   reserved/carried, construction reserved/carried/staged/cancelling, reclaim,
+   partial/completed Tools018; no old-vector or partial-work changes.
+2. Pantry1whole->1000milli;3worker ticks->1milli food/water;3active-camp ticks
+   ->5milli wood; multiple-worker camp charged once; exact fractional floor
+   crossing; pause/reload/reassign preserves remainder; fractional cancel
+   preserves owned residual; impossible spending/reclaim rejected atomically.
+3. Baskets at5/8, unequal group loads, last1-7 source items, loaded6-8 Move/
+   Stop/recovery, old pending5 unchanged, duplicate craft/equip/cancel harmless.
+4. Water pool empty/full/999/1000 boundaries, actual capped inflow and physical
+   draw, no deferred overflow refill or hidden-time generation; finite fiber.
+5. Single local bill, interrupted paid work/output ownership; two workers race
+   final ingredient/final work; invitation25food once/10water held then released
+   once; same new worker ID on repeated completion/import.
+6. No support while blocked/idle/hauling/bare, automatic same-order fallback
+   and funded resume; genuine whole-material and rational-support conservation.
+7. Import/reload/repeated activation, failed archive/save, second tab, unknown
+   profile, fresh versus spent source histories, source placement conflicts.
+8. Two authentic investment orders with visible local funding and useful
+   carried loads; desktop/touch/keyboard and native exports/screenshots. No
+   full-age exit or Agriculture handoff appears as a side effect.
+
+Authority and independent input
+
+Read next-stage-architecture-review.txt:
+7517939ddbffabb60652ab27a231793628e397f4da3a7b304da8b82a193d9171
+Read task11/singularity-economy-conformance/spec:
+TECHNICAL-SPEC.md (sections1,3-6):
+ca772aa13d5a11dc28288fbdd4e983ed2c183606d032ae2be7ae904f4f72300b
+RULES-AND-BALANCE.md (R2.1/R2.2/R2.5):
+a047295629482fe8c1a4674982445f54be1a0cdebe778464437400b2d89bf224
+levels/01-hearth.md:
+07c1c069327f7360d8dfc72af373871c2892be9fb8e83694608ff5137ae91c9c
+ECONOMY-MANIFESTS.md (EM01 and K.treeplot):
+d859d037d9701a89760b81fd289ef58857931c733c6ca890e851ecdc4237d946
+Independent narrow response from hearth_progression_architecture agreed the
+whole/pantry bridge is feasible only as a local compatibility profile, and
+highlighted rational floor liability, fractional refunds, named local custody,
+undefined first-quantum/roster semantics and settlement-only limitations.
+
+Disposition
+
+CONDITIONAL DESIGN ACCEPT for the local whole-item + exact pantry approach,
+with a distinct strict v7 validator and the above explicit profile decisions.
+Reject simply widening v6 schema/resource lists, charging support into old
+spent, erasing fractional remainders, or asserting all14 conformance. No runtime
+claim, source change, deployment, or delivery approval is made by this report.
+
+FINAL CERTIFICATE CLOSURE — 2026-10-05
+
+Read the updated cultivation proposal, including its concrete profile, b0 pantry,
+100-ms slot compatibility, atomic envelope and writer lock. Parent proposes a
+standing NEXT pilot obligation distinct from the current ACTIVE finish budget.
+The two-obligation reserve is acceptable as an explicitly quoted local guarantee,
+not an arbitrary global floor. One correction is required to make it an executable
+guarantee: NEXT must be usable for its named recovery crop without demanding a
+replacement NEXT at that same admission. Otherwise it can remain locked forever
+when the camp can fund exactly one more crop but cannot fund the one after that.
+
+Concrete implementable policy:
+1. Activation protects one NEXT: the reusable two-seed lineage, three whole
+   recipe water at b0,300milli food,300milli support water and1500milli fuel wood,
+   above the Nfood/Nwater/4wood floor and other already committed obligations.
+   These are named custody/reservation lines, not an inflated displayed stock.
+2. Normal first pilot admission separately reserves ACTIVE's recipe and full
+   remaining support while maintaining NEXT. Before any consumption, the pair
+   requires six whole recipe water +600milli support water +600milli food
+   +3000milli fuel above the floor. Only one reusable seed pair is required
+   because these are serial jobs at one bed, not concurrent seed custody.
+   For N=4, water requirement10.6 total therefore needs11 physically collected
+   whole water, with its unused0.4 still owned; food4.6 needs5; wood7 needs7.
+3. ACTIVE may spend only its own remaining finish funds; this authorized draw
+   is not barred by a generic 'unreserved stock only' check. Pantry conversion
+   preserves the reservation owner. NEXT cannot pay unrelated active work.
+   Current seed lineage remains protected while staged/in-process/output/cargo;
+   no next planting is admitted before its actual return and a clear plot tray.
+4. On finish release only ACTIVE's unused support bound; retain any unfinished
+   output/delivery ownership. NEXT is unchanged. Discretionary tree, Tools and
+   new building work must not consume that named NEXT or another ACTIVE finish.
+5. When NEXT is needed, an explicit recovery planting promotes that certificate
+   to ACTIVE atomically, without requiring another NEXT beforehand. Mark the
+   successor NEXT as unfunded, quote its deficit, and protect its replenishment
+   path from discretionary spending. Already committed funded jobs may settle;
+   do not cancel them. Bare collection/hauling remains available. Actual crop
+   food receipt and ordinary water/wood receipts can restore NEXT; none is
+   credited in advance. Do not promise indefinite repeatability from the one
+   reserved crop: after it, another cycle still needs its real funding.
+6. Tree admission additionally needs another two seed, four whole recipe water,
+   500/3milli food and water, and2500/3milli worst-case fuel for its500 worker
+   slots, outside existing ACTIVE/NEXT. ceil bounds may reserve167/167/834milli
+   conservatively; they must be labeled bounds, never actual recipe charges.
+   Actual fractional use remains exact and excess hold releases. The pilot
+   seed pair is not simultaneously used by the tree.
+
+This is one bounded recovery-certificate policy, not another gameplay feature:
+the explicit action is the existing planting command with a precise quote of
+which certificate it uses. No automatic job, free replenishment or mandatory
+idle tail is introduced. The first-admission extra reserve is a disclosed local
+choice; the minimal safety promise is one executable funded continuation.
+
+Final disposition: CONDITIONAL CLEAR to implement the parent's two-obligation
+policy with rule5 (spendable NEXT recovery) included. Without rule5, conservation
+may hold but the advertised next-cycle guarantee is false. No other certificate
+objection; no source edit or runtime execution. This appendix supersedes any
+earlier ambiguous language about always maintaining NEXT at every admission.

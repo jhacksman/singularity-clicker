@@ -21,3 +21,14 @@ console.log('Built self-contained Agriculture slice: '+(Buffer.byteLength(agricu
 const rts=read('src/hearth-rts/shell.html').replace('/*__CSS__*/',()=>read('src/hearth-rts/styles.css')).replace('/*__ENGINE__*/',()=>read('src/hearth-rts/engine.js')).replace('/*__FEEDBACK__*/',()=>read('src/hearth-rts/feedback.js')).replace('/*__VIEW__*/',()=>read('src/hearth-rts/view.js'));
 fs.writeFileSync(path.join(root,'dist/hearth-rts.html'),rts);
 console.log('Built self-contained Hearth RTS core: '+(Buffer.byteLength(rts)/1024).toFixed(0)+' KB');
+
+const cultivation=read('src/hearth-cultivation/shell.html')
+ .replace('/*__CSS__*/',()=>read('src/hearth-cultivation/styles.css'))
+ .replace('/*__LEGACY_ENGINE__*/',()=>read('src/hearth-rts/engine.js'))
+ .replace('/*__CULTIVATION_LEDGER__*/',()=>read('src/hearth-cultivation/ledger.js'))
+ .replace('/*__CULTIVATION_JOBS__*/',()=>read('src/hearth-cultivation/jobs.js'))
+ .replace('/*__ENGINE__*/',()=>read('src/hearth-cultivation/engine.js'))
+ .replace('/*__FEEDBACK__*/',()=>read('src/hearth-rts/feedback.js'))
+ .replace('/*__VIEW__*/',()=>read('src/hearth-cultivation/view.js'));
+fs.writeFileSync(path.join(root,'dist/hearth-cultivation.html'),cultivation);
+console.log('Built self-contained local cultivation preview: '+(Buffer.byteLength(cultivation)/1024).toFixed(0)+' KB');
