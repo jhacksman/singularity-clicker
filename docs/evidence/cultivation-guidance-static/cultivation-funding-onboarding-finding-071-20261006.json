@@ -1,0 +1,44 @@
+{
+  "schema": "hearth-public-funding-onboarding-finding/v1",
+  "id": "HEARTH069-FUNDING-NEXT-ACTION",
+  "followup_job": "singularity-20261006-cultivation-blackbox-gameplay-071",
+  "application_commit": "f65350d3a9d47a6b9a327af6cc54350f139c93a2",
+  "state": "OBSERVED_GUIDANCE_GAP_WITH_ORDINARY_FUNDING_ROUTE_VERIFIED",
+  "historical_concern": {
+    "file": "cultivation-funding-clarity-concern-069-20261006.json",
+    "sha256": "3604c49b9b1389015cde555c3331d1affbad3a19ca269616e7c4a91eeb2a0402",
+    "preserved_unchanged": true
+  },
+  "fresh_verdict": {
+    "file": "cultivation-fresh-blackbox-phase8-verdict.txt",
+    "bytes": 5606,
+    "sha256": "ec650fbf991368f12867dba2789e87716f7513e0de5a88b0bfeba597813bd21c"
+  },
+  "trigger": "An earned camp already delivered27water/6seed, yet next crop lacks8wholewater at Hearth because source-local goods are elsewhere.",
+  "observed_gap": [
+    "The high-level opportunity still instructs collecting water and discovering seed after those tasks are complete.",
+    "The local next-crop shortage correctly identifies Hearth but does not directly explain source-store inspection or transfer as the next action.",
+    "Actual unarmed Outpost map inspection exposes local27water and outgoing destination/goods choices; the player must infer that step from generic map-inspection guidance."
+  ],
+  "actual_functional_resolution": "Ordinary Outpost inspection, Select all, choose Hearth/water and Send selected carriers physically transferred20water: source27→7,Hearth0→20,aggregate27,emptyfinalcustody. Support and genuine paid planting then succeed.",
+  "functional_softlock": "Disproved for this tested earned camp and ordinary route. No general funding failure, hidden-state loss or all-scenario pass is inferred.",
+  "supporting_originals": [
+    {
+      "file": "010-inspect-actual-outpost-source-after.txt",
+      "sha256": "b1ccf78f07221b8f5802621d1faf217e93912b52165af2e3128278f0431b9665"
+    },
+    {
+      "file": "014-funding-visible-destination-goods-after.txt",
+      "sha256": "b1ae5f59b80a51a1e39174b99d01e37cbecaf83c016d1360ad8c48b5f04e5ecb"
+    },
+    {
+      "file": "035-provision-visible-confirmation-after.txt",
+      "sha256": "7805524ea3b0a3f46fee0f38917e5ee99ec3316386e55b332024c6382db53492"
+    }
+  ],
+  "possible_later_bounded_fix": "Review state-specific guidance that distinguishes collecting new supplies from delivering existing water to Hearth and explains ordinary source-store inspection/transport when it is needed. Scope should be contextual text/next-action guidance within existing controls and rules, preserving recipes, physical custody and art; no new gameplay or invented stock.",
+  "authorization": "Finding only. Parent requested identification for a later bounded fix; no application source change or design rewrite performed/authorized by this receipt.",
+  "limits": "One observed earned camp, not measured general comprehension/accessibility or every store topology. Harvest and broader recovery still unverified. Native world fields were not read.",
+  "m6_boundary": "Public originals/static review/hashes only; no execution, app edits, push, deployment, merge or external upload."
+}
+

@@ -29,6 +29,7 @@ const cultivation=read('src/hearth-cultivation/shell.html')
  .replace('/*__CULTIVATION_JOBS__*/',()=>read('src/hearth-cultivation/jobs.js'))
  .replace('/*__ENGINE__*/',()=>read('src/hearth-cultivation/engine.js'))
  .replace('/*__FEEDBACK__*/',()=>read('src/hearth-rts/feedback.js'))
+ .replace('/*__CULTIVATION_GUIDANCE__*/',()=>read('src/hearth-cultivation/guidance.js'))
  .replace('/*__VIEW__*/',()=>read('src/hearth-cultivation/view.js'));
 fs.writeFileSync(path.join(root,'dist/hearth-cultivation.html'),cultivation);
 console.log('Built self-contained local cultivation preview: '+(Buffer.byteLength(cultivation)/1024).toFixed(0)+' KB');

@@ -23,8 +23,11 @@ The approved all14 source remains the frozen task-11 specification; this preview
 does not amend it. `whole-pantry-slot100.v1` is a bounded compatibility profile,
 with exact fractional support and preserved legacy movement/work arithmetic.
 
-Expected build artifact: `dist/hearth-cultivation.html`. The branch is not yet
-runtime-verified. Tests/builds/browser runs must execute only in the existing
+Expected build artifact: `dist/hearth-cultivation.html`. The base at
+`f65350d3a9d47a6b9a327af6cc54350f139c93a2` has an independently accepted earned
+paid-pilot and real food/retained-seed delivery milestone (actual073). The new
+[stored-water guidance increment](guidance-increment.md) is awaiting its own
+validation; broader gameplay coverage remains bounded. Tests/builds/browser runs must execute only in the existing
 coordinator-managed Spark image. Static review and authored tests are not passing
 execution evidence. No deployment, publication, GitHub push or main merge is part
 of this milestone.
@@ -53,5 +56,7 @@ Each names the files and hashes it reviewed; their acceptance is not an executed
 test result. The final persistence recheck covers the later startup-read-only
 correction to the otherwise reviewed view.
 
-Until those gates close, the delivered v6 at
-`60772b76d3a5626a32f6fdac7f7c6ecd55916814` remains the verified playable milestone.
+The delivered v6 at `60772b76d3a5626a32f6fdac7f7c6ecd55916814` and accepted local
+pilot milestone at `f65350d3a9d47a6b9a327af6cc54350f139c93a2` remain preserved.
+Acceptance of that observed pilot does not imply full woodland, repeat, shortage,
+order-interleaving, final-export reimport, or full-age completion coverage.

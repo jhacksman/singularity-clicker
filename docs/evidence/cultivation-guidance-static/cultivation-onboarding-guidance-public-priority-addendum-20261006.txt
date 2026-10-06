@@ -1,0 +1,8 @@
+FROZEN public priority addendum — 2026-10-06
+Original public critique ecf8e2d030e7e6d908ec8d16b09f05673e71f95469eaf98774b0b1c95eb75eff retained unchanged.
+
+Root subsequently clarified priority: cancellation/recovery > existing yield/delivery > finished woodland harvest > active-unfunded future funding transport > inactive preparation/growing default. Approve these player priorities conditionally: never hide available paid yield or held cargo behind a future-water setup task. During current growing work, future funding guidance may replace generic gather-while-growing guidance only if the paid/growing phase and remaining duration remain visible and its wording explicitly concerns the FOLLOWING crop; it must not imply the current paid crop needs fresh payment or is blocked.
+
+Store-to-Hearth route existence and whole uncommitted source water justify naming a source for passive inspection and preview. They do not guarantee any selected villager can reach that source, an adequate current load, or complete funding. The actual carrier/destination/goods quote and real receiving-store delivery remain authoritative. No aggregate/local substitution or hidden/protected/retiring/in-transit stock recommendation.
+
+This is public/player-semantics adjudication of the stated plan amendment, not source/route arithmetic validation. No app source/engine/native fields read and no edits/runtime/tests/queue/dispatch by this critic. Separate source skeptic must assess implementation arithmetic. Corrected candidate acceptance still awaits immutable identity and original ONE coherent journey.

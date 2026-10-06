@@ -245,17 +245,9 @@ document.addEventListener('focusin',e=>{if(e.target!==canvas){const hadPointer=!
 window.addEventListener('blur',()=>{cancelInput(true,true);ui();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelInput(true,true);ui();}});
 window.addEventListener('resize',()=>{cancelInput(true,true);ui();});
-function goods(map){return resources.filter(r=>map?.[r]>0).map(r=>Math.round(map[r]*100)/100+' '+r).join(' · ')||'none';}
+function goods(map){return HearthCultivationGuidance.goods(map);}
 function thirds(value){const n=Number(value||0)/3000;return n.toFixed(3).replace(/\.?0+$/,'')||'0';}
-function missingText(rows){
- const groups=new Map(),other=[];
- for(const p of rows||[]){const amount=Number(p.amount),where=p.location==='b0'?'Hearth store':p.location;
-  if(!Number.isFinite(amount)){other.push(p.resource+' recipe at '+where);continue;}
-  const needed=Math.ceil(p.unit==='third-milli'?amount/3000:amount),key=p.resource+'\0'+where,old=groups.get(key);
-  if(needed>0&&(!old||needed>old.needed))groups.set(key,{resource:p.resource,where,needed});
- }
- return [...groups.values()].map(p=>p.needed+' whole '+p.resource+' to '+p.where).concat(other).join('; ')||'no additional supplies';
-}
+function missingText(rows){return HearthCultivationGuidance.missingText(rows);}
 function quoteText(q){
  if(!q)return 'No quote available.';
  const parts=[];if(q.recipe)parts.push('Recipe: '+goods(q.recipe)+'.');
@@ -267,6 +259,7 @@ function quoteText(q){
  if(q.reason)parts.push(q.reason);
  if(q.missing?.length)parts.push('Missing: '+missingText(q.missing)+'.');
  if(q.notes?.length)parts.push(q.notes.join(' '));
+ if(q.action==='Provision this camp'&&!q.ok){const hint=HearthCultivationGuidance.waterTransport(game,q.missing);if(hint)parts.push(HearthCultivationGuidance.transportText(hint));}
  return parts.join(' ');
 }
 function decision(id){cancelInput();paused=true;acc=0;$(id).showModal();ui();}
@@ -297,6 +290,7 @@ function cultivationUI(){
  $('cultivation-status').textContent=s.active?'Local cultivation is active. First Furrow and Agriculture remain unavailable.':'Cultivation sites are available. Collect supplies and review support before planting.';
  $('cultivation-provision').hidden=s.active;$('cultivation-provision').disabled=blocked;
  $('support-status').textContent=(s.active?'Hearth store supplies demanding work. ':'Support has not started. ')+(s.nextFunded?'Next crop funded. ':'Next crop unfunded. ')+(s.supportReason||'')+(!s.nextFunded&&s.nextMissing?.length?' Missing for the next crop: '+missingText(s.nextMissing)+'.':'');
+ if(!s.active||!s.nextFunded){const provision=s.active?null:game.provisionQuote(),hint=(s.active||!provision.ok)?HearthCultivationGuidance.waterTransport(game,s.active?s.nextMissing:provision.missing):null;if(hint)$('support-status').textContent+=' '+HearthCultivationGuidance.transportText(hint);}
  const pantry=Object.entries(s.pantry||{}).map(([r,a])=>r+': '+thirds(a.effectiveThirdMilli)+' owned in pantry, '+thirds((BigInt(a.consumedMilli||'0')*3n+BigInt(a.remainder||'0')).toString())+' used').join(' · ');
  $('support-accounting').textContent='Protected floor: '+goods(s.floors)+'. Protected work support: '+thirds(s.protected?.foodThirdMilli)+' food, '+thirds(s.protected?.waterThirdMilli)+' water, up to '+thirds(s.protected?.woodThirdMilli)+' wood. '+(s.nextFunded?'Next crop also reserves 3 whole recipe water at Hearth store. ':'Next crop recipe water is not yet funded. ')+(s.protected?.seed||0)+' retained seed stay protected in their actual custody. '+pantry+'. Displayed fractions are rounded to three decimals; accounting retains exact remainders.';
  $('pantry-return').disabled=blocked||!s.active;
@@ -427,12 +421,7 @@ function siteUI(box,b){
 }
 function nextOpportunity(){
  if(game.s.version!==7)return HearthFeedback.nextStep(game,tripSession);
- const s=game.summary(),recovery=s.plots.find(p=>p.phase==='cancelling'),output=s.plots.find(p=>p.phase==='output'),harvest=s.plots.find(p=>p.phase==='harvest');
- if(recovery)return{title:'Bring planting supplies back',detail:'Unstarted materials remain at '+recovery.label+'. Select villagers and use Recover planting supplies; staged and carried goods return through actual loads.',actionLabel:'Inspect recovery',targetId:recovery.id};
- if(s.active&&!s.nextFunded)return{title:'Fund the next crop',detail:'Committed crops keep their paid work. Replenish '+missingText(s.nextMissing)+'. Ordinary gathering and committed output remain available.',actionLabel:'Inspect Hearth store',targetId:'b0'};
- if(output)return Object.values(output.output).some(n=>n>0)?{title:'Bring the yield home',detail:output.label+' holds '+goods(output.output)+'. Select villagers and collect the retained seed, then food or wood. Materials become useful at their actual receiving store.',actionLabel:'Inspect yield',targetId:output.id}:{title:'Deliver the carried yield',detail:'The plot tray is empty and its output is still with the carriers. Their loads need a real store receipt. Use Stop and Return if a carrier is holding a load.',actionLabel:'Inspect delivery',targetId:output.id};
- if(harvest)return{title:'Harvest the woodland',detail:'Growth is finished. Assign villagers for the remaining paid harvest work, then carry its wood and retained seed home.',actionLabel:'Inspect woodland',targetId:harvest.id};
- return{title:s.active?'Tend a supply patch':'Prepare a supported camp',detail:s.active?'A planted crop returns food and its retained seed. Gather or deliver other supplies while it grows. This is local cultivation; First Furrow and Agriculture are still unavailable.':'Collect water and discover the seed cache, then inspect the support quote. Rules begin only when you confirm Provision this camp.',actionLabel:'Inspect pilot plot',targetId:'pilot'};
+ return HearthCultivationGuidance.nextOpportunity(game);
 }
 function progressionUI(){
  const step=nextOpportunity();

@@ -1,0 +1,13 @@
+FROZEN actual073 bounded acceptance summary — 2026-10-06
+
+Accept the demonstrated earned paid pilot cultivation milestone: ordinary existing-save continuation, real local funding/support, single paid planting, preserved paused paid job, normal growth, physical harvest, useful food and retained-seed return. No further harvest action or capture is justified. This is not blanket acceptance of all gameplay/save/recovery requirements.
+
+Original016 shows returning carriers with6food/2seed while stores remain44food/4seed. Original017TXT/PNG shows stored50food/6seed, FREE46food/6seed, Idle4, empty global/plot custody/output and empty Assignednone pilot. These values persist through final039/043/046 paused07:34 save. Plant is enabled again. Harvest conservation is exactly44+6=50food and4+2=6seed; no second collection/new payment occurred.
+
+Driver false is a literal status predicate mismatch: three cards retain 'Yield is already carried or delivered', one says Ready for orders. Future observer should retain exact receipts/empty custody/empty assigned plot and positively resolved Idle4/current known worker identities; no unknown blocked/holding/returning status may authorize another command. No driver/app edits or rerun needed to qualify this actual evidence.
+
+Latest native phase10-earned-final-native-camp.json29518B SHA25609f59a30db808c023eb59e0af6502f8091cbbc4e0037a111786d00ada2c3e93f qualified by public state and opaque hash. This final export's reimport, further paid repetition/woodland, active shortage/exhaustion recovery, all-order/cargo save combinations, original cave/RTS regression and art provenance remain unverified. Prior funding guidance and stale/ambiguous worker-status clarity findings retained; no confirmed functional failure.
+
+Exposure order: I independently reviewed original073 public artifacts, stated actual complete harvest/predicate mismatch in commentary, and WROTE+HASHED the detailed initial verdict BEFORE receiving the separate critic's public conclusion or root's matching public conclusion/disclosure. Those later messages did not change the verdict. Initial root task supplied capture/predicate metadata and an opaque native hash; no app source/author or mechanical interpretation/native world fields were consulted. Video originals preserved; playback unavailable, no decoding or local execution.
+
+Detailed immutable verdict: cultivation-fresh-blackbox-phase10-verdict.txt7325B SHA25660ea74ed84871c808d77e9b53c9f41e8158d57b41c5df093247de1cf02b9df0c. All originals/prior frozen artifacts unchanged. No phase11/script/test/queue/dispatch/application/source edit.

@@ -1,0 +1,26 @@
+Independent QA authoring note — cultivation contextual transport guidance — 2026-10-06
+
+New file only: hearth-cultivation-guidance/tests/hearth-cultivation-guidance.test.cjs
+13962 bytes; SHA256 1baffac53994b7d6df4db8ee75127e99008ead8c53d893ebba8fb39ea387d869.
+Base application f65350d3a9d47a6b9a327af6cc54350f139c93a2. Root owns guidance.js/view/build changes; QA did not edit application, existing tests, saves, drawings, engine, economy or historical evidence.
+Read root pre-edit plan and both frozen independent public/source critiques before authoring. Manual static inspection only on M6. No Node/parser/runtime/test/build/browser/video execution, Spark admission/dispatch, external upload, push or deployment occurred. No claim that these tests pass until actual approved Spark execution returns an immutable candidate and results.
+
+Proposed exact changed-test command, parent/coordinator Spark only:
+node --test tests/hearth-cultivation-guidance.test.cjs
+Seven independently authored tests consume the actual exported guidance helper, not a copied implementation or old test suite:
+1. Declared presentation state: current remote27/Hearth0 and overlapping support21900third-milli plus3whole-recipe water produce the named-source inspect target and exact8whole deficit, never a funding/instant relocation claim.
+2. Partial remote1 against8missing remains a truthful option; max/ceil conversion retains the full water/food/wood vector without double counting.
+3. Positive canonical Hearth-water shortage required. Wrong resource/location/unit, absent/zero/negative/fractional/malformed/nonfinite/unsafe/unsupported amount refuse the transport recommendation. Supported small positive third-milli and whole-recipe rows remain eligible.
+4. Source eligibility uses current whole available stock and route. Protected Hearth-only supply, reserved/committed zero-free decoys, incoming-only stock, source absence, no route and malformed/unsupported free amounts are refused; real unreserved remainder stays eligible.
+5. Current quote funding, following-crop funding and same-camp availability/route changes clear stale hints. Ordinary no-water fallback remains intact.
+6. Recovery outranks waiting output; output outranks harvest; carried-only output requires receipt guidance; all paid-work cases outrank active next-crop water preparation.
+7. Actual deterministic engine witness: earn western/eastern finite sources, build physical workshop/outpost, adopt exact supported legacy camp, discover pilot and physically collect/deliver all six finite seed, extract/deliver new water to its real nearest remote receiver, stop and return. Verify Hearth0/current8deficit, reserve real20-water/four-carrier outgoing transfer, exclude its reservation from available hint, observe actual picked-up cargo without treating it as Hearth funding, round-trip ordinary Camp serialization, preserve current hint/custody, then physically deliver and clear the hint on current funded quote. Repeated helper reads preserve complete serialized time/material/order/support/custody state at initial/reserved/carried/reloaded/funded checkpoints.
+
+Declared presentation fixtures are not earned gameplay or browser acceptance. They deliberately represent inconsistent input boundary cases (e.g. ok:true with stale nonempty missing, raw stock/incoming with zero free) to test fail-closed presentation. The last witness uses actual Camp.stores/provisionQuote/quoteTransfer/transfer/serialize projections. It does not fabricate stock, source buildings or reservations. It reuses no old test execution or imported old test module.
+
+Two authoring-time static findings sent to root before candidate freeze:
+- Current first helper draft could show transport for an inactive quote ok:true with stale nonempty missing; quote authority should suppress that hint.
+- Current first helper draft accepted canonical third-milli above the ledger.MAX supported exact range; unsupported amount should refuse recommendation.
+Root corrected both before QA freeze: reused existing ledger.big exact supported wire validator and gated inactive transport by !provision.ok. Root also made wording explicitly select empty-handed villagers and review the actual carrier preview. Final inspected helper SHA256 c5e96c15e6e5fd93c775a231bb7a2d2628471bb34cdd20d71b76ab72fe2d29f8; view SHA256 b9e8533926ac74e4d254253e2ec58344619178b522ff04e40c94a0829960ed1c. Whole-recipe bounds and exact ledger maximum included in tests. Independent source critic owns final delta review. This note is test authoring evidence, not a runtime failure report; it does not assert an executed negative control or acceptance for the draft.
+
+Remaining runtime evidence: approved Spark changed-source syntax/helper tests/cultivation build, immutable helper/view coupling, then the parent-authorized public earned guidance/neutral source inspection and new repeat-cycle/persistence journey. Browser passive inspection, DOM plain-text binding, worker/carrier path eligibility, actual batch preview and support-status/failed-quote surface agreement are outside this helper-only test file and must be verified by that coherent actual journey. Fixture absence can model retired/unfinished or construction-committed source boundaries but does not independently qualify every such game topology. No unchanged226/28/141 suite rerun requested.

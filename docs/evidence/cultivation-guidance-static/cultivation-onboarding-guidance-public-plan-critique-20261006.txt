@@ -1,0 +1,20 @@
+FROZEN independent public/player-priority critique — 2026-10-06
+
+Reviewed root cultivation-onboarding-guidance-pre-edit-plan-20261006.txt, frozen071 funding finding, my frozen expectations/verdicts and original public069/071/073 evidence. No app source/engine/native world fields consulted. The plan's availability/route arithmetic is an implementation assertion for a separate source skeptic; I do not certify it from public evidence.
+
+Disposition: APPROVE the narrow presentation plan subject to the concrete public contracts below. The need is independently supported, not a speculative economy fix. In069/071, collecting27water/6seed was already complete, yet guidance still said collect water/discover seed while the real shortage was8 wholewater at Hearth. Passive Outpost inspection revealed local27freewater and destination/goods controls; ordinary20water transfer solved funding.073 proves the paid pilot can yield useful6food/2retainedseed. No gameplay softlock or recipe change is warranted.
+
+What the player should learn
+Distinguish water somewhere in the camp from water usable at the supplying Hearth. Identify ONE actually available named source, its current whole freewater, the unchanged local missing vector, and the concrete existing route: inspect that source, select empty-handed carriers, choose Hearth store and water, preview the actual carrier batch, Send selected carriers, then await real delivery. Do not invent an amount field (actual UI has none), guarantee a particular load, imply instant relocation, or say the whole camp/next crop is funded merely because remote water exists. Other resource shortages remain visible. A small partial source can be a truthful transport option only when text plainly leaves the remaining need unresolved.
+
+Priority and refusal
+Current paid work, incomplete output/cargo delivery, blocked/recoverable orders and cancellation guidance take priority over preparing a future crop. The new hint must not instruct abandoning paid inputs/cargo to fix only next-crop stock. While a crop grows, retain its phase/remaining duration and useful current-work guidance. When no relevant Hearth water shortage, no whole free source, no ordinary reachable route, or water is committed/protected/in transit/retiring, do not advertise it as available-source funding. Aggregate water alone is insufficient evidence. If no relevant source exists, collection/refill guidance should remain accurate, not become an invented transport path.
+
+Neutral inspection contract
+The opportunity button may expose the actual source store, but must preserve pause/camp time, current selected villagers, orders, resources, reservation/cargo/staged/output and support activation. It must not automatically select/reassign workers, transfer goods, alter the camera's work target into an order, or authorize support. Actual resulting store NAME and Here/Free/Reserved table must match the hint; a wrong/inert target is a regression even if hint wording is plausible. The tested27water/0Hearth state should visibly explain transportation BEFORE the player has to infer a drawn-map tap. Shortage quote/support status should agree rather than give conflicting collection instructions.
+
+Necessary limits
+The live journey can establish one actual unfunded earned hint/neutral inspection and a separate completed-camp reimport/new paid repeat cycle. It cannot prove all reservation/protection/retiring/route/multiple-shortage combinations. Changed read-only boundary checks should reject those bad recommendations using original/corrected negative controls where practical; unchanged old suites are not evidence of this hint's correctness and should not be rerun. Preserve drawing/economy/native histories/current control contracts. No broad onboarding or status redesign is needed to authorize this fix.
+
+Scope status
+Public plan settled for this bounded hint and ONE coherent fresh corrected-candidate journey. Await separate source/quote skeptic and root's immutable corrected commit/HTML identity before driver authoring. No source edits, implementation acceptance, execution, queue/dispatch, tests or hidden save parsing by this critic.

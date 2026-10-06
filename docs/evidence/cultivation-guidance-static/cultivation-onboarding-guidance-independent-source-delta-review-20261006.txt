@@ -1,0 +1,41 @@
+INDEPENDENT STATIC GUIDANCE IMPLEMENTATION + NEW TEST REVIEW — 2026-10-06
+
+Disposition
+No remaining concrete static blocker found in the reviewed final source/test identities. The change stays within the authorized read-only onboarding guidance and paid-work priority repair. Ready for parent immutable candidate/gate preparation. Runtime syntax/new tests/build and the public journey remain pending; no pass or application acceptance is claimed. No local parser/runtime/tests/build/browser/video execution, old226/141/28 rerun, new suite authoring, app editing, save-field reading or dispatch was performed by this reviewer.
+
+Reviewed snapshot (hearth-cultivation-guidance)
+src/hearth-cultivation/guidance.js4852B SHA256c5e96c15e6e5fd93c775a231bb7a2d2628471bb34cdd20d71b76ab72fe2d29f8.
+view.js70083B SHA256b9e8533926ac74e4d254253e2ec58344619178b522ff04e40c94a0829960ed1c.
+shell.html7474B SHA2560dea4b99e7fc8ce64d7643b3fddae9e58bf5eacb057e91907b06121fb805468e.
+build.mjs3426B SHA2563dbef511f4c16de4e7ca3c71b87b91014f1d8b8e3e6f5b1b71b6e56404ccfb8a.
+tests/hearth-cultivation-guidance.test.cjs13962B SHA2561baffac53994b7d6df4db8ee75127e99008ead8c53d893ebba8fb39ea387d869.
+Independent QA authoring note5355B SHA256de847701dd61a2bcc17a29389c9d4d747be7400fb4e01ed19ca0dee0f8f28266.
+These are byte-pinned working snapshot identities, not an executed commit/build verdict.
+
+Identity and narrow coupling
+Accepted hearth-local-cultivation remains clean at f65350d3a9d47a6b9a327af6cc54350f139c93a2. Its original073 milestone/evidence is not edited. New worktree tracked diff is confined to build.mjs/cultivation shell/view, plus new helper and new test file. No tracked engine, jobs, ledger, economy/schema, other game source or art change appears.
+Independent byte identities match the accepted tree:
+- jobs.js be11b164e5edeb4cc4bd3a2ac4322f734e8912284547052a78a0b97153a91ff6.
+- ledger.js aff71b07a7e767cc06220848fafbf86e95faf4bff13e8508905be316fe3ea954.
+- engine.js f28b81a688a0fa6717e969f51093fa9ade03e8fcc69ce87038fbca34526dfd45.
+The old view's literal goods/missingText functions and new helper copies hash identically as a combined static slice: b0900f8a24eccc19499be40104d79a5d8910c4ed296e79ce35c9220abc48d938. The resource order is the same. Existing ceil(third-milli/3000), MAX-per-resource/location overlapping deficits, formatting and full shortage vector are preserved; no new support/recipe arithmetic.
+Cultivation shell loads legacy engine→ledger→jobs→cultivation engine→feedback→guidance→view. Browser helper reads already-loaded ledger; CommonJS uses the same ledger module. Build adds only the cultivation guidance placeholder replacement. Other four HTML construction branches are unchanged by the diff; actual generated identity equality must be checked after Spark build, not inferred as a built result here.
+
+Current truthful source recommendation
+Helper16–25 accepts only exact positive water/b0 shortage with supported canonical ledger third-milli wire (existing ledger.big with catch), or positive safe whole-recipe amount below ledger.LIMIT. Zero/malformed/nonfinite/unsupported amounts refuse the hint. Current actual camp.stores supplies completed nonretiring stores and available custody projection, excluding transfer/construction/plot reservations and support protection. Source must be a distinct outpost, have positive safe whole available water below ledger.LIMIT, and current transferTargets(source,'b0') must exist. Raw stock, protected Hearth water, incoming cargo or aggregate water never substitutes.
+Read-only source-to-Hearth route eligibility is not a selected-carrier/load/accounting authorization. Text instructs empty-handed villagers, source inspection, Hearth/water choice, carrier preview and ordinary Send selected carriers, and explicitly requires arrival before water counts. Remote1 against missing8 remains a partial option; full current missing vector stays displayed and no funded/one-load guarantee is made.
+Helper35–39 uses current inactive provisionQuote or active summary.nextMissing. Inactive funded quote and active funded next certificate suppress the hint. Inactive funded fallback says Review support quote rather than stale collect/discover instructions; active hint expressly concerns following crop and preserves committed jobs. View appends the same transport text only to failed Provision quote and current inactive-failed/active-unfunded support status. Existing quote/payment/control enabled states remain authoritative.
+Helper31–34 implements the parent-authorized priority: cancellation recovery→existing output/delivery→harvest→funding/transport→default. Actual paid output/cargo cannot be hidden by setup advice. Historical guidance text is retained outside the scoped source/funded changes. No worker status/gameplay logic changed.
+View434–438 retains the existing passive store inspection path: cancel UI input mode, change inspect id, render/scroll/focus. It does not select/command villagers, transfer/pay, save, discover seed or invoke plot inspection for the recommended outpost. Dynamic guidance flows through existing textContent and controls; no new DOM input or gameplay action introduced.
+
+Static draft findings and final corrections
+First helper draft accepted canonical third-milli above ledger.MAX using only regex/safe-integer; final reuses ledger.big exact wire/MAX refusal. It also could recommend transport for inactive ok:true with contradictory stale nonempty missing; final current quote-authority gate clears it in helper/status (failed quote already gated). These were static contract counterexamples, not executed failures or existing engine defects.
+QA final ordinary discoverPlot/collect6seed setup strengthens alignment with actual earned069/071 camp. It is not a proven seed-failure fix: ledger.nextSeed includes unopened seedCache lineage, so original omission alone did not establish provisionQuote failure. No imagined negative/runtime result is claimed.
+
+Meaningful independent new tests
+Read the complete final seven tests; they invoke actual exported helper, not copied decision predicates. Declared presentation fixtures explicitly test boundaries, not earned browser acceptance. Cases cover named-source inspect target/full overlapping vector, partial1water/no funding promise, supported exact ledger maximum and malformed/wrong-resource/location/unit refusals, raw/reserved/incoming decoys, current route/availability changes, quote/certificate-funded suppression, and cancellation/output/cargo/harvest priority.
+The final actual-engine witness earns finite resources and physical buildings, adopts, discovers and physically collects6seed, extracts water to the actual remote receiver, reserves a real20water/four-carrier transfer, observes actual pickup before receipt, serializes/reloads current custody and then physically receives20water at Hearth. Repeated helper reads require complete serialized time/orders/support/custody/material identity and unchanged quote. It exercises the real current stores/quote/transfer projections rather than assuming fixture availability alone. Setup loops are bounded; no imported real save/world fields or stock grants are used.
+Proposed parent Spark changed-test command only: node --test tests/hearth-cultivation-guidance.test.cjs. Seven cases have NOT been run here. Actual browser passive inspection/selection neutrality, DOM surfaces, carrier quote and view/build coupling remain for the approved coherent journey. Fixture source absence models retired/uncompleted states but does not claim every topology; unchanged custody engine identities support the scoped projection review. No old226/141/28 suite rerun or mirrored tests requested.
+
+Next
+Parent may pin changed-source syntax, these new seven tests and all-five HTML build on approved Spark, then pin returned built HTML identity before the ONE coherent corrected public journey. Preserve accepted073; no recapture of already completed harvest, artificial drain, publication/upload retry or source/economy expansion is justified by this review. Source/helper/test coupling, runtime outcomes and fresh public acceptance remain explicitly outstanding.

@@ -1,0 +1,23 @@
+Cultivation onboarding guidance increment — pre-edit plan — 2026-10-06
+Base f65350d3a9d47a6b9a327af6cc54350f139c93a2; actual073 accepted milestone and all original evidence frozen.
+
+Confirmed public finding: actual069/071 already earned27water/6seed at remoteOutpost; Hearthwater0, support/nextcrop shortage says8wholewater, top opportunity still collectwater/discoverseed. Ordinary namedstore inspection/Hearth-water carrier transfer solved it. Need explain this existing action, not alter economy or new gameplay.
+
+Proposed narrow behavior:
+- Use the CURRENT existing support/provision quote/missing vector and CURRENT store availability.
+- When support or followingcrop needs WATER AT Hearth AND an existing non-Hearth store has positive free wholewater with a currently reachable store-to-Hearth route, identify that named source in contextual guidance.
+- A missing otherresource or generic seed shortage cannot by itself trigger water transport. Never use aggregatefreewater/claimedhidden stock as localfunding.
+- Source water must exclude transfers/job reservations/protection via existing store.available. Stored but committed/in-transit/retiring/unreachable supplies cannot become an available-source recommendation.
+- No claim that one source/load fully funds the missing vector; more food/wood/seed may still be required. Missing vector remains exact existing display.
+- Calm title 'Bring stored water to the Hearth'; detail identifies current source freewater, unchanged Hearth missingvector, ordinary selection/inspection/Hearthdestination/water/Sendselectedcarriers path and realarrival requirement.
+- Existing opportunity inspect button targets that existing source store with no selection/order/resource/payment sideeffects. Supportstatus and failed supportquote include the same transport context so shortage remains understandable wherever inspected.
+- The highlevel instruction no longer says discoverseed/collectnewwater when actual route is existingstoredwater. When no relevant watertransport source exists retain current collection/replenishment guidance. When supportquote funded stopshowing transporthint.
+- Existing cancellation/harvest/growth guidance priorities remain; a recoverable existingjob/cargo shouldn't be overwritten by a newsetup task. Narrow waterhint integrates initialsupport and existingnextfundingbranch; no global renderer redesign.
+- New read-only presentationhelper may be extracted solely for deterministic boundary checks and included ONLY in cultivationbuild; existing RTS/cave/art/engine/jobs/ledger/schema/economy remainbyteunchanged.
+- No new controls or timer/rates. All publicDOM hooks retained.
+
+Review/validation:
+First independent publicgameplay skeptic validates actualfinding/meaning/correctbehavior and playerpriority without sourcehints. Second independent source/quotearithmetic skeptic reviews store custody/routes/missingunits/bounds and narrowimplementationplan before appedits.
+After implementation independent delta review and meaningful changedbehavior tests on existingSpark image. Only changedsource syntax/read-onlyguidance boundarychecks/build plus ONE actual publicjourney on correctedcandidate, no unchanged226/28/141 suites.
+Journey precommitment: short exact-earned-unfunded save guidance check proving namedsource hint and passiveinspect leave materials unchanged; then latest actual073 completednative import/reimport and a NEW paidpilot cycle, pausedpartial persistence/repeateddisabledplant check, normalgrowth/oneCollect/positivephysicalfoodseedreceipt. No oldharvestreplay or fabrication. An earnednew shortage/recovery leg only if feasible and ordinaryauthorized; avoid artificiallydraining camp merelytochecktext. Exact timing budget must follow90secondsgrowth+90worker-seconds/plausibleroute/refresh/export, parent/coordinatoradmission only.
+Build/selfcontainedHTML and latest ordinarysave + conciseplayerREADME prepared for laterauthorizeddelivery. No blockedLibraryupload retry/deployment/push/mainmerge/newsoftware/localexecution. Preserve actual073acceptedartifacts and oldcandidate immutable.
