@@ -1,6 +1,47 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Singularity Clicker · Agriculture</title><style>:root{color-scheme:dark;font:16px system-ui,sans-serif;color:#e9edda;background:#17271f;--line:#526347;--muted:#b7c5ac;--gold:#e5c37d}*{box-sizing:border-box}body{margin:0}button,select{font:inherit;color:inherit;background:#2b4030;border:1px solid var(--line);border-radius:6px;min-height:42px;padding:8px 12px;cursor:pointer}button:hover{background:#435936}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}a{color:var(--gold)}header{display:flex;align-items:center;gap:32px;padding:18px 26px;border-bottom:1px solid var(--line)}header small,.goal>small{color:var(--gold);letter-spacing:.12em;font-size:.67rem}h1{font:normal 1.6rem Georgia,serif;margin:4px 0}header nav{margin-left:auto;display:flex;gap:8px}h2{font:normal 1.35rem Georgia,serif;margin:0 0 12px}p{line-height:1.5}main{display:grid;grid-template-columns:minmax(0,1fr) 350px}.land{min-width:0}.stocks{display:flex;gap:10px;padding:18px 24px;border-bottom:1px solid var(--line)}.stock{flex:1;min-width:0}.stock span,.stock small{display:block;color:var(--muted);font-size:.75rem}.stock strong{font-size:1.3rem;font-weight:500}.stock.low strong{color:#f0b97e}.landscape{height:460px;position:relative;background:linear-gradient(#344b36,#253e2b)}canvas{display:block;width:100%;height:100%}.land-title{position:absolute;top:20px;left:24px;pointer-events:none;text-shadow:0 1px 8px #17271f}.land-title span{font-size:.75rem;color:var(--gold)}.land-title h2{font-size:1.8rem;margin-top:8px}.land-title p{color:var(--muted);font-size:.85rem;margin:0}.plots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:20px 24px}.plot{text-align:left}.plot strong,.plot small{display:block}.plot small{font-size:.7rem;color:var(--muted);margin-top:4px}.plot[aria-pressed=true]{background:#4d6038;border-color:#d5d895}#status{margin:0;padding:12px 24px;min-height:56px;color:var(--gold);background:#1c3022}aside{border-left:1px solid var(--line);padding:20px;background:#213526}aside section{padding:20px 0;border-bottom:1px solid var(--line)}aside section:first-child{padding:16px;background:#374a30;border:1px solid #71825b;border-radius:8px}aside p{font-size:.85rem;color:var(--muted)}.goal h2{margin-top:10px}.goal p{margin:10px 0}.goal-check{font-size:.78rem;margin-top:5px;color:#d7dec4}label{font-size:.8rem;color:var(--muted)}select{display:block;width:100%;margin-top:8px;font-size:.85rem}.allocation{display:flex;align-items:center;gap:8px;margin-top:10px}.allocation span{flex:1;font-size:.83rem}.allocation button{width:42px;padding:6px}.allocation strong{min-width:20px;text-align:center}.hint{font-size:.75rem!important;line-height:1.5}#projects button{width:100%;margin:8px 0;text-align:left}#projects small{display:block;margin-top:4px;font-size:.72rem;color:var(--muted)}progress{width:100%;accent-color:#cbd799}dialog{max-width:560px;width:calc(100% - 24px);background:#243b29;color:#e9edda;border:1px solid #8c9a72;border-radius:12px;padding:26px;max-height:90dvh}dialog::backdrop{background:#07160dcc;backdrop-filter:blur(4px)}dialog button,dialog a{display:block;width:100%;margin-top:10px}.close{float:right;width:40px;margin:-14px -14px 10px 10px}dialog p{color:var(--muted);font-size:.9rem}.warning{color:#f0b97e!important}@media(max-width:800px){header{padding:12px;gap:12px;flex-wrap:wrap}header>a{font-size:.8rem}header nav{width:100%;margin:0}header nav button{flex:1}main{display:block}aside{border:0;border-top:1px solid var(--line);padding:16px}.landscape{height:390px}.land-title{left:16px}.land-title h2{font-size:1.4rem}.land-title p{max-width:250px}.stocks{padding:14px}.plots{padding:14px;grid-template-columns:repeat(2,1fr)}}
 
 .allocation span small{display:block;font-size:.68rem;color:var(--gold);margin-top:3px}
+
+/* Shared settlement palette. Keep controls and all simulation affordances intact. */
+:root{color-scheme:light;--bg:#f6f3e7;--panel:#fffdf4;--line:#dedfcd;--ink:#303951;--muted:#637164;--gold:#7253ab;--green:#307d57;font-family:ui-rounded,'Avenir Next',system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+body{background:var(--bg);color:var(--ink)}
+button,select{color:var(--ink);background:#fffdf6;border:1px solid #cdd4be;border-radius:12px;min-height:44px;font-family:inherit;box-shadow:0 2px 0 #ccd0b730}
+button:hover{background:#eef0d8;border-color:#95ad6a}button:disabled{opacity:.48}button small{color:var(--muted)}
+button.active,button.selected,button[aria-pressed=true],button[aria-selected=true]{background:#eee6fa;border-color:#9b7ac4;color:#513788}
+button:focus-visible,a:focus-visible,select:focus-visible,canvas:focus-visible{outline:3px solid #7352bb;outline-offset:3px}
+a{color:#6950a1}h1,h2,h3{font-family:ui-rounded,'Avenir Next',system-ui,sans-serif;font-weight:700;letter-spacing:-.035em;color:var(--ink)}
+header{background:#fffdf4;border-color:var(--line)}header small,.eyebrow,.chapter,.goal>small{color:#705196}header .brand span{color:var(--ink)}header .brand small{color:var(--muted)}
+main{gap:22px}aside{background:transparent;border-color:var(--line)}aside p,.small-text,.hint,.panel-description{color:var(--muted)}
+aside section,.notice,.home-title,.readiness,.next-note{border-color:var(--line)}
+.mission,.goal,.notice{background:#edeed7;border:1px solid #d3d8b6;border-radius:18px;padding:18px}
+.eyebrow{font-weight:750;letter-spacing:.13em}.tag{border-radius:20px;background:#ebe7f3;color:#72568d;border:0;padding:8px 12px}
+.resource,.stock{background:#fffdf6;border:1px solid #e0dfc9;border-radius:16px;padding:10px 14px;color:var(--ink);position:relative;font-variant-numeric:tabular-nums}.resource small,.resource label,.stock small,.stock span{color:var(--muted)}.resource i{color:#6b58a7}.resource.low strong,.stock.low strong{color:#ad612c}
+.resource:before,.stock:before{content:'';display:block;width:22px;height:6px;border-radius:10px;background:#8bbb61;margin-bottom:7px}.resource:nth-child(2):before,.stock:nth-child(2):before{background:#c19576}.resource:nth-child(3):before,.stock:nth-child(3):before{background:#f5b943}.resource:nth-child(4):before,.stock:nth-child(4):before{background:#49bcda}.resource:nth-child(5):before,.stock:nth-child(5):before{background:#a38acb}
+#economy{gap:10px}.resources,.stocks{background:transparent;border:0;gap:10px}.stock strong{font-weight:750}.resource{min-width:80px;font-size:21px}.top-actions button{background:#f6f4e8}
+#viewport,.scene-wrap,.landscape{background:#e5eee0;border:1px solid #d2d9bd;border-radius:22px;box-shadow:0 7px 0 #d6dcc340;overflow:hidden}
+#map-label{color:#40524a;text-shadow:none;background:#fff9e6df;padding:8px 12px;border-radius:20px;font-weight:650}#map-label span{color:#687650}
+#toast,.journal,#status{background:#fff9e9;color:#574977;border:1px solid #d8d1bd;border-radius:12px;text-shadow:none}
+#paused,.pause-label{top:16px;left:auto;right:16px;transform:none;padding:8px 14px;background:#fff9e9ee;border:1px solid #cfbd9c;color:#665085;border-radius:30px;font-size:10px;letter-spacing:.1em;box-shadow:none}#paused small{display:none}
+#selection,.crew{background:#fffdf4;border:1px solid var(--line);border-radius:18px}.unit-card .portrait{color:#8b6cc0}.unit-card.idle small{color:#88733d}.selection-title,.world-foot,#economy-flow,#log,footer{color:var(--muted)}
+#action-tray{background:#fffdf4f5;border-color:#d0d8bd;box-shadow:0 -5px 20px #53653712}.commands button{border-radius:12px}
+#inspect .amount,.goal-check,li.done{color:#37795c}li{color:var(--muted)}.goal h2{color:#374e3f}progress{accent-color:#8f6bc1}
+dialog{background:#fffcf1;color:var(--ink);border:1px solid #d1c9b0;border-radius:22px;box-shadow:0 24px 90px #30395533}dialog p{color:var(--muted)}dialog::backdrop{background:#25334965;backdrop-filter:blur(5px)}
+#camp-warning{color:#76552d;background:#fff0ce;border-color:#e3c689}.transfer-fields select{background:#f6f2e1;color:var(--ink);border-color:#cbd0b9}
+.scene-heading,.land-title{text-shadow:none}.scene-heading h1,.land-title h2{color:#344d45}.scene-heading span,.land-title p{color:#556e5a}.scene-heading p,.land-title span{color:#6c568d}.scene-heading{pointer-events:none}.scene-bottom{background:#fdf7dfde;color:#485748}.scene-switch button{background:#fff9e8ed;color:#394f48;border-color:#cccbb0}
+.scene-wrap{margin:0 18px}.journal{margin:14px 18px}.landscape{margin:0 24px;height:530px}.land-title{top:18px;left:22px}.land-title p{max-width:430px}.plot[aria-pressed=true]{background:#eee6fa;border-color:#ac8dc9}.plot small{color:#66705e}aside section:first-child.goal{background:#ecefd7;border-color:#d6dcbd}.next-note{background:transparent}.person small,.next-note p,.readiness small{color:var(--muted)}
+@media(max-width:1180px){header{height:auto;flex-wrap:wrap}#economy{order:3;flex-basis:100%;justify-content:flex-start}.brand span{display:block}.top-actions{margin-left:auto}.resource{flex:1;min-width:0}}
+@media(max-width:1000px){.landscape{height:450px}}
+@media(max-width:720px){.resource,.stock{padding:8px;min-width:0;font-size:16px;border-radius:12px}.resource small{font-size:9px}.resource:before,.stock:before{width:18px;height:4px;margin-bottom:4px}.top-actions button{min-height:44px}.scene-wrap,.landscape{margin:0 10px;border-radius:16px}.landscape{height:390px}.stocks{padding:12px 10px;gap:6px}.land-title h2{font-size:1.3rem}.land-title p{font-size:.75rem;max-width:230px}aside{padding:14px}.brand span{font-size:10px}#map-label{font-size:8px;left:8px;top:8px}#map-label span{font-size:8px;margin-left:8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* Override legacy component-specific dark surfaces. */
+.person{background:#fffdf6;border-color:#d3d8bf;color:var(--ink)}.person.selected{background:#eee6fa;color:#513788}.journal p{color:#605178}.scene-bottom{color:#405346;text-shadow:none}.scene-heading h1{font-family:ui-rounded,'Avenir Next',system-ui,sans-serif;font-weight:750;letter-spacing:-.04em}.resource:last-child{border:1px solid #e0dfc9}.resource strong{font-weight:750}.resources .resource{padding:10px 14px}.scene-heading p{color:#765a9b}.chapter{color:#69508f}.readiness progress{background:#dedfc7}.notice p,.next-note p,.home-title p,.tech p,.tech small,.panel-label{color:var(--muted)}.next-note span,.crew-heading,.crew-heading b{color:#63508d}.tech{background:#fffdf3;border-color:#d4d9bf}.primary{background:#7655ac;color:#fff}.primary:hover{background:#65449b;color:#fff}.modal-top,.modal-top span{color:#6b5887}.check-row{color:var(--ink)}
+#cultivation-panel{background:#eee7f5;color:var(--ink);border:1px solid #d6c7e6;border-radius:18px;padding:18px}#cultivation-panel p,#cultivation-panel .eyebrow{color:#615475}#cultivation-panel button{color:var(--ink);background:#fffaf8;border-color:#cdbade}#cultivation-panel button:disabled{opacity:.5}.resource[data-resource=water]:before,.stock[data-resource=water]:before{background:#49bcda}.resource[data-resource=food]:before,.stock[data-resource=grain]:before{background:#f5b943}.resource[data-resource=wood]:before,.stock[data-resource=wood]:before{background:#70b36a}.resource[data-resource=stone]:before,.stock[data-resource=clay]:before{background:#c19576}.resource[data-resource=seed]:before,.stock[data-resource=seed]:before{background:#a38acb}
+.resource-icon{position:absolute;right:10px;top:12px;width:26px;height:26px;padding:3px;box-sizing:content-box;background:#eef0dd;border-radius:50%;pointer-events:none}.resource small,.resource label,.stock span{position:relative}.resources .resource label,.stock span{padding-right:24px}.scene-wrap .pause-label{top:auto;bottom:44px;right:18px;left:auto;font-family:inherit}.scene-heading h1{font-size:clamp(22px,2.4vw,32px)}
+@media(max-width:720px){.resource-icon{width:17px;height:17px;right:5px;top:7px;padding:2px}.resource:before,.stock:before{margin-bottom:10px}.resources .resource{padding:8px}.resources .resource label,.stock span{padding-right:0}.scene-wrap .pause-label{bottom:34px;font-size:9px}}
+#recruitment-note{color:#637164}#economy .resource-icon{top:30px;width:23px;height:23px}#economy .resource small{font-size:9px;letter-spacing:.07em;white-space:nowrap}#economy .resource{padding-right:37px}
+@media(max-width:720px){#economy .resource{padding-right:7px}#economy .resource-icon{display:none}#economy .resource small{font-size:8px;letter-spacing:0}}
+
+@media(max-width:720px){.scene-wrap .pause-label{bottom:72px}}
 </style></head><body>
 <header><a href="hearth.html">← The Hearth</a><div><small>02 / AGRICULTURE · FIRST PLAYABLE SLICE</small><h1>Room to grow.</h1></div><nav><button id="pause">Pause</button><button id="step">+1 second</button><button id="journey">Journey</button></nav></header>
 <main><section class="land"><div id="stocks" class="stocks"></div><div class="landscape"><canvas id="farm" aria-label="Six farm plots. Select a plot with the buttons below." tabindex="0"></canvas><div class="land-title"><span id="day">Morning 1</span><h2>A harvest worth keeping.</h2><p>Give work a direction. Let the fields find their rhythm.</p></div></div><div id="plots" class="plots" aria-label="Choose a field"></div><p id="status" role="status">Choose a crop and assign workers to begin.</p></section>
@@ -238,12 +279,60 @@ class Village{
 }
 const API={Village,CROPS,BUILD,JOBS,RESOURCES,valid};if(typeof module!=='undefined'&&module.exports)module.exports=API;else root.AgricultureGame=API;
 })(typeof globalThis!=='undefined'?globalThis:this);
-</script><script>(function(){
+</script><script>/* Original Canvas artwork, authored for the 2026-10-08 visual references.
+   Pure presentation: all coordinates, quantities and availability come from callers. */
+(function(root){
+'use strict';
+const P={ink:'#30355c',purple:'#7760bf',plum:'#594291',grass:'#d5e787',green:'#0d8c69',leaf:'#56b44d',lime:'#9bcd47',gold:'#ffc34c',orange:'#ef922f',clay:'#c67456',sand:'#f7df9c',water:'#36bde0',blue:'#409bd2',cream:'#fff6db'};
+function painter(c){
+ const ellipse=(x,y,rx,ry,color)=>{c.beginPath();c.ellipse(x,y,Math.max(.01,rx),Math.max(.01,ry),0,0,Math.PI*2);c.fillStyle=color;c.fill();};
+ const path=(pts,color)=>{c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=color;c.fill();};
+ const rect=(x,y,w,h,r,color)=>{c.beginPath();c.roundRect(x,y,w,h,r);c.fillStyle=color;c.fill();};
+ const line=(pts,color,width=3)=>{c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=color;c.lineWidth=width;c.lineCap='round';c.lineJoin='round';c.stroke();};
+ const at=(x,y,k,fn)=>{c.save();c.translate(x,y);c.scale(k,k);fn();c.restore();};
+ const shadow=(x,y,rx=20,ry=8)=>ellipse(x+3,y+4,rx,ry,'#687e3930');
+ function tree(x,y,k=1,variant=0){at(x,y,k,()=>{shadow(0,0,19,7);line([[0,0],[0,-32]],'#bc7940',7);if(variant%2){path([[-18,-15],[0,-57],[18,-15]],P.green);ellipse(0,-15,18,6,P.green);path([[-13,-32],[0,-65],[13,-32]],'#168860');ellipse(0,-32,13,4,'#168860');}else{ellipse(9,-35,17,18,P.green);ellipse(-10,-33,17,18,'#269b5b');ellipse(-2,-48,18,18,P.leaf);ellipse(-9,-47,8,9,'#67bd50');}});}
+ function bush(x,y,k=1,berries=false){at(x,y,k,()=>{shadow(0,0,22,8);ellipse(-12,-7,13,12,'#369d5f');ellipse(10,-10,17,15,P.green);ellipse(-1,-17,16,14,P.leaf);ellipse(-1,-5,13,10,'#6bbe4e');if(berries)for(const [a,b]of [[-12,-14],[1,-22],[12,-10],[-1,-4]])ellipse(a,b,3.7,4,P.purple);});}
+ function rock(x,y,k=1){at(x,y,k,()=>{shadow(0,0,19,6);path([[-19,1],[-13,-16],[-3,-24],[7,-22],[20,-6],[15,4]],'#b87b65');path([[-19,1],[-13,-16],[-3,-24],[2,-9],[-3,5]],'#d89472');path([[2,-9],[7,-22],[20,-6],[15,4],[-3,5]],'#a56b60');});}
+ function tent(x,y,k=1,purple=false){at(x,y,k,()=>{shadow(0,0,27,10);line([[-5,-44],[5,-59]],'#ad683b',4);line([[5,-44],[-5,-59]],'#ad683b',4);c.beginPath();c.moveTo(0,-50);c.quadraticCurveTo(-8,-31,-25,-5);c.quadraticCurveTo(-25,8,0,9);c.quadraticCurveTo(25,8,25,-5);c.quadraticCurveTo(8,-31,0,-50);c.fillStyle=purple?'#b962c2':P.orange;c.fill();path([[0,-49],[0,7],[-19,1]],purple?'#d982d2':P.gold);c.beginPath();c.moveTo(-7,7);c.quadraticCurveTo(-7,-15,1,-15);c.quadraticCurveTo(9,-15,10,7);c.fillStyle=P.ink;c.fill();});}
+ function house(x,y,k=1,kind='home',warm=false){at(x,y,k,()=>{shadow(0,2,32,11);path([[-27,-25],[7,-15],[7,10],[-27,0]],warm?'#f9dda6':'#6fb9e6');path([[7,-15],[28,-27],[28,-2],[7,10]],warm?'#eab781':P.blue);path([[-31,-27],[-10,-49],[32,-34],[8,-12]],P.gold);path([[8,-12],[32,-34],[32,-26],[9,-5]],P.orange);path([[-31,-27],[8,-12],[9,-5],[-31,-20]],'#efab34');for(let i=0;i<5;i++)line([[-22+i*8,-28-i*1.1],[-18+i*8,-35-i*.7]],'#ffe39b',3);rect(-18,-16,10,17,3,P.ink);rect(13,-13,7,7,2,'#25577b');if(kind==='store'||kind==='granary'){jar(-30,8,.8,P.purple);jar(-18,13,.65,P.clay);}if(kind==='workshop'){line([[17,8],[37,0]],'#b77741',6);line([[20,10],[20,19]],'#98603e',3);line([[34,3],[34,13]],'#98603e',3);rock(29,-1,.28);}if(kind==='outpost'){line([[26,-14],[26,-65]],'#a66b41',3);path([[26,-65],[45,-59],[26,-51]],P.purple);}});}
+ function jar(x,y,k=1,color=P.clay,amount=1){at(x,y,k,()=>{shadow(0,1,9,3);rect(-8,-17,16,20,6,color);ellipse(0,-17,6,3,'#f0b96e');ellipse(0,-18,4.5,2,P.ink);line([[-6,-6],[6,-6]],'#f9d793',2);if(amount>0)ellipse(0,-18,3.5,1.3,'#e4c364');});}
+ function logs(x,y,k=1,amount=12){at(x,y,k,()=>{for(let i=0;i<Math.min(12,Math.ceil(amount/8));i++){const a=(i%3)*8,b=-Math.floor(i/3)*6;line([[a-12,b-9],[a+3,b]],'#bb733e',6);ellipse(a+3,b,3,3,'#f5c17c');ellipse(a+3,b,1,1,'#b37b4d');}});}
+ function person(x,y,k=1,id=0,active=false,time=0,state={}){id=Number(String(id).replace(/\D/g,''))||0;at(x,y,k,()=>{
+  const resting=state.job==='idle',sway=active&&!resting?Math.sin(time*5+id)*2:0,lower=resting?8:0;
+  shadow(0,0,resting?11:8,3);
+  if(resting){line([[-3,-2],[-8,1],[-11,1]],P.purple,4);line([[3,-2],[8,1],[11,1]],P.purple,4);}
+  else{line([[-3,-7],[-4+sway,0]],P.purple,4);line([[3,-7],[4-sway,0]],P.purple,4);}
+  line([[-5,-19+lower],[-8,-10+lower+sway]],'#bf7541',4);line([[5,-19+lower],[8,-10+lower-sway]],'#bf7541',4);
+  rect(-5,-21+lower,10,16,4,['#42b9bd','#f6b438','#ed8676','#9466cb'][id%4]);ellipse(0,-28+lower,7,8,P.ink);ellipse(1,-27+lower,5.3,6,['#c17a45','#9d5737','#d89454'][id%3]);
+  if(state.hat&&!resting){ellipse(0,-33,10,2.5,state.hat);path([[-6,-33],[-3,-40],[4,-38],[7,-33]],state.hat);}
+  if(!state.job||resting)return;
+  // A tool identifies the assigned job even while paused; the work pose lifts it.
+  const lift=state.phase==='work'?-5+Math.sin(time*5+id)*1.5:0;
+  at(9,-8+lift,1,()=>{
+   if(state.job==='water'){line([[-4,-7],[-4,-12],[4,-12],[4,-7]],P.ink,1.8);rect(-5,-8,10,10,3,P.water);line([[-3,-5],[3,-5]],P.cream,1.5);}
+   else if(['wood','stone','build','farm','plow'].includes(state.job)){line([[0,3],[-3,-18]],'#9c633f',2.7);if(state.job==='wood')path([[-3,-18],[5,-20],[6,-13],[-2,-13]],'#66728a');else if(state.job==='stone')line([[-9,-16],[4,-20],[7,-17]],'#66728a',3);else if(state.job==='build')rect(-8,-21,12,6,2,P.clay);else line([[-3,-18],[6,-17],[6,-12]],P.ink,2.7);}
+   else if(state.job==='herd'){line([[0,3],[0,-20],[4,-23],[7,-20],[7,-17]],'#9c633f',2.5);}
+   else if(state.job==='fiber'){for(let n=-1;n<=1;n++)line([[0,2],[n*5,-15]],P.leaf,2);line([[-3,-3],[3,-3]],P.gold,2);}
+   else if(state.job==='food')jar(0,0,.55,P.clay);
+  });
+ });}
+ function sheep(x,y,k=1){at(x,y,k,()=>{shadow(0,1,15,5);for(const a of [-9,8])line([[a,-6],[a,2]],'#b99dc4',4);ellipse(-2,-11,14,10,P.cream);ellipse(-9,-16,7,7,P.cream);ellipse(1,-18,8,7,P.cream);ellipse(12,-12,6,8,'#d1bde4');ellipse(14,-19,4,2,P.purple);ellipse(14,-12,1.3,1.5,P.ink);});}
+ function grain(x,y,k=1,ripe=true){at(x,y,k,()=>{line([[0,2],[0,-14]],ripe?'#c19431':'#369a5a',1.8);for(let i=0;i<3;i++){ellipse(-2.6,-7-i*3,3,1.7,ripe?P.gold:P.leaf);ellipse(2.6,-9-i*3,3,1.7,ripe?'#ffe68c':P.lime);}});}
+ function fire(x,y,k=1,time=0){at(x,y,k,()=>{ellipse(0,0,18,7,'#ae8649');line([[-10,-2],[10,2]],'#ae6334',5);line([[-8,4],[8,-4]],'#bd7935',5);const flick=Math.sin(time*3)*2;path([[-10,-3],[-7,-17],[flick,-32],[5,-20],[11,-4]],P.orange);path([[-5,-3],[0,-24],[6,-3]],P.gold);ellipse(0,-7,4,6,P.cream);});}
+ function badge(text,x,y,color=P.ink){c.font='600 11px system-ui';const w=c.measureText(text).width+16;rect(x-w/2,y-11,w,20,10,'#fff9e9ed');c.fillStyle=color;c.textAlign='center';c.fillText(text,x,y+3);return{x:x-w/2,y:y-11,width:w,height:20};}
+ return{ellipse,path,rect,line,at,shadow,tree,bush,rock,tent,house,jar,logs,person,sheep,grain,fire,badge};
+}
+function icon(kind){const glyph={wood:'<path d="M6 17L18 11M5 11L15 6" stroke="#ad713a" stroke-width="6" stroke-linecap="round"/><circle cx="18" cy="11" r="3" fill="#edc583"/><circle cx="15" cy="6" r="3" fill="#edc583"/>',water:'<path d="M12 3C10 7 5 11 5 15a7 7 0 0014 0c0-4-5-8-7-12" fill="#42bddd"/><path d="M8 15q0 4 4 4" fill="none" stroke="#baf3f1" stroke-width="2" stroke-linecap="round"/>',stone:'<path d="M3 17L7 7l6-3 8 9-3 7H6z" fill="#bc8270"/><path d="M3 17L7 7l6-3 1 10-8 6z" fill="#e4b297"/>',grain:'<path d="M12 21V4" stroke="#c09831" stroke-width="2"/><path d="M11 8Q4 8 6 3q6 0 5 5m2 5q8 0 6-5-6 0-6 5m-2 5q-8 0-6-5 6 0 6 5" fill="#e9b331"/>',seed:'<ellipse cx="8" cy="9" rx="4" ry="6" transform="rotate(-25 8 9)" fill="#a886c4"/><ellipse cx="16" cy="15" rx="4" ry="6" transform="rotate(30 16 15)" fill="#ccb3de"/>',fiber:'<path d="M5 20Q1 6 19 3q4 17-14 17" fill="#70b863"/><path d="M5 20L15 8" stroke="#cbe28f" stroke-width="2"/>'};return '<svg class="resource-icon" viewBox="0 0 24 24" aria-hidden="true">'+(glyph[kind]||glyph[{food:'grain',clay:'stone'}[kind]]||glyph.seed)+'</svg>';}
+root.SettlementArt={palette:P,painter,icon};
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(){
 'use strict';
 const {Village,CROPS,BUILD,JOBS,RESOURCES}=AgricultureGame,KEY='singularity-clicker.agriculture.v1',HEARTH='singularity-clicker.hearth.v1',$=id=>document.getElementById(id);
 let started=true;
 let village=new Village(),selected=0,paused=false,blocked=false,unread=null,lastSaved=null,last=performance.now(),acc=0,saveTime=0,modal=false;
-const canvas=$('farm'),ctx=canvas.getContext('2d');let points=[];
+const canvas=$('farm'),ctx=canvas.getContext('2d');let points=[],fieldBadges=[];
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function say(text){$('status').textContent=text;}
 function save(){if(blocked||!started)return;try{const text=village.serialize();localStorage.setItem(KEY,text);lastSaved=text;}catch{blocked=true;paused=true;say('Saving stopped. Open Journey and export before closing.');}}
@@ -257,7 +346,7 @@ function load(){try{const raw=localStorage.getItem(KEY);if(raw){unread=raw;villa
  else{show('Agriculture · first harvest preview.','<p>Finish the first furrow in The Hearth to carry that journey onward, or try a separate settlement here. Neither choice replaces your Cave or Hearth.</p><button id="begin">Try a standalone settlement</button><a href="hearth.html">Return to The Hearth</a>');$('begin').onclick=()=>{started=true;$('close').hidden=false;close();save();render();};}
  }catch{blocked=true;paused=true;say('This save could not be opened. Journey can export the original or import a backup.');}}
 function render(){const s=village.s,f=s.fields[selected];
- $('stocks').innerHTML=RESOURCES.map(k=>'<div class="stock '+(s.stock[k]<4?'low':'')+'"><span>'+k[0].toUpperCase()+k.slice(1)+'</span><strong>'+Math.floor(s.stock[k])+'</strong><small>/ '+village.cap(k)+'</small></div>').join('');
+ $('stocks').innerHTML=RESOURCES.map(k=>'<div data-resource="'+k+'" class="stock '+(s.stock[k]<4?'low':'')+'">'+SettlementArt.icon(k)+'<span>'+k[0].toUpperCase()+k.slice(1)+'</span><strong>'+Math.floor(s.stock[k])+'</strong><small>/ '+village.cap(k)+'</small></div>').join('');
  $('day').textContent='Day '+(1+Math.floor(s.time/180));$('pause').textContent=paused?'Resume':'Pause';$('step').disabled=!paused||modal||blocked;
  $('plots').innerHTML=s.fields.map(p=>'<button class="plot" data-field="'+p.id+'" aria-pressed="'+(p.id===selected)+'"><strong>Field '+(p.id+1)+' · '+p.workers+(p.workers===1?' worker':' workers')+'</strong><small>'+Math.floor(p.soil)+'% soil · '+(p.crop?CROPS[p.crop].name:p.nextCrop?CROPS[p.nextCrop].name:'Fallow')+'</small><small>'+ esc(p.blocked||p.phase)+'</small></button>').join('');
  $('field-title').textContent='Field '+(selected+1)+' · '+Math.floor(f.soil)+'% soil';$('field-status').textContent=f.phase==='fallow'?'Choose the next crop; workers sow and tend it automatically.':Math.floor(f.work)+' / '+CROPS[f.crop].work+' work · '+(f.phase==='ripe'?'Ready to harvest':'Growing');
@@ -271,19 +360,46 @@ function render(){const s=village.s,f=s.fields[selected];
  $('goal-detail').textContent=s.milestone?'This Agriculture milestone is complete. Keep experimenting with crop rotation. Exchange, copper and the next age are still to come.':'Complete five harvests, finish a granary and irrigation, and store 40 grain. Start by choosing Grain for a field and assigning two workers.';
  $('goal-progress').innerHTML=[[(s.harvests>=5),Math.min(5,s.harvests)+' / 5 harvests'],[village.has('granary'),'Granary'],[village.has('irrigation'),'Irrigation'],[s.stock.grain>=40,Math.min(40,Math.floor(s.stock.grain))+' / 40 grain']].map(([done,label])=>'<div class="goal-check">'+(done?'✓':'○')+' '+label+'</div>').join('');draw();
 }
-function draw(){const rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height,dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const u=Math.min(w/12,h/7),ox=w*.5,oy=h*.36;const iso=(x,y)=>({x:ox+(x-y)*u,y:oy+(x+y)*u*.43});const polygon=(pts,color,stroke)=>{ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}};
- polygon([iso(-2,-1),iso(5,-1),iso(5,4),iso(-2,4)],'#536647');polygon([iso(-1.7,-1),iso(-1.25,-1),iso(-1.25,4),iso(-1.7,4)],'#789c98');points=[];
- for(const f of village.s.fields){const x=f.id%3*1.45,y=Math.floor(f.id/3)*1.45;const corners=[iso(x,y),iso(x+1.25,y),iso(x+1.25,y+1.25),iso(x,y+1.25)];polygon(corners,f.nextCrop?'#72563a':'#647347',selected===f.id?'#efdc9c':'#948868');points.push({id:f.id,p:iso(x+.625,y+.625),r:u*.65});
- for(let i=1;i<6;i++){const a=iso(x+.15,y+i*.19),b=iso(x+1.1,y+i*.19);ctx.strokeStyle='#453d2c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();if(f.crop)for(let j=0;j<5;j++){const p=iso(x+.2+j*.2,y+i*.19),height=3+12*f.work/CROPS[f.crop].work;ctx.strokeStyle=f.crop==='grain'?'#d8bf72':'#98b66f';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x,p.y-height);ctx.stroke();}}
- const center=iso(x+.625,y+.625);ctx.fillStyle='#faf0c9';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(String(f.id+1),center.x,center.y+7);for(let n=0;n<f.workers;n++){const p=iso(x+.25+n*.28,y+1.1);ctx.fillStyle='#dac39a';ctx.beginPath();ctx.arc(p.x,p.y-8,3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d7aa73';ctx.fillRect(p.x-3,p.y-5,6,9);}
+function draw(){
+ const r=canvas.getBoundingClientRect(),w=r.width,h=r.height,dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+ const a=SettlementArt.painter(ctx),s=village.s,late=s.milestone,k=Math.min(w/850,h/500),ox=w*.5,oy=h*(w<600?.53:.40);
+ const iso=(x,y)=>({x:ox+(x-y)*56*k,y:oy+(x+y)*27*k}),poly=(pts,color)=>a.path(pts.map(p=>[p.x,p.y]),color);
+ const edge=[iso(-4,-2.5),iso(5.8,-2.5),iso(5.8,4.5),iso(-4,4.5)];
+ poly(edge.map(p=>({x:p.x,y:p.y+18*k})),late?'#b57861':'#bea06b');poly(edge.map(p=>({x:p.x,y:p.y+7*k})),late?'#dfa978':'#e6c67c');poly(edge,late?'#e9d6a0':'#d5e68c');
+ // A continuous bank, with the same six field hit targets as the simulation.
+ poly([iso(-3.8,-2.5),iso(-2.5,-2.5),iso(-2.5,4.5),iso(-3.8,4.5)],'#49bddb');
+ for(let n=0;n<12;n++){const p=iso(-3.5+(n%3)*.3,-2+n*.52);a.line([[p.x,p.y],[p.x+12*k,p.y+3*k]],'#baf2ee',2*k);}
+ const trail=[iso(-2,3.7),iso(-1,2),iso(-.7,0),iso(1,-1.7),iso(4,-1.8)];a.line(trail.map(p=>[p.x,p.y]),'#e2bd77',19*k);a.line(trail.map(p=>[p.x,p.y]),'#fff0c5',11*k);
+ for(const [x,y,v]of [[-1.5,-2,0],[3.7,-2,1],[5.2,-1.7,0],[5.2,3.6,0],[4.8,4.1,1],[-1.8,3.6,1]]){const p=iso(x,y);a.tree(p.x,p.y,k*.7,v);}
+ for(const [x,y]of [[-2,4],[5,2.4],[5.3,0],[-1,-2]]){const p=iso(x,y);a.bush(p.x,p.y,k*.55);}
+ // Housing represents this settlement; added store/irrigation art requires the actual upgrade.
+ for(let i=0;i<Math.min(3,Math.ceil(s.population/2));i++){const p=iso(i*1.1-.6,-1.8);a.house(p.x,p.y,k*.85,'home',late);}
+ const storage=iso(-1.1,2.7);if(village.has('granary')){a.house(storage.x,storage.y,k*1.1,'granary',late);a.badge('Granary',storage.x,storage.y+25*k);}else{a.jar(storage.x,storage.y,k,'#aa79b9',s.stock.grain);a.jar(storage.x+15*k,storage.y+5*k,k*.8,'#d19a59',s.stock.seed);}
+ const water=iso(-2,1.1);a.jar(water.x,water.y,k,'#5bbad4',s.stock.water);
+ if(village.has('irrigation')){for(const row of [-.15,1.45,3]){const p=iso(-2.7,row),q=iso(4.6,row);a.line([[p.x,p.y],[q.x,q.y]],'#a8d5ba',9*k);a.line([[p.x,p.y],[q.x,q.y]],'#40b9d6',5*k);}const p=iso(-2.65,-.15);a.line([[p.x-4*k,p.y-10*k],[p.x+12*k,p.y-5*k]],'#bf8350',4*k);}
+ points=[];fieldBadges=[];
+ for(const f of s.fields){const x=f.id%3*1.6,y=Math.floor(f.id/3)*1.6;
+  const corners=[iso(x,y),iso(x+1.35,y),iso(x+1.35,y+1.3),iso(x,y+1.3)];poly(corners,f.crop||f.nextCrop?'#cd9360':'#b2c774');
+  ctx.beginPath();corners.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.strokeStyle=selected===f.id?'#805ab7':'#e9be7c';ctx.lineWidth=selected===f.id?3:1;ctx.stroke();
+  const center=iso(x+.675,y+.65);points.push({id:f.id,p:center,r:56*k*.65});
+  for(let row=0;row<4;row++){const p=iso(x+.14,y+.21+row*.27),q=iso(x+1.2,y+.21+row*.27);a.line([[p.x,p.y],[q.x,q.y]],f.crop||f.nextCrop?'#ad704b':'#9db966',3*k);
+   if(f.crop)for(let col=0;col<5;col++){const t=iso(x+.18+col*.22,y+.21+row*.27),growth=Math.max(.22,Math.min(1,f.work/CROPS[f.crop].work));if(f.crop==='grain')a.grain(t.x,t.y,k*(.3+growth*.7),f.phase==='ripe'||growth>.72);else a.bush(t.x,t.y,k*(.07+growth*.11),true);}
+  }
+  for(let n=0;n<f.workers;n++){const p=iso(x+.25+n*.35,y+1.25);a.person(p.x,p.y,k*.65,f.id+n);}
+  fieldBadges.push({id:f.id,text:String(f.id+1)+(f.phase==='ripe'?(w<600?' ✓':' · READY'):''),x:center.x,y:center.y+29*k,color:selected===f.id?'#7252aa':'#4f6247'});
  }
- if(village.has('granary')){const p=iso(-.4,2.5);polygon([{x:p.x-18,y:p.y},{x:p.x+18,y:p.y},{x:p.x+18,y:p.y-23},{x:p.x-18,y:p.y-23}],'#ad9462');polygon([{x:p.x-23,y:p.y-23},{x:p.x,y:p.y-43},{x:p.x+23,y:p.y-23}],'#d3bd7e');}
- if(village.has('irrigation')){const a=iso(-1,1.36),b=iso(4.3,1.36);ctx.strokeStyle='#9eb7ae';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+ // Assigned carriers/crafters are shown at their workplaces; no extra people are created.
+ let personId=s.fields.reduce((n,f)=>n+f.workers,0);for(const [job,n] of Object.entries(s.jobs))for(let i=0;i<n;i++){const spot={water:[-2,1],wood:[4.9,3],clay:[4.9,-1],forage:[-1.8,3.5],build:[-1,2.2]}[job]||[1,-1];const p=iso(spot[0]+i*.22,spot[1]);a.person(p.x,p.y,k*.75,personId++);if(job==='water')a.jar(p.x+6*k,p.y-6*k,k*.4,'#49bade');}
+ for(let i=0;i<village.idle;i++){const p=iso(-.5+i*.35,-.8);a.person(p.x,p.y,k*.75,personId++);}
+ if(s.project){const p=iso(-1.2,2.6);a.line([[p.x-27*k,p.y],[p.x-27*k,p.y-29*k],[p.x+20*k,p.y-12*k],[p.x+20*k,p.y+12*k]],'#b98457',4*k);a.logs(p.x,p.y,k*.65,18);a.badge(BUILD[s.project.kind].name+' · '+Math.floor(s.project.work/BUILD[s.project.kind].work*100)+'%',p.x,p.y+33*k);}
+ // Labels sit above all scene artwork. Their painted bounds take input priority.
+ for(const badge of fieldBadges)badge.bounds=a.badge(badge.text,badge.x,badge.y,badge.color);
+ const heading=document.querySelector('.land-title h2');heading.textContent=late?'A place for tomorrow.':s.harvests?'The village takes root.':'A harvest worth keeping.';
 }
 function advance(){const project=village.s.project?.kind,harvests=village.s.harvests;village.tick(1);if(village.s.milestone)say('A dependable surplus. Your first Agriculture milestone is preserved.');else if(project&&!village.s.project)say(BUILD[project].name+' finished. Reassign construction workers when ready.');else if(village.s.harvests>harvests)say('A harvest is in. The field workers prepare the next cycle.');}
 function change(fn,message){if(blocked||modal)return;if(fn()===false){say('That order needs more available workers, materials, or progress.');return;}if(message)say(message);save();render();}
 $('plots').onclick=e=>{const b=e.target.closest('[data-field]');if(b){selected=Number(b.dataset.field);render();}};
-canvas.onclick=e=>{const r=canvas.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top},hit=points.find(a=>Math.hypot(p.x-a.p.x,p.y-a.p.y)<a.r);if(hit){selected=hit.id;render();}};
+canvas.onclick=e=>{const r=canvas.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top},hit=[...fieldBadges].reverse().find(({bounds:b})=>p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height)||points.find(a=>Math.hypot(p.x-a.p.x,p.y-a.p.y)<a.r);if(hit){selected=hit.id;render();}};
 $('crop').onchange=e=>change(()=>village.crop(selected,e.target.value||null),'The next crop order is set. Workers handle the whole cycle.');
 $('field-less').onclick=()=>change(()=>village.allocate(selected,village.s.fields[selected].workers-1));$('field-more').onclick=()=>change(()=>village.allocate(selected,village.s.fields[selected].workers+1));
 $('jobs').onclick=e=>{const b=e.target.closest('[data-job]');if(b)change(()=>village.allocate(b.dataset.job,village.s.jobs[b.dataset.job]+Number(b.dataset.change)));};
@@ -295,6 +411,6 @@ $('import-file').onchange=async e=>{const f=e.target.files[0];e.target.value='';
 window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue!==lastSaved){blocked=true;paused=true;say('Another window changed this journey. Reload before continuing.');render();}});
 document.addEventListener('visibilitychange',()=>{last=performance.now();acc=0;if(document.hidden)save();});window.addEventListener('pagehide',save);new ResizeObserver(draw).observe(canvas);
 function frame(now){const dt=Math.min(.25,(now-last)/1000);last=now;if(!paused&&!modal&&!blocked&&!document.hidden){acc+=dt;saveTime+=dt;while(acc>=1){advance();acc--;render();}if(saveTime>=5){save();saveTime=0;}}requestAnimationFrame(frame);}
-load();render();requestAnimationFrame(frame);
+load();render();if(started&&!blocked){if(village.s.milestone)say('A dependable surplus. Your first Agriculture milestone is preserved.');else if(village.s.harvests)say('Your settlement is restored. Existing crop orders continue when time resumes.');}requestAnimationFrame(frame);
 })();
 </script></body></html>
